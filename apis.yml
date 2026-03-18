@@ -1,0 +1,18 @@
+aid: dtn
+url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/apis.yml
+apis:
+- aid: dtn:dtn-api
+  name: DTN Weather & Commodity Data API
+  tags:
+  - Agriculture
+  - Weather
+  - Commodity Prices
+  - Market Data
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://www.dtn.com/
+  baseURL: https://api.dtn.com
+  properties:
+  - url: https://www.dtn.com/
+    type: Documentation
+  description: >-
+    DTN provides weather forecasting, commodity price data, and agricultural market intelligence. APIs deliver real-time and historical weather data, grain and livestock prices, planting condition indices, and market analysis for precision agriculture and commodity trading workflows.
