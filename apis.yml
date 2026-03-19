@@ -19,6 +19,8 @@ apis:
     type: Reference
   - url: https://devportal.dtn.com/
     type: Portal
+  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
+    type: OpenAPI
   description: >-
     DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated weather data. Supports geospatial queries, time-based filtering, and multi-station requests across over 70,000 weather stations worldwide. OpenAPI/Swagger spec, Postman collections, and release notes available via the developer portal.
 - aid: dtn:dtn-point-observation-api
@@ -89,6 +91,12 @@ apis:
 common:
 - url: https://www.dtn.com/
   type: Website
+- url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
+  type: OpenAPI
+- url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-schema/dtn-weather-observation-schema.json
+  type: JSONSchema
+- url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-ld/dtn-context.jsonld
+  type: JSONLDContext
 - url: https://devportal.dtn.com/
   type: Portal
 - url: https://www.dtn.com/resources/api-data-integrations/

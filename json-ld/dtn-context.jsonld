@@ -1,0 +1,93 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "dtn": "https://point-observation.weather.mg/schemas/",
+    "schema": "https://schema.org/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "qudt": "http://qudt.org/schema/qudt/",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "sosa": "http://www.w3.org/ns/sosa/",
+
+    "WeatherObservation": {
+      "@id": "sosa:Observation",
+      "@type": "schema:Observation"
+    },
+    "Station": {
+      "@id": "sosa:Platform",
+      "@type": "schema:Place"
+    },
+    "WeatherForecast": {
+      "@id": "dtn:WeatherForecast",
+      "@type": "schema:Forecast"
+    },
+
+    "stationId": "@id",
+    "stationName": "schema:name",
+    "observedAt": {
+      "@id": "sosa:resultTime",
+      "@type": "xsd:dateTime"
+    },
+    "location": {
+      "@id": "schema:geo"
+    },
+    "latitude": {
+      "@id": "geo:lat",
+      "@type": "xsd:double"
+    },
+    "longitude": {
+      "@id": "geo:long",
+      "@type": "xsd:double"
+    },
+    "elevationInMeter": {
+      "@id": "geo:alt",
+      "@type": "xsd:double"
+    },
+    "airTemperatureInCelsius": {
+      "@id": "schema:temperature",
+      "@type": "schema:QuantitativeValue"
+    },
+    "relativeHumidityInPercent": {
+      "@id": "schema:humidity",
+      "@type": "schema:QuantitativeValue"
+    },
+    "windSpeedInMeterPerSecond": {
+      "@id": "schema:windSpeed",
+      "@type": "schema:QuantitativeValue"
+    },
+    "windDirectionInDegree": {
+      "@id": "schema:windDirection",
+      "@type": "schema:QuantitativeValue"
+    },
+    "precipitationAmountInMillimeter": {
+      "@id": "dtn:precipitation",
+      "@type": "schema:QuantitativeValue"
+    },
+    "pressureInHectopascal": {
+      "@id": "dtn:atmosphericPressure",
+      "@type": "schema:QuantitativeValue"
+    },
+    "dewPointInCelsius": {
+      "@id": "dtn:dewPoint"
+    },
+    "feelsLikeTemperatureInCelsius": {
+      "@id": "dtn:apparentTemperature"
+    },
+    "uvIndex": {
+      "@id": "dtn:uvIndex",
+      "@type": "xsd:integer"
+    },
+    "weatherSymbol": {
+      "@id": "dtn:wmoWeatherCode",
+      "@type": "xsd:integer"
+    },
+    "validAt": {
+      "@id": "schema:validFrom",
+      "@type": "xsd:dateTime"
+    },
+    "validOn": {
+      "@id": "schema:validFrom",
+      "@type": "xsd:date"
+    }
+  }
+}

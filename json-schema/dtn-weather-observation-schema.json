@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://point-observation.weather.mg/schemas/observation",
+  "title": "DTN Weather Observation",
+  "description": "Schema representing a weather observation or forecast data point from the DTN Weather API.",
+  "type": "object",
+  "required": ["location"],
+  "properties": {
+    "stationId": {
+      "type": "string",
+      "description": "Weather station identifier (ICAO, WMO, or DTN identifier)",
+      "examples": ["KMSP", "KORD", "72658"]
+    },
+    "stationName": {
+      "type": "string",
+      "description": "Human-readable station name"
+    },
+    "observedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of observation"
+    },
+    "location": {
+      "$ref": "#/$defs/GeoLocation"
+    },
+    "units": {
+      "type": "string",
+      "description": "Unit system for all measurements",
+      "enum": ["SI", "US"]
+    },
+    "temperature": {
+      "$ref": "#/$defs/TemperatureData"
+    },
+    "wind": {
+      "$ref": "#/$defs/WindData"
+    },
+    "precipitation": {
+      "$ref": "#/$defs/PrecipitationData"
+    },
+    "atmosphere": {
+      "$ref": "#/$defs/AtmosphericData"
+    },
+    "visibility": {
+      "type": "number",
+      "description": "Horizontal visibility in meters (SI) or miles (US)",
+      "minimum": 0
+    },
+    "weatherSymbol": {
+      "type": "integer",
+      "description": "WMO present weather code (0-99)",
+      "minimum": 0,
+      "maximum": 99
+    },
+    "cloudCoverInPercent": {
+      "type": "number",
+      "description": "Total cloud cover percentage",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "uvIndex": {
+      "type": "number",
+      "description": "UV index (0-11+)",
+      "minimum": 0
+    },
+    "soilTemperatureInCelsius": {
+      "type": "number",
+      "description": "Soil temperature at surface in degrees Celsius"
+    },
+    "evapotranspirationInMillimeter": {
+      "type": "number",
+      "description": "Potential evapotranspiration in mm (agricultural use)",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "GeoLocation": {
+      "type": "object",
+      "required": ["latitude", "longitude"],
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "elevationInMeter": {
+          "type": "number",
+          "description": "Elevation above mean sea level in meters"
+        }
+      }
+    },
+    "TemperatureData": {
+      "type": "object",
+      "properties": {
+        "airTemperatureInCelsius": {
+          "type": "number",
+          "description": "Air temperature at 2m height in degrees Celsius"
+        },
+        "feelsLikeTemperatureInCelsius": {
+          "type": "number",
+          "description": "Apparent temperature (heat index or wind chill)"
+        },
+        "dewPointInCelsius": {
+          "type": "number",
+          "description": "Dew point temperature in degrees Celsius"
+        },
+        "maxTemperatureInCelsius": {
+          "type": "number",
+          "description": "Maximum temperature over the period"
+        },
+        "minTemperatureInCelsius": {
+          "type": "number",
+          "description": "Minimum temperature over the period"
+        },
+        "wetBulbTemperatureInCelsius": {
+          "type": "number",
+          "description": "Wet-bulb temperature in degrees Celsius"
+        }
+      }
+    },
+    "WindData": {
+      "type": "object",
+      "properties": {
+        "windSpeedInMeterPerSecond": {
+          "type": "number",
+          "description": "10-minute average wind speed at 10m height",
+          "minimum": 0
+        },
+        "windDirectionInDegree": {
+          "type": "number",
+          "description": "Wind direction in meteorological degrees (0=N, 90=E, 180=S, 270=W)",
+          "minimum": 0,
+          "maximum": 360
+        },
+        "windGustInMeterPerSecond": {
+          "type": "number",
+          "description": "Maximum wind gust speed over the period",
+          "minimum": 0
+        }
+      }
+    },
+    "PrecipitationData": {
+      "type": "object",
+      "properties": {
+        "precipitationAmountInMillimeter": {
+          "type": "number",
+          "description": "Total precipitation amount in millimeters",
+          "minimum": 0
+        },
+        "precipitationProbabilityInPercent": {
+          "type": "number",
+          "description": "Probability of precipitation (0-100%)",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "precipitationTypeCode": {
+          "type": "integer",
+          "description": "0=none, 1=rain, 2=snow, 3=sleet, 4=freezing rain, 5=mixed",
+          "enum": [0, 1, 2, 3, 4, 5]
+        },
+        "snowfallAmountInCentimeter": {
+          "type": "number",
+          "description": "New snowfall amount in centimeters",
+          "minimum": 0
+        },
+        "snowDepthInCentimeter": {
+          "type": "number",
+          "description": "Current snow depth on ground in centimeters",
+          "minimum": 0
+        }
+      }
+    },
+    "AtmosphericData": {
+      "type": "object",
+      "properties": {
+        "pressureInHectopascal": {
+          "type": "number",
+          "description": "Mean sea level pressure in hPa",
+          "minimum": 800,
+          "maximum": 1100
+        },
+        "pressureTendencyInHectopascal": {
+          "type": "number",
+          "description": "3-hour pressure tendency in hPa"
+        },
+        "relativeHumidityInPercent": {
+          "type": "number",
+          "description": "Relative humidity percentage",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    }
+  }
+}

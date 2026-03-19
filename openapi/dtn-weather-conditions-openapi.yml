@@ -1,0 +1,511 @@
+openapi: 3.1.0
+info:
+  title: DTN Weather Conditions API
+  description: >-
+    DTN Weather Conditions API delivers worldwide forecast, current condition, and historical
+    weather data. The API leverages cloud technology and global forecast models to provide
+    validated, continuously calibrated weather data. Supports geospatial queries, time-based
+    filtering, and multi-station requests. Authentication uses OAuth2 Client Credentials;
+    access tokens are obtained from auth.weather.mg/oauth/token and used as Bearer tokens.
+  version: 2.0.0
+  contact:
+    name: DTN Weather API Support
+    url: https://devportal.dtn.com/
+  license:
+    name: DTN Subscription Agreement
+    url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
+servers:
+  - url: https://weather.api.dtn.com/conditions
+    description: DTN Weather Conditions API
+  - url: https://point-forecast.weather.mg
+    description: DTN Point Forecast API
+  - url: https://point-observation.weather.mg
+    description: DTN Point Observation API
+  - url: https://precipitation-forecast.weather.mg
+    description: DTN Radar Precipitation Forecast API
+security:
+  - oauth2: []
+tags:
+  - name: Current Conditions
+    description: Current weather observations and conditions
+  - name: Forecasts
+    description: Weather forecast data (hourly and daily)
+  - name: Observations
+    description: Historical weather observation data
+  - name: Precipitation
+    description: Radar-based precipitation forecasts
+  - name: Stations
+    description: Weather station metadata
+paths:
+  /v2/current:
+    get:
+      operationId: getCurrentConditions
+      summary: Get current weather conditions
+      description: >-
+        Returns current weather conditions for a specified location using latitude/longitude or
+        a weather station identifier. Supports unit selection (US customary or SI).
+      tags:
+        - Current Conditions
+      parameters:
+        - name: locatedAt
+          in: query
+          required: true
+          description: >-
+            Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or
+            meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Comma-separated list of weather fields to return
+          schema:
+            type: string
+            example: 'airTemperatureInCelsius,relativeHumidityInPercent,windSpeedInMeterPerSecond,weatherSymbol'
+        - name: units
+          in: query
+          description: Unit system for returned values
+          schema:
+            type: string
+            enum: [US, SI]
+            default: SI
+      responses:
+        '200':
+          description: Current weather conditions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentConditionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /forecast/hourly:
+    get:
+      operationId: getHourlyForecast
+      summary: Get hourly weather forecast
+      description: >-
+        Returns hourly weather forecast data for a specified location. Forecasts available
+        up to 14 days ahead. Supports US and SI unit systems.
+      tags:
+        - Forecasts
+      servers:
+        - url: https://point-forecast.weather.mg
+      parameters:
+        - name: locatedAt
+          in: query
+          required: true
+          description: Latitude,longitude or station ID
+          schema:
+            type: string
+        - name: validPeriod
+          in: query
+          description: >-
+            Date/time range for the forecast. Format: startISO8601/endISO8601
+            (e.g., 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Comma-separated forecast fields to return
+          schema:
+            type: string
+            example: 'airTemperatureInCelsius,precipitationAmountInMillimeter,windSpeedInMeterPerSecond,windDirectionInDegree'
+        - name: units
+          in: query
+          schema:
+            type: string
+            enum: [US, SI]
+            default: SI
+        - name: meteoGroupStationId
+          in: query
+          description: Include station ID in response when using station-based query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Hourly weather forecast
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HourlyForecastResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /forecast/daily:
+    get:
+      operationId: getDailyForecast
+      summary: Get daily weather forecast
+      description: >-
+        Returns daily weather forecast data for a specified location, including high/low
+        temperatures, precipitation probability, and weather symbols.
+      tags:
+        - Forecasts
+      servers:
+        - url: https://point-forecast.weather.mg
+      parameters:
+        - name: locatedAt
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: validPeriod
+          in: query
+          schema:
+            type: string
+        - name: fields
+          in: query
+          schema:
+            type: string
+            example: 'maxAirTemperatureInCelsius,minAirTemperatureInCelsius,precipitationProbabilityInPercent,weatherSymbol'
+        - name: units
+          in: query
+          schema:
+            type: string
+            enum: [US, SI]
+            default: SI
+      responses:
+        '200':
+          description: Daily weather forecast
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyForecastResponse'
+  /observations:
+    get:
+      operationId: getObservations
+      summary: Get weather observations (historical)
+      description: >-
+        Returns weather observations from weather stations. Supports up to 30 years of
+        historical data. Multiple stations can be queried in a single request.
+      tags:
+        - Observations
+      servers:
+        - url: https://point-observation.weather.mg
+      parameters:
+        - name: locatedAt
+          in: query
+          required: true
+          description: Latitude,longitude or station ID. Multiple locations pipe-separated.
+          schema:
+            type: string
+        - name: observedPeriod
+          in: query
+          required: true
+          description: Historical date/time range. Format: startISO8601/endISO8601
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Comma-separated observation fields
+          schema:
+            type: string
+            example: 'airTemperatureInCelsius,precipitationAmountInMillimeter,relativeHumidityInPercent'
+        - name: units
+          in: query
+          schema:
+            type: string
+            enum: [US, SI]
+            default: SI
+        - name: limit
+          in: query
+          description: Maximum number of observations to return
+          schema:
+            type: integer
+            default: 1000
+            maximum: 10000
+      responses:
+        '200':
+          description: Weather observations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationsResponse'
+  /search:
+    get:
+      operationId: getPrecipitationForecast
+      summary: Get radar precipitation forecast
+      description: >-
+        Returns short-term precipitation forecast derived from radar data. Useful for
+        agricultural, utility, and renewable energy operational planning.
+      tags:
+        - Precipitation
+      servers:
+        - url: https://precipitation-forecast.weather.mg
+      parameters:
+        - name: locatedAt
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: validPeriod
+          in: query
+          description: Forecast time window. Short-range precipitation forecast (0-6 hours typical)
+          schema:
+            type: string
+        - name: fields
+          in: query
+          schema:
+            type: string
+            default: 'precipitationAmountInMillimeter,precipitationTypeCode'
+      responses:
+        '200':
+          description: Precipitation forecast
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrecipitationForecastResponse'
+  /stations:
+    get:
+      operationId: listStations
+      summary: List weather stations
+      description: >-
+        Returns metadata for weather stations in the DTN network. Supports filtering by
+        geographic bounding box or radius from a point.
+      tags:
+        - Stations
+      parameters:
+        - name: locatedWithin
+          in: query
+          description: Geographic bounding box (minLon,minLat,maxLon,maxLat)
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 500
+      responses:
+        '200':
+          description: List of weather stations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationList'
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 Client Credentials for DTN Weather APIs
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.weather.mg/oauth/token
+          scopes:
+            weather:read: Access weather data
+  schemas:
+    CurrentConditionsResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+          enum: [US, SI]
+        location:
+          $ref: '#/components/schemas/Location'
+        observations:
+          $ref: '#/components/schemas/WeatherObservation'
+    HourlyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/HourlyForecastPoint'
+    DailyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecastPoint'
+    ObservationsResponse:
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            type: object
+            properties:
+              stationId:
+                type: string
+              location:
+                $ref: '#/components/schemas/Location'
+              observations:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimedObservation'
+    PrecipitationForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            type: object
+            properties:
+              validAt:
+                type: string
+                format: date-time
+              precipitationAmountInMillimeter:
+                type: number
+              precipitationTypeCode:
+                type: integer
+                description: 0=none, 1=rain, 2=snow, 3=sleet, 4=freezing rain
+    StationList:
+      type: object
+      properties:
+        total:
+          type: integer
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+    Station:
+      type: object
+      properties:
+        stationId:
+          type: string
+          description: Station identifier (e.g., KMSP, WMO 72658)
+        stationName:
+          type: string
+        country:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        stationType:
+          type: string
+          enum: [SYNOP, METAR, BUOY, SHIP, AGRICULTURAL]
+    WeatherObservation:
+      type: object
+      properties:
+        observedAt:
+          type: string
+          format: date-time
+        airTemperatureInCelsius:
+          type: number
+        feelsLikeTemperatureInCelsius:
+          type: number
+        dewPointInCelsius:
+          type: number
+        relativeHumidityInPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+        windSpeedInMeterPerSecond:
+          type: number
+          minimum: 0
+        windDirectionInDegree:
+          type: number
+          minimum: 0
+          maximum: 360
+        windGustInMeterPerSecond:
+          type: number
+        visibilityInMeter:
+          type: number
+        pressureInHectopascal:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        weatherSymbol:
+          type: integer
+          description: WMO weather symbol code
+        cloudCoverInPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+    TimedObservation:
+      allOf:
+        - $ref: '#/components/schemas/WeatherObservation'
+    HourlyForecastPoint:
+      type: object
+      properties:
+        validAt:
+          type: string
+          format: date-time
+        airTemperatureInCelsius:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        precipitationProbabilityInPercent:
+          type: number
+        windSpeedInMeterPerSecond:
+          type: number
+        windDirectionInDegree:
+          type: number
+        windGustInMeterPerSecond:
+          type: number
+        relativeHumidityInPercent:
+          type: number
+        weatherSymbol:
+          type: integer
+    DailyForecastPoint:
+      type: object
+      properties:
+        validOn:
+          type: string
+          format: date
+        maxAirTemperatureInCelsius:
+          type: number
+        minAirTemperatureInCelsius:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        precipitationProbabilityInPercent:
+          type: number
+        weatherSymbol:
+          type: integer
+        windSpeedInMeterPerSecond:
+          type: number
+        windDirectionInDegree:
+          type: number
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
