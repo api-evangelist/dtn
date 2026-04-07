@@ -1,31 +1,25 @@
 aid: dtn
-url: 
-  https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/apis.yml
 apis:
   - aid: dtn:dtn-weather-conditions-api
     name: DTN Weather Conditions API
     tags:
       - Agriculture
-      - Weather
-      - Forecast
       - Climate
+      - Forecast
       - REST
-    image: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
-    humanURL: 
-      https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+      - Weather
+    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+    humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
     baseURL: https://weather.api.dtn.com/conditions
     properties:
-      - url: 
-          https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+      - url: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
         type: Documentation
-      - url: 
-          https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+      - url: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
         type: Reference
       - url: https://devportal.dtn.com/
         type: Portal
-      - url: 
-          https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
+      - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
         type: OpenAPI
     description: >-
       DTN Weather Conditions API delivers worldwide forecast, current condition, and
@@ -37,12 +31,11 @@ apis:
   - aid: dtn:dtn-point-observation-api
     name: DTN Point Observation API
     tags:
-      - Weather
-      - Observations
       - Agriculture
       - Historical Data
-    image: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+      - Observations
+      - Weather
+    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
     humanURL: https://api.weather.mg/api-detail-pages/observation-parameter.html
     baseURL: https://point-observation.weather.mg
     properties:
@@ -59,12 +52,11 @@ apis:
   - aid: dtn:dtn-point-forecast-api
     name: DTN Point Forecast API
     tags:
-      - Weather
-      - Forecast
       - Agriculture
       - Aviation
-    image: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+      - Forecast
+      - Weather
+    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
     humanURL: https://api.weather.mg/api-detail-pages/forecast-parameter.html
     baseURL: https://point-forecast.weather.mg
     properties:
@@ -80,12 +72,11 @@ apis:
   - aid: dtn:dtn-radar-precipitation-forecast-api
     name: DTN Radar Precipitation Forecast API
     tags:
-      - Weather
       - Precipitation
       - Radar
-      - Short-term Forecast
-    image: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+      - Short-Term Forecast
+      - Weather
+    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
     humanURL: https://api.weather.mg/
     baseURL: https://precipitation-forecast.weather.mg
     properties:
@@ -101,11 +92,10 @@ apis:
     tags:
       - Agriculture
       - Commodity Prices
-      - Market Data
       - Grain
       - Livestock
-    image: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+      - Market Data
+    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
     humanURL: https://www.dtn.com/resources/api-data-integrations/
     baseURL: https://api.dtn.com
     properties:
@@ -118,14 +108,11 @@ apis:
 common:
   - url: https://www.dtn.com/
     type: Website
-  - url: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
+  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
     type: OpenAPI
-  - url: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-schema/dtn-weather-observation-schema.json
+  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-schema/dtn-weather-observation-schema.json
     type: JSONSchema
-  - url: 
-      https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-ld/dtn-context.jsonld
+  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-ld/dtn-context.jsonld
     type: JSONLDContext
   - url: https://devportal.dtn.com/
     type: Portal
@@ -135,8 +122,7 @@ common:
     type: Reference
   - url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
     type: TermsOfService
-  - url: 
-      https://www.dtn.com/wp-content/uploads/2020/04/DTN-External-Privacy-Statement.pdf
+  - url: https://www.dtn.com/wp-content/uploads/2020/04/DTN-External-Privacy-Statement.pdf
     type: PrivacyPolicy
   - url: https://www.dtn.com/weather/
     type: GettingStarted
