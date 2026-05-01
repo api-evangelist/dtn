@@ -1,10 +1,12 @@
-# Unknown (dtn)
+# DTN (dtn)
+
+DTN is a global provider of operational intelligence delivering weather, agriculture, energy, and commodity data services. This repository captures the APIs, developer tools, and machine-readable API artifacts for DTN.
 
 **URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/apis.yml)
 
 ## Timestamps
 
-- **Modified:** 2026-03-18 
+- **Modified:** 2026-04-28
 
 ## APIs
 
@@ -13,10 +15,9 @@ DTN Weather Conditions API delivers worldwide forecast, current condition, and h
 
 **Human URL:** [https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation](https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation)
 
-
 #### Tags:
 
- - Agriculture, Weather, Forecast, Climate, REST
+ - Agriculture, Climate, Forecast, REST, Weather
 
 #### Properties
 
@@ -30,10 +31,9 @@ DTN Point Observation API delivers high-quality weather observation data from we
 
 **Human URL:** [https://api.weather.mg/api-detail-pages/observation-parameter.html](https://api.weather.mg/api-detail-pages/observation-parameter.html)
 
-
 #### Tags:
 
- - Weather, Observations, Agriculture, Historical Data
+ - Agriculture, Historical Data, Observations, Weather
 
 #### Properties
 
@@ -45,10 +45,9 @@ DTN Point Forecast API delivers high-quality weather forecasts for specified loc
 
 **Human URL:** [https://api.weather.mg/api-detail-pages/forecast-parameter.html](https://api.weather.mg/api-detail-pages/forecast-parameter.html)
 
-
 #### Tags:
 
- - Weather, Forecast, Agriculture, Aviation
+ - Agriculture, Aviation, Forecast, Weather
 
 #### Properties
 
@@ -60,10 +59,9 @@ DTN Radar Precipitation Forecast API provides short-term precipitation forecasts
 
 **Human URL:** [https://api.weather.mg/](https://api.weather.mg/)
 
-
 #### Tags:
 
- - Weather, Precipitation, Radar, Short-term Forecast
+ - Precipitation, Radar, Short-Term Forecast, Weather
 
 #### Properties
 
@@ -74,10 +72,9 @@ DTN provides real-time and historical commodity price data, grain and livestock 
 
 **Human URL:** [https://www.dtn.com/resources/api-data-integrations/](https://www.dtn.com/resources/api-data-integrations/)
 
-
 #### Tags:
 
- - Agriculture, Commodity Prices, Market Data, Grain, Livestock
+ - Agriculture, Commodity Prices, Grain, Livestock, Market Data
 
 #### Properties
 
@@ -97,5 +94,7 @@ DTN provides real-time and historical commodity price data, grain and livestock 
 - [GettingStarted](https://www.dtn.com/weather/)
 
 ## Maintainers
+
+**FN:** Kin Lane
 
 **Email:** kin@apievangelist.com
