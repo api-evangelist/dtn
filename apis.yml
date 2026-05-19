@@ -106,6 +106,8 @@ apis:
       prices, planting condition indices, and market analysis APIs for precision agriculture
       and commodity trading workflows.
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/dtnllc
   - url: https://www.dtn.com/
     type: Website
   - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
