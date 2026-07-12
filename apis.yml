@@ -106,6 +106,8 @@ apis:
       prices, planting condition indices, and market analysis APIs for precision agriculture
       and commodity trading workflows.
 common:
+  - type: DomainSecurity
+    url: security/dtn-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/dtnllc
   - url: https://www.dtn.com/
@@ -128,6 +130,8 @@ common:
     type: PrivacyPolicy
   - url: https://www.dtn.com/weather/
     type: GettingStarted
+  - url: https://www.dtn.com/feed/
+    type: Blog
 maintainers:
   - name: Kin Lane
     email: kin@apievangelist.com
