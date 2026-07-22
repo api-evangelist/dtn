@@ -1,0 +1,18 @@
+generated: '2026-07-22'
+method: generated
+notes: >-
+  Generated Agent Skills grounded in real operationIds from DTN's published
+  OpenAPI specs (no provider-published skills or AGENTS.md found).
+skills:
+  - file: dtn-current-and-forecast-weather.md
+    name: Get current conditions and forecast weather from DTN
+    api: openapi/dtn-weather-conditions-api-openapi.json
+    operations: [weatherConditions, weatherParameters, weatherCodes]
+  - file: dtn-historical-station-observations.md
+    name: Pull historical station observations from DTN
+    api: openapi/dtn-observation-api-openapi.json
+    operations: [get_stations_v2_observations_stations_get, get_parameters_v2_observations_parameters_get, get_observations_v2_observations_get]
+  - file: dtn-market-data-quotes-and-history.md
+    name: Query commodity quotes and price history from DTN Market Data
+    api: openapi/dtn-financial-market-data-openapi.json
+    operations: [symbolSearch, getMarketHours, getQuoteSnap, getDailyHistory, getMinuteHistory, getForwardCurve]

@@ -1,0 +1,252 @@
+generated: '2026-07-22'
+method: derived
+source: openapi/ (weather conditions, observation, tropical cyclone, marine weather, market data specs)
+notes: 'Entity-relationship graph derived from schema $ref links in DTN''s published OpenAPI specs. Core domains: weather
+  conditions/forecast, station observations, tropical cyclones, marine weather, and Prophet X market data.'
+entities:
+- ArchiveCounts
+- ArchiveParameter
+- BarHistoricPrice
+- BatchRequest
+- ConditionsResponse
+- DailyHistory
+- Error
+- ForwardCurve
+- GatewayTimeoutError
+- Greeks
+- HTTPValidationError
+- HoursDate
+- HoursSession
+- HoursSymbol
+- MarineConditions
+- MarketDepth
+- MarketDepthQuote
+- Meta
+- MinuteHistory
+- NullablePrice
+- ObsDataRespModel
+- Observation
+- ObservationProperties
+- ObservationsFeature
+- ObservationsGeometry
+- ObservationsProperties
+- OptionSeries
+- OptionStrike
+- ParameterDescriptorSchema
+- ParametersListResp
+- ParametersResponse
+- ParametersResponseWithAggregation
+- PlotResponse
+- Price
+- Quote
+- RouteRequests
+- StationsFeature
+- StationsGeometry
+- StationsProperties
+- StnDataRespModel
+- StormMetadata
+- Symbol
+- SymbolSearchSymbol
+- TickHistoricPrice
+- TickHistory
+- TimedValue
+- TropicalFeature
+- TropicalFeatureCollection
+- TropicalGeometry
+- TropicalResponse
+- UnauthorizedError
+- ValidationError
+- WavePartitionsRequests
+- WeatherCodeResponse
+- general-error
+relationships:
+- from: ArchiveParameter
+  to: ArchiveCounts
+  kind: has_one
+  via: parameter
+  source: openapi/dtn-observation-api-openapi.json
+- from: ObsDataRespModel
+  to: ObservationsFeature
+  kind: has_many
+  via: features
+  source: openapi/dtn-observation-api-openapi.json
+- from: Observation
+  to: ObservationProperties
+  kind: has_one
+  via: parameterProperties
+  source: openapi/dtn-observation-api-openapi.json
+- from: StnDataRespModel
+  to: StationsFeature
+  kind: has_many
+  via: features
+  source: openapi/dtn-observation-api-openapi.json
+- from: ObservationsFeature
+  to: ObservationsGeometry
+  kind: has_one
+  via: geometry
+  source: openapi/dtn-observation-api-openapi.json
+- from: ObservationsFeature
+  to: ObservationsProperties
+  kind: has_one
+  via: properties
+  source: openapi/dtn-observation-api-openapi.json
+- from: ObservationsProperties
+  to: Observation
+  kind: has_one
+  via: timestamp
+  source: openapi/dtn-observation-api-openapi.json
+- from: StationsFeature
+  to: StationsGeometry
+  kind: has_one
+  via: geometry
+  source: openapi/dtn-observation-api-openapi.json
+- from: StationsFeature
+  to: StationsProperties
+  kind: has_one
+  via: properties
+  source: openapi/dtn-observation-api-openapi.json
+- from: StationsProperties
+  to: ArchiveParameter
+  kind: has_one
+  via: archiveCounts
+  source: openapi/dtn-observation-api-openapi.json
+- from: HTTPValidationError
+  to: ValidationError
+  kind: has_many
+  via: detail
+  source: openapi/dtn-tropical-api-openapi.json
+- from: TropicalFeature
+  to: TropicalGeometry
+  kind: has_one
+  via: geometry
+  source: openapi/dtn-tropical-api-openapi.json
+- from: TropicalFeatureCollection
+  to: TropicalFeature
+  kind: has_many
+  via: features
+  source: openapi/dtn-tropical-api-openapi.json
+- from: TropicalFeatureCollection
+  to: StormMetadata
+  kind: has_one
+  via: metadata
+  source: openapi/dtn-tropical-api-openapi.json
+- from: TropicalResponse
+  to: TropicalFeatureCollection
+  kind: has_many
+  via: data
+  source: openapi/dtn-tropical-api-openapi.json
+- from: MarketDepth
+  to: MarketDepthQuote
+  kind: has_many
+  via: askLevels
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: MarketDepth
+  to: MarketDepthQuote
+  kind: has_many
+  via: bidLevels
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: MarketDepthQuote
+  to: Price
+  kind: has_one
+  via: value
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: Quote
+  to: Greeks
+  kind: has_one
+  via: greeks
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: Quote
+  to: MarketDepth
+  kind: has_one
+  via: marketDepth
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: Quote
+  to: Symbol
+  kind: has_one
+  via: symbol
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: Greeks
+  to: Price
+  kind: has_one
+  via: underlyingPrice
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: DailyHistory
+  to: BarHistoricPrice
+  kind: has_many
+  via: historicPrices
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: MinuteHistory
+  to: BarHistoricPrice
+  kind: has_many
+  via: historicPrices
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: TickHistory
+  to: TickHistoricPrice
+  kind: has_many
+  via: historicPrices
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: ForwardCurve
+  to: BarHistoricPrice
+  kind: has_one
+  via: dailyPriceBar
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: BarHistoricPrice
+  to: NullablePrice
+  kind: has_one
+  via: open
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: BarHistoricPrice
+  to: NullablePrice
+  kind: has_one
+  via: close
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: BarHistoricPrice
+  to: NullablePrice
+  kind: has_one
+  via: low
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: BarHistoricPrice
+  to: NullablePrice
+  kind: has_one
+  via: high
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: TickHistoricPrice
+  to: NullablePrice
+  kind: has_one
+  via: price
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: OptionSeries
+  to: Quote
+  kind: has_one
+  via: underlying
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: OptionSeries
+  to: OptionStrike
+  kind: has_many
+  via: strikeList
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: OptionStrike
+  to: Quote
+  kind: has_one
+  via: call
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: OptionStrike
+  to: Quote
+  kind: has_one
+  via: put
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: HoursSymbol
+  to: Symbol
+  kind: has_one
+  via: symbol
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: HoursSymbol
+  to: HoursDate
+  kind: has_many
+  via: days
+  source: openapi/dtn-financial-market-data-openapi.json
+- from: HoursDate
+  to: HoursSession
+  kind: has_many
+  via: sessions
+  source: openapi/dtn-financial-market-data-openapi.json

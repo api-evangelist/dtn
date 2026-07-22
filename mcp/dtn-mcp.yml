@@ -1,0 +1,761 @@
+generated: '2026-07-22'
+method: derived
+status: candidate
+source: openapi/ (DTN developer portal specs)
+notes: No official DTN MCP server found (searched MCP registries, npm, DTN docs). Candidate tool list derived one tool per operation from DTN's
+  published OpenAPI specs.
+server:
+  name: dtn
+  transport: http
+tools:
+- name: get_v1_stream
+  description: Stream
+  source_operation: openapi/dtn-agency-bulletin-websocket-api-openapi.json#get_v1_stream
+- name: get_bulletins_v2_bulletins_get
+  description: Bulletins
+  source_operation: openapi/dtn-agency-bulletin-api-openapi.json#get_bulletins_v2_bulletins_get
+- name: get_metadata_v2_metadata_get
+  description: Metadata
+  source_operation: openapi/dtn-agency-bulletin-api-openapi.json#get_metadata_v2_metadata_get
+- name: get_metadata_dtn_v2_metadata_dtn_get
+  description: Metadata/dtn
+  source_operation: openapi/dtn-agency-bulletin-api-openapi.json#get_metadata_dtn_v2_metadata_dtn_get
+- name: get_alerts_v2_alerts_get
+  description: Get Alerts
+  source_operation: openapi/dtn-alerting-api-openapi.json#get_alerts_v2_alerts_get
+- name: sunMoon
+  description: Sun and Moon
+  source_operation: openapi/dtn-astronomical-api-openapi.json#sunMoon
+- name: get_
+  description: null
+  source_operation: openapi/dtn-climatology-api-openapi.json#get /
+- name: dailyClimatology
+  description: Daily Climatology
+  source_operation: openapi/dtn-climatology-api-openapi.json#dailyClimatology
+- name: parameters
+  description: Parameters
+  source_operation: openapi/dtn-climatology-api-openapi.json#parameters
+- name: get_v1_apis
+  description: Get all APIs on the system
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#get /v1/apis
+- name: get_v1_apis_slug
+  description: Get an API
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#get /v1/apis/{slug}
+- name: get_v1_apis_slug_spec_version
+  description: Get API spec
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#get /v1/apis/{slug}/spec/{version}
+- name: get_v1_apis_slug_changelog_version
+  description: Get API changelog
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#get /v1/apis/{slug}/changelog/{version}
+- name: patch_v1_apis_slug_versions_id
+  description: Patch an API specs version
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#patch /v1/apis/{slug}/versions/{id}
+- name: healthCheck
+  description: Health Check
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#healthCheck
+- name: liveness
+  description: Kubernetes will use this endpoint to monitor service's health.
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#liveness
+- name: readiness
+  description: Kubernetes will use this endpoint to monitor service's readiness.
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#readiness
+- name: healthCheck
+  description: Check the health status of the API
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#healthCheck
+- name: getEeiThreshold
+  description: Retrieve EEI Thresholds for an Account
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getEeiThreshold
+- name: getEeiSchedule
+  description: Retrieve EEI Forecast Schedule for an Account
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getEeiSchedule
+- name: getRegions
+  description: Retrieve Regions for EEI Account
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getRegions
+- name: getEEIData1
+  description: Retrieve EEI forecast data for client's regions
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getEEIData1
+- name: getEEIData2
+  description: Retrieve specific EEI forecast parameter data for Iberdrola USA regions
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getEEIData2
+- name: get_v1_turbulence
+  description: Get active Turbulence
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/turbulence/
+- name: get_v1_nowcast
+  description: Get active Nowcast
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/nowcast/
+- name: get_v1_icing
+  description: Get active Icing
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/icing/
+- name: get_v1_hiwc
+  description: Get active Hiwc
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/hiwc/
+- name: get_v1_thunderstorms
+  description: Get active Thunderstorms
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/thunderstorms/
+- name: get_v1_ozone
+  description: Get active Ozone
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/ozone/
+- name: get_v1_jetStreamAxis
+  description: Get active JetStreamAxis data
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/jetStreamAxis/
+- name: get_v1_swpc-noaa-scales_data
+  description: Get parsed SWPC data
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/swpc-noaa-scales/data
+- name: get_v1_swpc-noaa-scales_raw
+  description: Get raw SWPC data
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/swpc-noaa-scales/raw
+- name: get_v1_swpc-noaa-scales_explanation
+  description: Get SWPC reference information
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/swpc-noaa-scales/explanation
+- name: get_v1_ashcloudQvas
+  description: Get ash cloud QVA polygons
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/ashcloudQvas/
+- name: get_v1_deterministicQvas
+  description: Get deterministic QVA polygons
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/deterministicQvas/
+- name: get_v1_probabilisticQvas
+  description: Get probabilistic QVA polygons
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/probabilisticQvas/
+- name: get_v1_activeVolcanoQvas
+  description: Get active volcanoes with QVA data
+  source_operation: openapi/dtn-enhanced-flight-hazards-api-openapi.json#get /v1/activeVolcanoQvas/
+- name: get_v1_strikes
+  description: Get Lightning Strikes
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/strikes
+- name: get_v1_archive
+  description: Create a Request for Fetching Historical Lightning Strikes
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/archive
+- name: get_v1_archive_bulkResult
+  description: Get Historical Lightning Strikes in Bulk
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/archive/bulkResult
+- name: get_v1_parameters
+  description: Get Parameters
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/parameters
+- name: get_v1_health-check
+  description: Get Health Check Report
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/health-check
+- name: get_v1
+  description: Stream
+  source_operation: openapi/dtn-lightning-websocket-openapi.json#get /v1/
+- name: get_v1_metars
+  description: Get active METARs
+  source_operation: openapi/dtn-metars-api-openapi.json#get /v1/metars/
+- name: getCatalog
+  description: Returns the layers and groupings that the provided token is provisioned for.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getCatalog
+- name: getCatalogId
+  description: Returns a list of groups and layers identified by a catalogId
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getCatalogId
+- name: getMetadata
+  description: Returns metadata of a given layer by id.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getMetadata
+- name: getLayerLegend
+  description: Returns legend of a given layer by id.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerLegend
+- name: getLayerStyles
+  description: Returns styles of a given layer by id.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerStyles
+- name: getLayerTile
+  description: Returns a tile from a layer at a specific time.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTile
+- name: getLayerTileWithExtension
+  description: Returns a tile from a layer at a specific time, specifying extension.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTileWithExtension
+- name: getLayerTimestamps
+  description: Returns list of timestamps of a given layer by id.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTimestamps
+- name: getLayerTooltip
+  description: Returns the tooltip of a layer at a specific time given by its id, zoom level, latitude and longitude.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTooltip
+- name: getLayerTooltipTemplate
+  description: Returns tooltip template of a given layer by id.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTooltipTemplate
+- name: getGeographicCoordinates
+  description: Returns geographic coordinates of the provided search text.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getGeographicCoordinates
+- name: getGeographicFeature
+  description: Returns descriptive location information for the provided latitude/longitude.
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getGeographicFeature
+- name: getImage
+  description: Returns static image with or without basemap
+  source_operation: openapi/dtn-map-tile-api-openapi.json#getImage
+- name: postImage
+  description: Returns static image
+  source_operation: openapi/dtn-map-tile-api-openapi.json#postImage
+- name: get_
+  description: null
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#get /
+- name: marineConditions
+  description: Marine Conditions
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#marineConditions
+- name: marineRoute
+  description: Marine Route
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#marineRoute
+- name: wavePartitions
+  description: Wave Partitions
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#wavePartitions
+- name: marineParameters
+  description: Marine Parameters
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#marineParameters
+- name: marineSpectra
+  description: Marine Spectra
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#marineSpectra
+- name: get_v1_conditions_marine_spectra-plot
+  description: Marine Spectra Plot
+  source_operation: openapi/dtn-marine-weather-api-openapi.json#get /v1/conditions/marine/spectra-plot
+- name: getQuoteSnap
+  description: Get latest information for symbols
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getQuoteSnap
+- name: getOptionGreeks
+  description: Get futures options greek values
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getOptionGreeks
+- name: getMarketScans
+  description: Get equity scans
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getMarketScans
+- name: getDailyHistory
+  description: Get daily history
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getDailyHistory
+- name: getMinuteHistory
+  description: Get minute history
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getMinuteHistory
+- name: getTickHistory
+  description: Get tick history
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getTickHistory
+- name: getForwardCurve
+  description: Get futures root daily history
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getForwardCurve
+- name: symbolSearch
+  description: Keyword symbol search
+  source_operation: openapi/dtn-financial-market-data-openapi.json#symbolSearch
+- name: getOptionSeries
+  description: Get a list of futures option prices
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getOptionSeries
+- name: getMarketHours
+  description: Get market hours
+  source_operation: openapi/dtn-financial-market-data-openapi.json#getMarketHours
+- name: get_v1_notams
+  description: Get NOTAMs for a Station
+  source_operation: openapi/dtn-notams-api-openapi.json#get /v1/notams/
+- name: get_observations_v2_observations_get
+  description: Observations
+  source_operation: openapi/dtn-observation-api-openapi.json#get_observations_v2_observations_get
+- name: get_stations_v2_observations_stations_get
+  description: Stations
+  source_operation: openapi/dtn-observation-api-openapi.json#get_stations_v2_observations_stations_get
+- name: get_parameters_v2_observations_parameters_get
+  description: Parameters
+  source_operation: openapi/dtn-observation-api-openapi.json#get_parameters_v2_observations_parameters_get
+- name: get_v1_pireps
+  description: Get active PIREPs
+  source_operation: openapi/dtn-pireps-api-openapi.json#get /v1/pireps/
+- name: getParametersV2
+  description: Get Parameters
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getParametersV2
+- name: getPavementConditionsV2
+  description: Get Pavement Conditions
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getPavementConditionsV2
+- name: getConditionsByRoute
+  description: Get Pavement Conditions by Route
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getConditionsByRoute
+- name: getLogisticsV2
+  description: Get Logistics Data
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getLogisticsV2
+- name: getLogisticsByRoute
+  description: Get Logistics Data by Route
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getLogisticsByRoute
+- name: getDirections
+  description: Get Route Directions
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getDirections
+- name: healthCheck
+  description: Health Check
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#healthCheck
+- name: get_
+  description: null
+  source_operation: openapi/dtn-precipitation-api-openapi.json#get /
+- name: precip
+  description: Precipitation
+  source_operation: openapi/dtn-precipitation-api-openapi.json#precip
+- name: precipParameters
+  description: Parameters
+  source_operation: openapi/dtn-precipitation-api-openapi.json#precipParameters
+- name: get_
+  description: null
+  source_operation: openapi/dtn-probabilistic-api-openapi.json#get /
+- name: probabilisticForecast
+  description: Probabilistic Weather Forecast
+  source_operation: openapi/dtn-probabilistic-api-openapi.json#probabilisticForecast
+- name: parameters
+  description: Parameters
+  source_operation: openapi/dtn-probabilistic-api-openapi.json#parameters
+- name: GetDailyPADDs
+  description: Daily summaries of transactional refined products volumes for rack loadings at the PADD.
+  source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetDailyPADDs
+- name: GetRacksDaily
+  description: Daily summaries of transactional refined products volumes and spot price at the rack city level.
+  source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetRacksDaily
+- name: GetSupplierTerminalCountsMontly
+  description: Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored
+    rack.
+  source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetSupplierTerminalCountsMontly
+- name: GetDailyCoverages
+  description: Daily coverage factors for transactional refined product volumes at PADD or United States level.
+  source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetDailyCoverages
+- name: get_
+  description: null
+  source_operation: openapi/dtn-renewables-api-openapi.json#get /
+- name: hubHeightWindsForecast
+  description: Hub Height Winds Forecast
+  source_operation: openapi/dtn-renewables-api-openapi.json#hubHeightWindsForecast
+- name: solarIrradianceForecast
+  description: Solar Irradiance Forecast
+  source_operation: openapi/dtn-renewables-api-openapi.json#solarIrradianceForecast
+- name: parameters
+  description: Parameters
+  source_operation: openapi/dtn-renewables-api-openapi.json#parameters
+- name: get_v1_sigmets
+  description: Get active SIGMETs
+  source_operation: openapi/dtn-sigmets-airmets-openapi.json#get /v1/sigmets/
+- name: get_v1_possibleFirNames
+  description: Get possible SIGMET FIR names that might be represented in data response
+  source_operation: openapi/dtn-sigmets-airmets-openapi.json#get /v1/possibleFirNames/
+- name: get_v1_convectiveSigmets
+  description: Get active Convective SIGMETs
+  source_operation: openapi/dtn-sigmets-airmets-openapi.json#get /v1/convectiveSigmets/
+- name: get_v1_sierraAirmets
+  description: Get active Sierra (IFR) AIRMETs
+  source_operation: openapi/dtn-sigmets-airmets-openapi.json#get /v1/sierraAirmets/
+- name: get_v1_tangoAirmets
+  description: Get active Tango (Turbulence) AIRMETs
+  source_operation: openapi/dtn-sigmets-airmets-openapi.json#get /v1/tangoAirmets/
+- name: get_v1_zuluAirmets
+  description: Get active Zulu (Icing) AIRMETs
+  source_operation: openapi/dtn-sigmets-airmets-openapi.json#get /v1/zuluAirmets/
+- name: get_v1_subscriptions
+  description: Gets the list of vessel subscriptions.
+  source_operation: openapi/dtn-shipping-api-openapi.json#get /v1/subscriptions
+- name: post_v1_subscriptions
+  description: Add bulk vessel subscriptions.
+  source_operation: openapi/dtn-shipping-api-openapi.json#post /v1/subscriptions
+- name: delete_v1_subscriptions_imo
+  description: Delete vessel subscription.
+  source_operation: openapi/dtn-shipping-api-openapi.json#delete /v1/subscriptions/{imo}
+- name: post_oauth_token
+  description: Get a token
+  source_operation: openapi/dtn-shipping-api-openapi.json#post /oauth/token
+- name: get_
+  description: null
+  source_operation: openapi/dtn-soil-api-openapi.json#get /
+- name: soilConditions
+  description: Soil Conditions
+  source_operation: openapi/dtn-soil-api-openapi.json#soilConditions
+- name: soilParameters
+  description: Soil Parameters
+  source_operation: openapi/dtn-soil-api-openapi.json#soilParameters
+- name: healthCheck
+  description: Health check endpoint
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#healthCheck
+- name: geoWeatherEvents
+  description: Get all active weather events.
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#geoWeatherEvents
+- name: getHourlyPredictions
+  description: Get hourly predictions for each of your entire service region.
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#getHourlyPredictions
+- name: getServiceAreaGeoJson
+  description: Get the geoJson of the entire service area.
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#getServiceAreaGeoJson
+- name: getEventPredictions
+  description: Get predictions for each of your regions for a specific weather event.
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#getEventPredictions
+- name: getEventGeoJson
+  description: Get predictions and geoJson for each of your regions for a specific weather event.
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#getEventGeoJson
+- name: getSimilarStorms
+  description: Get the historic events that are similar to the passed in event.
+  source_operation: openapi/dtn-storm-impact-analytics-openapi.json#getSimilarStorms
+- name: getNamedRegions
+  description: Get predefined named regions.
+  source_operation: openapi/dtn-storm-risk-analytics-api-openapi.json#getNamedRegions
+- name: getRegionFips
+  description: Get FIPS for counties within redefined region.
+  source_operation: openapi/dtn-storm-risk-analytics-api-openapi.json#getRegionFips
+- name: getStateFips
+  description: Get FIPS for counties within state.
+  source_operation: openapi/dtn-storm-risk-analytics-api-openapi.json#getStateFips
+- name: getPredictions
+  description: Get predictions for FIP(s) or region by date range
+  source_operation: openapi/dtn-storm-risk-analytics-api-openapi.json#getPredictions
+- name: getGeoSummary
+  description: Get summary of predictions and GeoJson for FIP(s) or region by date range
+  source_operation: openapi/dtn-storm-risk-analytics-api-openapi.json#getGeoSummary
+- name: getPolygonPrediction
+  description: Get predictions for counties contained within passed in GeoJson polygon
+  source_operation: openapi/dtn-storm-risk-analytics-api-openapi.json#getPolygonPrediction
+- name: get_v1_tafs
+  description: Get active TAFs
+  source_operation: openapi/dtn-tafs-api-openapi.json#get /v1/tafs/
+- name: active_storms_tracks_and_cones_v1_cyclones_get
+  description: Active Storms Tracks And Cones
+  source_operation: openapi/dtn-tropical-api-openapi.json#active_storms_tracks_and_cones_v1_cyclones_get
+- name: agency_active_storms_tracks_and_cones_v1_agency_cyclones_get
+  description: Agency Active Storms Tracks And Cones
+  source_operation: openapi/dtn-tropical-api-openapi.json#agency_active_storms_tracks_and_cones_v1_agency_cyclones_get
+- name: get_radii_v1_cyclone_radii_get
+  description: Get Radii
+  source_operation: openapi/dtn-tropical-api-openapi.json#get_radii_v1_cyclone_radii_get
+- name: agency_get_radii_v1_agency_cyclone_radii_get
+  description: Agency Get Radii
+  source_operation: openapi/dtn-tropical-api-openapi.json#agency_get_radii_v1_agency_cyclone_radii_get
+- name: get_swaths_v1_cyclone_swaths_get
+  description: Get Swaths
+  source_operation: openapi/dtn-tropical-api-openapi.json#get_swaths_v1_cyclone_swaths_get
+- name: agency_get_swaths_v1_agency_cyclone_swaths_get
+  description: Agency Get Swaths
+  source_operation: openapi/dtn-tropical-api-openapi.json#agency_get_swaths_v1_agency_cyclone_swaths_get
+- name: get_spaghetti_models_v1_cyclone_models_get
+  description: Get Spaghetti Models
+  source_operation: openapi/dtn-tropical-api-openapi.json#get_spaghetti_models_v1_cyclone_models_get
+- name: get_recon_v1_cyclone_recon_get
+  description: Get Recon
+  source_operation: openapi/dtn-tropical-api-openapi.json#get_recon_v1_cyclone_recon_get
+- name: redirect_docs__get
+  description: Redirect Docs
+  source_operation: openapi/dtn-tropical-api-openapi.json#redirect_docs__get
+- name: get_
+  description: null
+  source_operation: openapi/dtn-weather-conditions-api-openapi.json#get /
+- name: weatherConditions
+  description: Weather Conditions
+  source_operation: openapi/dtn-weather-conditions-api-openapi.json#weatherConditions
+- name: weatherParameters
+  description: Weather Parameters
+  source_operation: openapi/dtn-weather-conditions-api-openapi.json#weatherParameters
+- name: weatherCodes
+  description: Weather Codes
+  source_operation: openapi/dtn-weather-conditions-api-openapi.json#weatherCodes
+- name: post_v2_conditions_batch
+  description: Batch Request
+  source_operation: openapi/dtn-weather-conditions-api-openapi.json#post /v2/conditions/batch
+- name: get_v1_health-check
+  description: Health Check
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/health-check/
+- name: get_v1_notams
+  description: Get NOTAMs for a Station
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/notams/
+- name: get_v1_pireps
+  description: Get PIREPs for a Station
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/pireps/
+- name: get_v1_sigmets
+  description: Get active SIGMETs
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/sigmets/
+- name: get_v1_possibleFirNames
+  description: Get all possible SIGMET FIR names that might be represented in data response
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/possibleFirNames/
+- name: get_v1_convectiveSigmets
+  description: Get active Convective SIGMETs
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/convectiveSigmets/
+- name: get_v1_sierraAirmets
+  description: Get active Sierra (IFR) AIRMETs
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/sierraAirmets/
+- name: get_v1_tangoAirmets
+  description: Get active Tango (Turbulence) AIRMETs
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/tangoAirmets/
+- name: get_v1_zuluAirmets
+  description: Get active Zulu (Icing) AIRMETs
+  source_operation: openapi/dtn-websocket-api-openapi.json#get /v1/zuluAirmets/
+- name: get_v1_windsaloft
+  description: Get active Winds Aloft data
+  source_operation: openapi/dtn-windsaloft-api-openapi.json#get /v1/windsaloft/
+- name: health
+  description: Returns Health Status to the caller
+  source_operation: openapi/dtn-digital-commerce-orders-openapi.json#health
+- name: getOrders
+  description: Gets all orders within the provided timeFrame
+  source_operation: openapi/dtn-digital-commerce-orders-openapi.json#getOrders
+- name: updateOrder
+  description: updates an order
+  source_operation: openapi/dtn-digital-commerce-orders-openapi.json#updateOrder
+- name: healthCheck
+  description: Health Check
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#healthCheck
+- name: getSpotOrders
+  description: Get Prompt Orders
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#getSpotOrders
+- name: getForwardOrders
+  description: Get Forward Orders
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#getForwardOrders
+- name: updateOrder
+  description: Update Orders
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#updateOrder
+- name: getPricingRules
+  description: Get Pricing Rules
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#getPricingRules
+- name: putPricingRules
+  description: Creates new & updates existing pricing values
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#putPricingRules
+- name: deletePricingRules
+  description: Delete Pricing Rules
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#deletePricingRules
+- name: setupBuyerAccountsAndUsers
+  description: Create and/or update buyer account(s) and user(s) with specified roles and permissions
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#setupBuyerAccountsAndUsers
+- name: searchProducersByRadius
+  description: Search producers by radius
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchProducersByRadius
+- name: getProducerById
+  description: Get producer details
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getProducerById
+- name: getProducerLand
+  description: Get land linked to a producer
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getProducerLand
+- name: getProducerGrainBins
+  description: Get grain bins for a producer
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getProducerGrainBins
+- name: getProducerConsumer
+  description: Get consumer details for a producer
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getProducerConsumer
+- name: getProducerRelated
+  description: Get related parties for a producer
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getProducerRelated
+- name: searchGrainBinsByPartyIds
+  description: Batch grain bin search by party IDs
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchGrainBinsByPartyIds
+- name: searchProducersByPolygon
+  description: Find producers within a GeoJSON polygon
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchProducersByPolygon
+- name: matchProducer
+  description: Match a producer by name/address/contact
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#matchProducer
+- name: listSegments
+  description: List all segments
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#listSegments
+- name: getSegmentProducers
+  description: Get producers in a segment
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getSegmentProducers
+- name: listPortfolios
+  description: List all portfolios
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#listPortfolios
+- name: getPortfolioProducers
+  description: Get producers in a portfolio
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getPortfolioProducers
+- name: searchLand
+  description: Search land parcels
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchLand
+- name: getLandByIds
+  description: Batch land metadata by IDs
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandByIds
+- name: getLandById
+  description: Get land metadata by ID
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandById
+- name: getLandCropHistory
+  description: Get crop history for a land parcel
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandCropHistory
+- name: getLandProducers
+  description: Get producers linked to a land parcel
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandProducers
+- name: getLandGrainBins
+  description: Get grain bins on a land parcel
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandGrainBins
+- name: getLandSoil
+  description: Get soil types for a land parcel
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandSoil
+- name: getLandSoilIntersection
+  description: Get soil intersection data for a land parcel
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getLandSoilIntersection
+- name: getGeospatialLand
+  description: Get GeoJSON polygon for a land parcel
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getGeospatialLand
+- name: getGeospatialProducer
+  description: Get GeoJSON polygons for a producer's lands
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getGeospatialProducer
+- name: listCrops
+  description: List all crop codes
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#listCrops
+- name: getCropById
+  description: Get a single crop code
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getCropById
+- name: listCounties
+  description: List all US counties
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#listCounties
+- name: listStates
+  description: List all US states
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#listStates
+- name: getCreditStatus
+  description: Get credit balance
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getCreditStatus
+- name: get_singlesite_health.html
+  description: Health check NIDS webservers
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /singlesite/health.html
+- name: get_feeds_text_products_version_healthcheck
+  description: Health check Text Products webservers
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/{text_products_version}/healthcheck
+- name: get_singlesite_site_id_year_month_day_product_code_dirlist.txt
+  description: Retrieves a directory list file
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /singlesite/{site_id}/{year}/{month}/{day}/{product_code}/dirlist.txt
+- name: get_singlesite_site_id_year_month_day_product_code_nids_filename
+  description: Retrieves a NIDS-formatted radar file
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /singlesite/{site_id}/{year}/{month}/{day}/{product_code}/{nids_filename}
+- name: get_site_id_LTG_dirlist.txt
+  description: Retrieves a directory list file
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /{site_id}/LTG/dirlist.txt
+- name: get_site_id_LTG_lightning_filename
+  description: Retrieves a CSV-formatted lightning data file
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /{site_id}/LTG/{lightning_filename}
+- name: get_feeds_v3_lsr
+  description: Get list of current Local Storm Reports
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/lsr
+- name: get_feeds_v3_lsr_id
+  description: Get the raw text of a Local Storm Report
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/lsr/{id}
+- name: get_feeds_v3_lsr_archive_year_month_day
+  description: Get historical Local Storm Reports for a given day
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/lsr/archive/{year}/{month}/{day}
+- name: get_feeds_v3_lsr_archive_year_month_day_hour_minute
+  description: Get historical Local Storm Reports for a given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/lsr/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_discussion
+  description: Get list of current Mesoscale Discussions
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/discussion
+- name: get_feeds_v3_discussion_mesoscale_discussion_id
+  description: Get the raw text of a Mesoscale Discussion
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/discussion/{mesoscale_discussion_id}
+- name: get_feeds_v3_discussion_archive_year_month_day
+  description: Get historical Mesoscale Discussions for a given day
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/discussion/archive/{year}/{month}/{day}
+- name: get_feeds_v3_discussion_archive_year_month_day_hour_minute
+  description: Get historical Mesoscale Discussions for a given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/discussion/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_outlook_dayconvective_outlook_horizon
+  description: Get current Outlooks, Day{1-8}
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/outlook/day{convective_outlook_horizon}
+- name: get_feeds_v3_outlook_dayhorizon_archive_year_month_day_hour_minute
+  description: Get historic Outlooks, Day{1-8}, for a given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/outlook/day{horizon}/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_outlook
+  description: Get current Outlooks, defaulting to Day1
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/outlook
+- name: get_feeds_v3_outlook_convective_outlook_id
+  description: Get raw text of a specific outlook
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/outlook/{convective_outlook_id}
+- name: get_feeds_v3_outlook_archive_year_month_day_hour_minute
+  description: Get historic Outlooks, defaulting to Day1, for a given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/outlook/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_sounding
+  description: List stations with current Soundings
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sounding
+- name: get_feeds_v3_sounding_archive_year_month_day
+  description: List stations with historic Soundings on a given day
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sounding/archive/{year}/{month}/{day}
+- name: get_feeds_v3_sounding_sounding_event_time_sounding_station_id
+  description: Retrieve Sounding for given time and station
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sounding/{sounding_event_time}/{sounding_station_id}
+- name: get_feeds_v3_sounding_raw_sounding_event_time_sounding_station_id_sounding_product_id
+  description: Retrieve specific Sounding product in raw form for given time and station
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sounding/raw/{sounding_event_time}/{sounding_station_id}/{sounding_product_id}
+- name: get_feeds_v3_sps
+  description: List current Special Weather Statements
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sps
+- name: get_feeds_v3_sps_special_weather_statement_id
+  description: Retrieve raw text of Special Weather Statement
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sps/{special_weather_statement_id}
+- name: get_feeds_v3_sps_archive_year_month_day
+  description: List historic Special Weather Statements for a given date
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sps/archive/{year}/{month}/{day}
+- name: get_feeds_v3_sps_archive_year_month_day_hour_minute
+  description: List historic Special Weather Statements for a given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/sps/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_tropical
+  description: List all current tropical events
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical
+- name: get_feeds_v3_tropical_archive_year_month_day
+  description: List all historic tropical events for given date
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/archive/{year}/{month}/{day}
+- name: get_feeds_v3_tropical_archive_year_month_day_hour_minute
+  description: List all historic tropical events for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_tropical_warn
+  description: List all current tropical warning events
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/warn
+- name: get_feeds_v3_tropical_warn_archive_year_month_day
+  description: List all historic tropical warning events for given date
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/warn/archive/{year}/{month}/{day}
+- name: get_feeds_v3_tropical_warn_archive_year_month_day_hour_minute
+  description: List all historic tropical warning events for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/warn/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_tropical_watch
+  description: List all current tropical watch events
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/watch
+- name: get_feeds_v3_tropical_watch_archive_year_month_day
+  description: List all historic tropical watch events for given date
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/watch/archive/{year}/{month}/{day}
+- name: get_feeds_v3_tropical_watch_archive_year_month_day_hour_minute
+  description: List all historic tropical watch events for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/watch/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_tropical_path
+  description: Get raw text for a given tropical event
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/{path}
+- name: get_feeds_v3_tropical_warn_path
+  description: Get raw text for a given tropical warning
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/warn/{path}
+- name: get_feeds_v3_tropical_watch_path
+  description: Get raw text for a given tropical watch
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical/watch/{path}
+- name: get_feeds_v3_tropical_cyclone_advisories
+  description: Get current tropical cyclone advisories
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/advisories
+- name: get_feeds_v3_tropical_cyclone_advisories_archive_year_month_day_hour_minute
+  description: Get historical tropical cyclone advisories for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/advisories/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_tropical_cyclone_advisories_year_storm_code_storm_update_number
+  description: Get raw advisory text for a tropical cyclone
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/advisories/{year}/{storm_code}/{storm_update_number}
+- name: get_feeds_v3_tropical_cyclone_forecasts
+  description: Get current tropical cyclone forecasts
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/forecasts
+- name: get_feeds_v3_tropical_cyclone_forecasts_archive_year_month_day_hour_minute
+  description: Get historical tropical cyclone forecasts for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/forecasts/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_tropical_cyclone_forecasts_year_storm_update
+  description: Get raw forecast text for tropical cyclone
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/forecasts/{year}/{storm}/{update}
+- name: get_feeds_v3_tropical_cyclone_summaries
+  description: Get current tropical cyclone summaries
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/summaries
+- name: get_feeds_v3_tropical_cyclone_summaries_archive_year_month_day_hour_minute
+  description: Get historical tropical cyclone summaries for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/tropical_cyclone/summaries/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_warn
+  description: List current warnings from the Storm Prediction Center
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/warn
+- name: get_feeds_v3_warn_archive_year_month_day
+  description: List historical warnings for given date
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/warn/archive/{year}/{month}/{day}
+- name: get_feeds_v3_warn_archive_year_month_day_hour_minute
+  description: List historical warnings for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/warn/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_warn_path
+  description: Get raw text of warning
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/warn/{path}
+- name: get_feeds_v3_watch
+  description: List current watches from the Storm Prediction Center
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/watch
+- name: get_feeds_v3_watch_archive_year_month_day
+  description: List historical watches for given date
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/watch/archive/{year}/{month}/{day}
+- name: get_feeds_v3_watch_archive_year_month_day_hour_minute
+  description: List historical watches for given timestamp
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/watch/archive/{year}/{month}/{day}/{hour}/{minute}
+- name: get_feeds_v3_watch_path
+  description: Get raw text of watch
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/watch/{path}
+- name: get_feeds_v3_ero
+  description: List current Excessive Rainfall Outlooks, defaulting to Day1
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/ero
+- name: get_feeds_v3_ero_dayero_horizon
+  description: Get current Excessive Rainfall Outlook for given time horizon
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/ero/day{ero_horizon}
+- name: get_feeds_v3_ero_ero_id
+  description: Get raw text of Excessive Rainfall Outlook
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/ero/{ero_id}
+- name: get_feeds_v3_ero_dayero_horizon_year_month_day_hour_minute
+  description: List historic Excessive Rainfall Outlooks for given time horizon on given date and time
+  source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/ero/day{ero_horizon}/{year}/{month}/{day}/{hour}/{minute}

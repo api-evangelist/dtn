@@ -1,0 +1,62 @@
+generated: '2026-07-22'
+method: derived
+source: openapi/dtn-agency-bulletin-api-openapi.json, openapi/dtn-agency-bulletin-websocket-api-openapi.json,
+  openapi/dtn-alerting-api-openapi.json, openapi/dtn-astronomical-api-openapi.json, openapi/dtn-climatology-api-openapi.json,
+  openapi/dtn-developer-portal-api-openapi.json, openapi/dtn-digital-commerce-orders-openapi.json,
+  openapi/dtn-energy-digital-commerce-integrations-api-openapi.json, openapi/dtn-energy-event-index-api-openapi.json,
+  openapi/dtn-enhanced-flight-hazards-api-openapi.json, openapi/dtn-farm-intel-api-openapi.json,
+  openapi/dtn-financial-market-data-openapi.json ...
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: clientCredentials
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+    scopes: 0
+  description: |-
+    # Using DAIS for M2M/API Auth
+    You have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.
+    ## What is an Access Token and how is it different from an API Key?
+    An API Key is a rand
+  sources:
+  - openapi/dtn-agency-bulletin-api-openapi.json
+  - openapi/dtn-agency-bulletin-websocket-api-openapi.json
+  - openapi/dtn-alerting-api-openapi.json
+  - openapi/dtn-astronomical-api-openapi.json
+  - openapi/dtn-climatology-api-openapi.json
+  - openapi/dtn-developer-portal-api-openapi.json
+  - openapi/dtn-digital-commerce-orders-openapi.json
+  - openapi/dtn-energy-digital-commerce-integrations-api-openapi.json
+  - openapi/dtn-energy-event-index-api-openapi.json
+  - openapi/dtn-enhanced-flight-hazards-api-openapi.json
+  - openapi/dtn-farm-intel-api-openapi.json
+  - openapi/dtn-financial-market-data-openapi.json
+  - openapi/dtn-lightning-api-openapi.json
+  - openapi/dtn-lightning-websocket-openapi.json
+  - openapi/dtn-map-tile-api-openapi.json
+  - openapi/dtn-marine-weather-api-openapi.json
+  - openapi/dtn-metars-api-openapi.json
+  - openapi/dtn-notams-api-openapi.json
+  - openapi/dtn-observation-api-openapi.json
+  - openapi/dtn-pavement-conditions-api-openapi.json
+  - openapi/dtn-pireps-api-openapi.json
+  - openapi/dtn-precipitation-api-openapi.json
+  - openapi/dtn-probabilistic-api-openapi.json
+  - openapi/dtn-radarscope-radar-products-openapi.json
+  - openapi/dtn-refined-fuels-demand-openapi.json
+  - openapi/dtn-renewables-api-openapi.json
+  - openapi/dtn-shipping-api-openapi.json
+  - openapi/dtn-sigmets-airmets-openapi.json
+  - openapi/dtn-soil-api-openapi.json
+  - openapi/dtn-storm-impact-analytics-openapi.json
+  - openapi/dtn-storm-risk-analytics-api-openapi.json
+  - openapi/dtn-tafs-api-openapi.json
+  - openapi/dtn-tropical-api-openapi.json
+  - openapi/dtn-weather-conditions-api-openapi.json
+  - openapi/dtn-websocket-api-openapi.json
+  - openapi/dtn-windsaloft-api-openapi.json

@@ -192,7 +192,7 @@ paths:
         - name: observedPeriod
           in: query
           required: true
-          description: Historical date/time range. Format: startISO8601/endISO8601
+          description: 'Historical date/time range. Format: startISO8601/endISO8601'
           schema:
             type: string
         - name: fields

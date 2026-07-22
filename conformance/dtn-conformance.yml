@@ -1,0 +1,53 @@
+generated: '2026-07-22'
+method: derived
+source: openapi/ (36 published DTN Developer Portal specs) + live probes 2026-07-22
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      All 36 published OpenAPI specs declare oauth2 clientCredentials security
+      (tokenUrl https://api.auth.dtn.com/v1/tokens/authorize; legacy weather.mg
+      APIs use https://auth.weather.mg/oauth/token). Bearer tokens on every call.
+  - id: oidc
+    conforms: false
+    evidence: No openIdConnect scheme in any spec; /.well-known/openid-configuration 404 on all hosts.
+  - id: rfc9457-problem-details
+    conforms: true
+    evidence: >-
+      The DTN Developer Portal API returns application/problem+json with
+      type/title/status/detail/instance envelope (observed live 2026-07-22 on
+      dev-portal-api.prd.coreservices.zones.dtn.com). Product API specs mostly
+      document simpler code/message error envelopes.
+  - id: geojson-rfc7946
+    conforms: true
+    evidence: >-
+      27 of 36 specs use GeoJSON request/response shapes (tropical cyclone,
+      lightning, observation, aviation hazard APIs); Tropical Cyclone API release
+      notes explicitly cite RFC 7946 right-hand-rule polygon fixes.
+  - id: iso8601
+    conforms: true
+    evidence: Time filtering across APIs uses ISO 8601 timestamps and start/end interval parameters (validPeriod, observedPeriod, startTime).
+  - id: websocket-rfc6455
+    conforms: true
+    evidence: Agency Bulletin WebSocket API documents an HTTP 101 Switching Protocols upgrade (openapi/dtn-agency-bulletin-websocket-api-openapi.json).
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt 404 on all probed hosts.
+  - id: json-api
+    conforms: false
+    evidence: No JSON:API media types in any spec.
+  - id: odata
+    conforms: false
+    evidence: No OData conventions in any spec.
+  - id: scim
+    conforms: false
+    evidence: No SCIM surface.
+  - id: fapi
+    conforms: false
+    evidence: Not a financial-grade-API deployment; client-credentials only.
+  - id: pagination
+    conforms: true
+    evidence: limit/offset and limit/cursor-style parameters on list endpoints (observation stations, market data history); streaming APIs use time-windowed delivery.
+  - id: idempotency-keys
+    conforms: false
+    evidence: No Idempotency-Key header in any spec; the surface is ~93% read-only GET operations.

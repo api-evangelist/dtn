@@ -1,0 +1,30 @@
+# generated: 2026-07-22 | method: generated | source: openapi/dtn-weather-conditions-api-openapi.json
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for DTN Weather Conditions API
+  version: 1.0.0
+extends: openapi/dtn-weather-conditions-api-openapi.json
+actions:
+  - target: $.info
+    description: Attach API Evangelist catalog identity and artifact cross-links.
+    update:
+      x-apievangelist:
+        aid: dtn:dtn-weather-conditions-api
+        provider: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/apis.yml
+        conventions: conventions/dtn-conventions.yml
+        errors: errors/dtn-problem-types.yml
+        authentication: authentication/dtn-authentication.yml
+        changelog: changelog/dtn-changelog.yml
+  - target: $.info
+    description: Note the discovery route for the machine-readable contract.
+    update:
+      x-discovery:
+        spec-source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/spec/2.2.0
+        portal: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+        postman-collection: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/postman-collection/2.2.0
+  - target: $.servers
+    description: Record the OAuth2 token endpoint alongside the data servers for agent consumption.
+    update:
+      - url: https://weather.api.dtn.com/v2
+        description: DTN Weather Conditions API (production)
+        x-token-endpoint: https://api.auth.dtn.com/v1/tokens/authorize

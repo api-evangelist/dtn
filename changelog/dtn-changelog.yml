@@ -1,0 +1,128 @@
+generated: '2026-07-22'
+method: searched
+source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/<slug>/release-notes/<version>
+scheme: semver (per API; each DTN Developer Portal API publishes its own dated release notes)
+notes: DTN publishes dated release notes per API on devportal.dtn.com (releases tab). 21 of 36 published APIs currently ship release notes. Recent window
+  captured below (up to 3 versions per API).
+entries:
+- api: DTN ABA WebSocket
+  version: 1.0.0
+  date: December 1, 2025
+  breaking: false
+  highlights:
+  - Initial release
+  - ''
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/agency-bulletin-websocket-api/release-notes/1.0.0
+- api: DTN Lightning WebSocket
+  version: 1.0.0
+  date: '2025-05-30'
+  breaking: false
+  highlights:
+  - Initial version (V1)
+  - Added `startTime` input for replay of lightning data
+  - Added `geolocation` search
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-lightning-websocket/release-notes/1.0.0
+- api: DTN Map Tile API
+  version: 2.0.16
+  date: March 30th, 2026
+  breaking: false
+  highlights:
+  - 'Layer enhancements :'
+  - Added more pavement conditions to the Pavement Conditions layer
+  - Reduced timestamp interval of Synthetic Radar - Contour (Global) from 10 minutes to 5 minutes
+  - Moved Total Cloud Cover layer to dynamic contouring approach
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-map-tile-api/release-notes/2.0.16
+- api: DTN Map Tile API
+  version: 2.0.15
+  date: March 16th, 2026
+  breaking: false
+  highlights:
+  - 'New Layer :'
+  - Air Quality Index Observation Layer
+  - 'Layer enhancements :'
+  - Accommodate SPC Outlook CIG changes
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-map-tile-api/release-notes/2.0.16
+- api: DTN Map Tile API
+  version: 2.0.14
+  date: Feb 16th, 2026
+  breaking: false
+  highlights:
+  - 'Layer enhancements :'
+  - Updated NWS weather bulletin alert types
+  - Aesthetic improvement in precipitation probability
+  - 'Security updates :'
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-map-tile-api/release-notes/2.0.16
+- api: DTN Observation API
+  version: 2.3.9
+  date: '2024-05-30'
+  breaking: false
+  highlights:
+  - Added feelsLikeTemp, wbgt and wetBulb as supported parameters
+  - Added model gapFilling support for cloudCover and precipAcc60Min
+  - 'Added hourly aggregated parameters for stations reporting every 10 minutes. Example: stations that report precipAcc10Min and sunshine10Min now automat'
+  - Significant latency improvement on requests for archived obs (more than 45 days old)
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-observation-api/release-notes/2.0.0
+- api: DTN Observation API
+  version: 2.3.8
+  date: '2024-04-02'
+  breaking: true
+  highlights:
+  - WCA API has been upgraded to v2.
+  - Removed `interval` from parameters sent to WCA API v2.
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-observation-api/release-notes/2.0.0
+- api: DTN Observation API
+  version: 2.3.7
+  date: '2023-08-09'
+  breaking: true
+  highlights:
+  - Update changes on documentation swagger by following MWA template.
+  - The API now handles `wild card` search for tags.
+  - Tag filter now strips leading 0 in the IDs or `wild card` searches.
+  - The API now allows for setting the `interval` to `1h` to snap observations to the top of the hour
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-observation-api/release-notes/2.0.0
+- api: DTN Tropical Cyclone API
+  version: 1.0.6
+  date: April 3, 2025
+  breaking: true
+  highlights:
+  - Renamed query parameter `stormNumber` to `stormNum`
+  - ''
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tropical-api/release-notes/1.0.6
+- api: DTN Tropical Cyclone API
+  version: 1.0.5
+  date: April 1, 2025
+  breaking: false
+  highlights:
+  - Radii endpoints will now return the 'CURRENT_RADII', which is the radii for the storms current position.
+  - Bug Fixes
+  - ''
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tropical-api/release-notes/1.0.6
+- api: DTN Tropical Cyclone API
+  version: 1.0.3
+  date: December 16, 2024
+  breaking: true
+  highlights:
+  - 'Response Metadata : Storm metadata will now contain `stormNum` and `stormId`'
+  - ''
+  - For Agency endpoints, BOM is now an allowed storm source agency.
+  - Bug Fixes
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tropical-api/release-notes/1.0.6
+- api: DTN Weather Conditions API
+  version: 2.2.0
+  date: November 4, 2024
+  breaking: false
+  highlights:
+  - 'Base Hub-Height Wind Parameters : Added wind speed, wind direction, and wind gust parameters to the current conditions and historical datasets at vari'
+  - ''
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/release-notes/2.2.0
+- api: DTN Weather Conditions API
+  version: 2.1.0
+  date: October 22, 2024
+  breaking: false
+  highlights:
+  - 'Extended Historical Dataset : The historical dataset has been expanded from 1 year to 10 years, now starting from `2013-01-01T00:00:00Z`, providing
+    mo'
+  - 'New Parameters : Over 10 new parameters have been added to both current conditions and historical datasets, including radiation parameters, enhancing '
+  - 'Performance Enhancements : General performance improvements for faster data retrieval.'
+  - 'Bug Fixes : Several bugs have been resolved to improve overall API stability.'
+  source: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/release-notes/2.2.0

@@ -1,0 +1,36 @@
+generated: '2026-07-22'
+method: searched
+source: https://devportal.dtn.com/ (per-API releases tabs) + https://status.dtn.com/
+versioning:
+  scheme: semver-per-api
+  notes: >-
+    Each API on the DTN Developer Portal is versioned independently (semver), with
+    URI-path major versions on most APIs (e.g. /v1/, /v2/). Current published
+    versions range from 1.0.0 to 2.2.0 (Weather Conditions API). The portal
+    catalog exposes every published spec version per API.
+  docs: https://devportal.dtn.com/
+release_notes:
+  published: true
+  notes: >-
+    21 of 36 published APIs ship dated markdown release notes on the portal
+    (releases tab; served from dev-portal-api /v1/apis/<slug>/release-notes/<version>).
+    Recent window captured in changelog/dtn-changelog.yml.
+status_page: https://status.dtn.com/
+status_page_notes: >-
+  Atlassian Statuspage instance ("DTN Status"); live API at
+  https://status.dtn.com/api/v2/status.json (observed 2026-07-22: All Systems
+  Operational).
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: >-
+    No public deprecation policy or RFC 8594 Sunset-header commitment found on
+    dtn.com or the developer portal. No operations in the 36 published OpenAPI
+    specs are flagged deprecated: true. The legacy MeteoGroup weather.mg hosts
+    (point-observation/point-forecast/precipitation-forecast.weather.mg) coexist
+    with the newer *.api.dtn.com hosts, but no published migration/sunset
+    timeline was found.
+sla:
+  url: null
+  notes: No public SLA page found; service terms live in the DTN subscription agreement.
+deprecated_operations: []

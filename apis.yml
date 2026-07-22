@@ -1,141 +1,857 @@
 aid: dtn
+accessModel:
+  pricing: paid
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Paid
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dtn.png
 url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/apis.yml
 apis:
-  - aid: dtn:dtn-weather-conditions-api
-    name: DTN Weather Conditions API
-    tags:
-      - Agriculture
-      - Climate
-      - Forecast
-      - REST
-      - Weather
-    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
-    humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
-    baseURL: https://weather.api.dtn.com/conditions
-    properties:
-      - url: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
-        type: Documentation
-      - url: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
-        type: Reference
-      - url: https://devportal.dtn.com/
-        type: Portal
-      - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
-        type: OpenAPI
-    description: >-
-      DTN Weather Conditions API delivers worldwide forecast, current condition, and
-      historical weather data. The API leverages cloud technology and global forecast
-      models to provide validated, continuously calibrated weather data. Supports
-      geospatial queries, time-based filtering, and multi-station requests across
-      over 70,000 weather stations worldwide. OpenAPI/Swagger spec, Postman collections,
-      and release notes available via the developer portal.
-  - aid: dtn:dtn-point-observation-api
-    name: DTN Point Observation API
-    tags:
-      - Agriculture
-      - Historical Data
-      - Observations
-      - Weather
-    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
-    humanURL: https://api.weather.mg/api-detail-pages/observation-parameter.html
-    baseURL: https://point-observation.weather.mg
-    properties:
-      - url: https://api.weather.mg/api-detail-pages/observation-parameter.html
-        type: Documentation
-      - url: https://api.weather.mg/
-        type: Portal
-    description: >-
-      DTN Point Observation API delivers high-quality weather observation data from
-      weather stations and locations worldwide. Supports near real-time and up to
-      30 years of historical weather observations. Authentication uses OAuth2 with
-      Client ID and Client Secret. Access tokens obtained via POST to auth.weather.mg/oauth/token,
-      valid for approximately 1 hour, delivered as Bearer tokens.
-  - aid: dtn:dtn-point-forecast-api
-    name: DTN Point Forecast API
-    tags:
-      - Agriculture
-      - Aviation
-      - Forecast
-      - Weather
-    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
-    humanURL: https://api.weather.mg/api-detail-pages/forecast-parameter.html
-    baseURL: https://point-forecast.weather.mg
-    properties:
-      - url: https://api.weather.mg/api-detail-pages/forecast-parameter.html
-        type: Documentation
-      - url: https://api.weather.mg/
-        type: Portal
-    description: >-
-      DTN Point Forecast API delivers high-quality weather forecasts for specified
-      locations. Provides hourly and daily forecast data for agriculture, aviation,
-      shipping, and utilities use cases. Uses the same OAuth2 authentication as the
-      Point Observation API.
-  - aid: dtn:dtn-radar-precipitation-forecast-api
-    name: DTN Radar Precipitation Forecast API
-    tags:
-      - Precipitation
-      - Radar
-      - Short-Term Forecast
-      - Weather
-    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
-    humanURL: https://api.weather.mg/
-    baseURL: https://precipitation-forecast.weather.mg
-    properties:
-      - url: https://api.weather.mg/
-        type: Documentation
-    description: >-
-      DTN Radar Precipitation Forecast API provides short-term precipitation forecasts
-      derived from radar data. Supports agricultural, utility, and renewable energy
-      operational planning. Uses OAuth2 authentication with Client ID and Client Secret
-      credentials.
-  - aid: dtn:dtn-commodity-data-api
-    name: DTN Commodity & Market Data API
-    tags:
-      - Agriculture
-      - Commodity Prices
-      - Grain
-      - Livestock
-      - Market Data
-    image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
-    humanURL: https://www.dtn.com/resources/api-data-integrations/
-    baseURL: https://api.dtn.com
-    properties:
-      - url: https://www.dtn.com/resources/api-data-integrations/
-        type: Documentation
-    description: >-
-      DTN provides real-time and historical commodity price data, grain and livestock
-      prices, planting condition indices, and market analysis APIs for precision agriculture
-      and commodity trading workflows.
-common:
-  - type: DomainSecurity
-    url: security/dtn-domain-security.yml
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/dtnllc
-  - url: https://www.dtn.com/
-    type: Website
-  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-openapi.yml
-    type: OpenAPI
-  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-schema/dtn-weather-observation-schema.json
-    type: JSONSchema
-  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-ld/dtn-context.jsonld
-    type: JSONLDContext
+- aid: dtn:dtn-weather-conditions-api
+  name: DTN Weather Conditions API
+  tags:
+  - Agriculture
+  - Climate
+  - Forecast
+  - REST
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+  baseURL: https://weather.api.dtn.com
+  properties:
+  - url: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+    type: Documentation
+  - url: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
+    type: Reference
   - url: https://devportal.dtn.com/
     type: Portal
-  - url: https://www.dtn.com/resources/api-data-integrations/
+  - url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-api-openapi.json
+    type: OpenAPI
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/postman-collection/2.2.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/release-notes/2.2.0
+  description: DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather
+    data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated
+    weather data. Supports geospatial queries, time-based filtering, and multi-station requests across over 70,000
+    weather stations worldwide. OpenAPI/Swagger spec, Postman collections, and release notes available via the developer
+    portal.
+- aid: dtn:dtn-point-observation-api
+  name: DTN Point Observation API
+  tags:
+  - Agriculture
+  - Historical Data
+  - Observations
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-observation-api/documentation
+  baseURL: https://obs.api.dtn.com
+  properties:
+  - url: https://devportal.dtn.com/catalog/Weather/dtn-observation-api/documentation
     type: Documentation
   - url: https://api.weather.mg/
-    type: Reference
-  - url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
-    type: TermsOfService
-  - url: https://www.dtn.com/wp-content/uploads/2020/04/DTN-External-Privacy-Statement.pdf
-    type: PrivacyPolicy
-  - url: https://www.dtn.com/weather/
-    type: GettingStarted
-  - url: https://www.dtn.com/feed/
-    type: Blog
+    type: Portal
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-observation-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-observation-api/postman-collection/2.0.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-observation-api/release-notes/2.0.0
+  description: DTN Point Observation API delivers high-quality weather observation data from weather stations and
+    locations worldwide. Supports near real-time and up to 30 years of historical weather observations. Authentication
+    uses OAuth2 with Client ID and Client Secret. Access tokens obtained via POST to auth.weather.mg/oauth/token,
+    valid for approximately 1 hour, delivered as Bearer tokens.
+- aid: dtn:dtn-point-forecast-api
+  name: DTN Point Forecast API
+  tags:
+  - Agriculture
+  - Aviation
+  - Forecast
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://api.weather.mg/api-detail-pages/forecast-parameter.html
+  baseURL: https://point-forecast.weather.mg
+  properties:
+  - url: https://api.weather.mg/api-detail-pages/forecast-parameter.html
+    type: Documentation
+  - url: https://api.weather.mg/
+    type: Portal
+  description: DTN Point Forecast API delivers high-quality weather forecasts for specified locations. Provides
+    hourly and daily forecast data for agriculture, aviation, shipping, and utilities use cases. Uses the same OAuth2
+    authentication as the Point Observation API.
+- aid: dtn:dtn-radar-precipitation-forecast-api
+  name: DTN Radar Precipitation Forecast API
+  tags:
+  - Precipitation
+  - Radar
+  - Short-Term Forecast
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-precipitation-api/documentation
+  baseURL: https://precipitation.api.dtn.com
+  properties:
+  - url: https://devportal.dtn.com/catalog/Weather/dtn-precipitation-api/documentation
+    type: Documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-precipitation-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-precipitation-api/postman-collection/1.0.0
+  description: DTN Radar Precipitation Forecast API provides short-term precipitation forecasts derived from radar
+    data. Supports agricultural, utility, and renewable energy operational planning. Uses OAuth2 authentication
+    with Client ID and Client Secret credentials.
+- aid: dtn:dtn-commodity-data-api
+  name: DTN Commodity & Market Data API
+  tags:
+  - Agriculture
+  - Commodity Prices
+  - Grain
+  - Livestock
+  - Market Data
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Other%20APIs/financial-market-data/documentation
+  baseURL: https://pxweb.dtn.com
+  properties:
+  - url: https://devportal.dtn.com/catalog/Other%20APIs/financial-market-data/documentation
+    type: Documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-financial-market-data-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/financial-market-data/postman-collection/1.0.2
+  description: DTN provides real-time and historical commodity price data, grain and livestock prices, planting
+    condition indices, and market analysis APIs for precision agriculture and commodity trading workflows.
+- aid: dtn:agency-bulletin-websocket-api
+  name: DTN ABA WebSocket
+  tags:
+  - Alerts
+  - Real-Time
+  - Streaming
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/WebSocket/agency-bulletin-websocket-api/documentation
+  baseURL: https://weather.api.dtn.com
+  description: The DTN Agency Bulletin WebSocket API  (ABA WebSocket) delivers real-time weather bulletins over
+    a persistent connection for instant updates.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/WebSocket/agency-bulletin-websocket-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-agency-bulletin-websocket-api-openapi.json
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/agency-bulletin-websocket-api/release-notes/1.0.0
+- aid: dtn:dtn-agency-bulletin-api
+  name: DTN Agency Bulletin API
+  tags:
+  - API
+  - Alerts
+  - Data
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-agency-bulletin-api/documentation
+  baseURL: https://weather.api.dtn.com
+  description: The DTN Agency Bulletin API (ABA) provides access to the latest weather bulletins published by the
+    national meteorological agencies of different countries in a unified format.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-agency-bulletin-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-agency-bulletin-api-openapi.json
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-agency-bulletin-api/release-notes/2.0.0
+- aid: dtn:dtn-alerting-api
+  name: DTN Alerting API
+  tags:
+  - API
+  - Alerts
+  - Data
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-alerting-API/documentation
+  baseURL: https://weather.api.dtn.com
+  description: Access the latest global weather bulletins. CAP delivery of the DTN alerts and national agencies
+    bulletins.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-alerting-API/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-alerting-api-openapi.json
+- aid: dtn:dtn-astronomical-api
+  name: DTN Astronomical API
+  tags:
+  - API
+  - Astronomy
+  - Data
+  - Data
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Other%20APIs/dtn-astronomical-api/documentation
+  baseURL: https://astronomical.api.dtn.com
+  description: DTN Astronomical API is an all-in-one solution to get astronomical data. Currently it returns sun
+    and moon data.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Other%20APIs/dtn-astronomical-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-astronomical-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-astronomical-api/postman-collection/2.0.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-astronomical-api/release-notes/2.0.0
+- aid: dtn:dtn-climatology-api
+  name: DTN Climatology API
+  tags:
+  - API
+  - Climate
+  - Data
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-climatology-api/documentation
+  baseURL: https://climatology.api.dtn.com
+  description: This service empowers consumers with accurate, global, location-specific climatological data to help
+    inform decisions, optimize operations, and develop strategies based on historical environmental conditions
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-climatology-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-climatology-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-climatology-api/postman-collection/1.0.0
+- aid: dtn:dtn-developer-portal-api
+  name: DTN Developer Portal API
+  tags:
+  - API
+  - Data
+  - Data
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Other%20APIs/dtn-developer-portal-api/documentation
+  baseURL: https://dev-portal.prd.coreservices.zones.com
+  description: Internal dev-portal API
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Other%20APIs/dtn-developer-portal-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-developer-portal-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-developer-portal-api/postman-collection/1.0.0
+- aid: dtn:dtn-energy-event-index-api
+  name: DTN Energy Event Index API
+  tags:
+  - Energy
+  - Forecast
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-energy-event-index-api/documentation
+  baseURL: https://eei.dtn.com
+  description: API for utility companies to access EEI forecasts that translate weather data into actionable risk
+    levels. Features multi-parameter monitoring, seasonal threshold switching, and customer-specific configurations
+    for energy infrastructure.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-energy-event-index-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-energy-event-index-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-energy-event-index-api/postman-collection/1.0.0
+- aid: dtn:dtn-enhanced-flight-hazards-api
+  name: DTN Enhanced Flight Hazards API
+  tags:
+  - Aviation
+  - Flight Safety
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-enhanced-flight-hazards-api/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: Provides data for EDR turbulence (including Nowcast), icing & HIWC, thunderstorms, ozone, jet stream
+    axis, space weather, and QVA.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-enhanced-flight-hazards-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-enhanced-flight-hazards-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-enhanced-flight-hazards-api/postman-collection/1.10.2
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-enhanced-flight-hazards-api/release-notes/1.10.2
+- aid: dtn:dtn-lightning-api
+  name: DTN Lightning API
+  tags:
+  - API
+  - Data
+  - Lightning
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-lightning-api/documentation
+  baseURL: https://lightning.api.dtn.com
+  description: The DTN Lightning API provides you access to worldwide near real-time and historical lightning data.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-lightning-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-lightning-api-openapi.json
+- aid: dtn:dtn-lightning-websocket
+  name: DTN Lightning WebSocket
+  tags:
+  - Lightning
+  - Real-Time
+  - Streaming
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/WebSocket/dtn-lightning-websocket/documentation
+  baseURL: https://lightning.api.dtn.com
+  description: The Lightning WebSocket delivers real-time lightning data over a persistent connection for instant
+    updates.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/WebSocket/dtn-lightning-websocket/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-lightning-websocket-openapi.json
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-lightning-websocket/release-notes/1.0.0
+- aid: dtn:dtn-metars-api
+  name: DTN METARs API
+  tags:
+  - Aviation
+  - METAR
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-metars-api/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: METARs are a key piece of information required for flight planning and flight operations. DTN METAR
+    API allows customers to get the data critical to them without extra data not needed.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-metars-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-metars-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-metars-api/postman-collection/1.9.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-metars-api/release-notes/1.9.0
+- aid: dtn:dtn-map-tile-api
+  name: DTN Map Tile API
+  tags:
+  - API
+  - Data
+  - Maps
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-map-tile-api/documentation
+  baseURL: https://map.api.dtn.com
+  description: DTN API for various mapping services.. A wide range of vector and raster map layers.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-map-tile-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-map-tile-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-map-tile-api/postman-collection/2.0.16
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-map-tile-api/release-notes/2.0.16
+- aid: dtn:dtn-marine-weather-api
+  name: DTN Marine Weather API
+  tags:
+  - API
+  - Data
+  - Marine
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-marine-weather-api/documentation
+  baseURL: https://weather.api.dtn.com/conditions/marine
+  description: The DTN Marine Weather API (MWA) is an all-in-one solution to integrate the DTN high-resolution marine
+    weather data into your systems and decision making processes. Utilizing the latest cloud technology, we are
+    able to tune our global suite of Metocean forecast models to match your needs. Models and forecast data are
+    continuously validated, calibrated, and tuned to the latest observations, using satellite, buoy, and observation
+    networks.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-marine-weather-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-marine-weather-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-marine-weather-api/postman-collection/1.0.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-marine-weather-api/release-notes/1.0.0
+- aid: dtn:dtn-notams-api
+  name: DTN NOTAMs API
+  tags:
+  - Aviation
+  - NOTAM
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-notams-api/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: The DTN NOTAM API is an all-encompassing solution to retrieve the most current NOTAM from multiple
+    available feeds to avoid duplicate NOTAMS. Many sources publish NOTAMs and push them to others such as EAD.
+    This causes duplicates which can not be easily filtered due to formatting differences. Currently the NOTAMS
+    are retrieved from the FAA SWIM feed and EAD. Other areas of the world can easily be added applying the same
+    logic.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-notams-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-notams-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-notams-api/postman-collection/1.10.1
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-notams-api/release-notes/1.10.1
+- aid: dtn:dtn-pireps-api
+  name: DTN PIREPs API
+  tags:
+  - Aviation
+  - PIREP
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-pireps-api/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: PIREPS are a key piece of information required for flight planning and flight operations. DTN PIREP
+    API allows customers to get the data critical to them without extra data not needed.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-pireps-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-pireps-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-pireps-api/postman-collection/1.9.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-pireps-api/release-notes/1.9.0
+- aid: dtn:pavement-conditions-api
+  name: DTN Pavement Conditions API
+  tags:
+  - API
+  - Data
+  - Roads
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/pavement-conditions-api/documentation
+  baseURL: https://pavement-condition.prd.wx.zones.dtn.com
+  description: DTN is developing the platform to supply road data on OSM segments across North America and Europe,
+    allowing users to request data for a geographic area or specific roadway within the database.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/pavement-conditions-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-pavement-conditions-api-openapi.json
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/pavement-conditions-api/release-notes/2.0.2
+- aid: dtn:dtn-probabilistic-api
+  name: DTN Probabilistic API
+  tags:
+  - API
+  - Data
+  - Forecast
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-probabilistic-api/documentation
+  baseURL: https://probabilistic.api.dtn.com
+  description: 'This API caters to a wide range of users, including:
+
+
+    Risk managers assessing weather-related operational risks
+
+    Agricultural planners making decisions under weather uncertainty
+
+    Energy companies optimizing operations based on probabilistic forecasts
+
+    Transportation companies planning routes with confidence levels
+
+    Emergency managers preparing for weather events with known probabilities
+
+    Key features: The Probabilistic Weather API provides probabilistic weather parameters including percentiles,
+    probabilities of exceedance (POEs), and forecast confidence levels. It leverages advanced statistical methods
+    and DTN''s OneFX forecast system to quantify forecast uncertainty through sophisticated distribution fitting
+    techniques.
+
+
+    Probabilistic forecasts at a location: The API provides probabilistic weather data for any specific point on
+    the globe. Specify a location, the probabilistic parameters of in'
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-probabilistic-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-probabilistic-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-probabilistic-api/postman-collection/1.0.0
+- aid: dtn:dtn-refined-fuels-demand
+  name: DTN Refined Fuels Demand
+  tags:
+  - API
+  - Data
+  - Energy
+  - Fuel
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Refined%20Fuels/dtn-refined-fuels-demand/documentation
+  baseURL: https://traderinsights-cat.dtn.com/repo_usmd_api
+  description: Summarized product volumes by U.S., PADD, Rack City & Terminal
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Refined%20Fuels/dtn-refined-fuels-demand/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-refined-fuels-demand-openapi.json
+- aid: dtn:dtn-renewables-api
+  name: DTN Renewables API
+  tags:
+  - Energy
+  - Renewable Energy
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-renewables-api/documentation
+  baseURL: https://renewables.api.dtn.com
+  description: DTN’s Renewables API empowers consumers with accurate, global, location-specific environmental data
+    tailored for the renewable energy industry.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-renewables-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-renewables-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-renewables-api/postman-collection/1.0.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-renewables-api/release-notes/1.0.0
+- aid: dtn:dtn-sigmets-airmets
+  name: DTN SIGMETs/AIRMETs API
+  tags:
+  - API
+  - Aviation
+  - Data
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-sigmets-airmets/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: The DTN Aviation SIGMET/AIRMET API retrieves available SIGMET, Convective SIGMET, SIERRA (visibility)
+    AIRMETs, TANGO (turbulence) AIRMETs, and ZULU (icing) AIRMETs. Each data type has its own endpoint. Filtering
+    parameters allow to limit data requests in various ways, particularly in limiting the area for which to find
+    data.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-sigmets-airmets/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-sigmets-airmets-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-sigmets-airmets/postman-collection/1.9.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-sigmets-airmets/release-notes/1.9.0
+- aid: dtn:dtn-shipping-api
+  name: DTN Shipping API
+  tags:
+  - API
+  - Data
+  - Data
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Marine%20and%20Offshore/dtn-shipping-api/documentation
+  baseURL: https://shipping.api.dtn.com
+  description: RouteGuard customers can get all the route advices that are sent to their vessels by DTN's route
+    analysts in PDF, RTZ, CSV and JSON format by calling this api endpoint.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Marine%20and%20Offshore/dtn-shipping-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-shipping-api-openapi.json
+- aid: dtn:dtn-soil-api
+  name: DTN Soil Conditions API
+  tags:
+  - Agriculture
+  - Forecast
+  - Soil
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Agriculture/dtn-soil-api/documentation
+  baseURL: https://soil.api.dtn.com
+  description: "This API is an all-in-one solution to\n    integrate obtain hourly and daily soil temperature and\
+    \ moisture data valid for a user-defined time range and location. These values not only give estimates of actual\
+    \ temperature and moisture levels, but also show how they compare to\n    soil climatology at the chosen location\
+    \ and time."
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Agriculture/dtn-soil-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-soil-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-soil-api/postman-collection/1.0.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-soil-api/release-notes/1.0.0
+- aid: dtn:dtn-storm-impact-analytics
+  name: DTN Storm Impact Analytics
+  tags:
+  - API
+  - Data
+  - Storms
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-storm-impact-analytics/documentation
+  baseURL: https://sia.dtn.com
+  description: The models are trained using customer provided data to ensure the predictions are tailored to a specific
+    service territory with predictions produced every six (6) hours.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-storm-impact-analytics/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-storm-impact-analytics-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-storm-impact-analytics/postman-collection/1.0.0
+- aid: dtn:dtn-storm-risk-analytics-api
+  name: DTN Storm Risk Analytics API
+  tags:
+  - API
+  - Data
+  - Storms
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-storm-risk-analytics-api/documentation
+  baseURL: https://sra.dtn.com/v1
+  description: The DTN Storm Risk Analytics API delivers AI/ML electricity customers out and weather risk predictions
+    to enable storm event declarations, escalation of emergency preparedness plans, mobilization of resources and
+    materials, and benchmarking of asset-specific power outage risks to minimize the impact of storm events. The
+    models are trained using eight (8) years of electricity customers out data, providing hourly predictions out
+    to seven (7) days in the future, updated four (4) times per day.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-storm-risk-analytics-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-storm-risk-analytics-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-storm-risk-analytics-api/postman-collection/1.0.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-storm-risk-analytics-api/release-notes/1.0.0
+- aid: dtn:dtn-tafs-api
+  name: DTN TAFs API
+  tags:
+  - Aviation
+  - TAF
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-tafs-api/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: TAFs are a key piece of information required for flight planning and flight operations. DTN TAF API
+    allows customers to get the data critical to them without extra data not needed.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-tafs-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-tafs-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tafs-api/postman-collection/1.9.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tafs-api/release-notes/1.9.0
+- aid: dtn:dtn-tropical-api
+  name: DTN Tropical Cyclone API
+  tags:
+  - Forecast
+  - Hurricanes
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/dtn-tropical-api/documentation
+  baseURL: https://tropical.api.dtn.com
+  description: DTN's Tropical Cyclone API provides geospatial data for active tropical cyclones, including past
+    tracks, current positions, forecast tracks and error cones, forecast wind radii and swaths, and aircraft reconnaisance
+    from DTN and government agency sources.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/dtn-tropical-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-tropical-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tropical-api/postman-collection/1.0.6
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-tropical-api/release-notes/1.0.6
+- aid: dtn:dtn-websocket-api
+  name: DTN Websocket API
+  tags:
+  - API
+  - Data
+  - Real-Time
+  - Streaming
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/WebSocket/dtn-websocket-api/documentation
+  baseURL: https://dev-portal.dev.coreservices.zones.dtn.com
+  description: Websocket API overview. Websocket API summary.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/WebSocket/dtn-websocket-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-websocket-api-openapi.json
+- aid: dtn:dtn-windsaloft-api
+  name: DTN Winds Aloft API
+  tags:
+  - Aviation
+  - Flight Safety
+  - Weather
+  - Wind
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Aviation/dtn-windsaloft-api/documentation
+  baseURL: https://aviation.api.dtn.com
+  description: Winds Aloft are a key piece of information for flight planning and flight operations. DTN Winds Aloft
+    allows customers to get the data critical to them without extra data.
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Aviation/dtn-windsaloft-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-windsaloft-api-openapi.json
+  - type: Postman
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-windsaloft-api/postman-collection/1.9.0
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-windsaloft-api/release-notes/1.9.0
+- aid: dtn:digital-commerce-orders
+  name: DTN Digital Commerce Orders
+  tags:
+  - Commerce
+  - Energy
+  - Fuel
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Refined%20Fuels/digital-commerce-orders/documentation
+  baseURL: https://api.auth.dtn.com
+  description: APIs to access & manage your orders from within Digital Commerce
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Refined%20Fuels/digital-commerce-orders/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-digital-commerce-orders-openapi.json
+  - type: ReleaseNotes
+    url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/digital-commerce-orders/release-notes/1.0.0
+- aid: dtn:energy-digital-commerce-integrations-api
+  name: DTN Energy Sales & Marketing Integrations API
+  tags:
+  - Commerce
+  - Energy
+  - Fuel
+  - Market Data
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Refined%20Fuels/energy-digital-commerce-integrations-api/documentation
+  baseURL: https://digitalcommerce-integrations.dtn.com
+  description: Energy Sales & Marketing Orders, Pricing and Users Management API
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Refined%20Fuels/energy-digital-commerce-integrations-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-energy-digital-commerce-integrations-api-openapi.json
+- aid: dtn:farm-intel-api
+  name: DTN Farm Intel API
+  tags:
+  - API
+  - Agriculture
+  - Data
+  - Farming
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Agriculture/farm-intel-api/documentation
+  baseURL: https://api-farm-intelligence.dev.ag.zones.dtn.com
+  description: 'The Farm Intelligence API provides access to DTN''s agricultural datasets through three surfaces:
+    the Producer API for producer discovery and details, the Land API for land search, crop history, and geospatial
+    data, and the Linked Data API for segments and portfolios. All endpoints require OAuth 2.0 client credentials
+    authentication. Metered endpoints bill 1 credit per record returned; discovery endpoints (search, codes, geographic
+    areas) are unmetered.'
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Agriculture/farm-intel-api/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-farm-intel-api-openapi.json
+- aid: dtn:radarscope-radar-products
+  name: DTN RadarScope API
+  tags:
+  - API
+  - Data
+  - Radar
+  - Weather
+  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
+  humanURL: https://devportal.dtn.com/catalog/Weather/radarscope-radar-products/documentation
+  baseURL: https://radarscope-feeds.wdtinc.com
+  description: How to request radar and text  products from RadarScope servers
+  properties:
+  - type: Documentation
+    url: https://devportal.dtn.com/catalog/Weather/radarscope-radar-products/documentation
+  - type: OpenAPI
+    url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-radarscope-radar-products-openapi.json
+common:
+- type: AgenticAccess
+  url: agentic-access/dtn-agentic-access.yml
+- type: Authentication
+  url: authentication/dtn-authentication.yml
+- type: OAuthScopes
+  url: scopes/dtn-scopes.yml
+- type: DomainSecurity
+  url: security/dtn-domain-security.yml
+- type: LinkedIn
+  url: https://www.linkedin.com/company/dtnllc
+- url: https://www.dtn.com/
+  type: Website
+- url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/openapi/dtn-weather-conditions-api-openapi.json
+  type: OpenAPI
+- url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-schema/dtn-weather-observation-schema.json
+  type: JSONSchema
+- url: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/json-ld/dtn-context.jsonld
+  type: JSONLDContext
+- url: https://devportal.dtn.com/
+  type: Portal
+- url: https://www.dtn.com/resources/api-data-integrations/
+  type: Documentation
+- url: https://api.weather.mg/
+  type: Reference
+- url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
+  type: TermsOfService
+- url: https://www.dtn.com/wp-content/uploads/2020/04/DTN-External-Privacy-Statement.pdf
+  type: PrivacyPolicy
+- url: https://www.dtn.com/weather/
+  type: GettingStarted
+- url: https://www.dtn.com/feed/
+  type: Blog
+- type: StatusPage
+  url: https://status.dtn.com/
+- type: ChangeLog
+  url: changelog/dtn-changelog.yml
+- type: Lifecycle
+  url: lifecycle/dtn-lifecycle.yml
+- type: Conformance
+  url: conformance/dtn-conformance.yml
+- type: Conventions
+  url: conventions/dtn-conventions.yml
+- type: ErrorCatalog
+  url: errors/dtn-problem-types.yml
+- type: DataModel
+  url: data-model/dtn-data-model.yml
+- type: MCPServer
+  url: mcp/dtn-mcp.yml
+- type: LLMsTxt
+  url: llms/dtn-llms.txt
+- type: WellKnown
+  url: well-known/dtn-well-known.yml
+- type: AsyncAPI
+  url: asyncapi/dtn-lightning-stream-asyncapi.yml
+  name: DTN Lightning Stream (generated from published OpenAPI)
+- type: AsyncAPI
+  url: asyncapi/dtn-agency-bulletin-websocket-asyncapi.yml
+  name: DTN Agency Bulletin WebSocket (generated from published OpenAPI)
+- type: Overlay
+  url: overlays/dtn-weather-conditions-api-overlay.yaml
+- type: Sandbox
+  url: sandbox/dtn-sandbox.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Postman
+  url: https://dev-portal-api.prd.coreservices.zones.dtn.com/v1/apis/dtn-weather-conditions-api/postman-collection/2.2.0
+- type: Support
+  url: https://www.dtn.com/contact-us/
+- type: APIReference
+  url: https://devportal.dtn.com/catalog
 maintainers:
-  - name: Kin Lane
-    email: kin@apievangelist.com
-modified: '2026-04-28'
-description: >-
-  The operation intelligence you can rely on to make confident desicions. Empower
-  your business with the best data resource possible.
+- name: Kin Lane
+  email: kin@apievangelist.com
+modified: '2026-07-22'
+description: DTN is an operational intelligence company delivering weather, agriculture, energy, and commodity market
+  data through a catalog of 36 published APIs on its developer portal. Coverage spans current conditions, point
+  and probabilistic forecasts, 30-year station observation history, lightning, radar and map tiles, tropical cyclones,
+  marine weather, aviation weather (METARs, TAFs, NOTAMs, PIREPs, SIGMETs, flight hazards), soil conditions, renewables
+  production forecasting, refined fuels, and Prophet X commodity market data. All APIs authenticate with OAuth2
+  client credentials via the DTN Auth and Identity Service, publish OpenAPI specs and Postman collections, and stream
+  real-time data over WebSocket and HTTP streaming surfaces.
+name: DTN
+tags:
+- Weather
+- Agriculture
+- Energy
+- Market Data
+- Aviation
+- Marine
+- Forecasting
+- Observations
+- Commodities
+created: '2026-05-01'

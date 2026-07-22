@@ -1,0 +1,115 @@
+generated: '2026-07-22'
+method: derived
+source: openapi/ (36 DTN developer portal specs)
+format: mixed
+notes: 'Derived from 4xx/5xx responses across DTN''s published OpenAPI specs. The DTN Developer Portal API itself returns
+  RFC 9457 application/problem+json errors (observed live: type/title/status/detail/instance envelope).'
+problems:
+- status: 400
+  title: null
+  source_operation: openapi/dtn-astronomical-api-openapi.json#sunMoon
+- status: 400
+  title: An invalid request.
+  source_operation: openapi/dtn-climatology-api-openapi.json#dailyClimatology
+- status: 400
+  title: Bad Request - Invalid or missing parameters
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getDirections
+- status: 400
+  title: Bad Request - Invalid parameters
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getConditionsByRoute
+- status: 400
+  title: Bad Request - Invalid units parameter
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getPavementConditionsV2
+- status: 400
+  title: Invalid request body or parameters.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchProducersByPolygon
+- status: 400
+  title: Invalid request body.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#matchProducer
+- status: 400
+  title: Invalid request parameters.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchProducersByRadius
+- status: 401
+  title: null
+  source_operation: openapi/dtn-astronomical-api-openapi.json#sunMoon
+- status: 401
+  title: Missing or invalid authentication token.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchProducersByRadius
+- status: 401
+  title: Unable to authenticate credentials.
+  source_operation: openapi/dtn-climatology-api-openapi.json#dailyClimatology
+- status: 401
+  title: Unauthorized
+  source_operation: openapi/dtn-agency-bulletin-websocket-api-openapi.json#get_v1_stream
+- status: 401
+  title: Unauthorized - Invalid or missing authentication token, or account not properly configured
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getEeiThreshold
+- status: 403
+  title: null
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getParametersV2
+- status: 403
+  title: Contract expired.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getCreditStatus
+- status: 404
+  title: null
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#get /v1/apis/{slug}
+- status: 404
+  title: No conditions found along the route
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getConditionsByRoute
+- status: 404
+  title: No routes found between the specified waypoints
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getDirections
+- status: 404
+  title: Producer not found.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#getProducerById
+- status: 406
+  title: null
+  source_operation: openapi/dtn-astronomical-api-openapi.json#sunMoon
+- status: 406
+  title: Unable to produce a response matching the Accept request header.
+  source_operation: openapi/dtn-climatology-api-openapi.json#dailyClimatology
+- status: 422
+  title: null
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/strikes
+- status: 422
+  title: Unprocessable Entity
+  source_operation: openapi/dtn-agency-bulletin-websocket-api-openapi.json#get_v1_stream
+- status: 422
+  title: Validation Error
+  source_operation: openapi/dtn-agency-bulletin-api-openapi.json#get_bulletins_v2_bulletins_get
+- status: 429
+  title: Insufficient credits remaining.
+  source_operation: openapi/dtn-farm-intel-api-openapi.json#searchProducersByRadius
+- status: 429
+  title: Too Many Requests
+  source_operation: openapi/dtn-weather-conditions-api-openapi.json#post /v2/conditions/batch
+- status: 500
+  title: null
+  source_operation: openapi/dtn-energy-digital-commerce-integrations-api-openapi.json#setupBuyerAccountsAndUsers
+- status: 500
+  title: Internal Server Error - An unexpected error occurred on the server.
+  source_operation: openapi/dtn-energy-event-index-api-openapi.json#getEeiThreshold
+- status: 500
+  title: Internal Server Error - Mapbox token not configured
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getDirections
+- status: 500
+  title: Internal server error
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/archive
+- status: 500
+  title: Internal server error.
+  source_operation: openapi/dtn-lightning-api-openapi.json#get /v1/strikes
+- status: 502
+  title: Bad Gateway - External service (Mapbox) failure or unreachable
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getConditionsByRoute
+- status: 502
+  title: Bad Gateway - Mapbox API failure or unreachable
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getDirections
+- status: 503
+  title: null
+  source_operation: openapi/dtn-developer-portal-api-openapi.json#healthCheck
+- status: 503
+  title: Service Unavailable - Data partition temporarily unavailable for the requested region.
+  source_operation: openapi/dtn-pavement-conditions-api-openapi.json#getPavementConditionsV2
+- status: 504
+  title: Gateway Timeout
+  source_operation: openapi/dtn-observation-api-openapi.json#get_observations_v2_observations_get

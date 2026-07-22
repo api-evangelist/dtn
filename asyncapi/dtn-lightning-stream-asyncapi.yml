@@ -1,0 +1,34 @@
+asyncapi: 3.0.0
+info:
+  title: DTN Lightning Stream API (event surface)
+  version: 1.0.0
+  description: Faithful AsyncAPI rendering of DTN's Lightning Stream API, which delivers lightning strikes as a continuous HTTP stream (chunked
+    delivery). Derived from the provider's published OpenAPI (openapi/dtn-lightning-websocket-openapi.json); DTN publishes no AsyncAPI of its
+    own. Strikes can be filtered by bounding box or radius plus startTime; data on the stream lasts 1 day.
+  x-provenance:
+    generated: '2026-07-22'
+    method: generated
+    source: openapi/dtn-lightning-websocket-openapi.json
+defaultContentType: application/json
+servers:
+  production:
+    host: lightning.api.dtn.com
+    protocol: https
+    description: HTTP streaming endpoint; OAuth2 client-credentials Bearer token (api.auth.dtn.com/v1/tokens/authorize)
+channels:
+  lightningStrikes:
+    address: /v1/
+    description: Continuous stream of lightning strike observations matching the query criteria (radius or bounding box, optional startTime).
+    messages:
+      strike:
+        name: LightningStrike
+        summary: A lightning strike observation (GeoJSON-style point with time and polarity attributes).
+        payload:
+          type: object
+          description: See StrikeFeature schema in openapi/dtn-lightning-websocket-openapi.json
+operations:
+  receiveLightningStrikes:
+    action: receive
+    channel:
+      $ref: '#/channels/lightningStrikes'
+    description: Subscribe to the strike stream (HTTP GET, chunked stream response). Backed by operation GET /v1/ in the published OpenAPI.

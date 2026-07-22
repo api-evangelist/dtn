@@ -1,0 +1,70 @@
+generated: '2026-07-22'
+method: derived
+source: openapi/ (36 published DTN Developer Portal specs)
+authentication:
+  style: oauth2-client-credentials
+  token_url: https://api.auth.dtn.com/v1/tokens/authorize
+  legacy_token_url: https://auth.weather.mg/oauth/token
+  header: "Authorization: Bearer <access_token>"
+  notes: >-
+    Every published API uses OAuth2 client credentials (Client ID + Client Secret
+    issued via the DTN Developer Portal). Access tokens are short-lived (~1 hour
+    on the legacy weather.mg APIs) and sent as Bearer tokens. See
+    authentication/dtn-authentication.yml.
+idempotency:
+  supported: false
+  notes: >-
+    No Idempotency-Key header documented anywhere. 233 of 250 published
+    operations are GET (read-only data delivery); the few write operations
+    (digital commerce orders, alerting subscriptions) document no idempotency
+    contract.
+pagination:
+  style: limit-based
+  params: [limit, offset]
+  notes: >-
+    List endpoints (stations, observations, market-data history) use limit
+    caps (e.g. limit<=10000 on observations); several APIs page by time window
+    instead of cursor (validPeriod/observedPeriod ISO 8601 intervals).
+field_selection:
+  supported: true
+  param: fields / parameters
+  notes: >-
+    Sparse responses via comma-separated field lists (e.g.
+    fields=airTemperatureInCelsius,windSpeedInMeterPerSecond on weather
+    conditions; parameters=... on observation API). Parameter discovery
+    endpoints (weatherParameters, get_parameters_v2_observations_parameters_get)
+    enumerate the valid field names.
+units:
+  supported: true
+  param: units
+  values: [US, SI]
+  notes: Unit-system toggle on weather data endpoints (default SI).
+time_windows:
+  style: iso8601-interval
+  params: [validPeriod, observedPeriod, startTime, endTime]
+  notes: "Interval format: startISO8601/endISO8601 (e.g. 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)."
+geospatial:
+  styles: [lat-lon-point, bounding-box, radius, station-id, geojson]
+  notes: >-
+    Location addressing by lat,lon pair, station identifier (METAR/WMO ids),
+    bounding box (minLat/minLon/maxLat/maxLon), or radius; many responses are
+    GeoJSON (27 of 36 specs).
+request_tracing:
+  header: x-request-id
+  notes: Observed on live portal-API responses; error instances carry a requestId URN.
+versioning:
+  style: uri-path
+  notes: Major version in the path (/v1/, /v2/) per API; independent semver per API (see lifecycle/dtn-lifecycle.yml).
+error_envelope:
+  shape: code/message (product APIs); RFC 9457 problem+json (developer portal API)
+  notes: See errors/dtn-problem-types.yml.
+rate_limits:
+  signaled: true
+  notes: >-
+    429 responses documented on the Weather Conditions API and Farm Intel API;
+    limits are plan/contract-based (see rate-limits/dtn-rate-limits.yml).
+cross_links:
+  errors: errors/dtn-problem-types.yml
+  lifecycle: lifecycle/dtn-lifecycle.yml
+  authentication: authentication/dtn-authentication.yml
+  rate_limits: rate-limits/dtn-rate-limits.yml

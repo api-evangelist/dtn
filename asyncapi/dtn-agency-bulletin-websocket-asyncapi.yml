@@ -1,0 +1,35 @@
+asyncapi: 3.0.0
+info:
+  title: DTN Agency Bulletin WebSocket API (event surface)
+  version: 1.0.0
+  description: Faithful AsyncAPI rendering of DTN's Agency Bulletin WebSocket API, which streams global weather agency bulletins in real time
+    over a WebSocket upgrade (HTTP 101). Derived from the provider's published OpenAPI (openapi/dtn-agency-bulletin-websocket-api-openapi.json);
+    DTN publishes no AsyncAPI of its own.
+  x-provenance:
+    generated: '2026-07-22'
+    method: generated
+    source: openapi/dtn-agency-bulletin-websocket-api-openapi.json
+defaultContentType: application/json
+servers:
+  production:
+    host: wxbulletin-ws.api.dtn.com
+    protocol: ws
+    description: WebSocket endpoint (documented 101 Switching Protocols); OAuth2 client-credentials Bearer token
+channels:
+  agencyBulletins:
+    address: /v1
+    description: Real-time stream of weather agency bulletins (WMO/agency products) matching subscription criteria.
+    messages:
+      bulletin:
+        name: AgencyBulletin
+        summary: A weather agency bulletin message.
+        payload:
+          type: object
+          description: See bulletin schemas in openapi/dtn-agency-bulletin-websocket-api-openapi.json
+operations:
+  receiveAgencyBulletins:
+    action: receive
+    channel:
+      $ref: '#/channels/agencyBulletins'
+    description: Open the WebSocket (GET /v1, upgrade to WS) and receive bulletin messages. Backed by operationId get_v1_stream in the published
+      OpenAPI.

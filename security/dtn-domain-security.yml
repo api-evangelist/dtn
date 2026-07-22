@@ -1,11 +1,11 @@
-generated: '2026-07-11'
+generated: '2026-07-22'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: www.dtn.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug 20 07:42:07 2026 GMT
+  cert_expires: Oct 18 16:29:55 2026 GMT
   hsts: false
 - host: devportal.dtn.com
   https: true
@@ -24,4 +24,4 @@ domains:
   caa: []
   spf: true
   dmarc: true
-  dmarc_policy: none
+  dmarc_policy: reject

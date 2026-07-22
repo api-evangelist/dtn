@@ -1,0 +1,23 @@
+generated: '2026-07-22'
+method: searched
+source: openapi/dtn-financial-market-data-openapi.json (servers[] published by DTN)
+notes: >-
+  DTN publishes a non-production test environment for the Market Data (Prophet X)
+  API directly in its OpenAPI servers list. No magic test values, test cards, or
+  time-simulation tooling are published; weather APIs expose no separate sandbox
+  host — trial access is arranged through the DTN Developer Portal.
+environments:
+  - name: Customer Acceptance Testing (CAT)
+    url: https://pxwebcat.dtn.com
+    api: DTN Market Data API
+    purpose: Integration testing against production-like data before go-live
+  - name: QA Testing (PRE)
+    url: https://prx-ws-pre.dtn.com
+    api: DTN Market Data API
+    purpose: Pre-release QA environment (published in the spec; customer access may be restricted)
+  - name: Development (DEV)
+    url: https://prx-app1-dev.dtn.com
+    api: DTN Market Data API
+    purpose: Development environment (published in the spec; customer access may be restricted)
+test_credentials: none-published
+test_values: none-published
