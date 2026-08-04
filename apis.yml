@@ -882,6 +882,8 @@ apis:
   - type: OpenAPI
     url: openapi/dtn-weather-conditions-openapi.yml
 common:
+- type: PostmanWorkspace
+  url: https://www.postman.com/kinlaneapi/dtn/overview
 - type: AgenticAccess
   url: agentic-access/dtn-agentic-access.yml
 - type: Authentication

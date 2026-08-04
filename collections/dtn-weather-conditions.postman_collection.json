@@ -1,0 +1,1074 @@
+{
+  "info": {
+    "_postman_id": "d352865d-0adf-46f1-baeb-8199a383078b",
+    "name": "DTN Weather Conditions API",
+    "description": "DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated weather data. Supports geospatial queries, time-based filtering, and multi-station requests. Authentication uses OAuth2 Client Credentials; access tokens are obtained from auth.weather.mg/oauth/token and used as Bearer tokens.\n\nContact Support:\n Name: DTN Weather API Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-08-03T11:20:31.000Z",
+    "updatedAt": "2026-08-03T11:20:32.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-d352865d-0adf-46f1-baeb-8199a383078b"
+  },
+  "item": [
+    {
+      "name": "v2",
+      "item": [
+        {
+          "name": "current",
+          "item": [
+            {
+              "name": "Get current weather conditions",
+              "id": "c14ffd7e-e99b-481c-86ba-637aaa573c61",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/v2/current?locatedAt=<string>&fields=<string>&units=SI",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "current"
+                  ],
+                  "query": [
+                    {
+                      "description": "(Required) Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)",
+                      "key": "locatedAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Comma-separated list of weather fields to return",
+                      "key": "fields",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Unit system for returned values",
+                      "key": "units",
+                      "value": "SI"
+                    }
+                  ]
+                },
+                "description": "Returns current weather conditions for a specified location using latitude/longitude or a weather station identifier. Supports unit selection (US customary or SI)."
+              },
+              "response": [
+                {
+                  "id": "9cb893c8-d2fe-41fe-9da0-63e607023754",
+                  "name": "Current weather conditions",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/v2/current?locatedAt=<string>&fields=<string>&units=SI",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "current"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Comma-separated list of weather fields to return",
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Unit system for returned values",
+                          "key": "units",
+                          "value": "SI"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"generatedAt\": \"<dateTime>\",\n  \"units\": \"SI\",\n  \"location\": {\n    \"latitude\": \"<double>\",\n    \"longitude\": \"<double>\",\n    \"elevation\": \"<number>\"\n  },\n  \"observations\": {\n    \"observedAt\": \"<dateTime>\",\n    \"airTemperatureInCelsius\": \"<number>\",\n    \"feelsLikeTemperatureInCelsius\": \"<number>\",\n    \"dewPointInCelsius\": \"<number>\",\n    \"relativeHumidityInPercent\": \"<number>\",\n    \"windSpeedInMeterPerSecond\": \"<number>\",\n    \"windDirectionInDegree\": \"<number>\",\n    \"windGustInMeterPerSecond\": \"<number>\",\n    \"visibilityInMeter\": \"<number>\",\n    \"pressureInHectopascal\": \"<number>\",\n    \"precipitationAmountInMillimeter\": \"<number>\",\n    \"weatherSymbol\": \"<integer>\",\n    \"cloudCoverInPercent\": \"<number>\"\n  }\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-9cb893c8-d2fe-41fe-9da0-63e607023754"
+                },
+                {
+                  "id": "2dc82aea-68ca-4133-8f41-01d22dc8334e",
+                  "name": "Invalid query parameters",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/v2/current?locatedAt=<string>&fields=<string>&units=SI",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "current"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Comma-separated list of weather fields to return",
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Unit system for returned values",
+                          "key": "units",
+                          "value": "SI"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"code\": \"<string>\",\n  \"message\": \"<string>\"\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-2dc82aea-68ca-4133-8f41-01d22dc8334e"
+                },
+                {
+                  "id": "f2eed169-0455-46a8-ae58-5a4eec0c2208",
+                  "name": "Missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/v2/current?locatedAt=<string>&fields=<string>&units=SI",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "current"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Comma-separated list of weather fields to return",
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Unit system for returned values",
+                          "key": "units",
+                          "value": "SI"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"code\": \"<string>\",\n  \"message\": \"<string>\"\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-f2eed169-0455-46a8-ae58-5a4eec0c2208"
+                }
+              ],
+              "createdAt": "2026-08-03T11:20:32.000Z",
+              "updatedAt": "2026-08-03T11:20:32.000Z",
+              "uid": "35240-c14ffd7e-e99b-481c-86ba-637aaa573c61"
+            }
+          ],
+          "id": "71f2fafc-19a8-4ba8-95f4-2833e568c3a8",
+          "createdAt": "2026-08-03T11:20:32.000Z",
+          "updatedAt": "2026-08-03T11:20:32.000Z",
+          "uid": "35240-71f2fafc-19a8-4ba8-95f4-2833e568c3a8"
+        }
+      ],
+      "id": "6aa6d441-5f51-41ea-b85f-126bc03dbcde",
+      "createdAt": "2026-08-03T11:20:32.000Z",
+      "updatedAt": "2026-08-03T11:20:32.000Z",
+      "uid": "35240-6aa6d441-5f51-41ea-b85f-126bc03dbcde"
+    },
+    {
+      "name": "forecast",
+      "item": [
+        {
+          "name": "hourly",
+          "item": [
+            {
+              "name": "Get hourly weather forecast",
+              "id": "c5244fac-ea90-40e4-a735-1ada4eb84b5f",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "https://point-forecast.weather.mg/forecast/hourly?locatedAt=<string>&validPeriod=<string>&fields=<string>&units=SI&meteoGroupStationId=<boolean>",
+                  "protocol": "https",
+                  "host": [
+                    "point-forecast",
+                    "weather",
+                    "mg"
+                  ],
+                  "path": [
+                    "forecast",
+                    "hourly"
+                  ],
+                  "query": [
+                    {
+                      "description": "(Required) Latitude,longitude or station ID",
+                      "key": "locatedAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Date/time range for the forecast. Format: startISO8601/endISO8601 (e.g., 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)",
+                      "key": "validPeriod",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Comma-separated forecast fields to return",
+                      "key": "fields",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "SI"
+                    },
+                    {
+                      "description": "Include station ID in response when using station-based query",
+                      "key": "meteoGroupStationId",
+                      "value": "<boolean>"
+                    }
+                  ]
+                },
+                "description": "Returns hourly weather forecast data for a specified location. Forecasts available up to 14 days ahead. Supports US and SI unit systems."
+              },
+              "response": [
+                {
+                  "id": "b150bc97-2ec5-47bd-abb5-73e626124247",
+                  "name": "Hourly weather forecast",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "https://point-forecast.weather.mg/forecast/hourly?locatedAt=<string>&validPeriod=<string>&fields=<string>&units=SI&meteoGroupStationId=<boolean>",
+                      "protocol": "https",
+                      "host": [
+                        "point-forecast",
+                        "weather",
+                        "mg"
+                      ],
+                      "path": [
+                        "forecast",
+                        "hourly"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Latitude,longitude or station ID",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Date/time range for the forecast. Format: startISO8601/endISO8601 (e.g., 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)",
+                          "key": "validPeriod",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Comma-separated forecast fields to return",
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "units",
+                          "value": "SI"
+                        },
+                        {
+                          "description": "Include station ID in response when using station-based query",
+                          "key": "meteoGroupStationId",
+                          "value": "<boolean>"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"generatedAt\": \"<dateTime>\",\n  \"units\": \"<string>\",\n  \"location\": {\n    \"latitude\": \"<double>\",\n    \"longitude\": \"<double>\",\n    \"elevation\": \"<number>\"\n  },\n  \"forecasts\": [\n    {\n      \"validAt\": \"<dateTime>\",\n      \"airTemperatureInCelsius\": \"<number>\",\n      \"precipitationAmountInMillimeter\": \"<number>\",\n      \"precipitationProbabilityInPercent\": \"<number>\",\n      \"windSpeedInMeterPerSecond\": \"<number>\",\n      \"windDirectionInDegree\": \"<number>\",\n      \"windGustInMeterPerSecond\": \"<number>\",\n      \"relativeHumidityInPercent\": \"<number>\",\n      \"weatherSymbol\": \"<integer>\"\n    },\n    {\n      \"validAt\": \"<dateTime>\",\n      \"airTemperatureInCelsius\": \"<number>\",\n      \"precipitationAmountInMillimeter\": \"<number>\",\n      \"precipitationProbabilityInPercent\": \"<number>\",\n      \"windSpeedInMeterPerSecond\": \"<number>\",\n      \"windDirectionInDegree\": \"<number>\",\n      \"windGustInMeterPerSecond\": \"<number>\",\n      \"relativeHumidityInPercent\": \"<number>\",\n      \"weatherSymbol\": \"<integer>\"\n    }\n  ]\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-b150bc97-2ec5-47bd-abb5-73e626124247"
+                },
+                {
+                  "id": "d96f5fb0-05d4-4ea2-ae34-eac0eb21595a",
+                  "name": "Invalid query parameters",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "https://point-forecast.weather.mg/forecast/hourly?locatedAt=<string>&validPeriod=<string>&fields=<string>&units=SI&meteoGroupStationId=<boolean>",
+                      "protocol": "https",
+                      "host": [
+                        "point-forecast",
+                        "weather",
+                        "mg"
+                      ],
+                      "path": [
+                        "forecast",
+                        "hourly"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Latitude,longitude or station ID",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Date/time range for the forecast. Format: startISO8601/endISO8601 (e.g., 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)",
+                          "key": "validPeriod",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Comma-separated forecast fields to return",
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "units",
+                          "value": "SI"
+                        },
+                        {
+                          "description": "Include station ID in response when using station-based query",
+                          "key": "meteoGroupStationId",
+                          "value": "<boolean>"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"code\": \"<string>\",\n  \"message\": \"<string>\"\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-d96f5fb0-05d4-4ea2-ae34-eac0eb21595a"
+                },
+                {
+                  "id": "035bd9cb-0fd4-48ad-9434-db8a3ca4c992",
+                  "name": "Missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "https://point-forecast.weather.mg/forecast/hourly?locatedAt=<string>&validPeriod=<string>&fields=<string>&units=SI&meteoGroupStationId=<boolean>",
+                      "protocol": "https",
+                      "host": [
+                        "point-forecast",
+                        "weather",
+                        "mg"
+                      ],
+                      "path": [
+                        "forecast",
+                        "hourly"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Latitude,longitude or station ID",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Date/time range for the forecast. Format: startISO8601/endISO8601 (e.g., 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)",
+                          "key": "validPeriod",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Comma-separated forecast fields to return",
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "units",
+                          "value": "SI"
+                        },
+                        {
+                          "description": "Include station ID in response when using station-based query",
+                          "key": "meteoGroupStationId",
+                          "value": "<boolean>"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"code\": \"<string>\",\n  \"message\": \"<string>\"\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-035bd9cb-0fd4-48ad-9434-db8a3ca4c992"
+                }
+              ],
+              "createdAt": "2026-08-03T11:20:32.000Z",
+              "updatedAt": "2026-08-03T11:20:32.000Z",
+              "uid": "35240-c5244fac-ea90-40e4-a735-1ada4eb84b5f"
+            }
+          ],
+          "id": "68d610cb-9424-432e-b1bb-5ff9a0ef51c1",
+          "createdAt": "2026-08-03T11:20:32.000Z",
+          "updatedAt": "2026-08-03T11:20:32.000Z",
+          "uid": "35240-68d610cb-9424-432e-b1bb-5ff9a0ef51c1"
+        },
+        {
+          "name": "daily",
+          "item": [
+            {
+              "name": "Get daily weather forecast",
+              "id": "0404dcca-53c4-48fd-917f-f0ed47bb4e70",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "https://point-forecast.weather.mg/forecast/daily?locatedAt=<string>&validPeriod=<string>&fields=<string>&units=SI",
+                  "protocol": "https",
+                  "host": [
+                    "point-forecast",
+                    "weather",
+                    "mg"
+                  ],
+                  "path": [
+                    "forecast",
+                    "daily"
+                  ],
+                  "query": [
+                    {
+                      "description": "(Required) ",
+                      "key": "locatedAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "validPeriod",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "SI"
+                    }
+                  ]
+                },
+                "description": "Returns daily weather forecast data for a specified location, including high/low temperatures, precipitation probability, and weather symbols."
+              },
+              "response": [
+                {
+                  "id": "540d9b18-939d-42f2-9484-f4750d0594b6",
+                  "name": "Daily weather forecast",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: oauth2",
+                        "key": "Authorization",
+                        "value": "<token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "https://point-forecast.weather.mg/forecast/daily?locatedAt=<string>&validPeriod=<string>&fields=<string>&units=SI",
+                      "protocol": "https",
+                      "host": [
+                        "point-forecast",
+                        "weather",
+                        "mg"
+                      ],
+                      "path": [
+                        "forecast",
+                        "daily"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) ",
+                          "key": "locatedAt",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "validPeriod",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "fields",
+                          "value": "<string>"
+                        },
+                        {
+                          "key": "units",
+                          "value": "SI"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"generatedAt\": \"<dateTime>\",\n  \"location\": {\n    \"latitude\": \"<double>\",\n    \"longitude\": \"<double>\",\n    \"elevation\": \"<number>\"\n  },\n  \"forecasts\": [\n    {\n      \"validOn\": \"<date>\",\n      \"maxAirTemperatureInCelsius\": \"<number>\",\n      \"minAirTemperatureInCelsius\": \"<number>\",\n      \"precipitationAmountInMillimeter\": \"<number>\",\n      \"precipitationProbabilityInPercent\": \"<number>\",\n      \"weatherSymbol\": \"<integer>\",\n      \"windSpeedInMeterPerSecond\": \"<number>\",\n      \"windDirectionInDegree\": \"<number>\"\n    },\n    {\n      \"validOn\": \"<date>\",\n      \"maxAirTemperatureInCelsius\": \"<number>\",\n      \"minAirTemperatureInCelsius\": \"<number>\",\n      \"precipitationAmountInMillimeter\": \"<number>\",\n      \"precipitationProbabilityInPercent\": \"<number>\",\n      \"weatherSymbol\": \"<integer>\",\n      \"windSpeedInMeterPerSecond\": \"<number>\",\n      \"windDirectionInDegree\": \"<number>\"\n    }\n  ]\n}",
+                  "createdAt": "2026-08-03T11:20:32.000Z",
+                  "updatedAt": "2026-08-03T11:20:32.000Z",
+                  "uid": "35240-540d9b18-939d-42f2-9484-f4750d0594b6"
+                }
+              ],
+              "createdAt": "2026-08-03T11:20:32.000Z",
+              "updatedAt": "2026-08-03T11:20:32.000Z",
+              "uid": "35240-0404dcca-53c4-48fd-917f-f0ed47bb4e70"
+            }
+          ],
+          "id": "a718bb5e-f914-4145-b866-184e5d622a1a",
+          "createdAt": "2026-08-03T11:20:32.000Z",
+          "updatedAt": "2026-08-03T11:20:32.000Z",
+          "uid": "35240-a718bb5e-f914-4145-b866-184e5d622a1a"
+        }
+      ],
+      "id": "9a6d2771-53ed-4963-b22e-7c4c81889137",
+      "createdAt": "2026-08-03T11:20:32.000Z",
+      "updatedAt": "2026-08-03T11:20:32.000Z",
+      "uid": "35240-9a6d2771-53ed-4963-b22e-7c4c81889137"
+    },
+    {
+      "name": "observations",
+      "item": [
+        {
+          "name": "Get weather observations (historical)",
+          "id": "70ab7ce7-67d1-4704-8d9b-bede86041211",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://point-observation.weather.mg/observations?locatedAt=<string>&observedPeriod=<string>&fields=<string>&units=SI&limit=1000",
+              "protocol": "https",
+              "host": [
+                "point-observation",
+                "weather",
+                "mg"
+              ],
+              "path": [
+                "observations"
+              ],
+              "query": [
+                {
+                  "description": "(Required) Latitude,longitude or station ID. Multiple locations pipe-separated.",
+                  "key": "locatedAt",
+                  "value": "<string>"
+                },
+                {
+                  "description": "(Required) Historical date/time range. Format: startISO8601/endISO8601",
+                  "key": "observedPeriod",
+                  "value": "<string>"
+                },
+                {
+                  "description": "Comma-separated observation fields",
+                  "key": "fields",
+                  "value": "<string>"
+                },
+                {
+                  "key": "units",
+                  "value": "SI"
+                },
+                {
+                  "description": "Maximum number of observations to return",
+                  "key": "limit",
+                  "value": "1000"
+                }
+              ]
+            },
+            "description": "Returns weather observations from weather stations. Supports up to 30 years of historical data. Multiple stations can be queried in a single request."
+          },
+          "response": [
+            {
+              "id": "61f5d0aa-9aec-404f-bf4b-f28a1500f27f",
+              "name": "Weather observations",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: oauth2",
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "url": {
+                  "raw": "https://point-observation.weather.mg/observations?locatedAt=<string>&observedPeriod=<string>&fields=<string>&units=SI&limit=1000",
+                  "protocol": "https",
+                  "host": [
+                    "point-observation",
+                    "weather",
+                    "mg"
+                  ],
+                  "path": [
+                    "observations"
+                  ],
+                  "query": [
+                    {
+                      "description": "(Required) Latitude,longitude or station ID. Multiple locations pipe-separated.",
+                      "key": "locatedAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "(Required) Historical date/time range. Format: startISO8601/endISO8601",
+                      "key": "observedPeriod",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Comma-separated observation fields",
+                      "key": "fields",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "SI"
+                    },
+                    {
+                      "description": "Maximum number of observations to return",
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"stations\": [\n    {\n      \"stationId\": \"<string>\",\n      \"location\": {\n        \"latitude\": \"<double>\",\n        \"longitude\": \"<double>\",\n        \"elevation\": \"<number>\"\n      },\n      \"observations\": [\n        {\n          \"observedAt\": \"<dateTime>\",\n          \"airTemperatureInCelsius\": \"<number>\",\n          \"feelsLikeTemperatureInCelsius\": \"<number>\",\n          \"dewPointInCelsius\": \"<number>\",\n          \"relativeHumidityInPercent\": \"<number>\",\n          \"windSpeedInMeterPerSecond\": \"<number>\",\n          \"windDirectionInDegree\": \"<number>\",\n          \"windGustInMeterPerSecond\": \"<number>\",\n          \"visibilityInMeter\": \"<number>\",\n          \"pressureInHectopascal\": \"<number>\",\n          \"precipitationAmountInMillimeter\": \"<number>\",\n          \"weatherSymbol\": \"<integer>\",\n          \"cloudCoverInPercent\": \"<number>\"\n        },\n        {\n          \"observedAt\": \"<dateTime>\",\n          \"airTemperatureInCelsius\": \"<number>\",\n          \"feelsLikeTemperatureInCelsius\": \"<number>\",\n          \"dewPointInCelsius\": \"<number>\",\n          \"relativeHumidityInPercent\": \"<number>\",\n          \"windSpeedInMeterPerSecond\": \"<number>\",\n          \"windDirectionInDegree\": \"<number>\",\n          \"windGustInMeterPerSecond\": \"<number>\",\n          \"visibilityInMeter\": \"<number>\",\n          \"pressureInHectopascal\": \"<number>\",\n          \"precipitationAmountInMillimeter\": \"<number>\",\n          \"weatherSymbol\": \"<integer>\",\n          \"cloudCoverInPercent\": \"<number>\"\n        }\n      ]\n    },\n    {\n      \"stationId\": \"<string>\",\n      \"location\": {\n        \"latitude\": \"<double>\",\n        \"longitude\": \"<double>\",\n        \"elevation\": \"<number>\"\n      },\n      \"observations\": [\n        {\n          \"observedAt\": \"<dateTime>\",\n          \"airTemperatureInCelsius\": \"<number>\",\n          \"feelsLikeTemperatureInCelsius\": \"<number>\",\n          \"dewPointInCelsius\": \"<number>\",\n          \"relativeHumidityInPercent\": \"<number>\",\n          \"windSpeedInMeterPerSecond\": \"<number>\",\n          \"windDirectionInDegree\": \"<number>\",\n          \"windGustInMeterPerSecond\": \"<number>\",\n          \"visibilityInMeter\": \"<number>\",\n          \"pressureInHectopascal\": \"<number>\",\n          \"precipitationAmountInMillimeter\": \"<number>\",\n          \"weatherSymbol\": \"<integer>\",\n          \"cloudCoverInPercent\": \"<number>\"\n        },\n        {\n          \"observedAt\": \"<dateTime>\",\n          \"airTemperatureInCelsius\": \"<number>\",\n          \"feelsLikeTemperatureInCelsius\": \"<number>\",\n          \"dewPointInCelsius\": \"<number>\",\n          \"relativeHumidityInPercent\": \"<number>\",\n          \"windSpeedInMeterPerSecond\": \"<number>\",\n          \"windDirectionInDegree\": \"<number>\",\n          \"windGustInMeterPerSecond\": \"<number>\",\n          \"visibilityInMeter\": \"<number>\",\n          \"pressureInHectopascal\": \"<number>\",\n          \"precipitationAmountInMillimeter\": \"<number>\",\n          \"weatherSymbol\": \"<integer>\",\n          \"cloudCoverInPercent\": \"<number>\"\n        }\n      ]\n    }\n  ]\n}",
+              "createdAt": "2026-08-03T11:20:32.000Z",
+              "updatedAt": "2026-08-03T11:20:32.000Z",
+              "uid": "35240-61f5d0aa-9aec-404f-bf4b-f28a1500f27f"
+            }
+          ],
+          "createdAt": "2026-08-03T11:20:32.000Z",
+          "updatedAt": "2026-08-03T11:20:32.000Z",
+          "uid": "35240-70ab7ce7-67d1-4704-8d9b-bede86041211"
+        }
+      ],
+      "id": "8e447ecc-5603-493a-a4a3-c320f211e4e1",
+      "createdAt": "2026-08-03T11:20:32.000Z",
+      "updatedAt": "2026-08-03T11:20:32.000Z",
+      "uid": "35240-8e447ecc-5603-493a-a4a3-c320f211e4e1"
+    },
+    {
+      "name": "search",
+      "item": [
+        {
+          "name": "Get radar precipitation forecast",
+          "id": "43c8b605-f695-47fd-8f6a-1bddc2f69d9b",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://precipitation-forecast.weather.mg/search?locatedAt=<string>&validPeriod=<string>&fields=precipitationAmountInMillimeter,precipitationTypeCode",
+              "protocol": "https",
+              "host": [
+                "precipitation-forecast",
+                "weather",
+                "mg"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "description": "(Required) ",
+                  "key": "locatedAt",
+                  "value": "<string>"
+                },
+                {
+                  "description": "Forecast time window. Short-range precipitation forecast (0-6 hours typical)",
+                  "key": "validPeriod",
+                  "value": "<string>"
+                },
+                {
+                  "key": "fields",
+                  "value": "precipitationAmountInMillimeter,precipitationTypeCode"
+                }
+              ]
+            },
+            "description": "Returns short-term precipitation forecast derived from radar data. Useful for agricultural, utility, and renewable energy operational planning."
+          },
+          "response": [
+            {
+              "id": "7110091f-313f-42fe-abdc-3474b89943fc",
+              "name": "Precipitation forecast",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: oauth2",
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "url": {
+                  "raw": "https://precipitation-forecast.weather.mg/search?locatedAt=<string>&validPeriod=<string>&fields=precipitationAmountInMillimeter,precipitationTypeCode",
+                  "protocol": "https",
+                  "host": [
+                    "precipitation-forecast",
+                    "weather",
+                    "mg"
+                  ],
+                  "path": [
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "description": "(Required) ",
+                      "key": "locatedAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Forecast time window. Short-range precipitation forecast (0-6 hours typical)",
+                      "key": "validPeriod",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fields",
+                      "value": "precipitationAmountInMillimeter,precipitationTypeCode"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"generatedAt\": \"<dateTime>\",\n  \"location\": {\n    \"latitude\": \"<double>\",\n    \"longitude\": \"<double>\",\n    \"elevation\": \"<number>\"\n  },\n  \"forecasts\": [\n    {\n      \"validAt\": \"<dateTime>\",\n      \"precipitationAmountInMillimeter\": \"<number>\",\n      \"precipitationTypeCode\": \"<integer>\"\n    },\n    {\n      \"validAt\": \"<dateTime>\",\n      \"precipitationAmountInMillimeter\": \"<number>\",\n      \"precipitationTypeCode\": \"<integer>\"\n    }\n  ]\n}",
+              "createdAt": "2026-08-03T11:20:32.000Z",
+              "updatedAt": "2026-08-03T11:20:32.000Z",
+              "uid": "35240-7110091f-313f-42fe-abdc-3474b89943fc"
+            }
+          ],
+          "createdAt": "2026-08-03T11:20:32.000Z",
+          "updatedAt": "2026-08-03T11:20:32.000Z",
+          "uid": "35240-43c8b605-f695-47fd-8f6a-1bddc2f69d9b"
+        }
+      ],
+      "id": "3a56e756-d80d-4d38-a023-0db41e3a7820",
+      "createdAt": "2026-08-03T11:20:32.000Z",
+      "updatedAt": "2026-08-03T11:20:32.000Z",
+      "uid": "35240-3a56e756-d80d-4d38-a023-0db41e3a7820"
+    },
+    {
+      "name": "stations",
+      "item": [
+        {
+          "name": "List weather stations",
+          "id": "e5702b46-f61d-4e74-96ec-2734f346224e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stations?locatedWithin=<string>&limit=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "stations"
+              ],
+              "query": [
+                {
+                  "description": "Geographic bounding box (minLon,minLat,maxLon,maxLat)",
+                  "key": "locatedWithin",
+                  "value": "<string>"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Returns metadata for weather stations in the DTN network. Supports filtering by geographic bounding box or radius from a point."
+          },
+          "response": [
+            {
+              "id": "db75f5ab-bcdf-475d-88cd-84695f92cbe1",
+              "name": "List of weather stations",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: oauth2",
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/stations?locatedWithin=<string>&limit=100",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "stations"
+                  ],
+                  "query": [
+                    {
+                      "description": "Geographic bounding box (minLon,minLat,maxLon,maxLat)",
+                      "key": "locatedWithin",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"total\": \"<integer>\",\n  \"stations\": [\n    {\n      \"stationId\": \"<string>\",\n      \"stationName\": \"<string>\",\n      \"country\": \"<string>\",\n      \"location\": {\n        \"latitude\": \"<double>\",\n        \"longitude\": \"<double>\",\n        \"elevation\": \"<number>\"\n      },\n      \"stationType\": \"SHIP\"\n    },\n    {\n      \"stationId\": \"<string>\",\n      \"stationName\": \"<string>\",\n      \"country\": \"<string>\",\n      \"location\": {\n        \"latitude\": \"<double>\",\n        \"longitude\": \"<double>\",\n        \"elevation\": \"<number>\"\n      },\n      \"stationType\": \"METAR\"\n    }\n  ]\n}",
+              "createdAt": "2026-08-03T11:20:32.000Z",
+              "updatedAt": "2026-08-03T11:20:32.000Z",
+              "uid": "35240-db75f5ab-bcdf-475d-88cd-84695f92cbe1"
+            }
+          ],
+          "createdAt": "2026-08-03T11:20:32.000Z",
+          "updatedAt": "2026-08-03T11:20:32.000Z",
+          "uid": "35240-e5702b46-f61d-4e74-96ec-2734f346224e"
+        }
+      ],
+      "id": "73f652ec-7e2a-4217-a665-67bb064ae6b9",
+      "createdAt": "2026-08-03T11:20:32.000Z",
+      "updatedAt": "2026-08-03T11:20:32.000Z",
+      "uid": "35240-73f652ec-7e2a-4217-a665-67bb064ae6b9"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "weather:read",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://auth.weather.mg/oauth/token",
+        "type": "string"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://weather.api.dtn.com/conditions"
+    }
+  ]
+}
