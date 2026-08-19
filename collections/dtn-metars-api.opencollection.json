@@ -1,0 +1,147 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN METAR API",
+    "version": "1.9.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "METAR",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get active METARs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/metars/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "unitSystem",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for units system used for numerical output values in METAR.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `ceilingLow`: default=`ft`, metric=`m`<br>                * `ceilingMid`: default=`ft`, metric=`m`<br>                * `ceilingHigh`: default=`ft`, metric=`m`<br>                * `visibility`: default=`mi`, metric=`m`<br>                * `temperature`: default=`degC`, metric=`degC`<br>                * `dewpoint`: default=`degC`, metric=`degC`<br>                * `altimeter`: default=`inHg`, metric=`hPa`<br>                * `windSpeed`: default=`kts`, metric=`m/s`<br>                * `windGust`: default=`kts`, metric=`m/s`<br>                * `rvr#Visibility`: default=`ft`, metric=`m`<br>                * `rvr#MaxVisibility`: default=`ft`, metric=`m`"
+              },
+              {
+                "name": "stationIds",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of station identifier values.  Limits to objects whose `stationId` value matches one of specified parameter values."
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "isValidAt",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "untilDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedAfter",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedThrough",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "flightCodes",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of flight code values.  Must include only allowed values.  Limits to objects whose `flightCode` value matches one of specified parameter values."
+              },
+              {
+                "name": "flightCategories",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of flight category values.  Must include only allowed values.  Limits to objects whose `flightCategory` value matches one of specified parameter values."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available METARs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

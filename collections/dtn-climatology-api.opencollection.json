@@ -1,0 +1,135 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Climatology API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://climatology.api.dtn.com/"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Daily Climatology",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://climatology.api.dtn.com/v1/daily/ten-year",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query"
+              },
+              {
+                "name": "startDate",
+                "value": "08-01",
+                "type": "query"
+              },
+              {
+                "name": "endDate",
+                "value": "08-03",
+                "type": "query"
+              },
+              {
+                "name": "parameters",
+                "value": "airTempAvg,precipAmountAvg,windSpeedAvg",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides daily climatology parameters for any point on Earth. Specify the location, parameters of interest, and a date range up to 366 days (from January 1 through December 31, including February 29).  Results are valid from local midnight-to-midnight at the requested location and not specific to any year.\n\nUse the query string to customize the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).  These are required.\n\n  * Specify `paramet"
+        },
+        {
+          "info": {
+            "name": "Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://climatology.api.dtn.com/v1/parameters",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides helpful context in JSON format about the environmental parameters and operations that the other endpoints support.\n\nUse the `name` query string parameter to filter environmental parameters by that name (for example, `name=airTempAvg`), or omit the query string to obtain all environmental parameters in the response.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

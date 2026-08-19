@@ -1,0 +1,513 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Pavement Conditions API",
+    "version": "2.0.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/parameters",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "Name of the parameter to retrieve"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Retrieves parameter details for v2 API. If the `name` query parameter is empty, it returns all parameters.\n**v2 includes pagination parameters**: total, limit, page, nextOffset\n\n| Variable Name | Description | Imperial Unit | Metric Unit |\n| ------------- | ----------- | ------------- | ----------- |\n| total | Total number of records available inside the BBox | N/A | N/A |\n| limit | Maximum number of records per page | N/A | N/A |\n| page | Current page number | N/A | N/A |\n| nextOffset | Offset "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Pavement Conditions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Pavement Conditions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/pavement/conditions",
+            "params": [
+              {
+                "name": "bbox",
+                "value": "-156.1317111,19.6270521,-155.9317111,19.8270521",
+                "type": "query",
+                "description": "Bounding box coordinates to filter results by geographic area.\nFormat: `minLongitude,minLatitude,maxLongitude,maxLatitude`\n"
+              },
+              {
+                "name": "limit",
+                "value": "1000",
+                "type": "query",
+                "description": "Maximum number of records to return. Default is 1000."
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Page number for pagination. Default is 1."
+              },
+              {
+                "name": "startTime",
+                "value": "2025-12-04T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "endTime",
+                "value": "2025-12-05T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "units",
+                "value": "imperial",
+                "type": "query",
+                "description": "Unit system for response values. Default is imperial."
+              },
+              {
+                "name": "startPoint",
+                "value": "-93.3905,45.1310",
+                "type": "query",
+                "description": "Starting point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+              },
+              {
+                "name": "endPoint",
+                "value": "-93.2695,45.1420",
+                "type": "query",
+                "description": "Ending point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+              },
+              {
+                "name": "departAt",
+                "value": "2026-03-13T15:00:00.000Z",
+                "type": "query",
+                "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "arriveAt",
+                "value": "2026-03-13T16:00:00.000Z",
+                "type": "query",
+                "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "bufferMeters",
+                "value": "5",
+                "type": "query",
+                "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+              },
+              {
+                "name": "etaFilter",
+                "value": "true",
+                "type": "query",
+                "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+              },
+              {
+                "name": "parameter",
+                "value": "crashRiskIndex,mobilityIndex",
+                "type": "query",
+                "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Retrieves pavement conditions for road segments in GeoJSON FeatureCollection format. Returns up to 1000 records by default.\nData is grouped by segment ID with pagination metadata included in the response.\n\n**Query modes:**\n- By bounding box (`bbox`) — returns all segments within the area\n- By route (`startPoint` + `endPoint`) — uses Mapbox Directions API to generate a route, then returns segments along it\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endP"
+        },
+        {
+          "info": {
+            "name": "Get Pavement Conditions by Route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/pavement/conditions",
+            "params": [
+              {
+                "name": "departAt",
+                "value": "2026-03-13T15:00:00.000Z",
+                "type": "query",
+                "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "arriveAt",
+                "value": "2026-03-13T16:00:00.000Z",
+                "type": "query",
+                "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "bufferMeters",
+                "value": "5",
+                "type": "query",
+                "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+              },
+              {
+                "name": "limit",
+                "value": "100",
+                "type": "query",
+                "description": "Maximum number of records to return. Default is 100 for route-based requests.\nMaximum allowed is 300 for route-based requests.\n"
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Page number for pagination. Default is 1."
+              },
+              {
+                "name": "startTime",
+                "value": "2025-12-04T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "endTime",
+                "value": "2025-12-05T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "units",
+                "value": "imperial",
+                "type": "query",
+                "description": "Unit system for response values. Default is imperial."
+              },
+              {
+                "name": "etaFilter",
+                "value": "true",
+                "type": "query",
+                "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+              },
+              {
+                "name": "parameter",
+                "value": "crashRiskIndex,mobilityIndex",
+                "type": "query",
+                "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Retrieves pavement conditions along a route in GeoJSON FeatureCollection format.\nSupports two modes:\n\n**Option 1 - Mapbox waypoints (query params):**\nProvide `startPoint` and `endPoint` to automatically generate a route via Mapbox Directions API.\nOptionally provide `departAt` or `arriveAt` (mutually exclusive) for per-segment timing.\n\n**Option 2 - Direct route (body):**\nProvide a GeoJSON LineString or FeatureCollection in the request body.\n\n**Filtering options:**\n- Pavement data can be filtered "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Logistics",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Logistics Data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/logistics",
+            "params": [
+              {
+                "name": "bbox",
+                "value": "-156.1317111,19.6270521,-155.9317111,19.8270521",
+                "type": "query",
+                "description": "Bounding box coordinates to filter results by geographic area.\nFormat: `minLongitude,minLatitude,maxLongitude,maxLatitude`\n"
+              },
+              {
+                "name": "limit",
+                "value": "1000",
+                "type": "query",
+                "description": "Maximum number of records to return. Default is 1000."
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Page number for pagination. Default is 1."
+              },
+              {
+                "name": "startTime",
+                "value": "2025-12-04T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "endTime",
+                "value": "2025-12-05T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query",
+                "description": "Unit system for response values. Default is imperial."
+              },
+              {
+                "name": "startPoint",
+                "value": "-93.3905,45.1310",
+                "type": "query",
+                "description": "Starting point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+              },
+              {
+                "name": "endPoint",
+                "value": "-93.2695,45.1420",
+                "type": "query",
+                "description": "Ending point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+              },
+              {
+                "name": "departAt",
+                "value": "2026-03-13T15:00:00.000Z",
+                "type": "query",
+                "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "arriveAt",
+                "value": "2026-03-13T16:00:00.000Z",
+                "type": "query",
+                "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "bufferMeters",
+                "value": "5",
+                "type": "query",
+                "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+              },
+              {
+                "name": "etaFilter",
+                "value": "true",
+                "type": "query",
+                "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+              },
+              {
+                "name": "parameter",
+                "value": "crashRiskIndex,mobilityIndex",
+                "type": "query",
+                "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Retrieves logistics-focused pavement data in GeoJSON FeatureCollection format. Returns up to 1000 records by default.\nData is grouped by segment ID with pagination metadata included in the response.\n\n**Query modes:**\n- By bounding box (`bbox`) — returns all segments within the area\n- By route (`startPoint` + `endPoint`) — uses Mapbox Directions API to generate a route, then returns segments along it\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` "
+        },
+        {
+          "info": {
+            "name": "Get Logistics Data by Route",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/logistics",
+            "params": [
+              {
+                "name": "departAt",
+                "value": "2026-03-13T15:00:00.000Z",
+                "type": "query",
+                "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "arriveAt",
+                "value": "2026-03-13T16:00:00.000Z",
+                "type": "query",
+                "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "bufferMeters",
+                "value": "5",
+                "type": "query",
+                "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+              },
+              {
+                "name": "limit",
+                "value": "1000",
+                "type": "query",
+                "description": "Maximum number of records to return. Default is 1000."
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Page number for pagination. Default is 1."
+              },
+              {
+                "name": "startTime",
+                "value": "2025-12-04T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "endTime",
+                "value": "2025-12-05T20:00:00.000Z",
+                "type": "query",
+                "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query",
+                "description": "Unit system for response values. Default is imperial."
+              },
+              {
+                "name": "etaFilter",
+                "value": "true",
+                "type": "query",
+                "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+              },
+              {
+                "name": "parameter",
+                "value": "crashRiskIndex,mobilityIndex",
+                "type": "query",
+                "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Retrieves logistics-focused pavement data along a route in GeoJSON FeatureCollection format.\nSupports two modes:\n\n**Option 1 - Mapbox waypoints (query params):**\nProvide `startPoint` and `endPoint` to automatically generate a route via Mapbox Directions API.\nOptionally provide `departAt` or `arriveAt` (mutually exclusive) for per-segment timing.\n\n**Option 2 - Direct route (body):**\nProvide a GeoJSON LineString or FeatureCollection in the request body.\n\n**Filtering options:**\n- Pavement data can "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Directions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Route Directions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/directions",
+            "params": [
+              {
+                "name": "startPoint",
+                "value": "-93.3905,45.1310",
+                "type": "query",
+                "description": "Starting point coordinates for the route.\nFormat: `longitude,latitude`\n"
+              },
+              {
+                "name": "endPoint",
+                "value": "-93.2695,45.1420",
+                "type": "query",
+                "description": "Ending point coordinates for the route.\nFormat: `longitude,latitude`\n"
+              },
+              {
+                "name": "departAt",
+                "value": "2026-03-13T15:00:00Z",
+                "type": "query",
+                "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, `arrivalTimeUTC` is calculated as `departAt + route duration`.\nFormat: ISO 8601 UTC with \"Z\" suffix (e.g., 2026-03-13T15:00:00Z)\n"
+              },
+              {
+                "name": "arriveAt",
+                "value": "2026-03-13T16:00:00Z",
+                "type": "query",
+                "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, `departureTimeUTC` is calculated as `arriveAt - route duration`.\nFormat: ISO 8601 UTC with \"Z\" suffix (e.g., 2026-03-13T16:00:00Z)\n"
+              },
+              {
+                "name": "alternatives",
+                "value": "true",
+                "type": "query",
+                "description": "When \"true\", returns up to 3 alternative routes sorted by ascending duration.\nWhen \"false\" or omitted, returns exactly 1 route.\n"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returns cacheable route geometry from the Mapbox Directions API as a GeoJSON FeatureCollection.\nThis endpoint decouples route geometry from weather/pavement data, enabling independent caching\nof the route so the frontend can lock in a stable geometry for navigation (similar to Waze/Google Maps).\n\nThe `geojson` field in the response is directly compatible with the POST `/v2/pavement/conditions`\nand POST `/v2/logistics` endpoints — it can be passed as the `route` body without transformation.\n\n**Ti"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Health Check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pavement-condition.prd.wx.zones.dtn.com/v2/health-check"
+          },
+          "docs": "The health check endpoint provides information about the health of a web service.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

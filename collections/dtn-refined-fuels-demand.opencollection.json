@@ -1,0 +1,382 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Refined Fuels USMD API",
+    "version": "1.3.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "PADD Daily",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Daily summaries of transactional refined products volumes for rack loadings at the PADD.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://traderinsights-cat.dtn.com/repo_usmd_api/padd-daily",
+            "headers": [
+              {
+                "name": "apiKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "regions",
+                "value": "",
+                "type": "query",
+                "description": "List of PADD regions separated by commas.\nValue of 1 groups 1A, 1B, 1C. 1 excludes 1A,1B,1C\nValue of USA groups all regions. USA excludes all other regions\n"
+              },
+              {
+                "name": "products",
+                "value": "",
+                "type": "query",
+                "description": "List of general refined products classes (gasoline or distillates) separated by commas"
+              },
+              {
+                "name": "grades",
+                "value": "",
+                "type": "query",
+                "description": "List of grades separated by commas"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "This is the page being requested. The default is page 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+              }
+            ]
+          },
+          "docs": "Daily summaries of transactional refined products volumes for rack loadings at the PADD."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Rack Daily",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Daily summaries of transactional refined products volumes and spot price at the rack city level.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://traderinsights-cat.dtn.com/repo_usmd_api/rack-daily",
+            "headers": [
+              {
+                "name": "apiKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "regions",
+                "value": "",
+                "type": "query",
+                "description": "List of PADD regions separated by commas"
+              },
+              {
+                "name": "products",
+                "value": "",
+                "type": "query",
+                "description": "List of general refined products classes (gasoline or distillates) separated by commas"
+              },
+              {
+                "name": "grades",
+                "value": "",
+                "type": "query",
+                "description": "List of grades separated by commas"
+              },
+              {
+                "name": "rackAverage",
+                "value": "",
+                "type": "query",
+                "description": "Narrow results by filtering on Y or N for rackAverage"
+              },
+              {
+                "name": "states",
+                "value": "",
+                "type": "query",
+                "description": "List of state abbreviations separated by commas"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "This is the page being requested. The default is page 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+              }
+            ]
+          },
+          "docs": "Daily summaries of transactional refined products volumes and spot price at the rack city level."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Supplier Terminal Monthly Counts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored rack.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://traderinsights-cat.dtn.com/repo_usmd_api/supplier-terminal-monthly",
+            "headers": [
+              {
+                "name": "apiKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "regions",
+                "value": "",
+                "type": "query",
+                "description": "List of PADD regions separated by commas"
+              },
+              {
+                "name": "products",
+                "value": "",
+                "type": "query",
+                "description": "List of general refined products classes (gasoline or distillates) separated by commas"
+              },
+              {
+                "name": "grades",
+                "value": "",
+                "type": "query",
+                "description": "List of grades separated by commas"
+              },
+              {
+                "name": "rackNames",
+                "value": "",
+                "type": "query",
+                "description": "List of rack cities separated by commas"
+              },
+              {
+                "name": "states",
+                "value": "",
+                "type": "query",
+                "description": "List of state abbreviations separated by commas"
+              },
+              {
+                "name": "supplierMinCount",
+                "value": "",
+                "type": "query",
+                "description": "Filter racks by minimum number of suppliers."
+              },
+              {
+                "name": "terminalMinCount",
+                "value": "",
+                "type": "query",
+                "description": "Filter racks by minimum number of terminals."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "This is the page being requested. The default is page 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+              }
+            ]
+          },
+          "docs": "Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored rack."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Coverage Daily",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Daily coverage factors for transactional refined product volumes at PADD or United States level.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://traderinsights-cat.dtn.com/repo_usmd_api/coverage-daily",
+            "headers": [
+              {
+                "name": "apiKey",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "regions",
+                "value": "",
+                "type": "query",
+                "description": "List of PADD regions separated by commas."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "This is the page being requested. The default is page 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+              }
+            ]
+          },
+          "docs": "Daily coverage factors for transactional refined product volumes at PADD or United States level."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

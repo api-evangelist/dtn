@@ -1,0 +1,413 @@
+{
+  "item": [
+    {
+      "id": "3e66c46c-63cc-44b2-a652-3e6418b5a1bb",
+      "name": "Winds Aloft",
+      "description": {
+        "content": "On demand Winds Aloft data via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9bbe579e-e04f-40a9-8a0b-49748d15b874",
+          "name": "Get active Winds Aloft data",
+          "request": {
+            "name": "Get active Winds Aloft data",
+            "description": {
+              "content": "Get all available winds aloft data, potentially filtered by various query parameters",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "windsaloft",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "flt_level",
+                  "value": "<string>",
+                  "description": "(Required) Comma-separated list of flight levels for winds aloft data.  Must include only allowed values."
+                },
+                {
+                  "disabled": false,
+                  "key": "flt_level",
+                  "value": "<string>",
+                  "description": "(Required) Comma-separated list of flight levels for winds aloft data.  Must include only allowed values."
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3eb032cf-cebd-497c-b95e-bce9634b018d",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "windsaloft",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "flt_level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "flt_level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl300&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -118,\n          36\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 88,\n        \"wind_direction\": 239,\n        \"temperature_c\": -43\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -119,\n          36\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 89,\n        \"wind_direction\": 235,\n        \"temperature_c\": -43\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -120,\n          36\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 94,\n        \"wind_direction\": 230,\n        \"temperature_c\": -43\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -117,\n          37\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 78,\n        \"wind_direction\": 242,\n        \"temperature_c\": -43\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -118,\n          37\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 84,\n        \"wind_direction\": 237,\n        \"temperature_c\": -43\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -119,\n          37\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 90,\n        \"wind_direction\": 231,\n        \"temperature_c\": -45\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -120,\n          37\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 94,\n        \"wind_direction\": 228,\n        \"temperature_c\": -44\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -121,\n          37\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 94,\n        \"wind_direction\": 228,\n        \"temperature_c\": -45\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -118,\n          38\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 74,\n        \"wind_direction\": 234,\n        \"temperature_c\": -45\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -119,\n          38\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 86,\n        \"wind_direction\": 228,\n        \"temperature_c\": -44\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -120,\n          38\n        ]\n      },\n      \"properties\": {\n        \"flt_level\": \"fl300\",\n        \"valid_utc\": \"2025-03-12T18:00:00.000Z\",\n        \"expiration_utc\": \"2025-03-13T00:00:00.000Z\",\n        \"model_utc\": \"2025-03-12T12:00:00.000Z\",\n        \"wind_speed_kts\": 94,\n        \"wind_direction\": 228,\n        \"temperature_c\": -45\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.windsaloft.?flt_level=fl300&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100\",\n    \"uuid\": \"f07b4a11-9861-47e7-8de6-2ff447acb5c3\",\n    \"request_id\": \"53d7169d-4036-4541-873a-b3ddd657028e\",\n    \"start_timestamp\": 1741812067610,\n    \"end_timestamp\": 1741812078012,\n    \"execution_time\": 10402\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc36715b-9c65-4bfa-8ffa-77376ccea6b5",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "windsaloft",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "flt_level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "flt_level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/windsaloft/:requestId:883234a3-dc99-4285-ac74-93a46eb6f05a\",\n  \"errors\": [\n    {\n      \"message\": \"`flt_level` must be in the format fl### and one of specifically allowed levels (010|030|050|100|180|240|300|340|390|450|530)\",\n      \"parameter\": \"flt_level\",\n      \"value\": \"fl320\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.windsaloft.?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100\",\n    \"uuid\": \"4611bb70-9c0e-494d-85dc-eee855f7d532\",\n    \"request_id\": \"883234a3-dc99-4285-ac74-93a46eb6f05a\",\n    \"start_timestamp\": 1741812361342,\n    \"end_timestamp\": 1741812361760,\n    \"execution_time\": 418\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4bc5cb9d-7983-42ba-a434-8408c10b5c2a",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "windsaloft",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "flt_level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "flt_level",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://aviation.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "2ec9abd8-b7aa-4cbc-9f92-fd7ef316f055",
+    "name": "DTN Winds Aloft API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The DTN Aviation Winds Aloft API retrieves available Winds Aloft data. The endpoint returns wind speed (in knots), wind direction (in degrees), and temperature (in Γäâ) for the entire global domain. Filtering parameters allow to limit data requests by flight level(s), valid time, and spatial coverage.",
+      "type": "text/plain"
+    }
+  }
+}

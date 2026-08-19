@@ -1,0 +1,113 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Vessel Insight Subscription API",
+    "version": "v1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "CustomerVesselSubscription",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Gets the list of vessel subscriptions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.dev-test.stg.odyssea.zones.dtn.com/v1/subscriptions",
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Gets the list of vessel subscriptions."
+        },
+        {
+          "info": {
+            "name": "Add bulk vessel subscriptions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dev-test.stg.odyssea.zones.dtn.com/v1/subscriptions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Add bulk vessel subscriptions."
+        },
+        {
+          "info": {
+            "name": "Delete vessel subscription.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.dev-test.stg.odyssea.zones.dtn.com/v1/subscriptions/:imo",
+            "params": [
+              {
+                "name": "imo",
+                "value": "",
+                "type": "path",
+                "description": "The vessel's imo."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Delete vessel subscription."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.dev-test.stg.odyssea.zones.dtn.com/oauth/token",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a token"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

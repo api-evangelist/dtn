@@ -1,0 +1,1554 @@
+{
+  "item": [
+    {
+      "id": "aece9da0-c247-4079-90f0-95f32a25e7ea",
+      "name": "APIs",
+      "description": {
+        "content": "Endpoints for the api/catalog resources",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0525f76b-02df-4e9c-84a3-aca3994b57c2",
+          "name": "Get all APIs on the system",
+          "request": {
+            "name": "Get all APIs on the system",
+            "description": {
+              "content": "Returns the APIs on the system, arranged by name in ascending order. If groupByCat was true, it will return the results grouped by category, but still arranged by name in ascending order.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apis"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "groupByCat",
+                  "value": "<boolean>",
+                  "description": "When this param is truthy, the results will be grouped by api category."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                "key": "X-Request-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2a36d75b-b331-4f7f-9678-da01c312472e",
+              "name": "Successful response - returns a list of apis",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "groupByCat",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": 7776.938026587847,\n      \"name\": \"string\",\n      \"summary\": \"string\",\n      \"overview\": \"string\",\n      \"slug\": \"string\",\n      \"api_link\": \"string\",\n      \"link\": \"string\",\n      \"category\": \"string\",\n      \"status\": \"string\",\n      \"createdAt\": \"string\",\n      \"updatedAt\": \"string\",\n      \"api_specs_versions\": [\n        {\n          \"id\": 4330.196755498662,\n          \"spec_link\": \"string\",\n          \"changelog_link\": \"string\",\n          \"version\": \"string\",\n          \"api_id\": 1311.0639459373751,\n          \"is_published_specs\": true,\n          \"is_published_changelog\": \"string\",\n          \"createdAt\": \"string\",\n          \"updatedAt\": \"string\"\n        },\n        {\n          \"id\": 1834.2587746947902,\n          \"spec_link\": \"string\",\n          \"changelog_link\": \"string\",\n          \"version\": \"string\",\n          \"api_id\": 3803.6296441409677,\n          \"is_published_specs\": false,\n          \"is_published_changelog\": \"string\",\n          \"createdAt\": \"string\",\n          \"updatedAt\": \"string\"\n        }\n      ]\n    },\n    {\n      \"id\": 8050.154750833519,\n      \"name\": \"string\",\n      \"summary\": \"string\",\n      \"overview\": \"string\",\n      \"slug\": \"string\",\n      \"api_link\": \"string\",\n      \"link\": \"string\",\n      \"category\": \"string\",\n      \"status\": \"string\",\n      \"createdAt\": \"string\",\n      \"updatedAt\": \"string\",\n      \"api_specs_versions\": [\n        {\n          \"id\": 1597.6389384364466,\n          \"spec_link\": \"string\",\n          \"changelog_link\": \"string\",\n          \"version\": \"string\",\n          \"api_id\": 7419.827140596088,\n          \"is_published_specs\": true,\n          \"is_published_changelog\": \"string\",\n          \"createdAt\": \"string\",\n          \"updatedAt\": \"string\"\n        },\n        {\n          \"id\": 154.8812707550651,\n          \"spec_link\": \"string\",\n          \"changelog_link\": \"string\",\n          \"version\": \"string\",\n          \"api_id\": 9223.749046621693,\n          \"is_published_specs\": true,\n          \"is_published_changelog\": \"string\",\n          \"createdAt\": \"string\",\n          \"updatedAt\": \"string\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a830b75-a601-4f7a-ae7d-1fe254120715",
+              "name": "Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "groupByCat",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    },\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1c95012a-04ad-4d29-8afc-3c02c7dd21ce",
+          "name": "Get an API",
+          "request": {
+            "name": "Get an API",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "apis",
+                ":slug"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "slug",
+                  "description": "(Required) The api identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                "key": "X-Request-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bf76ff43-5a41-4ece-8747-58280a19c306",
+              "name": "Successful response - returns a list of apis",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "slug",
+                      "description": "(Required) The api identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 4416.18760893534,\n  \"name\": \"string\",\n  \"summary\": \"string\",\n  \"overview\": \"string\",\n  \"slug\": \"string\",\n  \"api_link\": \"string\",\n  \"link\": \"string\",\n  \"category\": \"string\",\n  \"status\": \"string\",\n  \"createdAt\": \"string\",\n  \"updatedAt\": \"string\",\n  \"api_specs_versions\": [\n    {\n      \"id\": 5813.64324579218,\n      \"spec_link\": \"string\",\n      \"changelog_link\": \"string\",\n      \"version\": \"string\",\n      \"api_id\": 4596.160761809503,\n      \"is_published_specs\": true,\n      \"is_published_changelog\": \"string\",\n      \"createdAt\": \"string\",\n      \"updatedAt\": \"string\"\n    },\n    {\n      \"id\": 9727.702916226077,\n      \"spec_link\": \"string\",\n      \"changelog_link\": \"string\",\n      \"version\": \"string\",\n      \"api_id\": 9182.844507056008,\n      \"is_published_specs\": true,\n      \"is_published_changelog\": \"string\",\n      \"createdAt\": \"string\",\n      \"updatedAt\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f8af0b3-fb19-4dae-9835-f004263e3804",
+              "name": "Not Found -- The resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "slug",
+                      "description": "(Required) The api identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-found\",\n  \"title\": \"Not Found\",\n  \"status\": 404,\n  \"detail\": \"Resource was not found.\",\n  \"instance\": \"urn:dtn:dev-portal-api:/resource/name:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a170bcab-1723-4598-9765-7c540517c711",
+          "name": "Get API spec",
+          "request": {
+            "name": "Get API spec",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "apis",
+                ":slug",
+                "spec",
+                ":version"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "slug",
+                  "value": "<string>",
+                  "description": "(Required) API slug"
+                },
+                {
+                  "disabled": false,
+                  "key": "version",
+                  "value": "<string>",
+                  "description": "(Required) API version"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                "key": "X-Request-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a142f786-46ea-4f2f-8720-6434e31d76fa",
+              "name": "Successful response - returns the content of JSON file API spec",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "spec",
+                    ":version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "slug",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"openapi\": \"1.0.0\",\n  \"info\": {\n    \"title\": \"OpenAPI example\",\n    \"version\": \"1.0.0\"\n  },\n  \"webhooks\": {\n    \"newPet\": {\n      \"post\": {\n        \"requestBody\": {\n          \"decription\": \"Information about a new pet in the system\",\n          \"content\": {\n            \"application/json\": {\n              \"schema\": {\n                \"title\": \"Schema for an API specs version\",\n                \"type\": \"object\",\n                \"properties\": {\n                  \"id\": {\n                    \"type\": \"number\"\n                  },\n                  \"name\": {\n                    \"type\": \"string\"\n                  }\n                }\n              }\n            }\n          },\n          \"responses\": {\n            \"200\": {\n              \"description\": \"Return a 200 status to indicate that the data was received successfully\"\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a20a1b14-7d9f-410d-a327-023228e43375",
+              "name": "Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "spec",
+                    ":version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "slug",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    },\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9697a579-3b1f-4d7d-9d19-d277a7949afb",
+          "name": "Get API changelog",
+          "request": {
+            "name": "Get API changelog",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "apis",
+                ":slug",
+                "changelog",
+                ":version"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "slug",
+                  "value": "<string>",
+                  "description": "(Required) API slug"
+                },
+                {
+                  "disabled": false,
+                  "key": "version",
+                  "value": "<string>",
+                  "description": "(Required) API version"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                "key": "X-Request-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "text/plain"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cee0bbe0-d278-47db-bc17-92dc90ba0ca8",
+              "name": "Successful response - returns the content of changelog markdown file",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "changelog",
+                    ":version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "slug",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/plain"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "#Changelog \n\n###V1 API v1.0.1 minor major\n\n##1.0.1 - 2015-08-01\n\n####What's Changed\n\n- Add support for array query parameters\n- Added `/v1/api/get-users` endpoint\n- Add ability to set multiple query parameters at once\n- Fix creating urls from invalid strings\n- Provide a component stack as a second argument to onRecoverableError\n- Pass information about server errors to the client.\n- Allow to provide a reason when aborting the HTML stream.\n- Eliminate extraneous text separators in the HTML where possible.\n- Disallow complex children inside <title> elements to match the browser constraints.\n- Fix buffering in some worker environments by explicitly setting highWaterMark to 0.\n- Add support for useId() inside Server Components.\n\n####Fixed\n- Fix creating urls from invalid strings\n- 502 errors when changing the route\n- Map auto scroll navigation\n- Fix hydrating into document causing a blank page on mismatch.\n- Fix false positive hydration errors with Suspense.\n- Fix ignored setState in Safari when adding an iframe.\n",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "2c6b7f96-be18-444f-aa49-38d45c241c53",
+              "name": "Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "changelog",
+                    ":version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "slug",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "version",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    },\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9a36b1d4-7d2f-4f4a-8617-a28561d32713",
+          "name": "Patch an API specs version",
+          "request": {
+            "name": "Patch an API specs version",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "apis",
+                ":slug",
+                "versions",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "slug",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<number>",
+                  "key": "id",
+                  "description": "(Required) The api specs version id"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                "key": "X-Request-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"spec_link\": \"<string>\",\n  \"changelog_link\": \"<string>\",\n  \"version\": \"<string>\",\n  \"is_published_specs\": \"<boolean>\",\n  \"is_published_changelog\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "30429674-5b47-46f9-9441-f4d7b6584a80",
+              "name": "Successful response - returns the updated api specs version",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "versions",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "slug",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<number>",
+                      "key": "id",
+                      "description": "(Required) The api specs version id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"spec_link\": \"https://localhost/docs/\",\n  \"changelog_link\": \"https://localhost/docs/changelogs/\",\n  \"version\": \"1.0.1\",\n  \"is_published_specs\": false,\n  \"is_published_changelog\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 4237.825869355905,\n  \"spec_link\": \"string\",\n  \"changelog_link\": \"string\",\n  \"version\": \"string\",\n  \"api_id\": 2639.358750737052,\n  \"is_published_specs\": false,\n  \"is_published_changelog\": \"string\",\n  \"createdAt\": \"string\",\n  \"updatedAt\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8993924-cd0e-4031-bb2d-98d92ecbc73a",
+              "name": "Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "versions",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "slug",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<number>",
+                      "key": "id",
+                      "description": "(Required) The api specs version id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"spec_link\": \"https://localhost/docs/\",\n  \"changelog_link\": \"https://localhost/docs/changelogs/\",\n  \"version\": \"1.0.1\",\n  \"is_published_specs\": false,\n  \"is_published_changelog\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    },\n    {\n      \"message\": \"Invalid value\",\n      \"parameter\": \"groupByCat\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c67aea83-ecca-4c81-966c-183845fd5c06",
+              "name": "Unauthorized -- Token was missing or invalid.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "versions",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "slug",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<number>",
+                      "key": "id",
+                      "description": "(Required) The api specs version id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"spec_link\": \"https://localhost/docs/\",\n  \"changelog_link\": \"https://localhost/docs/changelogs/\",\n  \"version\": \"1.0.1\",\n  \"is_published_specs\": false,\n  \"is_published_changelog\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Authorization token not found.\",\n  \"instance\": \"urn:/v1/apis/dtn-weather-conditions-api/versions/1:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "aab56d63-e4c9-4199-9566-0936cbceae5f",
+              "name": "Not Found -- The resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apis",
+                    ":slug",
+                    "versions",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "slug",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<number>",
+                      "key": "id",
+                      "description": "(Required) The api specs version id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID compliant with RFC 4122 that uniquely identifies the request.",
+                    "key": "X-Request-ID",
+                    "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"spec_link\": \"https://localhost/docs/\",\n  \"changelog_link\": \"https://localhost/docs/changelogs/\",\n  \"version\": \"1.0.1\",\n  \"is_published_specs\": false,\n  \"is_published_changelog\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.",
+                  "key": "X-Request-ID",
+                  "value": "f8941c97-9998-4bbf-b8e9-cbc6e85c8818"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-found\",\n  \"title\": \"Not Found\",\n  \"status\": 404,\n  \"detail\": \"Resource was not found.\",\n  \"instance\": \"urn:dtn:dev-portal-api:/resource/name:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "5c439e97-5d21-44d3-8b46-4e65ec56a36d",
+      "name": "Health",
+      "description": {
+        "content": "Utility endpoints used by K8s",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "34801440-d549-4e00-aa7b-4e1ac6aba0c3",
+          "name": "Health Check",
+          "request": {
+            "name": "Health Check",
+            "description": {
+              "content": "",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "health-check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "560ea87c-4f63-41a7-b287-b6c2ce84c85b",
+              "name": "Health Check report",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health-check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"up\",\n  \"version\": \"v2\",\n  \"info\": \"Service is healthy.\",\n  \"timestamp\": \"2018-02-10T09:30Z\",\n  \"env\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6275554f-95a6-4b52-9295-96042b947de0",
+              "name": "info about error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health-check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"code\": \"invalid-token\",\n  \"description\": \"bad token\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4a1da1bd-f0da-4721-9d6d-6652493e3c63",
+          "name": "Kubernetes will use this endpoint to monitor service's health.",
+          "request": {
+            "name": "Kubernetes will use this endpoint to monitor service's health.",
+            "description": {},
+            "url": {
+              "path": [
+                "liveness"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f81090e5-6a24-4715-9464-dab914aba58b",
+              "name": "Health Check report",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "liveness"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"up\",\n  \"version\": \"v2\",\n  \"info\": \"Service is healthy.\",\n  \"timestamp\": \"2018-02-10T09:30Z\",\n  \"env\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b27bf709-ed6e-4a09-bbba-c928b90aa1aa",
+              "name": "info about error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "liveness"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"code\": \"invalid-token\",\n  \"description\": \"bad token\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "54972296-6433-4d71-9ab2-21c231b32557",
+          "name": "Kubernetes will use this endpoint to monitor service's readiness.",
+          "request": {
+            "name": "Kubernetes will use this endpoint to monitor service's readiness.",
+            "description": {},
+            "url": {
+              "path": [
+                "readiness"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0fc022a9-c6b2-43a4-8390-f5dcb2e42fec",
+              "name": "Health Check report",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "readiness"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"up\",\n  \"version\": \"v2\",\n  \"info\": \"Service is healthy.\",\n  \"timestamp\": \"2018-02-10T09:30Z\",\n  \"env\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6da78917-25d8-4c2a-903f-817ff6c398d7",
+              "name": "info about error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "readiness"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"code\": \"invalid-token\",\n  \"description\": \"bad token\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://localhost:3000",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7ebb11ef-9811-41a2-9407-221de47c8b14",
+    "name": "Developer Portal Backend APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Backend APIs used by DTN's Developer Portal Web App\n\nContact Support:\n Name: Aether Innovation SE\n Email: aether.innovationse-manila@dtn.com",
+      "type": "text/plain"
+    }
+  }
+}

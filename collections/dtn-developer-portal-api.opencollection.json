@@ -1,0 +1,225 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Developer Portal Backend APIs",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "APIs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all APIs on the system",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/apis",
+            "headers": [
+              {
+                "name": "X-Request-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "groupByCat",
+                "value": "true",
+                "type": "query",
+                "description": "When this param is truthy, the results will be grouped by api category."
+              }
+            ]
+          },
+          "docs": "Returns the APIs on the system, arranged by name in ascending order. If groupByCat was true, it will return the results grouped by category, but still arranged by name in ascending order."
+        },
+        {
+          "info": {
+            "name": "Get an API",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/apis/:slug",
+            "headers": [
+              {
+                "name": "X-Request-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "slug",
+                "value": "dtn-weather-conditions-api",
+                "type": "path",
+                "description": "The api identifier"
+              }
+            ]
+          },
+          "docs": "Get an API"
+        },
+        {
+          "info": {
+            "name": "Get API spec",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/apis/:slug/spec/:version",
+            "headers": [
+              {
+                "name": "X-Request-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "slug",
+                "value": "dtn-weather-conditions-api",
+                "type": "query",
+                "description": "API slug"
+              },
+              {
+                "name": "version",
+                "value": "1.0.0",
+                "type": "query",
+                "description": "API version"
+              }
+            ]
+          },
+          "docs": "Get API spec"
+        },
+        {
+          "info": {
+            "name": "Get API changelog",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/v1/apis/:slug/changelog/:version",
+            "headers": [
+              {
+                "name": "X-Request-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "slug",
+                "value": "dtn-weather-conditions-api",
+                "type": "query",
+                "description": "API slug"
+              },
+              {
+                "name": "version",
+                "value": "1.0.0",
+                "type": "query",
+                "description": "API version"
+              }
+            ]
+          },
+          "docs": "Get API changelog"
+        },
+        {
+          "info": {
+            "name": "Patch an API specs version",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "http://localhost:3000/v1/apis/:slug/versions/:id",
+            "headers": [
+              {
+                "name": "X-Request-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "slug",
+                "value": "dtn-weather-conditions-api",
+                "type": "path"
+              },
+              {
+                "name": "id",
+                "value": "1",
+                "type": "path",
+                "description": "The api specs version id"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Patch an API specs version"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Health Check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/health-check"
+          },
+          "docs": "Health Check"
+        },
+        {
+          "info": {
+            "name": "Kubernetes will use this endpoint to monitor service's health.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/liveness"
+          },
+          "docs": "Kubernetes will use this endpoint to monitor service's health."
+        },
+        {
+          "info": {
+            "name": "Kubernetes will use this endpoint to monitor service's readiness.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://localhost:3000/readiness"
+          },
+          "docs": "Kubernetes will use this endpoint to monitor service's readiness."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

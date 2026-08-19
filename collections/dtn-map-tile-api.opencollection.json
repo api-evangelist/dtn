@@ -1,0 +1,1029 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Map Tile API",
+    "version": "2.0.16"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Catalog",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns the layers and groupings that the provided token is provisioned for.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/catalog",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              }
+            ]
+          },
+          "docs": "Full list of layer catalog: [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html)\n"
+        },
+        {
+          "info": {
+            "name": "Returns a list of groups and layers identified by a catalogId",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/catalog/:catalogId",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "catalogId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for a catalog"
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of groups and layers identified by a catalogId"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns metadata of a given layer by id.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/metadata/:layerId",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              }
+            ]
+          },
+          "docs": "Returns metadata of a given layer by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Legends",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns legend of a given layer by id.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/legends/:layerId",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters."
+              },
+              {
+                "name": "unit",
+                "value": "",
+                "type": "query",
+                "description": "Unit system (with or without industry specific overrides) to use when returning data."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "legendTitle",
+                "value": "",
+                "type": "query",
+                "description": "Indicates whether or not to include the layer name as a title in the legend."
+              },
+              {
+                "name": "maxWidth",
+                "value": "",
+                "type": "query",
+                "description": "max width of the legend image in pixels"
+              },
+              {
+                "name": "parameters",
+                "value": "",
+                "type": "query",
+                "description": "Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.\n"
+              },
+              {
+                "name": "paletteOverride",
+                "value": "",
+                "type": "query",
+                "description": "Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>\nValues may be a string or a number. When the value is a number, the decimal separator (if any) must be a \".\" (dot).<br/>\nColors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.\n"
+              }
+            ]
+          },
+          "docs": "Returns legend of a given layer by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Styles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns styles of a given layer by id.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/styles/:layerId",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "paletteOverride",
+                "value": "",
+                "type": "query",
+                "description": "Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>\nValues may be a string or a number. When the value is a number, the decimal separator (if any) must be a \".\" (dot).<br/>\nColors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.\n"
+              }
+            ]
+          },
+          "docs": "Returns styles of a given layer by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tiles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns a tile from a layer at a specific time.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/tiles/:layerId/:tileSetId/:z/:x/:y",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "tileSetId",
+                "value": "",
+                "type": "path",
+                "description": "tileSetId, as retrieved from the timestamps endpoint."
+              },
+              {
+                "name": "z",
+                "value": "",
+                "type": "path",
+                "description": "Zoom level for tile access."
+              },
+              {
+                "name": "x",
+                "value": "",
+                "type": "path",
+                "description": "x coordinate for tile."
+              },
+              {
+                "name": "y",
+                "value": "",
+                "type": "path",
+                "description": "y coordinate for tile."
+              },
+              {
+                "name": "scheme",
+                "value": "",
+                "type": "query",
+                "description": "Tile scheme, either \"xyz\" or \"tms\"."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "It indicates the expected size for the tile. Only allowed for raster tiles"
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "JSON Web Token in query parameter as an alternative to Authorization header."
+              },
+              {
+                "name": "unit",
+                "value": "",
+                "type": "query",
+                "description": "Unit system (with or without industry specific overrides) to use when returning data."
+              },
+              {
+                "name": "timezone",
+                "value": "",
+                "type": "query",
+                "description": "A recognized geographical region in `Continent/Region` format that observes a uniform standard time. Follows the [IANA timezone database](https://data.iana.org/time-zones/tzdb-2021a/zone1970.tab)."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "paletteOverride",
+                "value": "",
+                "type": "query",
+                "description": "Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>\nValues may be a string or a number. When the value is a number, the decimal separator (if any) must be a \".\" (dot).<br/>\nColors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.\n"
+              },
+              {
+                "name": "smoothingProfile",
+                "value": "",
+                "type": "query",
+                "description": "The smoothing profile to use when rendering the layer. Defaults to `none` if not specified."
+              }
+            ]
+          },
+          "docs": "Returns a tile from a layer at a specific time."
+        },
+        {
+          "info": {
+            "name": "Returns a tile from a layer at a specific time, specifying extension.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/tiles/:layerId/:tileSetId/:z/:x/:y.:ext",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "tileSetId",
+                "value": "",
+                "type": "path",
+                "description": "tileSetId, as retrieved from the timestamps endpoint."
+              },
+              {
+                "name": "z",
+                "value": "",
+                "type": "path",
+                "description": "Zoom level for tile access."
+              },
+              {
+                "name": "x",
+                "value": "",
+                "type": "path",
+                "description": "x coordinate for tile."
+              },
+              {
+                "name": "y",
+                "value": "",
+                "type": "path",
+                "description": "y coordinate for tile."
+              },
+              {
+                "name": "ext",
+                "value": "",
+                "type": "path",
+                "description": "File extension indicating format of choice."
+              },
+              {
+                "name": "scheme",
+                "value": "",
+                "type": "query",
+                "description": "Tile scheme, either \"xyz\" or \"tms\"."
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters."
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "It indicates the expected size for the tile. Only allowed for raster tiles"
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "JSON Web Token in query parameter as an alternative to Authorization header."
+              },
+              {
+                "name": "unit",
+                "value": "",
+                "type": "query",
+                "description": "Unit system (with or without industry specific overrides) to use when returning data."
+              },
+              {
+                "name": "timezone",
+                "value": "",
+                "type": "query",
+                "description": "A recognized geographical region in `Continent/Region` format that observes a uniform standard time. Follows the [IANA timezone database](https://data.iana.org/time-zones/tzdb-2021a/zone1970.tab)."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "paletteOverride",
+                "value": "",
+                "type": "query",
+                "description": "Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>\nValues may be a string or a number. When the value is a number, the decimal separator (if any) must be a \".\" (dot).<br/>\nColors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.\n"
+              },
+              {
+                "name": "smoothingProfile",
+                "value": "",
+                "type": "query",
+                "description": "The smoothing profile to use when rendering the layer. Defaults to `none` if not specified."
+              }
+            ]
+          },
+          "docs": "Returns a tile from a layer at a specific time, specifying extension."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Timestamps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns list of timestamps of a given layer by id.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/timestamps/:layerId",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Times range, in UTC and ISO 8601 compliant, delimited by a forward slash. The time range of data has a maximum of 24 hours allowed. This parameter is **optional**, and is mainly used for accessing older, archived data. If not given, returns the latest data available."
+              },
+              {
+                "name": "forceOffInterval",
+                "value": "",
+                "type": "query",
+                "description": "When set to true, this parameter forces the API to return the most recent time frame, even if it falls outside the regular intervals. If set to false or omitted, only data from the regular intervals is returned."
+              },
+              {
+                "name": "parameters",
+                "value": "",
+                "type": "query",
+                "description": "Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.\n"
+              }
+            ]
+          },
+          "docs": "Returns list of timestamps of a given layer by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tooltips",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns the tooltip of a layer at a specific time given by its id, zoom level, latitude and longitude.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/tooltips/:layerId/:tileSetId/:map-zoom/:lat/:lng",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "tileSetId",
+                "value": "",
+                "type": "path",
+                "description": "tileSetId, as retrieved from the timestamps endpoint."
+              },
+              {
+                "name": "map-zoom",
+                "value": "",
+                "type": "path",
+                "description": "Zoom level used by the map viewer, this may or may not correspond to the tile being requested, which depends on tile size."
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "path",
+                "description": "Latitude that specifies the location being queried.\n"
+              },
+              {
+                "name": "lng",
+                "value": "",
+                "type": "path",
+                "description": "Longitude that specifies the location being queried.\n"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters."
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "JSON Web Token in query parameter as an alternative to Authorization header."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "unit",
+                "value": "",
+                "type": "query",
+                "description": "Unit system (with or without industry specific overrides) to use when returning data."
+              },
+              {
+                "name": "timezone",
+                "value": "",
+                "type": "query",
+                "description": "A recognized geographical region in `Continent/Region` format that observes a uniform standard time. Follows the [IANA timezone database](https://data.iana.org/time-zones/tzdb-2021a/zone1970.tab)."
+              },
+              {
+                "name": "paletteOverride",
+                "value": "",
+                "type": "query",
+                "description": "Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>\nValues may be a string or a number. When the value is a number, the decimal separator (if any) must be a \".\" (dot).<br/>\nColors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.\n"
+              }
+            ]
+          },
+          "docs": "Returns the tooltip of a layer at a specific time given by its id, zoom level, latitude and longitude."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tooltip templates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns tooltip template of a given layer by id.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/tooltip-templates/:layerId",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).\n"
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "parameters",
+                "value": "",
+                "type": "query",
+                "description": "Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.\n"
+              }
+            ]
+          },
+          "docs": "Returns tooltip template of a given layer by id."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Geocoder",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns geographic coordinates of the provided search text.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/geocoder",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "query",
+                "description": "The location or place you are trying to look up. This could be an address, a point of interest name, a city name, etc.\n"
+              },
+              {
+                "name": "willPersist",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether to request persistent geocodes (`true`) or not (`false`, default). When persist is enabled, you are contractually allowed to temporarily cache or permanently store the response, and the backing geocoder service will charge these types of requests at a higher rate."
+              },
+              {
+                "name": "autocomplete",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether to return autocomplete results (`true`) or not (`false`, default). When autocomplete is enabled, results will be included that start with the requested string, rather than just responses that match it exactly."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specify the maximum number of results to return. The default is `5` and the maximum supported is `10`. This parameter is only relevant if the autocomplete feature is enabled. When autocomplete is disabled, the API will return a single result.\n"
+              },
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to one or more countries. Permitted values are ISO 3166 alpha 2 country codes separated by commas. When bbox and country filters are both enabled, the request will utilize only the initial parameter specified.\n"
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to only those contained within the supplied bounding box. Bounding boxes should be supplied as four numbers separated by commas, in minLon,minLat,maxLon,maxLat order. When bbox and country filters are both enabled, the request will utilize only the initial parameter specified.\n"
+              },
+              {
+                "name": "proximity",
+                "value": "",
+                "type": "query",
+                "description": "Bias the response to favor results that are closer to this location. Provided as two comma-separated coordinates in `longitude,latitude` order.\n"
+              },
+              {
+                "name": "placeTypes",
+                "value": "",
+                "type": "query",
+                "description": "Filter results to include only a subset (one or more) of the available feature types. Options are `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`. Multiple options can be comma-separated.\n"
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              }
+            ]
+          },
+          "docs": "Returns geographic coordinates of the provided search text."
+        },
+        {
+          "info": {
+            "name": "Returns descriptive location information for the provided latitude/longitude.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/reverse-geocoder",
+            "headers": [
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Language",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lng",
+                "value": "",
+                "type": "query",
+                "description": "Longitude that specifies the location being queried.\n"
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude that specifies the location being queried.\n"
+              },
+              {
+                "name": "willPersist",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether to request persistent geocodes (`true`) or not (`false`, default). When persist is enabled, you are contractually allowed to temporarily cache or permanently store the response, and the backing geocoder service will charge these types of requests at a higher rate."
+              },
+              {
+                "name": "placeTypes",
+                "value": "",
+                "type": "query",
+                "description": "Filter results to include only a subset (one or more) of the available feature types. Options are `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`. Multiple options can be comma-separated.\n"
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              }
+            ]
+          },
+          "docs": "Returns descriptive location information for the provided latitude/longitude."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Image",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns static image with or without basemap",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://map.api.dtn.com/v2/image",
+            "headers": [
+              {
+                "name": "Accept-Language",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "layerIds",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of layer ids to render in stacking order."
+              },
+              {
+                "name": "opacities",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of opacities to apply to each of the requested layers, in the same order as in the layerIds attribute. Layers with no matching opacity will use the default one being used in its style. Valid values from 0 to 1 inclusive."
+              },
+              {
+                "name": "smoothingProfiles",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated list of smoothing profiles to apply to each of the requested layers, in the same order as in the layerIds attribute. Layers with no matching smoothing profile will not be smoothed."
+              },
+              {
+                "name": "width",
+                "value": "",
+                "type": "query",
+                "description": "Width of the rendered image in pixels"
+              },
+              {
+                "name": "height",
+                "value": "",
+                "type": "query",
+                "description": "Height of the rendered image in pixels"
+              },
+              {
+                "name": "time",
+                "value": "",
+                "type": "query",
+                "description": "Timestamp in UTC and ISO 8601 format. It indicates the time the image should be valid for."
+              },
+              {
+                "name": "basemapStyleURL",
+                "value": "",
+                "type": "query",
+                "description": "URL for a Mapbox data driven style defining a base map.<br/>\nWhen using a custom one, please provide an access token.\n- Streets: mapbox://styles/dtn-mapbox/ckwv1d32r4vsw14poxf2forep\n- Dark: mapbox://styles/dtn-mapbox/ckwv21klw3k2v15pi0igs3uk1\n- Light: mapbox://styles/dtn-mapbox/ckwv1z6fh5prn14pcdx8xqrja\n- Outdoors: mapbox://styles/dtn-mapbox/ckwv1rso35jf614mn4mc9fq82\n- Satellite: mapbox://styles/dtn-mapbox/ckwv24fqs3k5e15pihmf9qtrc\n- Navigation-day: mapbox://styles/dtn-mapbox/ckwv2ch170bul14qg6xneqxri\n- Navigation-night: mapbox://styles/dtn-mapbox/ckwv2jjos05v215pcse1xqjw8\n\nIf using EPSG code of 3031 (Antarctic Polar Stereographic), the following styles must be use\n- 3031 Streets: https://map.api.dtn.com/static/layers/basemaps/3031/styles/street/style.json\n- 3031 Dark: https://map.api.dtn.com/static/layers/basemaps/3031/styles/dark/style.json\n- 3031 Light: https://map.api.dtn.com/static/layers/basemaps/3031/styles/light/style.json\n\nIf using EPSG code of 3995 (Arctic Polar Stereographic), the following styles must be use\n- 3995 Streets: https://map.api.dtn.com/static/layers/basemaps/3995/styles/street/style.json\n- 3995 Dark: https://map.api.dtn.com/static/layers/basemaps/3995/styles/dark/style.json\n- 3995 Light: https://map.api.dtn.com/static/layers/basemaps/3995/styles/light/style.json\n"
+              },
+              {
+                "name": "basemapVisibilityOverrides",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated string of pairs like \"layerId:true|false\" defining layout visibility overrides for the basemap provided by the basemapStyleURL parameter. Wildcards are allowed in the layerId."
+              },
+              {
+                "name": "viewport",
+                "value": "",
+                "type": "query",
+                "description": "Defines the area to be rendered using comma separated numbers. Area can be defined either through: <br/>\n- lon,lat,zoom\n  <br/>lon should be between -180 and 180, lat between -90 and 90, zoom between 0 and 22\n- minLon,minLat,maxLon,maxLat\n  <br/>minLon and maxLon should be between -360 and 360, minLat and maxLat between -90 and 90, zoom between 0 and 22, minLon < maxLon, minLat < maxLat\n"
+              },
+              {
+                "name": "dtnLogoPosition",
+                "value": "",
+                "type": "query",
+                "description": "indicates position for DTN logo"
+              },
+              {
+                "name": "unit",
+                "value": "",
+                "type": "query",
+                "description": "Unit system (with or without industry specific overrides) to use when returning data."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "epsg",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the projection to be used, as defined by an EPSG code.<br/>\nThe EPSG code being used must be present in the supportedEPSGs metadata attribute for each of the layers requested.<br/> \nWhen using a basemap style url, make sure to reference one using the same EPSG.\n\nExample values: \n- 3857 - Web Mercator\n- 3031 - Antarctic Polar Stereographic\n- 3995 - Arctic Polar Stereographic\n"
+              },
+              {
+                "name": "parameters",
+                "value": "",
+                "type": "query",
+                "description": "Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.\n"
+              }
+            ]
+          },
+          "docs": "Returns static image with or without basemap"
+        },
+        {
+          "info": {
+            "name": "Returns static image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://map.api.dtn.com/v2/image",
+            "headers": [
+              {
+                "name": "Accept-Language",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "width",
+                "value": "",
+                "type": "query",
+                "description": "Width of the rendered image in pixels"
+              },
+              {
+                "name": "height",
+                "value": "",
+                "type": "query",
+                "description": "Height of the rendered image in pixels"
+              },
+              {
+                "name": "basemapStyleURL",
+                "value": "",
+                "type": "query",
+                "description": "URL for a Mapbox data driven style defining a base map.<br/>\nWhen using a custom one, please provide an access token.\n- Streets: mapbox://styles/dtn-mapbox/ckwv1d32r4vsw14poxf2forep\n- Dark: mapbox://styles/dtn-mapbox/ckwv21klw3k2v15pi0igs3uk1\n- Light: mapbox://styles/dtn-mapbox/ckwv1z6fh5prn14pcdx8xqrja\n- Outdoors: mapbox://styles/dtn-mapbox/ckwv1rso35jf614mn4mc9fq82\n- Satellite: mapbox://styles/dtn-mapbox/ckwv24fqs3k5e15pihmf9qtrc\n- Navigation-day: mapbox://styles/dtn-mapbox/ckwv2ch170bul14qg6xneqxri\n- Navigation-night: mapbox://styles/dtn-mapbox/ckwv2jjos05v215pcse1xqjw8\n\nIf using EPSG code of 3031 (Antarctic Polar Stereographic), the following styles must be use\n- 3031 Streets: https://map.api.dtn.com/static/layers/basemaps/3031/styles/street/style.json\n- 3031 Dark: https://map.api.dtn.com/static/layers/basemaps/3031/styles/dark/style.json\n- 3031 Light: https://map.api.dtn.com/static/layers/basemaps/3031/styles/light/style.json\n\nIf using EPSG code of 3995 (Arctic Polar Stereographic), the following styles must be use\n- 3995 Streets: https://map.api.dtn.com/static/layers/basemaps/3995/styles/street/style.json\n- 3995 Dark: https://map.api.dtn.com/static/layers/basemaps/3995/styles/dark/style.json\n- 3995 Light: https://map.api.dtn.com/static/layers/basemaps/3995/styles/light/style.json\n"
+              },
+              {
+                "name": "basemapVisibilityOverrides",
+                "value": "",
+                "type": "query",
+                "description": "Comma separated string of pairs like \"layerId:true|false\" defining layout visibility overrides for the basemap provided by the basemapStyleURL parameter. Wildcards are allowed in the layerId."
+              },
+              {
+                "name": "viewport",
+                "value": "",
+                "type": "query",
+                "description": "Defines the area to be rendered using comma separated numbers. Area can be defined either through <br/>\n- lon,lat,zoom\n  <br/>lon should be between -180 and 180, lat between -90 and 90, zoom between 0 and 22\n- minLon,minLat,maxLon,maxLat\n  <br/>minLon and maxLon should be between -360 and 360, minLat and maxLat between -90 and 90, zoom between 0 and 22, minLon < maxLon, minLat < maxLat\n\nWhen doing POST with a style holding a geojson payload in the sources section, the viewport can be automatically adjusted to the incoming features, padding can be optionally added.\n- auto\n- auto,paddingInDegrees\n  <br/>paddingInDegrees should be between 0 and 10\n"
+              },
+              {
+                "name": "dtnLogoPosition",
+                "value": "",
+                "type": "query",
+                "description": "indicates position for DTN logo"
+              },
+              {
+                "name": "unit",
+                "value": "",
+                "type": "query",
+                "description": "Unit system (with or without industry specific overrides) to use when returning data."
+              },
+              {
+                "name": "locale",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the desired language and country code for language translation and formatting conventions.<br/>\nSupported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>\nDefaults to English (en-US) if unsupported locale is specified.<br/>\n<b>If provided, overrides the Accept-Language header.</b><br/>\n"
+              },
+              {
+                "name": "epsg",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the projection to be used, as defined by an EPSG code.<br/>\nThe EPSG code being used must be present in the supportedEPSGs metadata attribute for each of the layers requested.<br/> \nWhen using a basemap style url, make sure to reference one using the same EPSG.\n\nExample values: \n- 3857 - Web Mercator\n- 3031 - Antarctic Polar Stereographic\n- 3995 - Arctic Polar Stereographic\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Render static images with out without a basemap, using more controls, like adding custom styles or specifying run times and timestamps"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1309 @@
+{
+  "item": [
+    {
+      "id": "12b233ef-8d03-4151-afe7-ab63f5756524",
+      "name": "Endpoints",
+      "description": {
+        "content": "Renewables API has 3 endpoints that each cater to a specific need, whether it's the time series at a location or the associated metadata.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "737eb601-4c74-4028-87f8-b7feb896d95c",
+          "name": "Hub Height Winds Forecast",
+          "request": {
+            "name": "Hub Height Winds Forecast",
+            "description": {
+              "content": "This endpoint provides forecast wind parameters from 10-300 meters above ground level for any point on Earth. Specify the location, parameters of interest, and a time range from now until 15 days ahead. The API responds with the requested time series in GeoJSON format.\n\nUse the query string to customize the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).  These are required.\n\n  * Specify `parameters` to filter the response to a specific, comma-separated list of environmental parameters. The API returns defaults when this is omitted.\n\n  * Specify `startTime` and `endTime` (using [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format) for a forecast time range, or `startTime` alone for just one timestamp.\n\n  * Specify `units=us-std` to receive values as United States customary (imperial) units. The API returns metric units by default and when `units=si-std` is expressly requested.\n\n  * Specify `interval` to obtain sub-hourly (interpolated) or multi-hour (aggregated) results. The API returns hourly results by default.\n\nAll together, a complete request looks like:\n\n```\nhttps://renewables.api.dtn.com/v1/hub-height-winds/forecast?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&interval={interval}&parameters={param1,param2}&units={units}\n```\n\n### How to change timesteps\n\nTo interpolate to sub-hourly timesteps, specify `interval=15m`, `interval=30m`, or `interval=45m` in the query string.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=15m&parameters=windDirection10m,windSpeed10m`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=30m&parameters=windDirection10m,windSpeed10m`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=45m&parameters=windDirection10m,windSpeed10m`\n\nTo aggregate over multiple hours, specify `interval={n}h` in the query string using a whole number of hours for `{n}`, from 2 to the timespan between `startTime` and `endTime`. Also, substitute the desired aggregation parameter names from the `Parameters` section. For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=2h&parameters=windDirection10mAvg,windSpeed10mMax`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=6h&parameters=windDirection10mAvg,windSpeed10mMax`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=24h&parameters=windDirection10mAvg,windSpeed10mMax`\n\nIn special cases, daily aggregations might require local timezone-aware aggregations to account of days with an one extra or less hour.  In these cases, specify `interval=1d` along with timezone-aware `startTime` and `endTime` values.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-11-03T00:00:00&endTime=2024-11-04T23:59:59&interval=1d&parameters=windDirection10mAvg,windSpeed10mMax`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-03-09T00:00:00&endTime=2024-03-10T23:59:59&interval=1d&parameters=windDirection10mAvg,windSpeed10mMax`\n\n### How to change timezones\n\nTypically, `startTime` and `endTime` end with `Z` to indicate UTC time.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z`\n\nTo change timezones, specify a UTC offset (such as `+08:00` or `-05:00`) instead of `Z`. Note that the `+` symbol is a special URL character that must be encoded as `%2B`.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00-05:00`\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00%2B08:00&endTime=2024-10-10T00:00:00%2B08:00`\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00%2B08:00`\n\nTo obtain the local timezone at the requested location, omit the suffix entirely. For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00&endTime=2024-10-10T00:00:00`\n  * Fractional time zones\n      + Parameters:\n        + **startTime:** 2025-07-04T00:00:00\n        + **endTime:** 2025-07-04T23:59:59\n        + **interval:** 24h\n        + **lat:** 30.251\n        + **lon:** 62.569\n        \n      + Response:\n        ```json\n        \"properties\": {\n            \"2025-07-03T23:30:00+0430\": {\n                \"windDirection100mAvg\": 309,\n                \"windGust100mMax\": 8.6,\n                \"windGust100mMin\": 4.9,\n                \"windGust100mAvg\": 6.2,\n                \"windSpeed100mMax\": 6.6,\n                \"windSpeed100mMin\": 3.2,\n                \"windSpeed100mAvg\": 4.3\n            },\n            \"2025-07-04T23:30:00+0430\": {\n                \"windDirection100mAvg\": 325,\n                \"windGust100mMax\": 8.1,\n                \"windGust100mMin\": 8.1,\n                \"windGust100mAvg\": 8.1,\n                \"windSpeed100mMax\": 6,\n                \"windSpeed100mMin\": 6,\n                \"windSpeed100mAvg\": 6\n            }\n        }\n        ```\n      * Explanation:\n        * **Why** This response seems confusing at first becuase we have 2 data points when we seemingly only requested a single 24 hour interval.\n        * **Local Timezone Assumption** When requesting a start and end time that has no timezone, the timezone of the location requested will be used.\n          * For the example requested lat/lon the local timezone is UTC+04:30 (fractional timezone)\n        * **Inclusive Time Range** startTime is hour inclusive, meaning the API will return data for the top of the requested hour (in UTC).\n        * **UTC Conversion** All data is stored in UTC hourly.\n          * When we convert these requested timestamps to UTC, `startTime=2025-07-03T19:30:00Z`, `endTime=2025-07-04T19:29:59Z`\n        * Since startTime and endTime are `inclusive`, so the time range spans exactly 25 hours, not 24.\n        * Changing `endTime` to `2025-07-04T23:00:00` will result in a single interval returned.\n\nIn all cases, timestamps in the API response automatically match the timezone indicated by `startTime`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "hub-height-winds",
+                "forecast"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "interval",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c0f3a766-ba3b-44ee-a9d2-7875c1a82742",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "hub-height-winds",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://renewables.api.dtn.com/v1/hub-height-winds/forecast?lat=35.47&lon=-97.51&parameters=windDirection10m,windGust10m,windSpeed10m,windSpeed10mLowerBound,windSpeed10mUpperBound,windDirection100m,windGust100m,windSpeed100m,windSpeed100mLowerBound,windSpeed100mUpperBound&startTime=2024-10-01T00:06:10Z&endTime=2024-10-01T02:06:10Z&units=us-std\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -97.51,\n          35.47\n        ]\n      },\n      \"properties\": {\n        \"2024-10-01T00:00:00Z\": {\n          \"windDirection10m\": 139.1,\n          \"windGust10m\": 18.34,\n          \"windSpeed10m\": 11.59,\n          \"windSpeed10mLowerBound\": 10.15,\n          \"windSpeed10mUpperBound\": 22.57,\n          \"windDirection100m\": 145.7,\n          \"windGust100m\": 90.68,\n          \"windSpeed100m\": 84.29,\n          \"windSpeed100mLowerBound\": 82.13,\n          \"windSpeed100mUpperBound\": 86.81\n        },\n        \"2024-10-01T01:00:00Z\": {\n          \"windDirection10m\": 133.9,\n          \"windGust10m\": 18.72,\n          \"windSpeed10m\": 10.65,\n          \"windSpeed10mLowerBound\": 9.14,\n          \"windSpeed10mUpperBound\": 15.75,\n          \"windDirection100m\": 140.5,\n          \"windGust100m\": 89.16,\n          \"windSpeed100m\": 80.69,\n          \"windSpeed100mLowerBound\": 77.45,\n          \"windSpeed100mUpperBound\": 83.39\n        },\n        \"2024-10-01T02:00:00Z\": {\n          \"windDirection10m\": 136.5,\n          \"windGust10m\": 19.1,\n          \"windSpeed10m\": 10.92,\n          \"windSpeed10mLowerBound\": 10.38,\n          \"windSpeed10mUpperBound\": 23.49,\n          \"windDirection100m\": 143.9,\n          \"windGust100m\": 85.22,\n          \"windSpeed100m\": 78.71,\n          \"windSpeed100mLowerBound\": 76.19,\n          \"windSpeed100mUpperBound\": 81.41\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "18ed0203-ff62-4e32-812a-9d9c807f73c1",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "hub-height-winds",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"badRequest\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\",\n  \"errors\": [\n    {\n      \"message\": \"the following parameters are invalid: invalidParameter1,invalidParameter2\",\n      \"parameter\": \"parameters\",\n      \"value\": [\n        \"invalidParameter1\",\n        \"invalidParameter2\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "60f15772-e40e-4805-8104-f198b008deb5",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "hub-height-winds",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7db0941e-46a1-4c2e-9ec9-006765144a0f",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "hub-height-winds",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"notAcceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "579de79c-b5b0-403c-bb58-64983f611337",
+          "name": "Solar Irradiance Forecast",
+          "request": {
+            "name": "Solar Irradiance Forecast",
+            "description": {
+              "content": "This endpoint provides forecast solar radiation and related parameters for any point on Earth. Specify the location, parameters of interest, and a time range from now until 15 days ahead. The API responds with the requested time series in GeoJSON format.\n\nUse the query string to customize the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).  These are required.\n\n  * Specify `parameters` to filter the response to a specific, comma-separated list of environmental parameters. The API returns defaults when this is omitted.\n\n  * Specify `startTime` and `endTime` (using [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format) for a forecast time range, or `startTime` alone for just one timestamp.\n\n  * Specify `units=us-std` to receive values as United States customary (imperial) units. The API returns metric units by default and when `units=si-std` is expressly requested.\n\n  * Specify `interval` to obtain sub-hourly (interpolated) or multi-hour (aggregated) results. The API returns hourly results by default.\n\nAll together, a complete request looks like:\n\n```\nhttps://renewables.api.dtn.com/v1/solar-irradiance/forecast?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&interval={interval}&parameters={param1,param2}&units={units}\n```\n\n### How to change timesteps\n\nTo interpolate to sub-hourly timesteps, specify `interval=15m`, `interval=30m`, or `interval=45m` in the query string.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=15m&parameters=directNormalIrradiance,diffuseHorizontalIrradiance`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=30m&parameters=directNormalIrradiance,diffuseHorizontalIrradiance`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=45m&parameters=directNormalIrradiance,diffuseHorizontalIrradiance`\n\nTo aggregate over multiple hours, specify `interval={n}h` in the query string using a whole number of hours for `{n}`, from 2 to the timespan between `startTime` and `endTime`. Also, substitute the desired aggregation parameter names from the `Parameters` section. For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=2h&parameters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=6h&parameters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=24h&parameters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`\n\nIn some cases, daily aggregations might require local timezone-aware aggregations to account of days with an one extra or less hour.  In these cases, specify `interval=1d` along with timezone-aware `startTime` and `endTime` values.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-11-03T00:00:00&endTime=2024-11-04T23:59:59&interval=1d&parameters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-03-09T00:00:00&endTime=2024-03-10T23:59:59&interval=1d&parameters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`\n\n### How to change timezones\n\nTypically, `startTime` and `endTime` end with `Z` to indicate UTC time.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z`\n\nTo change timezones, specify a UTC offset (such as `+08:00` or `-05:00`) instead of `Z`. Note that the `+` symbol is a special URL character that must be encoded as `%2B`.  For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00-05:00`\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00%2B08:00&endTime=2024-10-10T00:00:00%2B08:00`\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00%2B08:00`\n\nTo obtain the local timezone at the requested location, omit the suffix entirely. For example:\n\n  * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00&endTime=2024-10-10T00:00:00`\n  * Fractional time zones\n      + Parameters:\n        + **startTime:** 2025-07-04T00:00:00\n        + **endTime:** 2025-07-04T23:59:59\n        + **interval:** 24h\n        + **lat:** 30.251\n        + **lon:** 62.569\n        \n      + Response:\n        ```json\n          \"properties\": {\n          \"2025-07-03T23:30:00+0430\": {\n              \"airTempMax\": 40.1,\n          },\n          \"2025-07-04T23:30:00+0430\": {\n              \"airTempMax\": 30.2,\n          }\n        }\n        ```\n      * Explanation:\n        * **Why** This response seems confusing at first becuase we have 2 data points when we seemingly only requested a single 24 hour interval.\n        * **Local Timezone Assumption** When requesting a start and end time that has no timezone, the timezone of the location requested will be used.\n          * For the example requested lat/lon the local timezone is UTC+04:30 (fractional timezone)\n        * **Inclusive Time Range** startTime is hour inclusive, meaning the API will return data for the top of the requested hour (in UTC).\n        * **UTC Conversion** All data is stored in UTC hourly.\n          * When we convert these requested timestamps to UTC, `startTime=2025-07-03T19:30:00Z`, `endTime=2025-07-04T19:29:59Z`\n        * Since startTime and endTime are `inclusive`, so the time range spans exactly 25 hours, not 24.\n        * Changing `endTime` to `2025-07-04T23:00:00` will result in a single interval returned.\n\nIn all cases, timestamps in the API response automatically match the timezone indicated by `startTime`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "solar-irradiance",
+                "forecast"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "interval",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "03a6bf0e-95c3-4140-b4e6-13da11193144",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "solar-irradiance",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://renewables.api.dtn.com/v1/solar-irradiance/forecast?lat=35.47&lon=-97.51&parameters=airTemp,directNormalIrradiance,diffuseHorizontalIrradiance,shortWaveRadiation,snowfallAmount&startTime=2024-12-01T18:00:00Z&endTime=2024-12-01T20:00:00Z&units=us-std\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -97.51,\n          35.47\n        ]\n      },\n      \"properties\": {\n        \"2024-12-01T18:00:00Z\": {\n          \"airTemp\": 30.2,\n          \"directNormalIrradiance\": 300,\n          \"diffuseHorizontalIrradiance\": 120,\n          \"shortWaveRadiation\": 420,\n          \"snowfallAmount\": 0.02\n        },\n        \"2024-12-01T19:00:00Z\": {\n          \"airTemp\": 28.4,\n          \"directNormalIrradiance\": 200,\n          \"diffuseHorizontalIrradiance\": 100,\n          \"shortWaveRadiation\": 300,\n          \"snowfallAmount\": 0.01\n        },\n        \"2024-12-01T20:00:00Z\": {\n          \"airTemp\": 26.6,\n          \"directNormalIrradiance\": 100,\n          \"diffuseHorizontalIrradiance\": 80,\n          \"shortWaveRadiation\": 180,\n          \"snowfallAmount\": 0.03\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d5451f1f-f571-445f-a2d7-8a39bc5c231a",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "solar-irradiance",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"badRequest\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\",\n  \"errors\": [\n    {\n      \"message\": \"the following parameters are invalid: invalidParameter1,invalidParameter2\",\n      \"parameter\": \"parameters\",\n      \"value\": [\n        \"invalidParameter1\",\n        \"invalidParameter2\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b5cf44e7-edf9-4142-8459-43dfc6ef8fcb",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "solar-irradiance",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "379d5e5b-d2ee-4631-a70e-1bb8f2ff8522",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "solar-irradiance",
+                    "forecast"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "30m"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"notAcceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "73cf5815-b563-4bf1-8051-4f7d99ff535c",
+          "name": "Parameters",
+          "request": {
+            "name": "Parameters",
+            "description": {
+              "content": "This endpoint provides helpful context in JSON format about the environmental parameters and operations that the other endpoints support.\n\nUse query parameters to control the results in the response body:\n  * Set `category` to `hub-height-winds-forecast` or `solar-irradiance-forecast` to filter environmental parameters by that category.\n  * Specify a `name` to filter environmental parameters by that name (for example, `name=windSpeed100m`).\n  * Specify a `category` and `name` to filter by both.\n  * Omit the query string to obtain all environmental parameters in the response.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "2154dd03-5bfa-48ac-b297-c4137178557b",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"hub-height-winds-forecast\": {\n    \"windSpeed100m\": {\n      \"metricUnit\": \"meter per second\",\n      \"imperialUnit\": \"mile per hour\",\n      \"type\": \"number\",\n      \"description\": \"Wind speed at 100 meters above ground level.\",\n      \"notes\": \"\",\n      \"aggregationParameters\": [\n        \"windSpeed100mMax\",\n        \"windSpeed100mMin\",\n        \"windSpeed100mAvg\"\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e80b453d-65b9-4c6f-a15d-827de8502e9c",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"badRequest\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\",\n  \"errors\": [\n    {\n      \"message\": \"the following parameters are invalid: invalidParameter1,invalidParameter2\",\n      \"parameter\": \"parameters\",\n      \"value\": [\n        \"invalidParameter1\",\n        \"invalidParameter2\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2ab65bbc-8dac-445b-a2c6-3aa13c1e9e6b",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d691eed7-3dde-4632-bd1e-833be805e618",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"notAcceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:renewables:/v1/.../forecast:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "7c762dab-1a2b-42a5-b613-7e27a2515692",
+      "name": "Parameters",
+      "description": {
+        "content": "Renewables API currently offers environmental parameters for a forecast time range up to 15 days in the future.\n\nIt’s possible to aggregate most parameters over multiple hours.  The tables that follow identify which parameters have corresponding aggregation parameter names.  To request an aggregation, just substitute the desired parameter name and specify an `interval` greater than 1 hour (see `Endpoints` section for details).  For example, if 100-meter wind speed (`windSpeed100m`) has corresponding parameters `windSpeed100mMax`, `windSpeed100mMin`, and `windSpeed100mAvg`, request parameter `windSpeed100mAvg` with `interval=6h` in the query string to obtain the 6-hour 100-meter wind speed average.\n## Hub Height Winds Parameters\nExpand the table below to view parameters available from the hub height winds endpoint and each one's description, unit of measurement, and whether it is a default. The API returns only defaults unless specific parameters are requested.\n<details> <summary>Click to expand...</summary>\n\n| Parameter               | Default | Description | Metric units | Imperial units | Aggregation Parameters |\n|-------------------------|---------|-------------|--------------|----------------|------------------------|\n| localOffsetHours        |         | The number of hours to add or subtract from the UTC timestamp in the response to obtain local time (accounting for Daylight Saving Time) at the requested latitude and longitude. | number of hours | number of hours | |\n| localTimezoneOlson      |         | The Olson time zone name at the requested latitude and longitude. | name of the timezone | name of the timezone | |\n| windDirection100m       | Yes     | The direction from which the wind is blowing at a height of 100 meters above the ground, measured in degrees with respect to true north. | degree | degree | windDirection100mAvg |\n| windDirection{n}m       |         | The direction from which the wind is blowing at a height of {n} meters above the ground (any whole number from 10-300), measured in degrees with respect to true north. | degree | degree | windDirection{n}mAvg |\n| windGust100m            | Yes     | The wind gust speed at a height of 100 meters above the ground. | meter per second | mile per hour | windGust100mMax, windGust100mMin, windGust100mAvg |\n| windGust{n}m            |         | The wind gust speed at a height of {n} meters above the ground (any whole number from 10-300). | meter per second | mile per hour | windGust{n}mMax, windGust{n}mMin, windGust{n}mAvg |\n| windSpeed100m           | Yes     | The wind speed at a height of 100 meters above the ground. | meter per second | mile per hour | windSpeed100mMax, windSpeed100mMin, windSpeed100mAvg |\n| windSpeed{n}m           |         | The wind speed at a height of {n} meters above the ground (any whole number from 10-300). | meter per second | mile per hour | windSpeed{n}mMax, windSpeed{n}mMin, windSpeed{n}mAvg |\n| windSpeed10mLowerBound  |         | Lower bound on the uncertainty in the 10-meter wind speed.  | meter per second | mile per hour | |\n| windSpeed10mUpperBound  |         | Upper bound on the uncertainty in the 10-meter wind speed.  | meter per second | mile per hour | |\n| windSpeed100mLowerBound |         | Lower bound on the uncertainty in the 100-meter wind speed. | meter per second | mile per hour | |\n| windSpeed100mUpperBound |         | Upper bound on the uncertainty in the 100-meter wind speed. | meter per second | mile per hour | |\n</details>\n\n## Solar Irradiance Parameters\nExpand the table below to view parameters available from the solar irradiance endpoint and each one's description, unit of measurement, and whether it is a default. The API returns only defaults unless specific parameters are requested.\n<details> <summary>Click to expand...</summary>\n\n| Parameter                    | Default | Description | Metric units | Imperial units | Aggregation Parameters |\n|------------------------------|---------|-------------|--------------|----------------|------------------------|\n| airTemp                      | Yes     | Air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | airTempMax, airTempMin, airTempAvg |\n| directNormalIrradiance       | Yes     | Direct Normal Irradiance (DNI) is the portion of instantaneous solar radiation reaching the Earth's surface that is perpendicular to the sun's rays, excluding diffuse sunlight. | watt per square meter | watt per square meter | directNormalIrradianceMax, directNormalIrradianceMin, directNormalIrradianceAvg |\n| diffuseHorizontalIrradiance  | Yes     | Diffuse Horizontal Irradiance (DHI) is the portion of instantaneous solar radiation reaching the Earth's surface that has been scattered by the atmosphere, excluding direct sunlight. | watt per square meter | watt per square meter | diffuseHorizontalIrradianceMax, diffuseHorizontalIrradianceMin, diffuseHorizontalIrradianceAvg |\n| globalNormalIrradiance       | Yes     | Global Normal Irradiance (GNI) is the total amount of solar radiation reaching the Earth's surface that is perpendicular to the sun's rays, including both direct and diffuse sunlight. | watt per square meter | watt per square meter | globalNormalIrradianceMax, globalNormalIrradianceMin, globalNormalIrradianceAvg |\n| globalRadiation              | Yes     | Total mean incoming solar radiation received on the Earth's surface, combining both direct sunlight and diffuse sky radiation over the past hour. | joule per square centimeter | joule per square centimeter | globalRadiationSum |\n| localOffsetHours             |         | The number of hours to add or subtract from the UTC timestamp in the response to obtain local time (accounting for Daylight Saving Time) at the requested latitude and longitude. | number of hours | number of hours | |\n| localTimezoneOlson           |         | The Olson time zone name at the requested latitude and longitude. | name of the timezone | name of the timezone | |\n| snowfallAmount               | Yes     | Total accumulation of snow (measured as depth, not liquid equivalent). | millimeter | inch | snowfallAmountSum |\n| shortWaveRadiation           | Yes     | Also called Global Horizontal Irradiance (GHI), this is the instantaneous high-energy solar radiation received at the Earth's surface, including both direct (DNI) and diffuse (DHI) sunlight. | watt per square meter | watt per square meter | shortWaveRadiationMax, shortWaveRadiationMin, shortWaveRadiationAvg |\n</details>",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "20aa11f2-8356-456d-b48b-86a9e2019034",
+          "name": "/",
+          "request": {
+            "name": "/",
+            "description": {},
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://renewables.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d04ced1f-638d-4409-8a58-73edceaec981",
+    "name": "DTN Renewables API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nWelcome to DTN’s Renewables API.  This service empowers consumers with accurate, global, location-specific environmental data tailored for the renewable energy industry.  It caters to a wide range of scenarios, including:\n  * Developers optimizing site selection, turbine placement, and operational strategies for wind energy projects.\n  * Analysts simulating renewable energy generation, forecasting power output, and assessing project viability.\n  * Grid operators anticipating fluctuations in renewable energy supply that affect stability and efficiency.\n  * Institutions involved in research and development to enhance renewable energy technologies.\n  * Consultants assessing environmental impacts for compliance with regulatory requirements.\n\n\nKey Features:\n\n\n  * Obtain a detailed time series of environmental data for any location on Earth at hourly or sub-hourly intervals up to 15 days ahead, backed by DTN’s innovative global models and state-of-the-art cloud technology.\n  * Access essential content such as hub height wind speed, gust, and direction anywhere from 10 to 300 meters above ground level.\n  * Aggregate data on-the-fly over multiple hours using easy-to-understand query arguments.\n  * Specify a time range with UTC offsets to automatically convert the response to any local time zone for faster interpretation and integration into local operations.\n\n\nThe interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of the Renewables API.\n# Getting Started\n## Obtaining credentials\nTo get started, all users need their own client ID and client secret. Please contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. Then, review the `Authentication` section to learn how to request an API access token. Do not share or use others' API credentials, since doing so may compromise information security.\n\n## Making requests\nThere are multiple ways to make an initial API request:\n\n**1. Interactive documentation:** Navigate to the `Authentication` section on this page, insert credentials to obtain an access token, then explore the API endpoints described in the `Endpoints` section.\n\n**2. Postman collection:** For a hands-on approach, consider downloading the Postman collection and environment from the top of this page. Insert credentials and start testing the API in Postman's interactive application.\n\n**3. Writing code:** Ready to start coding? Try the Python example below, replacing `client_id` and `client_secret` with proper credentials.  This invokes the forecast endpoint for hub height winds with a GET request and prints the response.\n\n```python\n  import requests\n  import urllib\n\n  #--- Obtain an API access token ---\n\n  auth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\n\n  body = {\n      'grant_type': 'client_credentials',\n      'client_id': '...insert your client id here...',\n      'client_secret': '...insert your client secret here...',\n      'audience': 'https://renewables.api.dtn.com'\n  }\n  response = requests.post(auth_url, json=body)\n  access_token = response.json()['data']['access_token']\n\n  #--- Invoke the API ---\n\n  api_base_url = 'https://renewables.api.dtn.com/v1'\n  query_parameters = urllib.parse.urlencode({\n      \"lat\": 35.47,\n      \"lon\": -97.51,\n      \"startTime\": \"2024-10-01T00:06:10Z\",\n      \"endTime\": \"2024-10-14T00:06:10Z\",\n  })\n  endpoint = '/hub-height-winds/forecast?' + query_parameters\n\n  headers = {'Authorization': 'Bearer ' + access_token}\n  response = requests.get(api_base_url + endpoint, headers=headers)\n\n  #--- Print the response ---\n\n  print(response.json())\n```",
+      "type": "text/plain"
+    }
+  }
+}

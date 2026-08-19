@@ -1,0 +1,323 @@
+{
+  "item": [
+    {
+      "id": "00d61e99-077b-4c21-b80f-61e78cb1d44d",
+      "name": "NOTAM",
+      "description": {
+        "content": "World wide NOTAMS available from various sources, FAA SWIM, EAD and others. Using a hierarchy to avoid duplicated NOTAMS",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9e78052d-8635-48e6-8b9a-98fc55994f90",
+          "name": "Get NOTAMs for a Station",
+          "request": {
+            "name": "Get NOTAMs for a Station",
+            "description": {
+              "content": "Get all available NOTAMs for a specific Station ID",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "notams",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "stationId",
+                  "value": "<string>",
+                  "description": "(Required) Station identifier, e.g., `KIND`, `CYYC`"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "preferNotamType",
+                  "value": "domestic",
+                  "description": "Preference for NOTAM source type.  Must be one of `domestic`, `international`, or `all`.  When `domestic` (default), domestic are preferred and international is used as fallback.  When `international`, international is preferred and domestic is used as fallback.  When `all`, both domestic and international NOTAMs are returned with any domestic first.  Cannot be used together with `onlyNotamType`."
+                },
+                {
+                  "disabled": false,
+                  "key": "onlyNotamType",
+                  "value": "<string>",
+                  "description": "Exclusive filter for NOTAM source type.  Must be one of `domestic` or `international`.  When set, only NOTAMs of the specified type are returned with no fallback to the other type.  Cannot be used together with `preferNotamType`."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "09143894-be44-495b-b0ed-d349f745ad83",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "notams",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "stationId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "preferNotamType",
+                      "value": "domestic"
+                    },
+                    {
+                      "key": "onlyNotamType",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"http://localhost:3000/v1/notams/KIND?limit=2\",\n  \"notams\": [\n    {\n      \"stationId\": \"KIND\",\n      \"notamId\": \"A2969/22\",\n      \"raw_text\": \"A2969/22 NOTAMN Q) KZID/QILXX/I/NBO/A/000/999/3943N08618W005\\nA) KIND\\nB) 2206171130\\nC) PERM\\nE) ILS RWY 32 LOC UNUSABLE BEYOND 25DEG RIGHT OF COURSE\",\n      \"issueDateTime\": \"2022-06-17T11:30:00.000Z\",\n      \"expireDateTime\": null\n    },\n    {\n      \"stationId\": \"KIND\",\n      \"notamId\": \"02/026\",\n      \"raw_text\": \"IND 02/026 IND OBST CRANE (ASN 2022-AGL-11119-NRA) 394252N0861810W (0.4NM WSW IND) 953FT (197FT AGL) FLAGGED 2302081306-2405142300\",\n      \"issueDateTime\": \"2023-02-08T13:06:00.000Z\",\n      \"expireDateTime\": \"2024-05-14T23:00:00.000Z\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.notams.KIND?limit=2\",\n    \"uuid\": \"7340f324-28a1-4dd1-b644-8b2e3f895aa8\",\n    \"request_id\": \"aedb15e9-b018-48a9-b9fa-71f2b6348425\",\n    \"start_timestamp\": 1714018407946,\n    \"end_timestamp\": 1714018410376,\n    \"execution_time\": 2430\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc538482-16f3-4b05-aed2-20e915ee9ddc",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "notams",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "stationId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "preferNotamType",
+                      "value": "domestic"
+                    },
+                    {
+                      "key": "onlyNotamType",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"http://localhost:3000/v1/notams/KIND?offset=-1&limit=10\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:895f33f9-925d-42df-9500-32fabbbd813c\",\n  \"errors\": [\n    {\n      \"message\": \"`offset` query must be Integer zero or greater\",\n      \"parameter\": \"offset\",\n      \"value\": -1\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.notams.KIND?offset=-1&limit=10\",\n    \"uuid\": \"b90dae85-86f6-4b79-a747-8dfd0655d36c\",\n    \"request_id\": \"895f33f9-925d-42df-9500-32fabbbd813c\",\n    \"start_timestamp\": 1714013205229,\n    \"end_timestamp\": 1714013205461,\n    \"execution_time\": 232\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c5487d51-513a-4bdf-9ca9-e072148c5327",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "notams",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "stationId",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "preferNotamType",
+                      "value": "domestic"
+                    },
+                    {
+                      "key": "onlyNotamType",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://aviation.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "44a1ede8-b824-4841-8603-a99ff244c0b5",
+    "name": "Aviation NOTAM API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The DTN NOTAM API is an all-encompassing solution to retrieve the most current NOTAM from multiple available feeds to avoid duplicate NOTAMS. Many sources publish NOTAMs and push them to others such as EAD. This causes duplicates which can not be easily filtered due to formatting differences. Currently the NOTAMS are retrieved from the FAA SWIM feed and EAD. Other areas of the world can easily be added applying the same logic.",
+      "type": "text/plain"
+    }
+  }
+}

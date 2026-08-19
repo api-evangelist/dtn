@@ -1,0 +1,94 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Lightning Stream API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lightning.api.dtn.com/v1/",
+            "params": [
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Get observations starting a specific time"
+              },
+              {
+                "name": "by",
+                "value": "",
+                "type": "query",
+                "description": "Get observations by radius | boundingBox."
+              },
+              {
+                "name": "radius",
+                "value": "",
+                "type": "query",
+                "description": "Radius for radial search in km."
+              },
+              {
+                "name": "lon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude for radial search in decimal degrees, e.g. `54.85`."
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude for radial search in decimal degrees, e.g. `54.85`."
+              },
+              {
+                "name": "minLon",
+                "value": "",
+                "type": "query",
+                "description": "Minimum longitude for boundingBox search in decimal degrees, e.g. `-1.85`"
+              },
+              {
+                "name": "minLat",
+                "value": "",
+                "type": "query",
+                "description": "Minimum latitude for boundingBox search in decimal degrees, e.g. `50.85`"
+              },
+              {
+                "name": "maxLon",
+                "value": "",
+                "type": "query",
+                "description": "Maximum longitude for boundingBox search in decimal degrees, e.g. `0.85`"
+              },
+              {
+                "name": "maxLat",
+                "value": "",
+                "type": "query",
+                "description": "Maximum latitude for boundingBox search in decimal degrees, e.g. `54.85`"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "```\n  https://lightning.api.dtn.com/v1/\n```\n\n This endpoint allows users to retrieve all lightning strikes, in a streaming manner, that match the set criteria.\n\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To stream starting on a specified time:\n    - For start time, provide `startTime` value. \n    - Data on the stream only last "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1431 @@
+{
+  "item": [
+    {
+      "id": "435849d4-8061-4c27-a07e-7a3bec809170",
+      "name": "Endpoints",
+      "description": {
+        "content": "The Weather Conditions API has 2 endpoints that each cater to a specific need, whether it's the time series at a single location, or the associated metadata.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5562e30b-4817-45d0-8f41-b2de224edc04",
+          "name": "Weather Conditions",
+          "request": {
+            "name": "Weather Conditions",
+            "description": {
+              "content": "This endpoint provides current, forecast, and historical conditions for any specific point on the globe. Specify the location, the weather parameters of interest, and a time range up to 15 days long, from 1995-01-01T00:00:00Z to 15 days in the future. The API responds with the requested time series in GeoJSON format.\n\nCommon uses include weather monitoring, atmospheric research, and localized operations, such as event planning.\n\n## Using timezone offsets\n\nTo change timezones, specify a UTC offset (such as `+08:00` or `-05:00` instead of `Z`) for query parameters `startTime` and `endTime`. Timestamps in the response will automatically match the `startTime` offset. Remove the offset entirely to obtain the local timezone for the requested location.\n\n\n**Important note**: Because the `+` symbol is a special URL character, it must be encoded as `%2B` for use within the query parameter string.\n\n#### Valid examples\n\n* `?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:00:00Z`\n\n* `?startTime=2024-01-01T00:00:00%2B08:00&endTime=2024-01-01T23:00:00%2B02:00`\n\n* `?startTime=2024-01-01T00:00:00-08:00&endTime=2024-01-01T23:00:00-08:00`\n\n* `?startTime=2024-01-01T00:00:00&endTime=2024-01-01T23:00:00`\n\n#### Invalid example\n\n* `?startTime=2024-01-01T00:00:00+08:00&endTime=2024-01-01T23:00:00+08:00` (need to encode `+` as `%2B`)\n\n\n### Latitude and Longitude\n\n**Important note**: Requested latitudes and longitudes in response are rounded to five (5) decimal places when presented in `$.features.*.geometry.coordinates`. Floating point precision might affect the last digit.\n\n### Rounding examples\n\n* 1.5555 => 1.556\n\n* 1.5545 => 1.554\n\n* -1.5555 => -1.556\n\n\n## Query Parameters:\nUse query parameters to control the results in the response body:\n### location\n* Specify a location as latitude (`lat`) and longitude (`lon`).\n\n### parameters\n* Specify `parameters` to filter by specific atmospheric weather parameters. Include multiple as comma-separated values. The API returns only defaults when no specific parameters are requested.\n\n### startTime and endTime\n* Two key parameters are `startTime` and `endTime`. These parameters determine the time range for which the API returns data. Both `startTime` and `endTime` are inclusive, meaning that data at the top of the UTC hour for both timestamps is included in the response.\n\n* API Behavior Based on startTime and endTime:\n\n  * **Omitted startTime and endTime:** Returns only current conditions.\n\n  * **Both in the Future:** Returns only forecast conditions when both `startTime` and `endTime` are in the future.\n\n  * **Both in the Past:** Returns only historical conditions when both `startTime` and `endTime` are in the past.\n\n  * **Spanning Past and Future:** Returns historical, current, and forecast conditions when `startTime` is in the past and `endTime` is in the future.\n\n  * **Only startTime Specified:** Returns only one timestamp, representing the data at the specified `startTime`.\n\n* Inclusivity of Timestamps\n\n  * **Inclusive `startTime` and `endTime`:** Both parameters are inclusive, affecting the total duration and the number of data points returned, especially when using the interval parameter.\n\n  * **Effect on Data Retrieval and Aggregation:** The inclusivity can result in additional aggregation periods or data points.\n\n### units\n  * Use `units` to request values either as SI (metric) or United States customary (imperial) units.\n    + The API returns metric units by default and when `si-std` is specified.\n    + The API returns imperial units only when `us-std` is specified.\n\n### interval\n  * Specify the `interval` parameter to request aggregated or interpolated data.  Aggregated parameters names must also specify aggregation methods such as airTempMax, precipAmountSum, and others listed in the Parameters section.\n    + **Format:** The interval for hourly aggregations must be in the format {n}h, where {n} is an integer greater than 1 (e.g., 2h, 6h, or 24h).  For local timezone-aware daily aggregations, use '1d'.  For interpolations, the following values are supported: 5m, 10m, 15m, 20m, or 30m.\n    + **Constraints:** The interval must not exceed the total duration between `startTime` and `endTime`.  For '1d' intervals, only local timezones (no UTC offsets) are supported to ensure accurate daily aggregation.\n\n  * Aggregation Behavior:\n    + **Aggregation Periods:** Data aggregation starts from the specified `startTime`. Each timestamp in the response represents the beginning of an aggregation period. For each interval, the API aggregates data from the timestamp up to (but not including) the next interval's start time.\n    + **Final Interval Handling:** If the duration between `startTime` and `endTime` doesn't divide evenly by the interval, the final interval may be shorter. The last data point aggregates up to the inclusive endTime.\n  * Interpolation Behavior:\n    + **Interpolation Periods:** When using interpolation intervals (5m, 10m, 15m, 20m, 30m), the API generates data points at the specified intervals between `startTime` and `endTime`, including both endpoints.\n    + **Data Generation:** The API will generally use linear interpolation between data points except for specific parameters.  For parameters that represent accumulations over 1 hour, the API will distribute the accumulated value evenly across the interpolation intervals within that hour.  For parameters that represent categorical or periodic data (like angular degrees), the API will use the nearest neighbor value for interpolation.\n  * Examples using interval:\n    + Example 1: 12-Hour Interval Aggregation\n      +  Parameters:\n          + **startTime:** 2024-11-06T15:00:00Z\n          + **endTime:** 2024-11-07T15:00:00Z\n          + **interval:** 12h\n          + **parameter:** airTempMax\n      + Response:\n        ```json\n        {\n          \"properties\": {\n            \"2024-11-06T15:00:00Z\": {\n                \"airTempMax\": 6.5\n            },\n            \"2024-11-07T03:00:00Z\": {\n                \"airTempMax\": 8.9\n            },\n            \"2024-11-07T15:00:00Z\": {\n                \"airTempMax\": 8.7\n            }\n        }\n        ```\n      + Explanation:\n        + **First Data Point (2024-11-06T15:00:00Z):** Aggregates data from 2024-11-06T15:00:00Z up to including 2024-11-07T02:00:00Z.\n        + **Second Data Point (2024-11-07T03:00:00Z):** Aggregates data from 2024-11-07T03:00:00Z up to including 2024-11-07T14:00:00Z.\n        + **Third Data Point (2024-11-07T15:00:00Z):** Since `endTime` is inclusive, this final data point includes data from 2024-11-07T15:00:00Z up to the endTime.\n    + Example 2: 24-Hour Interval with Inclusive `endTime`\n      +  Parameters:\n          + **startTime:** 2024-10-23T00:00:00Z\n          + **endTime:** 2024-10-24T00:00:00Z\n          + **interval:** 24h\n          + **parameter:** airTempMax\n      + Response:\n        ```json\n        {\n          \"properties\": {\n            \"2024-10-23T00:00:00Z\": {\n                \"airTempMax\": 19.3\n            },\n            \"2024-10-24T00:00:00Z\": {\n                \"airTempMax\": 10.6\n          }\n        }\n        ```\n      + Explanation:\n          + **First Data Point (2024-10-23T00:00:00Z):** Aggregates data from 2024-10-23T00:00:00Z up to including 2024-10-24T24:00:00Z.\n          + **Second Data Point (2024-10-24T00:00:00Z):** Since endTime is inclusive and matches the start of the next interval, this data point includes data at 2024-10-24T00:00:00Z.\n          + **Total Duration:** Due to inclusivity, the time span covers 25 hours, resulting in two data points.\n    + Example 3: Adjusting endTime to Control Data Points\n      + Objective: Retrieve data for only one day with a single data point.\n      + Adjusted endTime: Set to 2024-10-23T23:59:59Z.\n      + Parameters:\n        + **startTime:** 2024-10-23T00:00:00Z\n        + **endTime:** 2024-10-23T23:59:59Z\n        + **interval:** 24h\n        + **parameter:** airTempMax\n      + Response:\n        ```json\n        \"properties\": {\n          \"2024-10-23T00:00:00Z\": {\n              \"airTempMax\": 19.3\n          }\n        }\n        ```\n      * Explanation:\n        * **Single Data Point:** Aggregates data over the 24-hour period without including the next day's data.\n        * **Duration:** Exactly 24 hours, resulting in one data point.\n\n    + Example 4: Fractional time zones\n      + Parameters:\n        + **startTime:** 2024-05-27T00:00:00\n        + **endTime:** 2024-05-27T23:59:59\n        + **interval:** 24h\n        + **parameter:** airTempMax\n        + **lat:** 30.251\n        + **lon:** 62.569\n        \n      + Response:\n        ```json\n        \"properties\": {\n          \"2024-05-26T23:30:00+0430\": {\n              \"airTempMax\": 42.2,\n          },\n          \"2024-05-27T23:30:00+0430\": {\n              \"airTempMax\": 34,\n          }\n        }\n        ```\n      * Explanation:\n        * **Why** This response seems confusing at first becuase we have 2 data points when we seemingly only requested a single 24 hour interval.\n        * **Local Timezone Assumption** When requesting a start and end time that has no timezone, the timezone of the location requested will be used.\n          * For the example requested lat/lon the local timezone is UTC+04:30 (fractional timezone)\n        * **Inclusive Time Range** startTime is hour inclusive, meaning the API will return data for the top of the requested hour (in UTC).\n        * **UTC Conversion** All data is stored in UTC hourly.\n          * When we convert these requested timestamps to UTC, `startTime=2024-05-26T19:30:00Z`, `endTime=2024-05-27T19:29:59Z`\n        * Since startTime and endTime are `inclusive`, so the time range spans exactly 25 hours, not 24.\n        * Changing `endTime` to `2024-05-27T23:00:00` will result in a single interval returned.\n\n    + Example 5: Interpolation at 15-minute intervals\n      + Parameters:\n        + **startTime:** 2024-11-06T15:00:00Z\n        + **endTime:** 2024-11-06T16:00:00Z\n        + **interval:** 15m\n        + **parameter:** airTemp, windDirection, iceLweAmount\n      + Response:\n        ```json\n        {\n          \"properties\": {\n            \"2024-11-06T15:00:00Z\": {\n                \"airTemp\": 5.2,\n                \"windDirection\": 342,\n                \"iceLweAmount\": 2\n            },\n            \"2024-11-06T15:15:00Z\": {\n                \"airTemp\": 5.5,\n                \"windDirection\": 342,\n                \"iceLweAmount\": 2\n            },\n            \"2024-11-06T15:30:00Z\": {\n                \"airTemp\": 5.7,\n                \"windDirection\": 352,\n                \"iceLweAmount\": 2\n            },\n            \"2024-11-06T15:45:00Z\": {\n                \"airTemp\": 6.0,\n                \"windDirection\": 352,\n                \"iceLweAmount\": 2\n            },\n            \"2024-11-06T16:00:00Z\": {\n                \"airTemp\": 6.2,\n                \"windDirection\": 352,\n                \"iceLweAmount\": 3\n            }\n        }\n        ```\n      + Explanation:\n        + airTemp is linearly interpolated between data points.\n        + windDirection uses nearest neighbor interpolation because its units is in degrees.\n        + iceLweAmount is distributed evenly across the interpolation intervals within the hour, with its original value being 8 at 2024-11-06T15:00:00Z, and 12 at 2024-11-06T16:00:00Z.\n\n\n### Complete example:\n\n`https://weather.api.dtn.com/v2/conditions?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&interval={n}h&parameters={param1,param2}&units={units}`\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "conditions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "interval",
+                  "value": "<string>",
+                  "description": "Aggregation or interpolation interval (e.g. 2h, 24h, 1d, 15m)."
+                },
+                {
+                  "disabled": false,
+                  "key": "aggregationTimeLabel",
+                  "value": "start",
+                  "description": "Controls whether the timestamp in the response represents the start or end of the aggregation window. Only valid when `interval` is specified."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "da7d1f75-a7f1-46fd-a463-5136a04226c5",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2023-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2023-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "24h"
+                    },
+                    {
+                      "key": "aggregationTimeLabel",
+                      "value": "end"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://weather.api.dtn.com/v2/conditions?lat=35.47&lon=-97.51&parameters=airTemp,airTempLowerBound,airTempNearGround,airTempUpperBound,totalCloudCover,conditionalPrecipProbFreezing,conditionalPrecipProbFrozen,conditionalPrecipProbLiquid,conditionalPrecipProbRefrozen,convectivePrecipAmount,dewPoint,effectiveCloudCover,feelsLikeTemp,heatIndex,iceAccretionAmount,longWaveRadiation,mslPressure,precipAmount,precipAmountMax,precipAmountMin,precipProb,precipType,relativeHumidity,relativeHumidityUpperBound,relativeHumidityLowerBound,shortWaveRadiation,globalRadiation,snowFactor,snowfallAmount,sunshineDuration,surfacePressure,uWind,visibility,visibilityObstructionType,vWind,weatherCode,windChill,windDirection,windGust,windSpeed,windSpeed100m,windSpeed2m,windSpeedLowerBound,windSpeedUpperBound,windGustLowerBound,windGustUpperBound&startTime=2023-10-01T00:06:10Z&endTime=2023-10-01T02:06:10Z&units=us-std\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -97.51,\n          35.47\n        ]\n      },\n      \"properties\": {\n        \"2023-10-01T00:00:00Z\": {\n          \"airTemp\": 84.29,\n          \"airTempLowerBound\": 82.13,\n          \"airTempNearGround\": 84.33,\n          \"airTempUpperBound\": 86.81,\n          \"totalCloudCover\": 12.6,\n          \"conditionalPrecipProbFreezing\": 0,\n          \"conditionalPrecipProbFrozen\": 0,\n          \"conditionalPrecipProbLiquid\": 100,\n          \"conditionalPrecipProbRefrozen\": 0,\n          \"convectivePrecipAmount\": 0,\n          \"dewPoint\": 59.45,\n          \"effectiveCloudCover\": 12.6,\n          \"feelsLikeTemp\": 84.12,\n          \"heatIndex\": 84.12,\n          \"iceAccretionAmount\": 0,\n          \"longWaveRadiation\": 397.42,\n          \"mslPressure\": 1014.81,\n          \"precipAmount\": 0,\n          \"precipAmountMax\": 0.01,\n          \"precipAmountMin\": 0,\n          \"precipProb\": 0,\n          \"precipType\": 2,\n          \"relativeHumidity\": 43.15,\n          \"relativeHumidityUpperBound\": 50.21,\n          \"relativeHumidityLowerBound\": 40.44,\n          \"shortWaveRadiation\": 46,\n          \"globalRadiation\": 16.56,\n          \"snowFactor\": 0,\n          \"snowfallAmount\": 0,\n          \"sunshineDuration\": 0,\n          \"surfacePressure\": 972.47,\n          \"uWind\": -7.61,\n          \"visibility\": 10,\n          \"visibilityObstructionType\": 1,\n          \"vWind\": 8.7,\n          \"weatherCode\": 1,\n          \"windChill\": 84.29,\n          \"windDirection\": 139.1,\n          \"windGust\": 18.34,\n          \"windSpeed\": 11.59,\n          \"windSpeed100m\": 18.34,\n          \"windSpeed2m\": 8.18,\n          \"windSpeedLowerBound\": 11.59,\n          \"windSpeedUpperBound\": 22.57,\n          \"windGustLowerBound\": 10.54,\n          \"windGustUpperBound\": 19.53\n        },\n        \"2023-10-01T01:00:00Z\": {\n          \"airTemp\": 80.69,\n          \"airTempLowerBound\": 77.45,\n          \"airTempNearGround\": 77.62,\n          \"airTempUpperBound\": 83.39,\n          \"totalCloudCover\": 12.9,\n          \"conditionalPrecipProbFreezing\": 0,\n          \"conditionalPrecipProbFrozen\": 0,\n          \"conditionalPrecipProbLiquid\": 100,\n          \"conditionalPrecipProbRefrozen\": 0,\n          \"convectivePrecipAmount\": 0,\n          \"dewPoint\": 60.17,\n          \"effectiveCloudCover\": 12.9,\n          \"feelsLikeTemp\": 81.4,\n          \"heatIndex\": 81.4,\n          \"iceAccretionAmount\": 0,\n          \"longWaveRadiation\": 388.07,\n          \"mslPressure\": 1015.36,\n          \"precipAmount\": 0,\n          \"precipAmountMax\": 0.01,\n          \"precipAmountMin\": 0,\n          \"precipProb\": 0,\n          \"precipType\": 2,\n          \"relativeHumidity\": 49.67,\n          \"relativeHumidityUpperBound\": 52.21,\n          \"relativeHumidityLowerBound\": 46.44,\n          \"shortWaveRadiation\": 0,\n          \"globalRadiation\": 0,\n          \"snowFactor\": 0,\n          \"snowfallAmount\": 0,\n          \"sunshineDuration\": 0,\n          \"surfacePressure\": 972.87,\n          \"uWind\": -7.72,\n          \"visibility\": 10,\n          \"visibilityObstructionType\": 1,\n          \"vWind\": 7.48,\n          \"weatherCode\": 1,\n          \"windChill\": 80.69,\n          \"windDirection\": 133.9,\n          \"windGust\": 18.72,\n          \"windSpeed\": 10.65,\n          \"windSpeed100m\": 21.39,\n          \"windSpeed2m\": 7.36,\n          \"windSpeedLowerBound\": 10.98,\n          \"windSpeedUpperBound\": 23.04,\n          \"windGustLowerBound\": 9.54,\n          \"windGustUpperBound\": 18.53\n        },\n        \"2023-10-01T02:00:00Z\": {\n          \"airTemp\": 78.71,\n          \"airTempLowerBound\": 76.19,\n          \"airTempNearGround\": 75.54,\n          \"airTempUpperBound\": 81.41,\n          \"totalCloudCover\": 13.3,\n          \"conditionalPrecipProbFreezing\": 0,\n          \"conditionalPrecipProbFrozen\": 0,\n          \"conditionalPrecipProbLiquid\": 100,\n          \"conditionalPrecipProbRefrozen\": 0,\n          \"convectivePrecipAmount\": 0,\n          \"dewPoint\": 60.71,\n          \"effectiveCloudCover\": 13.3,\n          \"feelsLikeTemp\": 78.71,\n          \"heatIndex\": 78.71,\n          \"iceAccretionAmount\": 0,\n          \"longWaveRadiation\": 383.11,\n          \"mslPressure\": 1015.87,\n          \"precipAmount\": 0,\n          \"precipAmountMax\": 0.01,\n          \"precipAmountMin\": 0,\n          \"precipProb\": 0,\n          \"precipType\": 2,\n          \"relativeHumidity\": 54.1,\n          \"relativeHumidityUpperBound\": 57.21,\n          \"relativeHumidityLowerBound\": 50.44,\n          \"shortWaveRadiation\": 0,\n          \"globalRadiation\": 0,\n          \"snowFactor\": 0,\n          \"snowfallAmount\": 0,\n          \"sunshineDuration\": 0,\n          \"surfacePressure\": 973.28,\n          \"uWind\": -7.58,\n          \"visibility\": 10,\n          \"visibilityObstructionType\": 1,\n          \"vWind\": 7.93,\n          \"weatherCode\": 1,\n          \"windChill\": 78.71,\n          \"windDirection\": 136.5,\n          \"windGust\": 19.1,\n          \"windSpeed\": 10.92,\n          \"windSpeed100m\": 22.3,\n          \"windSpeed2m\": 7.63,\n          \"windSpeedLowerBound\": 10.38,\n          \"windSpeedUpperBound\": 23.49,\n          \"windGustLowerBound\": 11.54,\n          \"windGustUpperBound\": 20.53\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d5e6d332-d2bf-4662-91cf-d205a1e44871",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2023-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2023-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "24h"
+                    },
+                    {
+                      "key": "aggregationTimeLabel",
+                      "value": "end"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e9ad939-e724-4c28-8809-578e4e5153b4",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2023-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2023-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "24h"
+                    },
+                    {
+                      "key": "aggregationTimeLabel",
+                      "value": "end"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "02ca5edf-b5ac-42bc-8542-f37f9b1e3f1e",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2023-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2023-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    },
+                    {
+                      "key": "interval",
+                      "value": "24h"
+                    },
+                    {
+                      "key": "aggregationTimeLabel",
+                      "value": "end"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c4266fbf-2519-4172-927a-dd5f2dfa763a",
+          "name": "Weather Parameters",
+          "request": {
+            "name": "Weather Parameters",
+            "description": {
+              "content": "This endpoint provides helpful context in JSON format about the atmospheric weather parameters and operations that the other endpoints support.\n\nUse query parameters to control the results in the response body:\n  * Set `category` to `current-conditions`, `hourly-forecast`, or `hourly-historical` to filter atmospheric parameters by that category.\n  * Specify a `name` to filter atmospheric parameters by that name (e.g., `name=airTemp`).\n  * Specify a `category` and `name` to filter by both.\n  * Omit all query parameters to obtain all atmospheric parameters in the response.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "conditions",
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f5a7bd96-c97b-4fc8-a19f-822cc59bbe07",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"current-conditions\": {\n    \"airTemp\": {\n      \"metricUnit\": \"Celsius\",\n      \"imperialUnit\": \"Fahrenheit\",\n      \"type\": \"number\",\n      \"description\": \"Air temperature at 2 meters above ground level.\",\n      \"notes\": \"\"\n    }\n  },\n  \"hourly-forecast\": {\n    \"airTemp\": {\n      \"metricUnit\": \"Celsius\",\n      \"imperialUnit\": \"Fahrenheit\",\n      \"type\": \"number\",\n      \"description\": \"Air temperature at 2 meters above ground level.\",\n      \"notes\": \"\",\n      \"aggregationMethods\": [\n        \"Max\",\n        \"Min\",\n        \"Avg\"\n      ]\n    }\n  },\n  \"hourly-historical\": {\n    \"airTemp\": {\n      \"metricUnit\": \"Celsius\",\n      \"imperialUnit\": \"Fahrenheit\",\n      \"type\": \"number\",\n      \"description\": \"Air temperature at 2 meters above ground level.\",\n      \"notes\": \"\",\n      \"aggregationMethods\": [\n        \"Max\",\n        \"Min\",\n        \"Avg\"\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1ea3abff-aad1-4caf-a56c-285ab2933eed",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c93b2f32-9071-4116-9419-e157425def7c",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7349c347-09d5-41a8-8685-6fc1c0d648b0",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "category",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c647da78-f474-433f-803a-71e7d93a85c3",
+          "name": "Weather Codes",
+          "request": {
+            "name": "Weather Codes",
+            "description": {
+              "content": "This endpoint provides helpful context in JSON format about the weather codes and their descriptions.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "conditions",
+                "codes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "bcbe272d-875a-4f49-bc49-6d819e81cc40",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "codes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"1\": {\n    \"condition\": \"Clear Skies\",\n    \"description\": \"Clouds cover 0-20% of the sky.\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "00e8ddbb-e405-4fc3-bf23-2fef4090b797",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "codes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b707965-acba-4024-8170-73165d27364f",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "codes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "651ccc02-f792-4f44-b620-97236ae87716",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "codes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9caac3c1-59d5-4294-bda6-44a9dc7d361c",
+          "name": "Batch Request",
+          "request": {
+            "name": "Batch Request",
+            "description": {
+              "content": "This endpoint provides hourly forecast, current, and historical conditions for any specific point on the globe. You can specify the location(s), the weather parameters of interest, and both the start time from 1995-01-01T00:00:00Z to an end time 15 days in the future. This endpoint supports requests with hourly data for up to two hundred locations. It does not provide aggregated data. The API returns a presigned URL that allows the requested data to be downloaded in a CSV.\n \nCommon uses include weather monitoring, atmospheric research, and localized operations, such as event planning.\n\nQuota calculation: Please note that the quota charged is based on the number of locations in your API request, and not the number of requests. One request with 200 locations uses the same API quota as 200 requests with one location each.\n\n## Query Parameters:\nUser query parameters to control the results in the response body: \n### location\n* Specify a single or multiple locations as latitude (`lat`) and longitude (`lon`). It supports up to 200 unique locations in a single request. \n\n### parameters \n* Specify `parameters` to filter by specific atmospheric weather parameters. Include multiple as comma-separated values. If no parameters are requested, the API will return default parameters. The API supports forecast, current, and historical parameters, but not aggregation parameters.\n\n### startTime and endTime\n* These parameters determine the time range for which the API returns data. Both startTime and endTime are inclusive, meaning that data at both timestamps is included in the response. \n\n* API Behavior based on startTime and endTime: \n\n  * **Omitted startTime and endTime:** Returns only current conditions.\n\n  * **Both in the Future:** Returns only forecast conditions when both startTime and endTime are in the future.\n\n  * **Both in the Past:** Returns only historical conditions when both startTime and endTime are in the past.  \n\n  * **Spanning Past and Future:** Returns historical, current, and forecast conditions when startTime is in the past and endTime is in the future.\n\n### units\n  * Use `units` to request values either as SI (metric) or United States customary (imperial) units.\n    + The API returns metric units by default and when `si-std` is specified.\n    + The API returns imperial units only when `us-std` is specified.\n\n## Restrictions \n* There is a maximum of two hundred (200) locations. The number of days multiplied by the number of locations cannot exceed 144000. \nIt will return an HTTP 400 response with the following error: \"Maximum of 200 locations OR ((number of days) * (number of locations)) < 144000 is not satisfied.\" \n\n* This endpoint is restricted to a single request per customer at a time. These requests cannot be made concurrently. The API will return an error code until the previous request has finished. If for some reason the first request returns an error, it will still take sixty seconds for the request limit to expire. Afterwards, a new request can be made. \nIt will return an HTTP 429 reponse with the following error: \"You can only use the batch endpoint one (1) request at a time.\"\n\n## Response\n* The API response is a presigned URL that allows the download of a CSV with the requested data. It starts with the latitutde, longtitutde, and valid time followed by the reuqested parameters.\n    + Sample CSV Response:\n      ```csv\n        latitude,longitude,valid_time,airTemp,dewPoint,precipAmount\n        35.4676,-97.5164,1704067200,72.5,68.2,0.0\n        35.4676,-97.5164,1704070800,71.8,67.9,0.1\n        44.9375,-93.201,1704067200,65.3,62.1,0.0\n        44.9375,-93.201,1704070800,64.7,61.8,0.2\n      ```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "conditions",
+                "batch"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "text/csv"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locations\": [\n    {\n      \"lat\": \"<number>\",\n      \"lon\": \"<number>\"\n    },\n    {\n      \"lat\": \"<number>\",\n      \"lon\": \"<number>\"\n    }\n  ],\n  \"startTime\": \"<dateTime>\",\n  \"endTime\": \"<dateTime>\",\n  \"parameters\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"units\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "dd3554d8-9b03-4143-b04a-80375cd81f76",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/csv"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"locations\": [\n    {\n      \"lat\": 35.46,\n      \"lon\": -97.51\n    },\n    {\n      \"lat\": 44.93,\n      \"lon\": -93.2\n    }\n  ],\n  \"startTime\": \"1995-01-01T00:00:00Z\",\n  \"endTime\": \"1995-01-10T00:00:00Z\",\n  \"parameters\": [\n    \"airTemp\",\n    \"dewPoint\",\n    \"precipAmount\"\n  ],\n  \"units\": \"si-std\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                }
+              ],
+              "body": "{\n  \"url\": \"...\"\n}\n",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0e746519-2f34-4e37-961f-4a041b15ae62",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"locations\": [\n    {\n      \"lat\": 35.46,\n      \"lon\": -97.51\n    },\n    {\n      \"lat\": 44.93,\n      \"lon\": -93.2\n    }\n  ],\n  \"startTime\": \"1995-01-01T00:00:00Z\",\n  \"endTime\": \"1995-01-10T00:00:00Z\",\n  \"parameters\": [\n    \"airTemp\",\n    \"dewPoint\",\n    \"precipAmount\"\n  ],\n  \"units\": \"si-std\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions/batch:requestId:78691cec-d741-46a6-baaf-e16282677f1c\",\n  \"errors\": {\n    \"message\": \"Maximum of 200 locations OR ((number of days) * (number of locations)) < 144000 is not satisfied\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f6f83bb4-f12c-4336-8fad-518e918f17f0",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"locations\": [\n    {\n      \"lat\": 35.46,\n      \"lon\": -97.51\n    },\n    {\n      \"lat\": 44.93,\n      \"lon\": -93.2\n    }\n  ],\n  \"startTime\": \"1995-01-01T00:00:00Z\",\n  \"endTime\": \"1995-01-10T00:00:00Z\",\n  \"parameters\": [\n    \"airTemp\",\n    \"dewPoint\",\n    \"precipAmount\"\n  ],\n  \"units\": \"si-std\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f0b0011-2e73-4ec4-be7e-f3dec100d640",
+              "name": "Too Many Requests",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "conditions",
+                    "batch"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"locations\": [\n    {\n      \"lat\": 35.46,\n      \"lon\": -97.51\n    },\n    {\n      \"lat\": 44.93,\n      \"lon\": -93.2\n    }\n  ],\n  \"startTime\": \"1995-01-01T00:00:00Z\",\n  \"endTime\": \"1995-01-10T00:00:00Z\",\n  \"parameters\": [\n    \"airTemp\",\n    \"dewPoint\",\n    \"precipAmount\"\n  ],\n  \"units\": \"si-std\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"forbidden\",\n  \"title\": \"Access to the Requested Resource is Forbidden\",\n  \"status\": 429,\n  \"detail\": \"You can only use the batch endpoint one (1) request at a time.\",\n  \"instance\": \"urn:dtn:one-forecast:/v2/conditions/batch:requestId:71b71774-4754-41aa-9a65-225f9a825c36\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "b0feffde-0eb0-44c8-8b93-15b4fe97b037",
+      "name": "Parameters",
+      "description": {
+        "content": "Weather Conditions API offers 3 categories of atmospheric weather parameters (forecast, current, and historical) that provide detailed insights for planning future operations or analyzing past weather patterns. The `startDate` and `endDate` on an API request determine which cateogory applies. Requests that span past-to-current, current-to-future, or past-to-future may specify parameters from any category. In these cases, the response provides numerical data where it is available and `null` where it is not.\n\nIt’s also possible to aggregate certain parameters in each category over multiple hours.  The tables that follow identify which parameters have corresponding aggregation parameter names.  To request an aggregation, just substitute the desired parameter name and specify an `interval` greater than 1 hour (see `Endpoints` section for details).  For example, if air temperature (`airTemp`) has corresponding parameters `airTempMax`, `airTempMin`, and `airTempAvg`, request parameter `airTempAvg` with `interval=6h` in the query string to obtain the 6-hour air temperature average. Parameters can also be interpolated in subhourly intervals.  To request interpolated parameters, specify an `interval` of 5m, 10m, 15m, 20m, or 30m.  Parameters will be interpolated differently depending on the measurement unit they represent.  See `Endpoints` section for details. \n## Forecast Parameters\nForecast parameters provide predictive atmospheric weather data for up to 15 days in the future. Expand the table below to view available parameters and each one's description, unit of measurement, and whether it is a default. The API returns only defaults unless specific parameters are requested.\n\nParameter description with `*` indicates uncertainity parameters. Refer to `uncertainity parameters` section below.\n\n<details> <summary>Click to expand...</summary>\n\n| Parameter                               | Core | Description | Metric units | Imperial units | Aggregation Parameters |\n|-----------------------------------------|---------|-------------|--------------|----------------|------------------------|\n| airDensity                              |         | Air density at 10 metres above ground. | kilogram per cubic meter | kilogram per cubic meter | |\n| airTemp                                 | Yes     | Air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | airTempMax, airTempMin, airTempAvg |\n| airTempConfidence                       |         | Air temperature forecast confidence at 2 meters above ground level. very_low - 0, low - 1, medium - 2, high - 3, very_high - 4  | unitless | unitless |  airTempConfidenceAvg |\n| airTempLowerBound                       |         | Lowest forecasted air temperature at this time across all contributing forecast models in our blend.* | degree Celsius | degree Fahrenheit | |\n| airTempNearGround                       |         | Air temperature at 10 centimeters above ground level. | degree Celsius | degree Fahrenheit | airTempNearGroundMax, airTempNearGroundMin, airTempNearGroundAvg |\n| airTempProbAtOrBelowFreezing            |         | Probability that air temperature at 2 meters above ground level is less than or equal to 0° Celsius. | percentage | percentage | |\n| airTempUpperBound                       |         | Highest forecasted air temperature at this time across all contributing forecast models in our blend.* | degree Celsius | degree Fahrenheit | |\n| airQualityIndex                         |         | Overall air quality index representing combined pollution levels and general air health. | unitless| unitless| airQualityIndexMax, airQualityIndexMin, airQualityIndexAvg |\n| airQualityIndexCO                       |         | Air quality index specifically reflecting the concentration of carbon monoxide (CO) in the air. |unitless| unitless| airQualityIndexCOMax, airQualityIndexCOMin, airQualityIndexCOAvg |\n| airQualityIndexNO2                      |         | Air quality index for nitrogen dioxide (NO₂), indicating pollution typically from traffic and combustion sources. | unitless| unitless| airQualityIndexNO2Max, airQualityIndexNO2Min, airQualityIndexNO2Avg |\n| airQualityIndexOzone                    |         | Air quality index for ground-level ozone (O₃), often higher during sunny conditions and linked to smog. | unitless| unitless| airQualityIndexOzoneMax, airQualityIndexOzoneMin, airQualityIndexOzoneAvg |\n| airQualityIndexPM25                     |         | Air quality index for fine particulate matter (PM2.5), which can penetrate deep into the lungs and affect health. | unitless| unitless| airQualityIndexPM25Max, airQualityIndexPM25Min, airQualityIndexPM25Avg |\n| airQualityIndexPM10                     |         | Air quality index for coarse particulate matter (PM10), including dust and pollen particles. | unitless| unitless| airQualityIndexPM10Max, airQualityIndexPM10Min, airQualityIndexPM10Avg |\n| airQualityIndexSO2                      |         | Air quality index for sulfur dioxide (SO₂), typically associated with industrial emissions and fossil fuel combustion. | unitless| unitless| airQualityIndexSO2Max, airQualityIndexSO2Min, airQualityIndexSO2Avg |\n| boundaryLayerHeight                     |         | Height above ground level of the lowest layer of the troposphere where wind is influenced by friction. | meter | feet |\n| cape                                    |         | Amount of convective available potential energy. | joule per kilogram | joule per kilogram |\n| ceiling                                 |         | The height above the Earth's surface of the base of the lowest layer of cloud with a covering of more than 50% of the model grid box.  Cloud ceiling is a measurement used in the aviation industry to indicate airport landing conditions. | meter | feet |\n| cin                                     |         | Amount of convective inhibition. | joule per kilogram | joule per kilogram |\n| cloudBaseHeight                         |         | Height of the base of the lowest cloud layer regardless of the amount of cloud. See parameter ceiling for the lowest layer with over 50% of coverage. | meters | feet | |\n| conditionalPrecipProbFreezing           |         | Conditional probability of precipitation as freezing rain. | percentage | percentage | conditionalPrecipProbFreezingMax |\n| conditionalPrecipProbFrozen             |         | Conditional probability of precipitation as snow. | percentage | percentage | conditionalPrecipProbFrozenMax |\n| conditionalPrecipProbLiquid             |         | Conditional probability of precipitation as rain. | percentage | percentage | conditionalPrecipProbLiquidMax |\n| conditionalPrecipProbRefrozen           |         | Conditional probability of precipitation as sleet and/or ice pellets. | percentage | percentage | conditionalPrecipProbRefrozenMax |\n| convectivePrecipAmount                  |         | Total (liquid equivalent) accumulation of convective precipitation over the next hour. | millimeter | inch | convectivePrecipAmountSum |\n| dewPoint                                | Yes     | Dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | dewPointMax, dewPointMin, dewPointAvg |\n| effectiveCloudCover                     | Yes     | Weighted sum of low, medium, and high cloud cover percentage. | percentage | percentage | effectiveCloudCoverMax, effectiveCloudCoverMin, effectiveCloudCoverAvg |\n| feelsLikeTemp                           | Yes     | Apparent temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | feelsLikeTempMax, feelsLikeTempMin, feelsLikeTempAvg |\n| fogProb                                 |         | The probability of fog (visibility < 100 m) being present. | percentage | percentage | fogProbMax |\n| freezingLevel                           |         | Freezing Level at height where temperature reaches 0°C | meter | feet |\n| frictionVelocity                        |         | Frictional velocity near the surface. | meters per second | miles per hour |\n| globalRadiation                         | Yes     | Total mean incoming solar radiation received on the Earth's surface, combining both direct sunlight and diffuse sky radiation over the past hour. | joule per square centimeter | joule per square centimeter | globalRadiationSum |\n| heatIndex                               |         | Heat index at 2 meters above ground level. | degree Celsius | degree Fahrenheit | |\n| hotDryWindyIndex                        |         | Designed to help users determine which days are more likely to have adverse atmospheric conditions that make it more difficult to manage a wildland fire. It combines weather data from the surface and low levels of the atmosphere into a first-look product. | hectopascal meter per second | hectopascal meter per second | |\n| iceAccretionAmount                      |         | Amount of ice build-up on surfaces exposed to freezing precipitation over past one hour. | millimeter | inch | iceAccretionAmountSum |\n| iceLweAmount                            |         | Ice liquid water equivalent precipitation amount in the past hour, this is the precipitation amount that occurs when the precipitation falls as sleet or ice pellets. | millimeter | inch |\n| lapseRate2mTo80m                        |         | Change in air temperature with height from 2 to 80 meters above ground level. | degree Celsius per meter | degree Fahrenheit per foot |\n| liftedIndexTo500hpa                     |         | Temperature difference between the environment and an air parcel lifted adiabatically to 500 hPa. Negative values occur in unstable conditions. | degree Celsius | degree Fahrenheit |\n| lightningDensity                        |         | Lightning flash density averaged over previous 1 hour. | square kilometer per day  | square mile per day | |\n| lightningProb                           |         | Specifies the probability of lightning occurring at a given latitude and longitude. | percentage  | percentage | |\n| liquidPrecipAmount                      |         | Total (liquid equivalent) accumulation of precipitation from rain, drizzle, freezing rain, and freezing drizzle over the past hour.| millimeter  | inch | liquidPrecipAmountSum |\n| localOffsetHours                        |         | The number of hours to add or subtract from the UTC timestamp in the response to obtain local time (accounting for Daylight Saving Time) at the requested latitude and longitude. | Number of hours | Number of hours | |\n| localTimezoneOlson                      |         | The Olson time zone name at the requested latitude and longitude. | Name of the timezone | Name of the timezone | |\n| longWaveRadiation                       |         | Downwelling longwave (non-solar) radiation flux at the surface of the earth. | watt per square meter| watt per square meter| longWaveRadiationMax, longWaveRadiationMin, longWaveRadiationAvg |\n| mslPressure                             | Yes     | Air pressure at mean sea level. | hectopascal | millibar | mslPressureMax, mslPressureMin, mslPressureAvg |\n| mslPressureLowerBound                   |         | Lowest forecasted air pressure at mean sea level at this time, across all contributing models in our blend.* | hectopascal | millibar | |\n| mslPressureUpperBound                   |         | Highest forecasted air pressure at mean sea level at this time, across all contributing models in our blend.* | hectopascal | millibar | |\n| potentialEvapotranspirationAmount       |         | Total accumulated loss of water through evapotranspiration over one hour from a hypothetical reference crop, assuming that ample water is available using FAO Penman-Monteith equation. | millimeter | inch | potentialEvapotranspirationAmountSum |\n| precipAmount                            |  Yes    | Total (liquid equivalent) accumulation of precipitation over the past hour. | millimeter | inch | precipAmountSum |\n| precipAmountMax                         |         | Maximum total (liquid equivalent) accumulation of precipitation over the past hour, across all contributing forecast models in our blend.* | millimeter | inch | |\n| precipAmountMin                         |         | Minimum total (liquid equivalent) accumulation of precipitation over the past hour, across all contributing forecast models in our blend.* | millimeter | inch | |\n| precipDuration                          |         | Total (liquid equivalent) duration of precipitation over the next hour. | second | second | precipDurationMax, precipDurationMin, precipDurationSum |\n| precipProb                              | Yes     | Probability of precipitation over the next hour. | percentage | percentage | precipProbMax |\n| precipType                              |         |Numerical code identifying the precipitation type over the next hour, when there's a probability of precipitation (1 = snow, 2 = rain, 3 = rain and snow, 4 = freezing rain, 5 = sleet, 6 = drizzle, 7 = freezing drizzle, 8 = thunderstorms). | unitless | unitless | |\n| relativeHumidity                        | Yes     | Relative humidity at 2 meters above ground level. | percentage | percentage | relativeHumidityMax, relativeHumidityMin, relativeHumidityAvg |\n| relativeHumidityLowerBound              |         | Lowest forecasted relative humidity at this time, across all contributing models in our blend.*| percentage | percentage | |\n| relativeHumidityUpperBound              |         | Highest forecasted relative humidity at this time, across all contributing models in our blend.*| percentage | percentage | |\n| severeWeather                           |         | Numerical index indicating the threat of severe weather (below 125 = low, 125-250 = medium, above 250 = high). | unitless | unitless | |\n| shortWaveRadiation                      | Yes     | Also called Global Horizontal Irradiance (GHI), this is the instantaneous high-energy solar radiation received at the Earth's surface, including both direct (DNI) and diffuse (DHI) sunlight. | watt per square meter| watt per square meter| shortWaveRadiationMax, shortWaveRadiationMin, shortWaveRadiationAvg |\n| skinTemp                                |         | Temperature of the uppermost layer of the Earth’s surface. | degree Celsius | degree Fahrenheit | skinTempMax, skinTempMin, skinTempAvg |\n| snowFactor                              |         | Describes the amount of snowfall that results from a given amount of liquid precipitation. | unitless | unitless | |\n| snowfallAmount                          |         | Total accumulation of snow (measured as depth, not liquid equivalent), over the past hour. | millimeter | inch | snowfallAmountSum |\n| snowLweAmount                           |         | Total accumulation of snow in liquid water equivalent over the past hour. | millimeter | inch |\n| soilMoisture0to10cm                     |         | Total moisture content of the layer between the surface and the 10-cm depth. | millimeter | inch | soilMoisture0to10cmAvg|\n| sunshineDuration                        | Yes     | Duration of sunshine based on cloud cover and downwelling shortwave radiation over the past hour. | minute | minute | sunshineDurationSum |\n| surfacePressure                         | Yes     | Pressure that the air exerts on the surface of the earth. | hectopascal | millibar | surfacePressureMax, surfacePressureMin, surfacePressureAvg |\n| totalCloudCover                         | Yes     | Represents the percentage of the sky covered by clouds. It can range from 0% (clear sky) to 100% (completely overcast). | percentage | percentage | totalCloudCoverMax, totalCloudCoverMin, totalCloudCoverAvg |\n| totalTotalsIndex                        |         | Meteorological index used to assess the potential for thunderstorm development and severity.  | Kelvin | Kelvin | |\n| uvIndex                                 |         | Indicates the strength of ultraviolet (UV) radiation from the sun.  | unitless | unitless | |\n| uWind                                   |         | Measures the east-west component of wind. Positive values indicate wind from the west, and negative values indicate wind from the east. | meter per second | mile per hour | uWindMax, uWindMin, uWindAvg |\n| visibility                              | Yes     | Lateral distance until line-of-sight is obstructed due to weather conditions. | kilometer | mile | visibilityMax, visibilityMin, visibilityAvg |\n| visibilityObstructionType               |         | Numerical code identifying the cause of obstructed visibility (0 = not applicable, 1 = none, 2 = fog, 3 = blowing snow, 4 = blowing dust, 5 = haze, 6 = smoke, 7 = patchy fog, 8 = blowing sand, 9 = ice fog, 10 = dust). | unitless | unitless | |\n| vWind                                   |         | Measures the north-south component of wind. Positive values indicate wind from the south, and negative values indicate wind from the north. | meter per second | mile per hour | vWindMax, vWindMin, vWindAvg |\n| weatherCode                             | Yes     | Numerical code summarizing the weather conditions. See `Weather Codes and Icons` section. | unitless | unitless | weatherCode |\n| wetBulbDepression                       |         | The difference between air temperature and wet bulb temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | |\n| wetBulbGlobeTemperature                 |         | Wet Bulb Globe Temperature (WBGT) measures heat stress in direct sunlight based on temperature, humidity, wind speed, sun angle, and cloud cover. | degree Celsius | degree Fahrenheit | wetBulbGlobeTemperatureMax, wetBulbGlobeTemperatureMin, wetBulbGlobeTemperatureAvg |\n| wbgtProbAtOrAboveHeatCategory3          |        | Probability that Wet Bulb Globe Temperature (WBGT) is greater than or equal to 85° Fahrenheit, the threshold for Heat Category 3 in the Occupational Safety and Health Administration (OSHA) [heat stress guidelines for manual labor](https://ksi.uconn.edu/wet-bulb-globe-temperature-monitoring/). | percentage | percentage | |\n| windChill                               |         | Wind chill at 2 meters above ground level. | degree Celsius | degree Fahrenheit | windChillMax, windChillMin, windChillAvg |\n| windDirection                           | Yes     | Specifies the direction from which the wind is blowing at 10 meters above the ground, measured in degrees with respect to true north. | degree | degree | windDirectionAvg |\n| windDirection2m                         |         | Specifies the direction from which the wind is blowing at 2 meters above the ground, measured in degrees with respect to true north. | degree | degree | windDirection2mAvg |\n| windDirection50m                        |         | Specifies the direction from which the wind is blowing at 50 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection50mAvg |\n| windDirection100m                       |         | Specifies the direction from which the wind is blowing at 100 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection100mAvg |\n| windDirection150m                       |         | Specifies the direction from which the wind is blowing at 150 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection150mAvg |\n| windDirection200m                       |         | Specifies the direction from which the wind is blowing at 200 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection200mAvg |\n| windGust2m                              |         | Wind gust speed at 2 meters above ground level. | meter per second | mile per hour | windGust2mMax, windGust2mMin, windGust2mAvg |\n| windGust                                | Yes     | Wind gust speed at 10 meters above ground level.| meter per second | mile per hour | windGustMax, windGustMin, windGustAvg |\n| windGust50m                             |         | Wind gust speed at 50 meters above ground level. | meter per second | mile per hour | windGust50mMax, windGust50mMin, windGust50mAvg |\n| windGust100m                            |         | Wind gust speed at 100 meters above ground level. | meter per second | mile per hour | windGust100mMax, windGust100mMin, windGust100mAvg |\n| windGust150m                            |         | Wind gust speed at 150 meters above ground level. | meter per second | mile per hour | windGust150mMax, windGust150mMin, windGust150mAvg |\n| windGust200m                            |         | Wind gust speed at 200 meters above ground level. | meter per second | mile per hour | windGust200mMax, windGust200mMin, windGust200mAvg |\n| windGustLowerBound                      |         | Lowest forecasted wind gust speed at 10 meters above ground level at this time, across all contributing models in our blend.* | meter per second | mile per hour | |\n| windGustUpperBound                      |         | Highest forecasted wind gust speed at 10 meters above ground level at this time, across all contributing models in our blend.* | meter per second | mile per hour | |\n| windSpeed                               | Yes     | Wind speed at 10 meters above ground level. | meter per second | mile per hour | windSpeedMax, windSpeedMin, windSpeedAvg |\n| windSpeed2m                             |         | Wind speed at 2 meters above ground level. | meter per second | mile per hour | windSpeed2mMax, windSpeed2mMin, windSpeed2mAvg |\n| windSpeed50m                            |         | Wind speed at 50 meters above ground level. | meter per second | mile per hour | windSpeed50mMax, windSpeed50mMin, windSpeed50mAvg |\n| windSpeed100m                           |         | Wind speed at 100 meters above ground level. | meter per second | mile per hour | windSpeed100mMax, windSpeed100mMin, windSpeed100mAvg |\n| windSpeed150m                           |         | Wind speed at 150 meters above ground level. | meter per second | mile per hour | windSpeed150mMax, windSpeed150mMin, windSpeed150mAvg |\n| windSpeed200m                           |         | Wind speed at 200 meters above ground level. | meter per second | mile per hour | windSpeed200mMax, windSpeed200mMin, windSpeed200mAvg |\n| windSpeedLowerBound                     |         | Lowest forecasted wind speed at 10 meters above ground level at this time, across all contributing models in our blend.* | meter per second | mile per hour | |\n| windSpeedUpperBound                     |         | Highest forecasted wind speed at 10 meters above ground level at this time, across all contributing models in our blend.* | meter per second | mile per hour | |\n| heatingDegreeUS                         |         | A heating degree day (HDD) is the degrees that a day's average temperature is below 65 Fahrenheit, used to quantify the demand for energy. This parameter is only allowed when an interval of 24 hours is specified as an aggregation. | degree Celsius | degree Fahrenheit | |\n| coolingDegreeUS                         |         | A cooling degree day (CDD) is the degrees that a day's average temperature is above 65 Fahrenheit, used to quantify the demand for energy. This parameter is only allowed when an interval of 24 hours is specified as an aggregation. | degree Celsius | degree Fahrenheit | |\n</details>\n\n## Current Conditions Parameters\nThese parameters provide current atmospheric weather data. Expand the table below to view available parameters and each one's description, unit of measurement, and whether it is a default. The API returns only defaults unless specific parameters are requested.\n<details> <summary>Click to expand...</summary>\n\n| Parameter                     | Core | Description | Metric units | Imperial units |\n|-------------------------------|---------|-------------|--------------|----------------|\n| airTemp                       | Yes     | Air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| airTempNearGround             |         | Air temperature at 10 centimeters above ground level. | degree Celsius | degree Fahrenheit |\n| airDensity                    |         | Air density at 10 metres above ground. | kilogram per cubic meter | kilogram per cubic meter |\n| cape                          |         | Amount of convective available potential energy. | joule per kilogram | joule per kilogram |\n| cin                           |         | Amount of convective inhibition. | joule per kilogram | joule per kilogram |\n| cloudBaseHeight               |         |  Height of the base of the lowest cloud layer regardless of the amount of cloud. See parameter ceiling for the lowest layer with over 50% of coverage. | meters | feet |\n| dewPoint                      | Yes     | Dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| effectiveCloudCover           | Yes     | Weighted sum of low, medium, and high cloud cover percentage. | percentage | percentage |\n| feelsLikeTemp                 | Yes     | Apparent temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| frictionVelocity              |         | Frictional velocity near the surface. | meters per second | miles per hour |\n| globalRadiation               | Yes     | Total mean incoming solar radiation received on the Earth's surface, combining both direct sunlight and diffuse sky radiation over the past hour. | joule per square centimeter | joule per square centimeter |\n| heatIndex                     |         | Heat index at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| hotDryWindyIndex              |         | Designed to help users determine which days are more likely to have adverse atmospheric conditions that make it more difficult to manage a wildland fire. It combines weather data from the surface and low levels of the atmosphere into a first-look product. | hectopascal meter per second | hectopascal meter per second | |\n| iceLweAmount                  |         | Ice liquid water equivalent precipitation amount in the past hour, this is the precipitation amount that occurs when the precipitation falls as sleet or ice pellets. | millimeter | inch |\n| liquidPrecipAmount            |         | Total (liquid equivalent) accumulation of precipitation from rain, drizzle, freezing rain, and freezing drizzle over the past hour. | millimeter | inch |\n| localOffsetHours              |         | The number of hours to add or subtract from the UTC timestamp in the response to obtain local time (accounting for Daylight Saving Time) at the requested latitude and longitude. | Number of hours | Number of hours |\n| localTimezoneOlson            |         | The Olson time zone name at the requested latitude and longitude. | Name of the timezone | Name of the timezone |\n| longWaveRadiation             |         | Downwelling longwave (non-solar) radiation flux at the surface of the earth. | watt per square meter| watt per square meter |\n| mslPressure                   | Yes     | Air pressure at mean sea level. | hectopascal | millibar |\n| potentialEvapotranspirationAmount   |         | Total accumulated loss of water through evapotranspiration over one hour from a hypothetical reference crop, assuming that ample water is available using FAO Penman-Monteith equation. | millimeter | inch |\n| precipAmount                  | Yes     | Total (liquid equivalent) accumulation of precipitation over the past hour. | millimeter | inch |\n| precipDuration                |         | Total (liquid equivalent) duration of precipitation over the next hour. | second | second |\n| precipType                    |         | Numerical code identifying the precipitation type over the next hour, when there's a probability of precipitation (1 = snow, 2 = rain, 3 = rain and snow, 4 = freezing rain, 5 = sleet, 6 = drizzle, 7 = freezing drizzle, 8 = thunderstorms).| unitless | unitless |\n| relativeHumidity              | Yes     | Relative humidity at 2 meters above ground level. | percentage | percentage |\n| shortWaveRadiation            | Yes     | Also called Global Horizontal Irradiance (GHI), this is the instantaneous high-energy solar radiation received at the Earth's surface, including both direct (DNI) and diffuse (DHI) sunlight. | watt per square meter| watt per square meter |\n| snowLweAmount                 |         | Total accumulation of snow in liquid water equivalent over the past hour. | millimeter | inch |\n| snowfallAmount                |         | Total accumulation of snow (measured as depth, not liquid equivalent), over the past hour. | millimeter | inch |\n| sunshineDuration              | Yes     | Duration of sunshine based on cloud cover and downwelling shortwave radiation over the past hour. | minute | minute |\n| surfacePressure               | Yes     | Pressure that the air exerts on the surface of the earth. | hectopascal | millibar |\n| totalCloudCover               | Yes     | The percentage of the sky covered by clouds. It can range from 0% (clear sky) to 100% (completely overcast). | percentage | percentage |\n| uWind                         |         | Measures the east-west component of wind. Positive values indicate wind from the west, and negative values indicate wind from the east. | meter per second | mile per hour |\n| visibility                    | Yes     | Lateral distance until line-of-sight is obstructed due to weather conditions. | kilometer | mile |\n| vWind                         |         | Measures the north-south component of wind. Positive values indicate wind from the south, and negative values indicate wind from the north. | meter per second | mile per hour |\n| weatherCode                   | Yes     | Numerical code summarizing the weather conditions. See `Weather Codes and Icons` section. | unitless | unitless |\n| wetBulbDepression             |         | Difference between the air temperature and the wet-bulb temperature. | degree Celsius | degree Fahrenheit |\n| wetBulbGlobeTemperature       |         | Wet Bulb Globe Temperature (WBGT) measures heat stress in direct sunlight based on temperature, humidity, wind speed, sun angle, and cloud cover. | degree Celsius | degree Fahrenheit |\n| windChill                     |         | Wind chill at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| windDirection                 | Yes     | Specifies the direction from which the wind is blowing at 10 meters above the ground, measured in degrees with respect to true north. | degree | degree |\n| windDirection50m              |         | Specifies the direction from which the wind is blowing at 50 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection50mAvg |\n| windDirection100m             |         | Specifies the direction from which the wind is blowing at 100 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection100mAvg |\n| windDirection150m             |         | Specifies the direction from which the wind is blowing at 150 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection150mAvg |\n| windDirection200m             |         | Specifies the direction from which the wind is blowing at 200 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection200mAvg |\n| windGust                      | Yes     | Wind gust speed at 10 meters above ground level. | meter per second | mile per hour |\n| windGust50m                   |         | Wind gust speed at 50 meters above ground level. | meter per second | mile per hour | windGust50mMax, windGust50mMin, windGust50mAvg |\n| windGust100m                  |         | Wind gust speed at 100 meters above ground level. | meter per second | mile per hour | windGust100mMax, windGust100mMin, windGust100mAvg |\n| windGust150m                  |         | Wind gust speed at 150 meters above ground level. | meter per second | mile per hour | windGust150mMax, windGust150mMin, windGust150mAvg |\n| windGust200m                  |         | Wind gust speed at 200 meters above ground level. | meter per second | mile per hour | windGust200mMax, windGust200mMin, windGust200mAvg |\n| windSpeed                     | Yes     | Wind speed at 10 meters above ground level. | meter per second | mile per hour |\n| windSpeed2m                   |         | Wind speed at 2 meters above ground level. | meter per second | mile per hour |\n| windSpeed50m                  |         | Wind speed at 50 meters above ground level. | meter per second | mile per hour | windSpeed50mMax, windSpeed50mMin, windSpeed50mAvg |\n| windSpeed100m                 |         | Wind speed at 100 meters above ground level. | meter per second | mile per hour | windSpeed100mMax, windSpeed100mMin, windSpeed100mAvg |\n| windSpeed150m                 |         | Wind speed at 150 meters above ground level. | meter per second | mile per hour | windSpeed150mMax, windSpeed150mMin, windSpeed150mAvg |\n| windSpeed200m                 |         | Wind speed at 200 meters above ground level. | meter per second | mile per hour | windSpeed200mMax, windSpeed200mMin, windSpeed200mAvg |\n</details>\n\n## Historical Parameters\nHistorical parameters are available starting from 1995-01-01T00:00:00Z. Expand the table below to view available parameters and each one's description, unit of measurement, and whether it is a default. The API returns only defaults unless specific parameters are requested.\n<details> <summary>Click to expand...</summary>\n\n| Parameter                     | Core    | Description | Metric units | Imperial units | Aggregation Parameters |\n|-------------------------------|---------|-------------|--------------|----------------|------------------------|\n| airTemp                       | Yes     | Air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | airTempMax, airTempMin, airTempAvg |\n| airTempNearGround             |         | Air temperature at 10 centimeters above ground level. | degree Celsius | degree Fahrenheit | airTempNearGroundMax, airTempNearGroundMin, airTempNearGroundAvg |\n| airDensity                    |         | Air density at 10 metres above ground. | kilogram per cubic meter | kilogram per cubic meter | |\n| cape                          |         | Amount of convective available potential energy. | joule per kilogram | joule per kilogram |\n| cin                           |         | Amount of convective inhibition. | joule per kilogram | joule per kilogram |\n| cloudBaseHeight               |         |  Height of the base of the lowest cloud layer regardless of the amount of cloud. See parameter ceiling for the lowest layer with over 50% of coverage. | meters | feet |\n| dewPoint                      | Yes     | Dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | dewPointMax, dewPointMin, dewPointAvg |\n| effectiveCloudCover           | Yes     | Weighted sum of low, medium, and high cloud cover percentage. | percentage | percentage | effectiveCloudCoverMax, effectiveCloudCoverMin, effectiveCloudCoverAvg |\n| feelsLikeTemp                 | Yes     | Apparent temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit | feelsLikeTempMax, feelsLikeTempMin, feelsLikeTempAvg |\n| frictionVelocity              |         | Frictional velocity near the surface. | meters per second | miles per hour |\n| globalRadiation               | Yes     | Total mean incoming solar radiation received on the Earth's surface, combining both direct sunlight and diffuse sky radiation over the past hour. | joule per square centimeter | joule per square centimeter | globalRadiationSum |\n| heatIndex                     |         | Heat index at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| hotDryWindyIndex              |         | Designed to help users determine which days are more likely to have adverse atmospheric conditions that make it more difficult to manage a wildland fire. It combines weather data from the surface and low levels of the atmosphere into a first-look product. | hectopascal meter per second | hectopascal meter per second | |\n| iceLweAmount                  |         | Ice liquid water equivalent precipitation amount in the past hour, this is the precipitation amount that occurs when the precipitation falls as sleet or ice pellets. | millimeter | inch |\n| liquidPrecipAmount            |         | Total (liquid equivalent) accumulation of precipitation from rain, drizzle, freezing rain, and freezing drizzle over the past hour.| millimeter | inch | liquidPrecipAmountSum |\n| localOffsetHours              |         | The number of hours to add or subtract from the UTC timestamp in the response to obtain local time (accounting for Daylight Saving Time) at the requested latitude and longitude. | Number of hours | Number of hours | |\n| localTimezoneOlson            |         | The Olson time zone name at the requested latitude and longitude. | Name of the timezone | Name of the timezone | |\n| longWaveRadiation             |         | Downwelling longwave (non-solar) radiation flux at the surface of the earth. | watt per square meter| watt per square meter| longWaveRadiationMax, longWaveRadiationMin, longWaveRadiationAvg |\n| mslPressure                   | Yes     | Air pressure at mean sea level. | hectopascal | millibar | mslPressureMax, mslPressureMin, mslPressureAvg |\n| potentialEvapotranspirationAmount   |         | Total accumulated loss of water through evapotranspiration over one hour from a hypothetical reference crop, assuming that ample water is available using FAO Penman-Monteith equation. | millimeter | inch | potentialEvapotranspirationAmountSum |\n| precipAmount                  | Yes     | Total (liquid equivalent) accumulation of precipitation over the past hour. | millimeter| inch | precipAmountSum |\n| precipDuration                |         | Total (liquid equivalent) duration of precipitation over the next hour. | second | second | precipDurationMax, precipDurationMin, precipDurationSum |\n| precipType                    |         | Numerical code identifying the precipitation type over the next hour, when there's a probability of precipitation (1 = snow, 2 = rain, 3 = rain and snow, 4 = freezing rain, 5 = sleet, 6 = drizzle, 7 = freezing drizzle, 8 = thunderstorms). | unitless | unitless |\n| relativeHumidity              | Yes     | Relative humidity at 2 meters above ground level. | percentage | percentage | relativeHumidityMax, relativeHumidityMin, relativeHumidityAvg |\n| shortWaveRadiation            | Yes     | Also called Global Horizontal Irradiance (GHI), this is the instantaneous high-energy solar radiation received at the Earth's surface, including both direct (DNI) and diffuse (DHI) sunlight. | watt per square meter| watt per square meter| shortWaveRadiationMax, shortWaveRadiationMin, shortWaveRadiationAvg |\n| snowLweAmount                 |         | Total accumulation of snow in liquid water equivalent over the past hour. | millimeter | inch |\n| snowfallAmount                |         | Total accumulation of snow (measured as depth, not liquid equivalent), over the past hour. | millimeter | inch | snowfallAmountSum |\n| sunshineDuration              | Yes     | Duration of sunshine based on cloud cover and downwelling shortwave radiation over the past hour. | minute | minute | sunshineDurationSum |\n| surfacePressure               | Yes     | Pressure that the air exerts on the surface of the earth. | hectopascal | millibar | surfacePressureMax, surfacePressureMin, surfacePressureAvg |\n| totalCloudCover               | Yes     | The percentage of the sky covered by clouds. It can range from 0% (clear sky) to 100% (completely overcast). | percentage | percentage | totalCloudCoverMax, totalCloudCoverMin, totalCloudCoverAvg |\n| uWind                         |         | Measures the east-west component of wind. Positive values indicate wind from the west, and negative values indicate wind from the east. | meter per second | mile per hour | uWindMax, uWindMin, uWindAvg |\n| visibility                    | Yes     | Lateral distance until line-of-sight is obstructed due to weather conditions. | kilometer | mile | visibilityMax, visibilityMin, visibilityAvg |\n| vWind                         |         | Measures the north-south component of wind. Positive values indicate wind from the south, and negative values indicate wind from the north. | meter per second | mile per hour | vWindMax, vWindMin, vWindAvg |\n| weatherCode                   | Yes     | Numerical code summarizing the weather conditions. See `Weather Codes and Icons` section. | unitless | unitless | weatherCode | \n| wetBulbDepression             |         | Difference between the air temperature and the wet-bulb temperature. | degree Celsius | degree Fahrenheit |\n| wetBulbGlobeTemperature       |         | Wet Bulb Globe Temperature (WBGT) measures heat stress in direct sunlight based on temperature, humidity, wind speed, sun angle, and cloud cover. | degree Celsius | degree Fahrenheit | wetBulbGlobeTemperatureMax, wetBulbGlobeTemperatureMin, wetBulbGlobeTemperatureAvg |\n| windChill                     |         | Wind chill at 2 meters above ground level. | degree Celsius | degree Fahrenheit | windChillMax, windChillMin, windChillAvg |\n| windDirection                 | Yes     | Specifies the direction from which the wind is blowing at 10 meters above the ground, measured in degrees with respect to true north. | degree | degree | windDirectionAvg |\n| windDirection50m              |         | Specifies the direction from which the wind is blowing at 50 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection50mAvg |\n| windDirection100m             |         | Specifies the direction from which the wind is blowing at 100 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection100mAvg |\n| windDirection150m             |         | Specifies the direction from which the wind is blowing at 150 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection150mAvg |\n| windDirection200m             |         | Specifies the direction from which the wind is blowing at 200 meters above the ground, measured in degrees with respect to true north.. | degree | degree | windDirection200mAvg |\n| windGust                      | Yes     | Wind gust speed at 10 meters above ground level. | meter per second | mile per hour | windGustMax, windGustMin, windGustAvg |\n| windGust50m                   |         | Wind gust speed at 50 meters above ground level. | meter per second | mile per hour | windGust50mMax, windGust50mMin, windGust50mAvg |\n| windGust100m                  |         | Wind gust speed at 100 meters above ground level. | meter per second | mile per hour | windGust100mMax, windGust100mMin, windGust100mAvg |\n| windGust150m                  |         | Wind gust speed at 150 meters above ground level. | meter per second | mile per hour | windGust150mMax, windGust150mMin, windGust150mAvg |\n| windGust200m                  |         | Wind gust speed at 200 meters above ground level. | meter per second | mile per hour | windGust200mMax, windGust200mMin, windGust200mAvg |\n| windSpeed                     | Yes     | Wind speed at 10 meters above ground level. | meter per second | mile per hour | windSpeedMax, windSpeedMin, windSpeedAvg |\n| windSpeed2m                   |         | Wind speed at 2 meters above ground level. | meter per second | mile per hour | windSpeed2mMax, windSpeed2mMin, windSpeed2mAvg |\n| windSpeed50m                  |         | Wind speed at 50 meters above ground level. | meter per second | mile per hour | windSpeed50mMax, windSpeed50mMin, windSpeed50mAvg |\n| windSpeed100m                 |         | Wind speed at 100 meters above ground level. | meter per second | mile per hour | windSpeed100mMax, windSpeed100mMin, windSpeed100mAvg |\n| windSpeed150m                 |         | Wind speed at 150 meters above ground level. | meter per second | mile per hour | windSpeed150mMax, windSpeed150mMin, windSpeed150mAvg |\n| windSpeed200m                 |         | Wind speed at 200 meters above ground level. | meter per second | mile per hour | windSpeed200mMax, windSpeed200mMin, windSpeed200mAvg |\n</details>\n\n## Weather Codes and Icons\nExpand the table below to view available weather codes and each code's description.  If desired, obtain an icon for the weather code by substituing its filename into the following URL: https://static-assets.dtn.com/icons/weather-conditions/v1/{filename}.\n<details> <summary>Click to expand...</summary>\n\n| Weather code | Description           | Icon file names |\n|--------------|-----------------------|---------------- |\n| 1            | Clear skies           | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/clear skies.svg\"> clear skies.svg </a> <br> <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/clear_skies_night.svg\"> clear_skies_night.svg </a> |\n| 2            | Fair                  | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/fair.svg\"> fair.svg </a> <br> <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/fair_night.svg\"> fair_night.svg </a> |\n| 3            | Partly cloudy         | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/partly_cloudy.svg\"> partly_cloudy.svg </a> <br> <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/partly_cloudy_night.svg\"> partly_cloudy_night.svg </a>\t|\n| 4            | Mostly cloudy         | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/mostly_cloudy.svg\"> mostly_cloudy.svg </a> <br> <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/mostly_cloudy_night.svg\"> mostly_cloudy_night.svg </a>\t|\n| 5            | Cloudy                | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/cloudy.svg\"> cloudy.svg </a> |\n| 6            | Mist                  | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/mist.svg\"> mist.svg </a> |\n| 7            | Fog                   | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/fog.svg\"> fog.svg </a> |\n| 8            | Drizzle               | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/drizzle.svg\"> drizzle.svg </a>\t|\n| 9            | Rain                  | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/rain.svg\"> rain.svg </a> |\n| 10           | Heavy rain            | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_rain.svg\"> heavy_rain.svg </a> |\n| 11           | Freezing drizzle      | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/freezing_drizzle.svg\"> freezing_drizzle.svg </a>\t|\n| 12           | Freezing rain         | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/freezing_rain.svg\"> freezing_rain.svg </a>\t|\n| 13           | Freezing heavy rain   | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/freezing_heavy_rain.svg\"> freezing_heavy_rain.svg </a>\t|\n| 14           | Rain and snow         | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/rain_and_snow.svg\"> rain_and_snow.svg </a> |\n| 15           | Heavy rain and snow   | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_rain_and_snow.svg\"> heavy_rain_and_snow.svg </a>\t|\n| 16           | Snow                  | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/snow.svg\"> snow.svg </a>\t|\n| 17           | Heavy snow            | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_snow.svg\"> heavy_snow.svg </a>\t|\n| 18           | Blizzard              | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/blizzard.svg\"> blizzard.svg </a>\t|\n| 19           | Ice pellets           | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/ice_pellets.svg\"> ice_pellets.svg </a> |\n| 20           | Rain showers          | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/rain_showers.svg\"> rain_showers.svg </a> |\n| 21           | Heavy rain showers    | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_rain_showers.svg\"> heavy_rain_showers.svg </a>\t|\n| 22           | Freezing rain showers | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/freezing_rain_showers.svg\"> freezing_rain_showers.svg </a>\t|\n| 23           | Heavy freezing rain showers | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_freezing_rain_showers.svg\"> heavy_freezing_rain_showers.svg </a>\t|\n| 24           | Rain and snow showers | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/rain_and_snow_showers.svg\"> rain_and_snow_showers.svg </a> |\n| 25           | Heavy rain and snow showers | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_rain_and_snow_showers.svg\"> heavy_rain_and_snow_showers.svg </a>\t|\n| 26           | Snow showers          | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/snow_showers.svg\"> snow_showers.svg </a>\t|\n| 27           | Heavy snow showers    | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_snow_showers.svg\"> heavy_snow_showers.svg </a>\t|\n| 28           | Hail showers          | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/hail_showers.svg\"> hail_showers.svg </a> |\n| 29           | Heavy hail showers    | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_hail_showers.svg\"> heavy_hail_showers.svg </a>\t|\n| 30           | Thunderstorms         | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/thunderstorms.svg\"> thunderstorms.svg </a>\t|\n| 31           | Severe thunderstorms  | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/heavy_thunderstorms.svg\"> heavy_thunderstorms.svg </a> |\n| 32           | Windy                 | <a href=\"https://static-assets.dtn.com/icons/weather-conditions/v1/windy.svg\"> windy.svg </a>\t|\n</details>\n\n\n## Uncertainty Parameters\nThe DTN Forecast System leverages an advanced ensemble approach, incorporating data from multiple global and regional weather models. Using machine learning algorithms, the system constantly evaluates and scores model performance, ensuring optimal forecasting across various locations and times. It employs a sophisticated blending technique for optimal model selection, downscaling techniques for precise location-specific predictions, and undergoes extensive third-party verification for continuous improvement.\n\nThe uncertainty (upper and lower bound) parameters represent the minimum and maximum forecasted values when comparing all contributing models for the given parameter, location and time. There are currently around 25 contributing models in the blend and these values when used together, and with the deterministic counterpart, help to determine the range of uncertainty in the forecast. \nFor more information on the DTN Forecast System see here. https://www.dtn.com/wp-content/uploads/2025/03/dtn-forecast-system-na.pdf",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e61bc7be-a814-4aee-9e61-a8d1823f5517",
+          "name": "/",
+          "request": {
+            "name": "/",
+            "description": {},
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://weather.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "8db597a1-dbfd-417e-85cd-50d4e55a2dae",
+    "name": "DTN Weather Conditions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nWelcome to DTN’s Weather Conditions API – the gateway to global historical, current, and forecast atmospheric weather conditions. This API caters to a wide range of users, including:\n  * Scientists engaged in environmental research\n  * Airlines optimizing routes and schedules\n  * Event planners enhancing weather safety measures\n  * Retailers adjusting inventory and marketing strategies\n  * Software developers building weather applications\n\n\n**Key features:** The Weather Conditions API provides a time series of historical, current, and forecast atmospheric weather parameters, including temperature, wind, precipitation, and more. It leverages state-of-the-art cloud technology and DTN's extensive global forecast models. The data is continuously validated, calibrated, and enhanced.\n\n**Conditions at a location:** For simplicity, the API provides a single endpoint for historical, current, and forecast data. Specify a location, the weather parameters of interest, and a time range up to 15 days long, from 1995-01-01T00:00:00Z to 15 days in the future. The API responds with the requested time series in GeoJSON format for easy parsing.\n\nThe interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of DTN’s Weather Conditions API.\n# Getting Started\n## Obtaining credentials\nTo get started, all users need their own client ID and client secret. Please contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. Then, review the `Authentication` section to learn how to request an API access token. Do not share or use others' API credentials, since doing so may compromise information security.\n\n## Making requests\nThere are multiple ways to make an initial API request:\n\n**1. Interactive documentation:** Navigate to the `Authentication` section on this page, insert credentials to obtain an access token, then explore the API endpoints described in the `Endpoints` section.\n\n**2. Postman collection:** For a hands-on approach, consider downloading the Postman collection and environment from the top of this page. Insert credentials and start testing the API in Postman's interactive application.\n\n**3. Writing code:** Ready to start coding? Try the Python example below, replacing `client_id` and `client_secret` with proper credentials.  This invokes the Conditions endpoint with a GET request and prints the response.\n\n```python\n  import requests\n  import urllib\n\n  #--- Obtain an API access token ---\n\n  auth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\n\n  body = {\n      'grant_type': 'client_credentials',\n      'client_id': '...insert your client id here...',\n      'client_secret': '...insert your client secret here...',\n      'audience': 'https://weather.api.dtn.com/conditions'\n  }\n  response = requests.post(auth_url, json=body)\n  access_token = response.json()['data']['access_token']\n\n  #--- Invoke the API ---\n\n  api_base_url = 'https://weather.api.dtn.com/v2'\n  query_parameters = urllib.parse.urlencode({\n      \"lat\": 35.47,\n      \"lon\": -97.51,\n      \"startTime\": \"2023-10-01T00:06:10Z\",\n      \"endTime\": \"2023-10-14T00:06:10Z\",\n  })\n  endpoint = '/conditions?' + query_parameters\n\n  headers = {'Authorization': 'Bearer ' + access_token}\n  response = requests.get(api_base_url + endpoint, headers=headers)\n\n  #--- Print the response ---\n\n  print(response.json())\n```",
+      "type": "text/plain"
+    }
+  }
+}

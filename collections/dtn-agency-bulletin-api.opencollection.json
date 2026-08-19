@@ -1,0 +1,186 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Agency Bulletin API",
+    "version": "2.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Bulletins",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://wxbulletin.api.dtn.com/v2/bulletins",
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "Specify the country code of the alerts request. This is a required parameter. The reference for acceptable values is ISO 3166 two-letter codes (alpha-2). example: US"
+              },
+              {
+                "name": "language",
+                "value": "",
+                "type": "query",
+                "description": "Specify the language the language to use in the text values of the alert. Values should follow RFC 3066. example: en-US"
+              },
+              {
+                "name": "agency",
+                "value": "",
+                "type": "query",
+                "description": "Specify the agency of the alert request. example: NWS"
+              },
+              {
+                "name": "sender",
+                "value": "",
+                "type": "query",
+                "description": "Specify the sender of the alerts request. example: w-nws.webmaster@noaa.gov"
+              },
+              {
+                "name": "event",
+                "value": "",
+                "type": "query",
+                "description": "When specified, the API will return only alerts that match the specified event types. example: Flood Warning"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Specify the date and time alerts are sent. When set, all alerts sent from this timestamp are returned. ISO8601 date-time format specified int RFC 3339. example: 2022-11-25T00:00:00"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "Specify the date and time alerts are sent. When set, all alerts sent until this timestamp are returned. ISO8601 date-time format specified int RFC 3339. example: 2022-11-26T00:00:00"
+              },
+              {
+                "name": "excludeGeometry",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether or not to include the geojson geometry for each alert."
+              },
+              {
+                "name": "showTotal",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether or not to include total number of alerts."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "```shell \nGET https://wxbulletin.api.dtn.com/v2/bulletins\n```\n\nThis endpoint returns the latest active weather bulletins from the requested national meteorological agency. \nIt is the primary source of information for real-time weather alerts and updates.\n\nUnderstanding and Utilizing Key Query Parameters:\n- **Country:** \nUse this parameter to access all active weather bulletins within a specific country. \nThis parameter accepts ISO 3166-1 alpha-2 codes.\nExample: country=US\n\n- **startTime:**\nThis "
+        },
+        {
+          "info": {
+            "name": "Metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://wxbulletin.api.dtn.com/v2/metadata",
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "Specify the country of the event type example: US"
+              },
+              {
+                "name": "agency",
+                "value": "",
+                "type": "query",
+                "description": "Specify the agency of the event type example: NWS"
+              },
+              {
+                "name": "language",
+                "value": "",
+                "type": "query",
+                "description": "Specify the language of the event types follow RFC 3066. example: en-US"
+              },
+              {
+                "name": "event",
+                "value": "",
+                "type": "query",
+                "description": "When specified, the API allows filtering based on specific event types. This can be used to narrow down search result. example: event=flood would return events like Flash Flood Watch, Flood Warning, Flash Flood Statement, Severe Flood Warning"
+              },
+              {
+                "name": "dtnEvent",
+                "value": "",
+                "type": "query",
+                "description": "When specified, the API allows filtering based on specific dtnEvent. This can be used to narrow down search result. example: dtnEvent=Wind would return events like Brisk Wind Advisory, Extreme Wind Warning, Lake Wind Advisory, High Wind Warning"
+              },
+              {
+                "name": "dtnEventCode",
+                "value": "",
+                "type": "query",
+                "description": "When specified, the API allows filtering based on specific dtnEventCode. This can be used to narrow down search result. example: dtnEventCode=1 would return events under Snow likeLake Effect Snow Watch, Lake Effect Snow Warning, Lake Effect Snow Advisory, Snow Squall Warning"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "```shell \nGET https://wxbulletin.api.dtn.com/v2/metadata\n```\nThis endpoint provides metadata from each national meteorological agency, \ndetailing what events are published and in which languages, allowing developers to understand the range and scope of \navailable bulletins.\n\nUnderstanding and Utilizing Key Query Parameters:\n\n- Access this endpoint to retrieve a comprehensive list of all available meteorological agencies, \nthe events they publish, and the languages they support. As we continuousl"
+        },
+        {
+          "info": {
+            "name": "Metadata/dtn",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://wxbulletin.api.dtn.com/v2/metadata/dtn",
+            "params": [
+              {
+                "name": "dtnEventCode",
+                "value": "",
+                "type": "query",
+                "description": "Specify the event code of dtn event example: NWS"
+              },
+              {
+                "name": "dtnEvent",
+                "value": "",
+                "type": "query",
+                "description": "Specify the event name of dtn event example: Low Temperature"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "```shell \nGET https://wxbulletin.api.dtn.com/v2/metadata/dtn\n```\nThis endpoint provides metadata of dtn events.\n\nUnderstanding and Utilizing Key Query Parameters:\n\n- Access this endpoint to retrieve a comprehensive list of all available dtn events. \n- dtnEvent: Use this parameter to pinpoint a particular dtn event.\n\nQuery Example: `https://wxbulletin.api.dtn.com/v2/metadata/dtn?dtnEvent=Snow`"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

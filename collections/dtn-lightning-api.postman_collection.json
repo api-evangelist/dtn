@@ -1,0 +1,1293 @@
+{
+  "item": [
+    {
+      "id": "9b6c5b53-2f8c-45e7-80a5-7709a872edc0",
+      "name": "Strikes",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a42bb89a-ce03-42b2-b756-b3bbb031a75a",
+          "name": "Get Lightning Strikes",
+          "request": {
+            "name": "Get Lightning Strikes",
+            "description": {
+              "content": "This endpoint allows users to retrieve all lightning strikes that match the set criteria.\n#### NOTES:\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To search within a time window:\n    - For time range, provide `startTime` and `endTime`. All should be in `ISO` format. Maximum time range is 2 weeks.\n    - If only `startTime` or `endTime` is provided, the missing one will be calculated by the maximum time range allowable.\n    - If neither `startTime` and `endTime` are provided, the most recent strikes from the last maximum time range will be fetched.\n  - Filter: Providing `parameters` enables you to filter which parameters will be included in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "strikes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "by",
+                  "value": "<string>",
+                  "description": "(Required) Get observations by radius | boundingBox."
+                },
+                {
+                  "disabled": false,
+                  "key": "radius",
+                  "value": "<number>",
+                  "description": "Radius for radial search in km."
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<number>",
+                  "description": "Longitude for radial search."
+                },
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<number>",
+                  "description": "Latitude for radial search."
+                },
+                {
+                  "disabled": false,
+                  "key": "minLon",
+                  "value": "<string>",
+                  "description": "Longitude of the lower-left corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "minLat",
+                  "value": "<string>",
+                  "description": "Latitude of the lower-left corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxLon",
+                  "value": "<string>",
+                  "description": "Longitude of the upper-right corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxLat",
+                  "value": "<string>",
+                  "description": "Latitude of the upper-right corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<date>",
+                  "description": "Start time of a time range query in ISO format."
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<date>",
+                  "description": "End time of a time range query in ISO format."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7329ca19-cf0c-41a5-bfe4-0e0d291d696e",
+              "name": "Lightning Strikes",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "strikes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "minLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": {\n    \"items\": {\n      \"strikes\": [\n        {\n          \"strike\": {\n            \"geospatial\": {\n              \"coordinates\": [\n                -80.951935,\n                24.217649\n              ],\n              \"type\": \"Point\"\n            },\n            \"timestamp\": [\n              \"2022-08-05T09:02:36.755Z\"\n            ],\n            \"parameters\": [\n              {\n                \"name\": \"peakCurrent\",\n                \"value\": -56\n              },\n              {\n                \"name\": \"cloudToCloud\",\n                \"value\": false\n              },\n              {\n                \"name\": \"cloudToCloudHeight\",\n                \"value\": null\n              },\n              {\n                \"name\": \"errorElipseBearing\",\n                \"value\": 95.7\n              },\n              {\n                \"name\": \"errorEllipseMajor\",\n                \"value\": 3600\n              },\n              {\n                \"name\": \"errorEllipseSemiMinor\",\n                \"value\": 400\n              },\n              {\n                \"name\": \"sensorCount\",\n                \"value\": 5\n              }\n            ]\n          }\n        },\n        {\n          \"strike\": {\n            \"geospatial\": {\n              \"coordinates\": [\n                -80.951935,\n                24.217649\n              ],\n              \"type\": \"Point\"\n            },\n            \"timestamp\": [\n              \"2022-08-05T09:02:36.755Z\"\n            ],\n            \"parameters\": [\n              {\n                \"name\": \"peakCurrent\",\n                \"value\": -56\n              },\n              {\n                \"name\": \"cloudToCloud\",\n                \"value\": false\n              },\n              {\n                \"name\": \"cloudToCloudHeight\",\n                \"value\": null\n              },\n              {\n                \"name\": \"errorElipseBearing\",\n                \"value\": 95.7\n              },\n              {\n                \"name\": \"errorEllipseMajor\",\n                \"value\": 3600\n              },\n              {\n                \"name\": \"errorEllipseSemiMinor\",\n                \"value\": 400\n              },\n              {\n                \"name\": \"sensorCount\",\n                \"value\": 5\n              }\n            ]\n          }\n        }\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ceddd25d-dc3d-4c5a-bb03-f7aaff4ec88b",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "strikes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "minLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  },\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6bfd5fc2-f14b-4d93-b009-151b75e5eab6",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "strikes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "minLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "c335e07c-c63b-443b-9849-b91cd417daf1",
+      "name": "Archive",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "390821e5-08cf-4574-b883-71160a230e3e",
+          "name": "Create a Request for Fetching Historical Lightning Strikes",
+          "request": {
+            "name": "Create a Request for Fetching Historical Lightning Strikes",
+            "description": {
+              "content": "This endpoint generates a Request ID that will fetch all lightning strikes that match the given criteria.\n#### NOTES:\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To search within a time window:\n    - For time range, provide `startTime` and `endTime`. All should be in `ISO` format. Maximum time range is 2 weeks.\n    - If only `startTime` or `endTime` is provided, the missing one will be calculated by the maximum time range allowable.\n    - If neither `startTime` and `endTime` are provided, the most recent strikes from the last maximum time range will be fetched.\n   - Filter: Providing `parameters` enables you to filter which parameters will be included in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "archive"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "by",
+                  "value": "<string>",
+                  "description": "(Required) Get observations by radius | boundingBox."
+                },
+                {
+                  "disabled": false,
+                  "key": "radius",
+                  "value": "<number>",
+                  "description": "Radius for radial search in km."
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<number>",
+                  "description": "Longitude for radial search."
+                },
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<number>",
+                  "description": "Latitude for radial search."
+                },
+                {
+                  "disabled": false,
+                  "key": "minLon",
+                  "value": "<string>",
+                  "description": "Longitude of the lower-left corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "minLat",
+                  "value": "<string>",
+                  "description": "Latitude of the lower-left corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxLon",
+                  "value": "<string>",
+                  "description": "Longitude of the upper-right corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxLat",
+                  "value": "<string>",
+                  "description": "Latitude of the upper-right corner."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<date>",
+                  "description": "Start time of a time range query in ISO format."
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<date>",
+                  "description": "End time of a time range query in ISO format."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6b4d3744-f645-4fde-9694-8a353565eef3",
+              "name": "Lightning Strikes Archive",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "minLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf713398-662a-44c2-a006-d570d19390a8",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "minLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  },\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a9d1cbdf-f4c9-4287-bd77-98ce5895652b",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archive"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "minLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "maxLat",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<date>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<date>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f6cb043-459f-419e-a0e0-5928c436de64",
+          "name": "Get Historical Lightning Strikes in Bulk",
+          "request": {
+            "name": "Get Historical Lightning Strikes in Bulk",
+            "description": {
+              "content": "This endpoint allows users to gather the results of the query that was made using the Request ID that was generated by the `/strikes/archive` endpoint as a downloadable `CSV` file.\n#### NOTES:\n  - returns a link that contains all lightning strikes that matches the criteria of the `requestId` in a CSV format.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "archive",
+                "bulkResult"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "requestId",
+                  "value": "<string>",
+                  "description": "(Required) Request ID that was provided by the `/strikes/archive` endpoint."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5417aad8-089c-4539-8c98-934a83c9c002",
+              "name": "Lightning Strikes Archive Bulk Result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archive",
+                    "bulkResult"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "requestId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"status\": \"RUNNING\",\n  \"downloadUrl\": \"string\",\n  \"expirationTime\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24b511b3-0fb2-436f-bc69-73571f544fc4",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archive",
+                    "bulkResult"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "requestId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  },\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9844cd2-2fb3-4a37-a1b7-76d0dc7265ee",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "archive",
+                    "bulkResult"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "requestId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "a0106b14-7c24-495a-aca1-e9e51bab4e17",
+      "name": "Parameters",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "44f59a39-914c-4023-9391-02c68e9660ad",
+          "name": "Get Parameters",
+          "request": {
+            "name": "Get Parameters",
+            "description": {
+              "content": "The `parameters` endpoint shows the properties of each parameter of a lightning strike.\n#### NOTES:\n  - Define the parameter `names` to filter fields you wish to include in the response.\n  - Leave parameter `names` blank to include all parameters of a lightning strike.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "names",
+                  "value": "<string>",
+                  "description": "Comma-separated included parameter names."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a30208be-5ad6-4405-b24e-3fba8aec859f",
+              "name": "Parameter List",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "names",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"string\",\n    \"unit\": \"string\",\n    \"type\": \"string\"\n  },\n  {\n    \"name\": \"string\",\n    \"unit\": \"string\",\n    \"type\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f01d6d2-fe0e-4785-a8bb-a9fd1f8bea54",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "names",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  },\n  {\n    \"msg\": \"string\",\n    \"param\": \"string\",\n    \"location\": \"string\",\n    \"value\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "633a09f9-c14b-4c2c-baa9-01ca46baa638",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "names",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "638518b5-862a-4e59-a166-9dcbac862039",
+      "name": "Health",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "914aa015-6353-4aa1-b19d-0442dd6f4581",
+          "name": "Get Health Check Report",
+          "request": {
+            "name": "Get Health Check Report",
+            "description": {
+              "content": "",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "health-check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "72f45a14-0b2b-4fea-8446-12016fb90ec8",
+              "name": "Health Check report",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "health-check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"up\",\n  \"version\": \"v2\",\n  \"info\": \"Service is healthy.\",\n  \"timestamp\": \"2018-02-10T09:30Z\",\n  \"env\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6b2bcaa0-12e4-421a-acbb-e90bd6884ad2",
+              "name": "info about error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "health-check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"code\": \"invalid-token\",\n  \"description\": \"bad token\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://lightning.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "63d80a16-0e2d-4315-92b6-8e3b61ea3ce1",
+    "name": "DTN Lightning API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nThe DTN Lightning API provides you access to worldwide near real-time and historical lightning data.\n\nDownload the Lightning API Postman collection [here](https://dtn.box.com/s/nfq1iyy9o34t3v5v1jnjfq5veo0neirr).\n",
+      "type": "text/plain"
+    }
+  }
+}

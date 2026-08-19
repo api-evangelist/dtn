@@ -1,0 +1,313 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Energy Sales & Marketing - Integrations Service",
+    "version": "1.0.1"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Health Check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://digitalcommerce-integrations.dtn.com/health"
+          },
+          "docs": "Health Check"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getSpotOrders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://digitalcommerce-integrations.dtn.com/orders",
+            "params": [
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Prompt Orders"
+        },
+        {
+          "info": {
+            "name": "getForwardOrders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://digitalcommerce-integrations.dtn.com/orders/forward",
+            "params": [
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Forward Orders"
+        },
+        {
+          "info": {
+            "name": "updateOrder",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://digitalcommerce-integrations.dtn.com/order/:orderId/data-management",
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Update Orders"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Pricing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "getPricingRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://digitalcommerce-integrations.dtn.com/pricing",
+            "params": [
+              {
+                "name": "pageNumber",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "pageLimit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "terminalSplc",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "terminalOwner",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "productGroup",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "product",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "areFixedRules",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "labels",
+                "value": "",
+                "type": "query",
+                "description": "The internal category behind Basis, Margin and Cost pricing values"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Pricing Rules"
+        },
+        {
+          "info": {
+            "name": "putPricingRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://digitalcommerce-integrations.dtn.com/pricing",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Creates new & updates existing pricing values"
+        },
+        {
+          "info": {
+            "name": "deletePricingRules",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://digitalcommerce-integrations.dtn.com/pricing",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Delete Pricing Rules"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "setupBuyerAccountsAndUsers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://digitalcommerce-integrations.dtn.com/users/buyers/setup",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Create and/or update buyer account(s) and user(s) with specified roles and permissions"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

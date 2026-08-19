@@ -1,0 +1,801 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Aviation SIGMET/AIRMET API",
+    "version": "1.9.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "SIGMET",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get active SIGMETs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/sigmets/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "unitSystem",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for units system used for numerical output values in SIGMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `movement`: default=`...##KT`, metric=`...##M/S`<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "geometry",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+              },
+              {
+                "name": "intersection",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+              },
+              {
+                "name": "srid",
+                "value": "",
+                "type": "query",
+                "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "isValidAt",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "untilDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedAfter",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedThrough",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "reportTypes",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of report type values.  Must include only allowed values.  Limits to objects whose `reportType` value matches one of specified parameter values."
+              },
+              {
+                "name": "issueOffices",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of issuing office values.  Values should be each 4 letters and need to match a Meteorological Watch Office.  Limits to objects whose `issueOffice` value matches one of specified parameter values."
+              },
+              {
+                "name": "firs",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of FIR names values.  Values must exactly match items in defined population.  Limits to objects whose `firStandardName` value matches one of specified parameter values."
+              },
+              {
+                "name": "firStartsWith",
+                "value": "",
+                "type": "query",
+                "description": "Beginning characters of FIR name.  Must be between 2 and 10 characters and only letters, spaces, dashes, and apostrophes allowed.  Results will be provided including data for any FIRs whose `firStandardName` values match the input, like for both `GUANGZHOU` and `GUAYAQUIL` if provide `GUA` as value."
+              },
+              {
+                "name": "isUrgent",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for isUrgent flag.  Limits to objects whose `isUrgent` value matches parameter value."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available SIGMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Possible SIGMET FIR names",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get possible SIGMET FIR names that might be represented in data response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/possibleFirNames/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "srid",
+                "value": "",
+                "type": "query",
+                "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "firs",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of FIR names values.  Values must exactly match items in defined population.  Limits to objects whose `firStandardName` value matches one of specified parameter values."
+              },
+              {
+                "name": "firStartsWith",
+                "value": "",
+                "type": "query",
+                "description": "Beginning characters of FIR name.  Must be between 2 and 10 characters and only letters, spaces, dashes, and apostrophes allowed.  Results will be provided including data for any FIRs whose `firStandardName` values match the input, like for both `GUANGZHOU` and `GUAYAQUIL` if provide `GUA` as value."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get FIR names that may provide data if used with 'firNames' parameter.  May filtered by certain query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Convective SIGMET",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get active Convective SIGMETs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/convectiveSigmets/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "unitSystem",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for units system used for numerical output values in convective SIGMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `speed`: default=`kts`, metric=`m/s`"
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "geometry",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+              },
+              {
+                "name": "intersection",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+              },
+              {
+                "name": "srid",
+                "value": "",
+                "type": "query",
+                "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "isValidAt",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "untilDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedAfter",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedThrough",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "minSpeedKts",
+                "value": "",
+                "type": "query",
+                "description": "Minimum speed in knots.  Limits to objects whose `speed` value is greater than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots."
+              },
+              {
+                "name": "maxSpeedKts",
+                "value": "",
+                "type": "query",
+                "description": "Maximum speed in knots.  Limits to objects whose `speed` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available Convective SIGMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Sierra (IFR) AIRMET",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get active Sierra (IFR) AIRMETs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/sierraAirmets/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "unitSystem",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "geometry",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+              },
+              {
+                "name": "intersection",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+              },
+              {
+                "name": "srid",
+                "value": "",
+                "type": "query",
+                "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "isValidAt",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "untilDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedAfter",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedThrough",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "messageTypes",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of message type values.  Must match specified allowed values.  Limits to objects whose `messageType` value matches one of specified parameter values."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available Sierra (IFR) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tango (Turbulence) AIRMET",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get active Tango (Turbulence) AIRMETs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/tangoAirmets/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "unitSystem",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "geometry",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+              },
+              {
+                "name": "intersection",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+              },
+              {
+                "name": "srid",
+                "value": "",
+                "type": "query",
+                "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "isValidAt",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "untilDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedAfter",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedThrough",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "severities",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of severity values.  Must include only allowed values, which include empty string.  Limits to objects whose `severity` value matches one of specified parameter values."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available Tango (Turbulence) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Zulu (Icing) AIRMET",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get active Zulu (Icing) AIRMETs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/zuluAirmets/",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "unitSystem",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+              },
+              {
+                "name": "polygon",
+                "value": "",
+                "type": "query",
+                "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+              },
+              {
+                "name": "circle",
+                "value": "",
+                "type": "query",
+                "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "corridor",
+                "value": "",
+                "type": "query",
+                "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+              },
+              {
+                "name": "geometry",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+              },
+              {
+                "name": "intersection",
+                "value": "",
+                "type": "query",
+                "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+              },
+              {
+                "name": "srid",
+                "value": "",
+                "type": "query",
+                "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+              },
+              {
+                "name": "distanceUnits",
+                "value": "",
+                "type": "query",
+                "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+              },
+              {
+                "name": "isValidAt",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "fromDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "untilDateTime",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedAfter",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "insertedThrough",
+                "value": "",
+                "type": "query",
+                "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+              },
+              {
+                "name": "severities",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of severity values.  Must include only allowed values, which include empty string.  Limits to objects whose `severity` value matches one of specified parameter values."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available Zulu (Icing) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

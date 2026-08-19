@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Astronomical API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Sun and Moon",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://astronomical.api.dtn.com/v2/sun-moon",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "52.369",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "4.875",
+                "type": "query"
+              },
+              {
+                "name": "startDate",
+                "value": "2023-08-10",
+                "type": "query"
+              },
+              {
+                "name": "endDate",
+                "value": "2023-08-12",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides comprehensive astronomical data including sunrise and sunset times, current moon phase, and more related to the Sun's and Moon's status for any specific point on Earth. Specify the location and an optional date range up to 15 days long. The API responds with the requested data in GeoJSON format.\n\nUse query parameters to control the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).\n\n  * Two important parameters are `startDate` "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

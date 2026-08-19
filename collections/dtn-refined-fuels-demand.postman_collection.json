@@ -1,0 +1,1173 @@
+{
+  "item": [
+    {
+      "id": "ae2906e0-7bb4-4066-9d36-9766d5f4efe5",
+      "name": "PADD Daily",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2174d6bc-a09f-4514-a158-f9c22b3dd141",
+          "name": "Daily summaries of transactional refined products volumes for rack loadings at the PADD.",
+          "request": {
+            "name": "Daily summaries of transactional refined products volumes for rack loadings at the PADD.",
+            "description": {},
+            "url": {
+              "path": [
+                "padd-daily"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "regions",
+                  "value": "<string>",
+                  "description": "List of PADD regions separated by commas.\nValue of 1 groups 1A, 1B, 1C. 1 excludes 1A,1B,1C\nValue of USA groups all regions. USA excludes all other regions\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "products",
+                  "value": "<string>",
+                  "description": "List of general refined products classes (gasoline or distillates) separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "grades",
+                  "value": "<string>",
+                  "description": "List of grades separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "This is the page being requested. The default is page 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>",
+                  "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<string>",
+                  "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<string>",
+                  "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "format",
+                  "value": "<string>",
+                  "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Key that provides access to this API.",
+                "key": "apiKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3e2fe6ca-19b0-44d6-9503-dd6a22276112",
+              "name": "List of Daily PADDs",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "padd-daily"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "products",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "grades",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"period\": \"2019-01-01\",\n    \"region\": \"1\",\n    \"product\": \"Distillates\",\n    \"grade\": \"No. 2 Diesel Fuel\",\n    \"sumNetVolume\": 2031,\n    \"bioVolume\": 500,\n    \"coverageFactor\": 1.114887865,\n    \"effectiveDateTime\": \"2019-01-03T00:00:00Z\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "66213511-3ce7-4963-99dc-f3de9432ce46",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "padd-daily"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "products",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "grades",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3690,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e47aa99c-2bf2-4a8c-afdb-8e1c682e8ffc",
+      "name": "Rack Daily",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f43d8358-2888-4748-aaf0-4d4346c54bba",
+          "name": "Daily summaries of transactional refined products volumes and spot price at the rack city level.",
+          "request": {
+            "name": "Daily summaries of transactional refined products volumes and spot price at the rack city level.",
+            "description": {},
+            "url": {
+              "path": [
+                "rack-daily"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "regions",
+                  "value": "<string>",
+                  "description": "List of PADD regions separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "products",
+                  "value": "<string>",
+                  "description": "List of general refined products classes (gasoline or distillates) separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "grades",
+                  "value": "<string>",
+                  "description": "List of grades separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "rackAverage",
+                  "value": "<string>",
+                  "description": "Narrow results by filtering on Y or N for rackAverage"
+                },
+                {
+                  "disabled": false,
+                  "key": "states",
+                  "value": "<string>",
+                  "description": "List of state abbreviations separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "This is the page being requested. The default is page 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>",
+                  "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<string>",
+                  "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<string>",
+                  "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "format",
+                  "value": "<string>",
+                  "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Key that provides access to this API.",
+                "key": "apiKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4a16c114-37d0-4df9-9c42-be3080de77a5",
+              "name": "List of Daily Racks",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rack-daily"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "products",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "grades",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "rackAverage",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "states",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"period\": \"2019-01-01\",\n    \"rackId\": 320,\n    \"rackName\": \"Bridgeport\",\n    \"state\": \"CT\",\n    \"region\": \"1\",\n    \"product\": \"Distillates\",\n    \"grade\": \"No. 2 Diesel Fuel\",\n    \"sumNetVolume\": 203,\n    \"rackAverage\": \"N\",\n    \"effectiveDateTime\": \"2019-01-03T00:00:00Z\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6d65c315-41ee-4701-ba0b-766590fab3ea",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "rack-daily"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "products",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "grades",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "rackAverage",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "states",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3690,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "543ed61b-f906-49db-95ca-4b68cc61ddf5",
+      "name": "Supplier Terminal Monthly Counts",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cfc4e995-6a71-4e5c-9db6-988ff42e9ba2",
+          "name": "Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored rack.",
+          "request": {
+            "name": "Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored rack.",
+            "description": {},
+            "url": {
+              "path": [
+                "supplier-terminal-monthly"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "regions",
+                  "value": "<string>",
+                  "description": "List of PADD regions separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "products",
+                  "value": "<string>",
+                  "description": "List of general refined products classes (gasoline or distillates) separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "grades",
+                  "value": "<string>",
+                  "description": "List of grades separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "rackNames",
+                  "value": "<string>",
+                  "description": "List of rack cities separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "states",
+                  "value": "<string>",
+                  "description": "List of state abbreviations separated by commas"
+                },
+                {
+                  "disabled": false,
+                  "key": "supplierMinCount",
+                  "value": "<integer>",
+                  "description": "Filter racks by minimum number of suppliers."
+                },
+                {
+                  "disabled": false,
+                  "key": "terminalMinCount",
+                  "value": "<integer>",
+                  "description": "Filter racks by minimum number of terminals."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "This is the page being requested. The default is page 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>",
+                  "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<string>",
+                  "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<string>",
+                  "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "format",
+                  "value": "<string>",
+                  "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Key that provides access to this API.",
+                "key": "apiKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f8021096-ff91-409a-8e0c-cf79ecf2af35",
+              "name": "Supplier Terminal Monthly Counts",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "supplier-terminal-monthly"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "products",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "grades",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "rackNames",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "states",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "supplierMinCount",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "terminalMinCount",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"period\": \"2018-12-01\",\n    \"rackName\": \"Anchorage\",\n    \"state\": \"AK\",\n    \"region\": \"5\",\n    \"product\": \"Distillates\",\n    \"grade\": \"Jet Fuel\",\n    \"supplierMinCount\": 1,\n    \"terminalMinCount\": 2\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e2578f72-92c1-4a32-bf9b-6f6b880334bb",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "supplier-terminal-monthly"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "products",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "grades",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "rackNames",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "states",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "supplierMinCount",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "terminalMinCount",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3690,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "effc1507-b5a7-4fd3-96d8-0979475c78d0",
+      "name": "Coverage Daily",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2e8a939f-14ba-4038-a8aa-3b18e18dd38d",
+          "name": "Daily coverage factors for transactional refined product volumes at PADD or United States level.",
+          "request": {
+            "name": "Daily coverage factors for transactional refined product volumes at PADD or United States level.",
+            "description": {},
+            "url": {
+              "path": [
+                "coverage-daily"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "regions",
+                  "value": "<string>",
+                  "description": "List of PADD regions separated by commas."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number (1-5000) of records that will be provided. Default 200."
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>",
+                  "description": "Deprecated. Specifies number of records that will be skipped. When not provided, the returned records will start with the first record."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>",
+                  "description": "This is the page being requested. The default is page 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "<integer>",
+                  "description": "This is the amount of objects on each page. Default is 200.  Maximum is 5000."
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<string>",
+                  "description": "Beginning of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<string>",
+                  "description": "End of date range (e.g. \"YYYY-MM-DD\")."
+                },
+                {
+                  "disabled": false,
+                  "key": "format",
+                  "value": "<string>",
+                  "description": "Format of the response data. If not provided, the type specified by the Accept header will be used. If neither are provided, the type returned will be JSON."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) Key that provides access to this API.",
+                "key": "apiKey",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "487d3ecc-80af-4d26-ada3-8101c3ab9d08",
+              "name": "List of Daily Coverage Factors",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "coverage-daily"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"period\": \"2019-01-01\",\n    \"region\": \"1\",\n    \"coverageFactor\": 1.114887865,\n    \"effectiveDateTime\": \"2019-01-03T00:00:00Z\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe8821f1-2cb9-4da4-be95-9aef2ef18e8e",
+              "name": "unexpected error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "coverage-daily"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "regions",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "format",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) Key that provides access to this API.",
+                    "key": "apiKey",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": 3690,\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://traderinsights-cat.dtn.com/repo_usmd_api",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a343e97d-72b0-405a-9b94-eb029046b194",
+    "name": "Refined Fuels USMD API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Summarized product volumes by U.S., PADD, Rack City & Terminal",
+      "type": "text/plain"
+    }
+  }
+}

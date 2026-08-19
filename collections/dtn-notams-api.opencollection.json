@@ -1,0 +1,81 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Aviation NOTAM API",
+    "version": "1.10.1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "NOTAM",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get NOTAMs for a Station",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://aviation.api.dtn.com/v1/notams/",
+            "params": [
+              {
+                "name": "stationId",
+                "value": "",
+                "type": "query",
+                "description": "Station identifier, e.g., `KIND`, `CYYC`"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Skip over this many into the response set; used for paginated results."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Provide no more than this many items in the response set."
+              },
+              {
+                "name": "preferNotamType",
+                "value": "",
+                "type": "query",
+                "description": "Preference for NOTAM source type.  Must be one of `domestic`, `international`, or `all`.  When `domestic` (default), domestic are preferred and international is used as fallback.  When `international`, international is preferred and domestic is used as fallback.  When `all`, both domestic and international NOTAMs are returned with any domestic first.  Cannot be used together with `onlyNotamType`."
+              },
+              {
+                "name": "onlyNotamType",
+                "value": "",
+                "type": "query",
+                "description": "Exclusive filter for NOTAM source type.  Must be one of `domestic` or `international`.  When set, only NOTAMs of the specified type are returned with no fallback to the other type.  Cannot be used together with `preferNotamType`."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get all available NOTAMs for a specific Station ID"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,521 @@
+{
+  "item": [
+    {
+      "id": "629e9d7b-6143-4823-ae95-6575b726b7ef",
+      "name": "METAR",
+      "description": {
+        "content": "On demand METARs via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "54f74232-03aa-441a-b92e-af854e8bb1b7",
+          "name": "Get active METARs",
+          "request": {
+            "name": "Get active METARs",
+            "description": {
+              "content": "Get all available METARs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "metars",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in METAR.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `ceilingLow`: default=`ft`, metric=`m`<br>                * `ceilingMid`: default=`ft`, metric=`m`<br>                * `ceilingHigh`: default=`ft`, metric=`m`<br>                * `visibility`: default=`mi`, metric=`m`<br>                * `temperature`: default=`degC`, metric=`degC`<br>                * `dewpoint`: default=`degC`, metric=`degC`<br>                * `altimeter`: default=`inHg`, metric=`hPa`<br>                * `windSpeed`: default=`kts`, metric=`m/s`<br>                * `windGust`: default=`kts`, metric=`m/s`<br>                * `rvr#Visibility`: default=`ft`, metric=`m`<br>                * `rvr#MaxVisibility`: default=`ft`, metric=`m`"
+                },
+                {
+                  "disabled": false,
+                  "key": "stationIds",
+                  "value": "<string>",
+                  "description": "Comma-separated list of station identifier values.  Limits to objects whose `stationId` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "untilDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "flightCodes",
+                  "value": "<string>,<string>",
+                  "description": "Comma-separated list of flight code values.  Must include only allowed values.  Limits to objects whose `flightCode` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "flightCategories",
+                  "value": "<string>,<string>",
+                  "description": "Comma-separated list of flight category values.  Must include only allowed values.  Limits to objects whose `flightCategory` value matches one of specified parameter values."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "04a15549-156f-46ee-9569-060007ff5002",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metars",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "stationIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "flightCodes",
+                      "value": "<string>,<string>"
+                    },
+                    {
+                      "key": "flightCategories",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/metars/?corridor=-73.875,40.781,-71.005,42.365,30&flightCategories=IFR,LIFR\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -71.875555,\n          42.267222\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"LIFR\",\n        \"ceilingLow\": 300,\n        \"visibility\": 2,\n        \"temperature\": 14,\n        \"dewpoint\": 13,\n        \"altimeter\": 29.81,\n        \"stationId\": \"KORH\",\n        \"stationName\": \"WORCESTER REGL\",\n        \"stationPlace\": \"WORCESTER\",\n        \"rawTxt\": \"METAR KORH 071454Z 19006KT 2SM RA BR OVC003 14/13 A2981 RMK AO2 SLP098 P0002 60018 T01390133 58008\",\n        \"wx1\": \"RA\",\n        \"wx2\": \"BR\",\n        \"cloudLayer1\": \"OVC003\",\n        \"validDateTime\": \"2024-10-07T14:54:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T16:54:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T14:56:22.318Z\",\n        \"flightCode\": 4,\n        \"humidity\": 94,\n        \"windSpeed\": 6,\n        \"windGust\": null,\n        \"windDirection\": 190,\n        \"ogcFeatureId\": 491463454,\n        \"stationPriority\": 7000,\n        \"wmoCode1\": \"RA\",\n        \"wmoCode2\": \"BR\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -73.1,\n          40.795\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 500,\n        \"ceilingMid\": 1700,\n        \"visibility\": 1,\n        \"temperature\": 18,\n        \"dewpoint\": 18,\n        \"altimeter\": 29.8,\n        \"stationId\": \"KISP\",\n        \"stationName\": \"LONG ISLAND MAC ARTHUR\",\n        \"stationPlace\": \"ISLIP\",\n        \"rawTxt\": \"METAR KISP 071456Z 24012KT 1SM R06/P6000FT -RA BR BKN005 OVC017 18/18 A2980 RMK AO2 SLP090 P0009 60009 T01830178 56007\",\n        \"wx1\": \"-RA\",\n        \"wx2\": \"BR\",\n        \"cloudLayer1\": \"BKN005\",\n        \"cloudLayer2\": \"OVC017\",\n        \"validDateTime\": \"2024-10-07T14:56:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T16:56:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T14:56:22.742Z\",\n        \"flightCode\": 3,\n        \"humidity\": 100,\n        \"windSpeed\": 12,\n        \"windGust\": null,\n        \"windDirection\": 240,\n        \"ogcFeatureId\": 491463871,\n        \"stationPriority\": 7000,\n        \"wmoCode1\": \"-RA\",\n        \"wmoCode2\": \"BR\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -72.18,\n          41.743888\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 700,\n        \"ceilingMid\": 1200,\n        \"visibility\": 1.75,\n        \"temperature\": 16,\n        \"dewpoint\": 16,\n        \"altimeter\": 29.8,\n        \"stationId\": \"KIJD\",\n        \"stationName\": \"WINDHAM\",\n        \"stationPlace\": \"WILLIMANTIC\",\n        \"rawTxt\": \"SPECI KIJD 071510Z AUTO 18006KT 1 3/4SM -RA BR BKN007 OVC012 16/16 A2980 RMK AO2 CIG 005V009 P0001 T01560156\",\n        \"wx1\": \"-RA\",\n        \"wx2\": \"BR\",\n        \"cloudLayer1\": \"BKN007\",\n        \"cloudLayer2\": \"OVC012\",\n        \"validDateTime\": \"2024-10-07T15:10:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T17:10:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T15:12:44.107Z\",\n        \"flightCode\": 3,\n        \"humidity\": 100,\n        \"windSpeed\": 6,\n        \"windGust\": null,\n        \"windDirection\": 180,\n        \"ogcFeatureId\": 491468853,\n        \"stationPriority\": 4200,\n        \"wmoCode1\": \"-RA\",\n        \"wmoCode2\": \"BR\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -71.288888,\n          42.469722\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 800,\n        \"ceilingMid\": 5500,\n        \"visibility\": 10,\n        \"temperature\": 13,\n        \"dewpoint\": 12,\n        \"altimeter\": 29.81,\n        \"stationId\": \"KBED\",\n        \"stationName\": \"HANSCOM\",\n        \"stationPlace\": \"BEDFORD\",\n        \"rawTxt\": \"METAR KBED 071451Z 15005KT 10SM BKN008 OVC055 13/12 A2981 RMK AO2 LTG DSNT E RAE47 SLP107 P0003 60014 T01330117 58005\",\n        \"cloudLayer1\": \"BKN008\",\n        \"cloudLayer2\": \"OVC055\",\n        \"validDateTime\": \"2024-10-07T14:51:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T16:51:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T14:53:42.421Z\",\n        \"flightCode\": 3,\n        \"humidity\": 94,\n        \"windSpeed\": 5,\n        \"windGust\": null,\n        \"windDirection\": 150,\n        \"ogcFeatureId\": 491461506,\n        \"stationPriority\": 7000,\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -71.758888,\n          42.553888\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"LIFR\",\n        \"ceilingLow\": 400,\n        \"visibility\": 1.25,\n        \"temperature\": 13,\n        \"dewpoint\": 13,\n        \"altimeter\": 29.82,\n        \"stationId\": \"KFIT\",\n        \"stationName\": \"FITCHBURG MUN\",\n        \"stationPlace\": \"FITCHBURG\",\n        \"rawTxt\": \"METAR KFIT 071452Z AUTO 00000KT 1 1/4SM -RA BR OVC004 13/13 A2982 RMK AO2 RAB17 SLP099 P0002 60011 T01330128 56006\",\n        \"wx1\": \"-RA\",\n        \"wx2\": \"BR\",\n        \"cloudLayer1\": \"OVC004\",\n        \"validDateTime\": \"2024-10-07T14:52:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T16:52:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T14:53:55.977Z\",\n        \"flightCode\": 4,\n        \"humidity\": 100,\n        \"windSpeed\": 0,\n        \"windGust\": null,\n        \"windDirection\": 0,\n        \"ogcFeatureId\": 491462169,\n        \"stationPriority\": 4500,\n        \"wmoCode1\": \"-RA\",\n        \"wmoCode2\": \"BR\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -73.135,\n          41.478333\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 600,\n        \"visibility\": 10,\n        \"temperature\": 17,\n        \"dewpoint\": 16,\n        \"altimeter\": 29.82,\n        \"stationId\": \"KOXC\",\n        \"stationName\": \"WATERBURY-OXFORD\",\n        \"stationPlace\": \"OXFORD\",\n        \"rawTxt\": \"METAR KOXC 071456Z VRB04KT 10SM OVC006 17/16 A2982 RMK AO2 CIG 002V010 SLP108 60003 T01670161 58003\",\n        \"cloudLayer1\": \"OVC006\",\n        \"validDateTime\": \"2024-10-07T14:56:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T16:56:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T14:58:01.048Z\",\n        \"flightCode\": 3,\n        \"humidity\": 94,\n        \"windSpeed\": 4,\n        \"windGust\": null,\n        \"windDirection\": -999,\n        \"ogcFeatureId\": 491463375,\n        \"stationPriority\": 5800,\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -71.803333,\n          41.349444\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 800,\n        \"ceilingMid\": 1400,\n        \"ceilingHigh\": 3500,\n        \"visibility\": 1.75,\n        \"temperature\": 17,\n        \"dewpoint\": 16,\n        \"altimeter\": 29.82,\n        \"stationId\": \"KWST\",\n        \"stationName\": \"Westerly State Airport\",\n        \"stationPlace\": \"WESTERLY\",\n        \"rawTxt\": \"SPECI KWST 071510Z AUTO 19008KT 1 3/4SM VCTS RA BR FEW008 BKN014 OVC035 17/16 A2982 RMK AO2 LTG DSNT E P0005 T01670156\",\n        \"wx1\": \"RA\",\n        \"wx2\": \"BR\",\n        \"cloudLayer1\": \"FEW008\",\n        \"cloudLayer2\": \"BKN014\",\n        \"cloudLayer3\": \"OVC035\",\n        \"validDateTime\": \"2024-10-07T15:10:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T17:10:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T15:12:33.752Z\",\n        \"flightCode\": 3,\n        \"humidity\": 94,\n        \"windSpeed\": 8,\n        \"windGust\": null,\n        \"windDirection\": 190,\n        \"ogcFeatureId\": 491468856,\n        \"stationPriority\": 4000,\n        \"wmoCode1\": \"RA\",\n        \"wmoCode2\": \"BR\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -71.491111,\n          41.920555\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 500,\n        \"visibility\": 9,\n        \"temperature\": 14,\n        \"dewpoint\": null,\n        \"altimeter\": 29.83,\n        \"stationId\": \"KSFZ\",\n        \"stationName\": \"NORTH CENTRAL STATE\",\n        \"stationPlace\": \"PAWTUCKET\",\n        \"rawTxt\": \"METAR KSFZ 071456Z AUTO VRB04KT 9SM -RA OVC005 14/ A2983 RMK AO2 RAE05B30 SLP103 P0000 60024 T0144 55006\",\n        \"wx1\": \"-RA\",\n        \"cloudLayer1\": \"OVC005\",\n        \"validDateTime\": \"2024-10-07T14:56:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T16:56:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T14:57:44.048Z\",\n        \"flightCode\": 3,\n        \"humidity\": null,\n        \"windSpeed\": 4,\n        \"windGust\": null,\n        \"windDirection\": -999,\n        \"ogcFeatureId\": 491463297,\n        \"stationPriority\": 5000,\n        \"wmoCode1\": \"-RA\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -72.861944,\n          40.816666\n        ]\n      },\n      \"properties\": {\n        \"flightCategory\": \"IFR\",\n        \"ceilingLow\": 800,\n        \"ceilingMid\": 1200,\n        \"visibility\": 2,\n        \"temperature\": 18,\n        \"dewpoint\": 17,\n        \"altimeter\": 29.81,\n        \"stationId\": \"KHWV\",\n        \"stationName\": \"BROOKHAVEN\",\n        \"stationPlace\": \"SHIRLEY\",\n        \"rawTxt\": \"SPECI KHWV 071504Z AUTO 22010KT 2SM -RA BR SCT008 OVC012 18/17 A2981 RMK AO2 P0001 T01830167\",\n        \"wx1\": \"-RA\",\n        \"wx2\": \"BR\",\n        \"cloudLayer1\": \"SCT008\",\n        \"cloudLayer2\": \"OVC012\",\n        \"validDateTime\": \"2024-10-07T15:04:00.000Z\",\n        \"expirationDateTime\": \"2024-10-07T17:04:00.000Z\",\n        \"insertedDateTime\": \"2024-10-07T15:08:18.501Z\",\n        \"flightCode\": 3,\n        \"humidity\": 94,\n        \"windSpeed\": 10,\n        \"windGust\": null,\n        \"windDirection\": 220,\n        \"ogcFeatureId\": 491467780,\n        \"stationPriority\": 4200,\n        \"unitSystem\": \"default\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.metars.?corridor=-73.875,40.781,-71.005,42.365,30&flightCategories=IFR,LIFR\",\n    \"uuid\": \"d9d3e132-cede-4cdc-be13-9319988222f0\",\n    \"request_id\": \"eaa2e5b2-d848-43b4-8e41-092d3a9b6ba4\",\n    \"start_timestamp\": 1728314253986,\n    \"end_timestamp\": 1728314254518,\n    \"execution_time\": 532\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0eb12c92-085a-4e8d-ac43-8c80b07c1ab2",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metars",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "stationIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "flightCodes",
+                      "value": "<string>,<string>"
+                    },
+                    {
+                      "key": "flightCategories",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/metars/?stationIds=Santa%20Barbara\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/metars/:requestId:580a34e4-b1b6-443d-89f2-cdfe769a75db\",\n  \"errors\": [\n    {\n      \"message\": \"`stationIds` must be comma-separated list of string station identifiers\",\n      \"parameter\": \"stationIds\",\n      \"value\": \"SANTA BARBARA\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.metars.?stationIds=Santa%20Barbara\",\n    \"uuid\": \"6bc303fc-36bd-4a83-8489-e0fb7ef27afa\",\n    \"request_id\": \"580a34e4-b1b6-443d-89f2-cdfe769a75db\",\n    \"start_timestamp\": 1728314361530,\n    \"end_timestamp\": 1728314361947,\n    \"execution_time\": 417\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c2702dd5-4b33-42de-98ed-e27a3fd83821",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metars",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "stationIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "flightCodes",
+                      "value": "<string>,<string>"
+                    },
+                    {
+                      "key": "flightCategories",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://aviation.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "9fc9b79d-9ce4-464f-9573-422a51cf5cf9",
+    "name": "DTN METAR API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "METARs are a key piece of information required for flight planning and flight operations. DTN METAR API allows customers to get the data critical to them without unnecessary extra data.",
+      "type": "text/plain"
+    }
+  }
+}

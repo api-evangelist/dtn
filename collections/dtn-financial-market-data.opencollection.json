@@ -1,0 +1,520 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "PXWeb Market Data API",
+    "version": "1.0.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Quotes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get latest information for symbols",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/quotes",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)\n"
+              },
+              {
+                "name": "symbolLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of symbols to return in one request up to a maximum of 4000."
+              },
+              {
+                "name": "fieldGroup",
+                "value": "",
+                "type": "query",
+                "description": "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.\n"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Get the latest prices and other information for a list of symbols or symbol patterns.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        },
+        {
+          "info": {
+            "name": "Get futures options greek values",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/quotes/greeks",
+            "params": [
+              {
+                "name": "symbolLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of symbols to return in one request up to a maximum of 4000."
+              },
+              {
+                "name": "fieldGroup",
+                "value": "",
+                "type": "query",
+                "description": "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.\n"
+              },
+              {
+                "name": "basis",
+                "value": "",
+                "type": "query",
+                "description": "A price FID to be used as the basis of the calculation, where typical values are \"recent\" and \"settlementPrice\". Default value is recent."
+              },
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)\n"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Get the latest prices and price sensitivity values known as greeks for futures options.  The response for a futures option will always include a greeks object containing: delta, gamma, theta, vega, underlyingPrice, interestRate, and impliedVolatility.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn."
+        },
+        {
+          "info": {
+            "name": "Get equity scans",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/quotes/equity-scans",
+            "params": [
+              {
+                "name": "report",
+                "value": "",
+                "type": "query",
+                "description": "Desired report code, which can be Gainers(G), Percent Gainers(PG), Losers(L), Percent Losers(PL), Active(A), Volatile(V), 52 Week High(52H), 52 Week Low(52L).  Anything else defaults to A."
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "The market code which can be NYSE, NYSEAMERICAN, NASDAQ, or ALL."
+              },
+              {
+                "name": "fieldGroup",
+                "value": "",
+                "type": "query",
+                "description": "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of symbols to return."
+              }
+            ]
+          },
+          "docs": "Equity scan information from the three US stock exchanges, NYSE, NYSE-AMEX or the NASDAQ selected by activity categories.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "History",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get daily history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/history/daily",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)\n"
+              },
+              {
+                "name": "inteval",
+                "value": "",
+                "type": "query",
+                "description": "The number of bars to combine together into one bar."
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Earliest date to include in the result.  Date in ISO 8601 format YYYY-MM-DD"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "The latest date to include in the result. Date in ISO 8601 format YYYY-MM-DD"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of rows of history to return per symbol.   The maximum number of points for a single symbol in one request is 3,660. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points."
+              },
+              {
+                "name": "symbolLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of symbols to return in one request up to a maximum of 4000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Get end of day open/high/low/close prices for symbols filtered by a date range or limit.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        },
+        {
+          "info": {
+            "name": "Get minute history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/history/minute",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)\n"
+              },
+              {
+                "name": "inteval",
+                "value": "",
+                "type": "query",
+                "description": "The number of bars to combine together into one bar."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Earliest datetime to include in the result.  Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "The latest datetime to include in the result. Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 100,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points."
+              },
+              {
+                "name": "symbolLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of symbols to return in one request up to a maximum of 4000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Get open/high/low/close prices for each minute of the trading day for symbols filtered by a date range or limit.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        },
+        {
+          "info": {
+            "name": "Get tick history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/history/tick",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)\n"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "Specify 0 to return Trades, Bids, and Asks, or speicfy 1 to just return Trades."
+              },
+              {
+                "name": "inteval",
+                "value": "",
+                "type": "query",
+                "description": "The number of bars to combine together into one bar."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Earliest datetime to include in the result.  Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "The latest datetime to include in the result. Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 50,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points."
+              },
+              {
+                "name": "symbolLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of symbols to return in one request up to a maximum of 4000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Get individual trades for symbols filtered by a date range or limit.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        },
+        {
+          "info": {
+            "name": "Get futures root daily history",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/history/forward-curve",
+            "params": [
+              {
+                "name": "root",
+                "value": "",
+                "type": "query",
+                "description": "A single futures root.  A futures root is the part of a symbol that does not change with expiration."
+              },
+              {
+                "name": "curveDate",
+                "value": "",
+                "type": "query",
+                "description": "The date to return prices for when requesting a forward curve.  Leave blank for most recent history."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of symbols to return."
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Retrieve historical prices for each expiration of a futures contract chain for a given root symbol.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Information",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Keyword symbol search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/symbol-search",
+            "params": [
+              {
+                "name": "searchText",
+                "value": "",
+                "type": "query",
+                "description": "Keywords to match against symbols and their descriptions"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of symbols to return."
+              }
+            ]
+          },
+          "docs": "Search for symbols with a keyword search of the symbol's description, meta-data, and symbol.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        },
+        {
+          "info": {
+            "name": "Get market hours",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/metadata/market-hours",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)\n"
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "Earliest date to include in the result.  Date in ISO 8601 format YYYY-MM-DD"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "The latest date to include in the result. Date in ISO 8601 format YYYY-MM-DD"
+              },
+              {
+                "name": "symbolLimit",
+                "value": "",
+                "type": "query",
+                "description": "The number of symbols to return in one request up to a maximum of 4000."
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)\n"
+              }
+            ]
+          },
+          "docs": "Retrieve the hours a security is open for trading including schedule changes for holidays.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Option Series",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a list of futures option prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://pxweb.dtn.com/market_data/options/series",
+            "params": [
+              {
+                "name": "optionPrefix",
+                "value": "",
+                "type": "query",
+                "description": "A prefix is a combination of an option root and a maturity."
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.\n"
+              },
+              {
+                "name": "fieldGroup",
+                "value": "",
+                "type": "query",
+                "description": "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limit on the number of strikes to return. If this parameter is specified, then Limit number of strikes above and below the money will be returned."
+              }
+            ]
+          },
+          "docs": "Retrieve a list of options available for an option prefix (option root and maturity).  The operation will also query data for the underlying of the specified option root. The option data will also include the StrikeLevel fid which indicates if the option is currently at the money, in the money, or out of the money. At the money means the strike is the closest one to the current underlying price. In the money means either a Call with a strike below the underlying price or a Put with a strike abov"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

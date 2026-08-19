@@ -1,0 +1,262 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Weather Conditions API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://auth.weather.mg/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Current Conditions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get current weather conditions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/conditions/v2/current",
+            "params": [
+              {
+                "name": "locatedAt",
+                "value": "",
+                "type": "query",
+                "description": "Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of weather fields to return"
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query",
+                "description": "Unit system for returned values"
+              }
+            ]
+          },
+          "docs": "Returns current weather conditions for a specified location using latitude/longitude or a weather station identifier. Supports unit selection (US customary or SI)."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Forecasts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get hourly weather forecast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/conditions/forecast/hourly",
+            "params": [
+              {
+                "name": "locatedAt",
+                "value": "",
+                "type": "query",
+                "description": "Latitude,longitude or station ID"
+              },
+              {
+                "name": "validPeriod",
+                "value": "",
+                "type": "query",
+                "description": "Date/time range for the forecast. Format: startISO8601/endISO8601 (e.g., 2026-03-18T00:00:00Z/2026-03-25T00:00:00Z)"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated forecast fields to return"
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "meteoGroupStationId",
+                "value": "",
+                "type": "query",
+                "description": "Include station ID in response when using station-based query"
+              }
+            ]
+          },
+          "docs": "Returns hourly weather forecast data for a specified location. Forecasts available up to 14 days ahead. Supports US and SI unit systems."
+        },
+        {
+          "info": {
+            "name": "Get daily weather forecast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/conditions/forecast/daily",
+            "params": [
+              {
+                "name": "locatedAt",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "validPeriod",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns daily weather forecast data for a specified location, including high/low temperatures, precipitation probability, and weather symbols."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Observations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get weather observations (historical)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/conditions/observations",
+            "params": [
+              {
+                "name": "locatedAt",
+                "value": "",
+                "type": "query",
+                "description": "Latitude,longitude or station ID. Multiple locations pipe-separated."
+              },
+              {
+                "name": "observedPeriod",
+                "value": "",
+                "type": "query",
+                "description": "Historical date/time range. Format: startISO8601/endISO8601"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated observation fields"
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of observations to return"
+              }
+            ]
+          },
+          "docs": "Returns weather observations from weather stations. Supports up to 30 years of historical data. Multiple stations can be queried in a single request."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Precipitation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get radar precipitation forecast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/conditions/search",
+            "params": [
+              {
+                "name": "locatedAt",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "validPeriod",
+                "value": "",
+                "type": "query",
+                "description": "Forecast time window. Short-range precipitation forecast (0-6 hours typical)"
+              },
+              {
+                "name": "fields",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns short-term precipitation forecast derived from radar data. Useful for agricultural, utility, and renewable energy operational planning."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Stations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List weather stations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/conditions/stations",
+            "params": [
+              {
+                "name": "locatedWithin",
+                "value": "",
+                "type": "query",
+                "description": "Geographic bounding box (minLon,minLat,maxLon,maxLat)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns metadata for weather stations in the DTN network. Supports filtering by geographic bounding box or radius from a point."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

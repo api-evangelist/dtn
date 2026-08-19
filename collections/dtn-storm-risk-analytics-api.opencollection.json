@@ -1,0 +1,249 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Storm Risk Analytics API",
+    "version": "1.0.1"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Information",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get predefined named regions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sra.dtn.com/v1/regions"
+          },
+          "docs": "Returns all available predefined regions currently stored in the SRA prediction system. These values can be used to quickly get predictions for regions without needing to know the exact list of FIPS."
+        },
+        {
+          "info": {
+            "name": "Get FIPS for counties within redefined region.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sra.dtn.com/v1/fips/region/:region",
+            "params": [
+              {
+                "name": "region",
+                "value": "CONUS",
+                "type": "path",
+                "description": "Name of predefined region"
+              }
+            ]
+          },
+          "docs": "Passing in a predefined region name will return a list of counties contained within the region. The \"county\" objects will contain general information about the county including known substation count, population, and total area (in square miles).  "
+        },
+        {
+          "info": {
+            "name": "Get FIPS for counties within state.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sra.dtn.com/v1/fips/state/:state",
+            "params": [
+              {
+                "name": "state",
+                "value": "MN",
+                "type": "path",
+                "description": "Name or abbreviation of state"
+              }
+            ]
+          },
+          "docs": "Passing in a state name or abbreviation will return a list of counties contained within the state. The \"county\" objects will contain general information about the county including known substation count, population, and total area (in square miles).  "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Predictions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get predictions for FIP(s) or region by date range",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sra.dtn.com/v1/predictions",
+            "params": [
+              {
+                "name": "startTime",
+                "value": "2023-05-30T08:30:00Z",
+                "type": "query",
+                "description": "ISO 8601, start time of predictions."
+              },
+              {
+                "name": "endTime",
+                "value": "2023-06-01T08:00:00Z",
+                "type": "query",
+                "description": "ISO 8601, end time of predictions."
+              },
+              {
+                "name": "fipsList",
+                "value": "27137,27089",
+                "type": "query",
+                "description": "A single or comma seperated list of FIPS to get predictions for."
+              },
+              {
+                "name": "predictionType",
+                "value": "risk-index",
+                "type": "query",
+                "description": "Type of predictions, either customers-out or risk-index. Defaults to customers-out"
+              },
+              {
+                "name": "lat",
+                "value": "44.9866",
+                "type": "query",
+                "description": "Latitude of point which is used to get predictions for county that contains it."
+              },
+              {
+                "name": "lon",
+                "value": "-93.258",
+                "type": "query",
+                "description": "Longitude of point which is used to get predictions for county that contains it."
+              },
+              {
+                "name": "regionName",
+                "value": "CONUS",
+                "type": "query",
+                "description": "Can be a predefined, named region, a state abbreviation or full state name."
+              },
+              {
+                "name": "timezoneId",
+                "value": "America/Chicago",
+                "type": "query",
+                "description": "IANA timezone string to auto adjust prediction timestamps."
+              }
+            ]
+          },
+          "docs": "Get predictions for FIP(s) or region by date range. startTime and endTime as well as one positional definition (like lat and lon or regionName)."
+        },
+        {
+          "info": {
+            "name": "Get summary of predictions and GeoJson for FIP(s) or region by date range",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://sra.dtn.com/v1/predictions/geo-summary",
+            "params": [
+              {
+                "name": "startTime",
+                "value": "2023-05-30T08:30:00Z",
+                "type": "query",
+                "description": "ISO 8601, start time of predictions."
+              },
+              {
+                "name": "endTime",
+                "value": "2023-06-01T08:00:00Z",
+                "type": "query",
+                "description": "ISO 8601, end time of predictions."
+              },
+              {
+                "name": "fipsList",
+                "value": "27137,27089",
+                "type": "query",
+                "description": "A single or comma seperated list of FIPS to get predictions for."
+              },
+              {
+                "name": "predictionType",
+                "value": "risk-index",
+                "type": "query",
+                "description": "Type of predictions, either customers-out or risk-index. Defaults to customers-out"
+              },
+              {
+                "name": "lat",
+                "value": "44.9866",
+                "type": "query",
+                "description": "Latitude of point which is used to get predictions for county that contains it."
+              },
+              {
+                "name": "lon",
+                "value": "-93.258",
+                "type": "query",
+                "description": "Longitude of point which is used to get predictions for county that contains it."
+              },
+              {
+                "name": "regionName",
+                "value": "CONUS",
+                "type": "query",
+                "description": "Can be a predefined, named region, a state abbreviation or full state name."
+              },
+              {
+                "name": "timezoneId",
+                "value": "America/Chicago",
+                "type": "query",
+                "description": "IANA timezone string to auto adjust prediction timestamps."
+              }
+            ]
+          },
+          "docs": "Get summary of predictions and GeoJson for FIP(s) or region by date range. startTime and endTime as well as one positional definition (like lat and lon or regionName)."
+        },
+        {
+          "info": {
+            "name": "Get predictions for counties contained within passed in GeoJson polygon",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://sra.dtn.com/v1/predictions/polygon",
+            "params": [
+              {
+                "name": "startTime",
+                "value": "2023-05-30T08:30:00Z",
+                "type": "query",
+                "description": "ISO 8601, start time of predictions."
+              },
+              {
+                "name": "endTime",
+                "value": "2023-06-01T08:00:00Z",
+                "type": "query",
+                "description": "ISO 8601, end time of predictions."
+              },
+              {
+                "name": "predictionType",
+                "value": "risk-index",
+                "type": "query",
+                "description": "Type of predictions, either customers-out or risk-index. Defaults to customers-out"
+              },
+              {
+                "name": "timezoneId",
+                "value": "America/Chicago",
+                "type": "query",
+                "description": "IANA timezone string to auto adjust prediction timestamps."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get predictions for counties contained within passed in GeoJson polygon. startTime and endTime parameters and valid GeoJson in the request body are required."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

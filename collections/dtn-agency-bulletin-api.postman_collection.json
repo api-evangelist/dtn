@@ -1,0 +1,816 @@
+{
+  "item": [
+    {
+      "id": "91027881-6f05-48a5-9ac1-a40b6754c4c2",
+      "name": "Endpoints",
+      "description": {
+        "content": "The the Agency Bulletin API (ABA) is designed around two major endpoints, each offering unique functionalities tailored to your diverse weather bulletin data needs. Whether you require forecast and historical data for a single location, data for multiple location/timestamp pairs, or the associated metadata, our API has got you covered.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "895cb795-6f72-4c98-8715-d9ce8f4ab874",
+          "name": "Bulletins",
+          "request": {
+            "name": "Bulletins",
+            "description": {
+              "content": "```shell \nGET https://wxbulletin.api.dtn.com/v2/bulletins\n```\n\nThis endpoint returns the latest active weather bulletins from the requested national meteorological agency. \nIt is the primary source of information for real-time weather alerts and updates.\n\nUnderstanding and Utilizing Key Query Parameters:\n- **Country:** \nUse this parameter to access all active weather bulletins within a specific country. \nThis parameter accepts ISO 3166-1 alpha-2 codes.\nExample: country=US\n\n- **startTime:**\nThis parameter allows you to filter alerts sent from a specific date and time onward, \nreturning all subsequent alerts. It requires timestamps in ISO 8601 date-time format as specified in RFC 3339.\nExample: startTime=2022-11-25T00:00:00\n\n- **endTime:**\nUse this parameter to receive alerts up to a specific timestamp, \nfiltering out any alerts sent after this date and time. The expected format is ISO 8601 date-time as per RFC 3339.\nExample: endTime=2022-11-26T00:00:00\n\n- **excludeGeometry:**\nThis parameter is crucial and is set to false by default, meaning the response will include detailed geometry of the \npolygons corresponding to each active warning. This can be particularly useful for understanding the exact impacted \nareas or for visualizing warnings in GIS applications. However, be mindful that including this detailed information \nmight substantially increase the payload size when dealing with numerous active bulletins. \nIf you prefer to exclude the detailed geometry and reduce payload size, set this parameter to true.\n\nQuery Example: `https://wxbulletin.api.dtn.com/v2/bulletins?country=US&showTotal=true&agency=NWS&startTime=2023-09-25T12:45:00&endTime=2023-09-25T12:47:00`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "bulletins"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "Specify the country code of the alerts request. This is a required parameter. The reference for acceptable values is ISO 3166 two-letter codes (alpha-2). example: US"
+                },
+                {
+                  "disabled": false,
+                  "key": "language",
+                  "value": "<string>",
+                  "description": "Specify the language the language to use in the text values of the alert. Values should follow RFC 3066. example: en-US"
+                },
+                {
+                  "disabled": false,
+                  "key": "agency",
+                  "value": "<string>",
+                  "description": "Specify the agency of the alert request. example: NWS"
+                },
+                {
+                  "disabled": false,
+                  "key": "sender",
+                  "value": "<string>",
+                  "description": "Specify the sender of the alerts request. example: w-nws.webmaster@noaa.gov"
+                },
+                {
+                  "disabled": false,
+                  "key": "event",
+                  "value": "<string>",
+                  "description": "When specified, the API will return only alerts that match the specified event types. example: Flood Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "event",
+                  "value": "<string>",
+                  "description": "When specified, the API will return only alerts that match the specified event types. example: Flood Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>",
+                  "description": "Specify the date and time alerts are sent. When set, all alerts sent from this timestamp are returned. ISO8601 date-time format specified int RFC 3339. example: 2022-11-25T00:00:00"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>",
+                  "description": "Specify the date and time alerts are sent. When set, all alerts sent until this timestamp are returned. ISO8601 date-time format specified int RFC 3339. example: 2022-11-26T00:00:00"
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeGeometry",
+                  "value": "false",
+                  "description": "Specify whether or not to include the geojson geometry for each alert."
+                },
+                {
+                  "disabled": false,
+                  "key": "showTotal",
+                  "value": "false",
+                  "description": "Specify whether or not to include total number of alerts."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "27e4219a-f597-4e0a-b23d-9c640acef5c0",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "bulletins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sender",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "excludeGeometry",
+                      "value": "false"
+                    },
+                    {
+                      "key": "showTotal",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"string\",\n  \"type\": \"string\",\n  \"features\": [\n    {\n      \"id\": \"string\",\n      \"agency\": \"string\",\n      \"country\": \"string\",\n      \"type\": \"string\",\n      \"properties\": {\n        \"identifier\": \"string\",\n        \"sender\": \"string\",\n        \"sent\": \"1961-01-24T17:51:24.421Z\",\n        \"status\": \"string\",\n        \"msgType\": \"string\",\n        \"scope\": \"string\",\n        \"updated\": \"1948-09-22T07:51:29.542Z\",\n        \"info\": [\n          {\n            \"event\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"category\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"language\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"urgency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"severity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"certainty\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expires\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"area\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"eventCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"responseType\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"effective\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"onset\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"audience\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"senderName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"headline\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"description\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"instruction\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"web\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"contact\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"parameters\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"event\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"category\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"language\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"urgency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"severity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"certainty\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expires\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"area\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"eventCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"responseType\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"effective\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"onset\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"audience\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"senderName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"headline\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"description\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"instruction\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"web\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"contact\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"parameters\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"code\": \"string\",\n        \"source\": \"string\",\n        \"restriction\": \"string\",\n        \"addresses\": \"string\",\n        \"note\": \"string\",\n        \"references\": \"string\"\n      },\n      \"dtnInfo\": {},\n      \"geometry\": {}\n    },\n    {\n      \"id\": \"string\",\n      \"agency\": \"string\",\n      \"country\": \"string\",\n      \"type\": \"string\",\n      \"properties\": {\n        \"identifier\": \"string\",\n        \"sender\": \"string\",\n        \"sent\": \"1989-08-16T01:41:44.671Z\",\n        \"status\": \"string\",\n        \"msgType\": \"string\",\n        \"scope\": \"string\",\n        \"updated\": \"1969-06-16T14:52:18.808Z\",\n        \"info\": [\n          {\n            \"event\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"category\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"language\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"urgency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"severity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"certainty\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expires\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"area\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"eventCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"responseType\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"effective\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"onset\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"audience\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"senderName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"headline\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"description\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"instruction\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"web\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"contact\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"parameters\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"event\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"category\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"language\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"urgency\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"severity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"certainty\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expires\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"area\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"eventCode\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"responseType\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"effective\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"onset\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"audience\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"senderName\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"headline\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"description\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"instruction\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"web\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"contact\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"parameters\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"code\": \"string\",\n        \"source\": \"string\",\n        \"restriction\": \"string\",\n        \"addresses\": \"string\",\n        \"note\": \"string\",\n        \"references\": \"string\"\n      },\n      \"dtnInfo\": {},\n      \"geometry\": {}\n    }\n  ],\n  \"totalAlerts\": 3494\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d2d443c6-b067-4058-bb3c-74b2842d1599",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "bulletins"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sender",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "excludeGeometry",
+                      "value": "false"
+                    },
+                    {
+                      "key": "showTotal",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6d1a94cc-60e0-4965-9769-3bbab2e8fc95",
+          "name": "Metadata",
+          "request": {
+            "name": "Metadata",
+            "description": {
+              "content": "```shell \nGET https://wxbulletin.api.dtn.com/v2/metadata\n```\nThis endpoint provides metadata from each national meteorological agency, \ndetailing what events are published and in which languages, allowing developers to understand the range and scope of \navailable bulletins.\n\nUnderstanding and Utilizing Key Query Parameters:\n\n- Access this endpoint to retrieve a comprehensive list of all available meteorological agencies, \nthe events they publish, and the languages they support. As we continuously integrate support for new agencies into \nthis API, this endpoint serves as an excellent resource to stay updated on the most recent agencies and \ntheir corresponding published events.\n- event: Use this parameter to pinpoint a particular event. It also aids in identifying which agencies \nbroadcast that specific event type.\n\nQuery Example: `https://wxbulletin.api.dtn.com/v2/metadata?country=US&event=Flash`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "metadata"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "Specify the country of the event type example: US"
+                },
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "Specify the country of the event type example: US"
+                },
+                {
+                  "disabled": false,
+                  "key": "agency",
+                  "value": "<string>",
+                  "description": "Specify the agency of the event type example: NWS"
+                },
+                {
+                  "disabled": false,
+                  "key": "agency",
+                  "value": "<string>",
+                  "description": "Specify the agency of the event type example: NWS"
+                },
+                {
+                  "disabled": false,
+                  "key": "language",
+                  "value": "<string>",
+                  "description": "Specify the language of the event types follow RFC 3066. example: en-US"
+                },
+                {
+                  "disabled": false,
+                  "key": "language",
+                  "value": "<string>",
+                  "description": "Specify the language of the event types follow RFC 3066. example: en-US"
+                },
+                {
+                  "disabled": false,
+                  "key": "event",
+                  "value": "<string>",
+                  "description": "When specified, the API allows filtering based on specific event types. This can be used to narrow down search result. example: event=flood would return events like Flash Flood Watch, Flood Warning, Flash Flood Statement, Severe Flood Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "event",
+                  "value": "<string>",
+                  "description": "When specified, the API allows filtering based on specific event types. This can be used to narrow down search result. example: event=flood would return events like Flash Flood Watch, Flood Warning, Flash Flood Statement, Severe Flood Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEvent",
+                  "value": "<string>",
+                  "description": "When specified, the API allows filtering based on specific dtnEvent. This can be used to narrow down search result. example: dtnEvent=Wind would return events like Brisk Wind Advisory, Extreme Wind Warning, Lake Wind Advisory, High Wind Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEvent",
+                  "value": "<string>",
+                  "description": "When specified, the API allows filtering based on specific dtnEvent. This can be used to narrow down search result. example: dtnEvent=Wind would return events like Brisk Wind Advisory, Extreme Wind Warning, Lake Wind Advisory, High Wind Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEventCode",
+                  "value": "<string>",
+                  "description": "When specified, the API allows filtering based on specific dtnEventCode. This can be used to narrow down search result. example: dtnEventCode=1 would return events under Snow likeLake Effect Snow Watch, Lake Effect Snow Warning, Lake Effect Snow Advisory, Snow Squall Warning"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEventCode",
+                  "value": "<string>",
+                  "description": "When specified, the API allows filtering based on specific dtnEventCode. This can be used to narrow down search result. example: dtnEventCode=1 would return events under Snow likeLake Effect Snow Watch, Lake Effect Snow Warning, Lake Effect Snow Advisory, Snow Squall Warning"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "bccb6086-cc41-4f22-8722-92a45d602526",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "metadata"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"string\",\n  \"metadata\": {\n    \"key_0\": {\n      \"key_0\": {\n        \"key_0\": {\n          \"key_0\": {\n            \"key_0\": [\n              \"string\",\n              \"string\"\n            ],\n            \"key_1\": [\n              \"string\",\n              \"string\"\n            ]\n          },\n          \"key_1\": {\n            \"key_0\": [\n              \"string\",\n              \"string\"\n            ],\n            \"key_1\": [\n              \"string\",\n              \"string\"\n            ],\n            \"key_2\": [\n              \"string\",\n              \"string\"\n            ],\n            \"key_3\": [\n              \"string\",\n              \"string\"\n            ]\n          }\n        }\n      },\n      \"key_1\": {\n        \"key_0\": {\n          \"key_0\": {\n            \"key_0\": [\n              \"string\",\n              \"string\"\n            ],\n            \"key_1\": [\n              \"string\",\n              \"string\"\n            ]\n          }\n        },\n        \"key_1\": {\n          \"key_0\": {\n            \"key_0\": [\n              \"string\",\n              \"string\"\n            ]\n          },\n          \"key_1\": {\n            \"key_0\": [\n              \"string\",\n              \"string\"\n            ],\n            \"key_1\": [\n              \"string\",\n              \"string\"\n            ]\n          }\n        }\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c277c6b5-2354-450d-895b-85f2e2d412b6",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "metadata"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "country",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "94fbb8a5-baf2-4fa7-9280-d25ae5f3e0f9",
+          "name": "Metadata/dtn",
+          "request": {
+            "name": "Metadata/dtn",
+            "description": {
+              "content": "```shell \nGET https://wxbulletin.api.dtn.com/v2/metadata/dtn\n```\nThis endpoint provides metadata of dtn events.\n\nUnderstanding and Utilizing Key Query Parameters:\n\n- Access this endpoint to retrieve a comprehensive list of all available dtn events. \n- dtnEvent: Use this parameter to pinpoint a particular dtn event.\n\nQuery Example: `https://wxbulletin.api.dtn.com/v2/metadata/dtn?dtnEvent=Snow`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "metadata",
+                "dtn"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "dtnEventCode",
+                  "value": "<string>",
+                  "description": "Specify the event code of dtn event example: NWS"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEventCode",
+                  "value": "<string>",
+                  "description": "Specify the event code of dtn event example: NWS"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEvent",
+                  "value": "<string>",
+                  "description": "Specify the event name of dtn event example: Low Temperature"
+                },
+                {
+                  "disabled": false,
+                  "key": "dtnEvent",
+                  "value": "<string>",
+                  "description": "Specify the event name of dtn event example: Low Temperature"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e2d0b4f0-7bca-4539-8766-9b7b4d63ead1",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "metadata",
+                    "dtn"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://wxbulletin.api.dtn.com/v2/metadata/dtn\",\n  \"dtnEvents\": {\n    \"0\": \"Uncategorized\",\n    \"1\": \"Snow\",\n    \"2\": \"Low Temperature\",\n    \"3\": \"Fog\",\n    \"4\": \"Heat\",\n    \"5\": \"Marine and Coastal\",\n    \"6\": \"Winter Storm\",\n    \"7\": \"Tropical Storm, Hurricane, and Typhoon\",\n    \"8\": \"Thunderstorm\",\n    \"9\": \"Tornado\",\n    \"10\": \"Radiological Hazard\",\n    \"11\": \"Volcano\",\n    \"12\": \"Avalanche\",\n    \"13\": \"Tsunami\",\n    \"14\": \"Wind\",\n    \"15\": \"Smoke\",\n    \"16\": \"Flood\",\n    \"17\": \"Rain\",\n    \"18\": \"Weather Conditions\",\n    \"19\": \"Administrative Message\",\n    \"20\": \"Air Quality\",\n    \"21\": \"Civil Emergency Message\",\n    \"22\": \"Dust\",\n    \"23\": \"Fire\",\n    \"24\": \"Test\",\n    \"25\": \"Earthquake\",\n    \"26\": \"Agriculture\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f03569a-118d-443a-b17e-f76afccb8152",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "metadata",
+                    "dtn"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEventCode",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dtnEvent",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://wxbulletin.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "aec32456-6bdb-4a23-9513-65ddc27a9303",
+    "name": "Agency Bulletin API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "\n# Introduction \n \nWelcome to the Agency Bulletin API (ABA) documentation. \n\n\nThe ABA is designed to provide developers with a seamless and convenient way to access the latest weather bulletins \npublished by the national meteorological agencies across the globe (e.g. NWS, UKMO, BoM) all in a standardized and \neasily interpretable GeoJSON format. By unifying the global weather bulletins data into one standardized API, \nwe aim to simplify the process of working with such weather alerts, eliminating the need to understand \nmultiple systems or formats. \n\n\n**Key Features**\n\n* Unified access to latest weather bulletins from national meteorological agencies worldwide.\n* Standardized GeoJSON format for all the weather bulletins, eliminating the need to grapple with various \ndata formats and data pipelines, facilitating easy data visualization and integration with mapping and GIS solutions. \n* Exact geometries of affected areas' polygons included in the response, facilitating precise and granular \nmapping of weather bulletins.\n* Inclusion of a Common Alerting Protocol (CAP) section in our GeoJSON response, preserving the original CAP data \nwhen issued by a national agency.\n\n**Applications**\n\nThis API caters to a wide range of users and applications, including:\n\n* Emergency alert systems\n* Software developers building weather applications\n* Travel planning websites\n* Climate research projects \n\n\nThis interactive documentation will get you up to speed on setting up requests, understanding responses, \nand leveraging the DTN Weather API for your needs.\n\n\n# Getting Started\n## Obtaining Credentials \nTo start making requests, you will first need your API credentials that includes your client ID and client secret. \nPlease contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. \nThen, review the `Authentication` section to learn how to request an API access token. Do not share or use others' \nAPI credentials, since doing so may compromise information security.\n\n## Making requests\nStarting off your journey with the the Agency Bulletin API (ABA) couldn't be easier. \nWe've provided a variety of options to suit your needs and comfort level:\nInteractive Documentation: Our interactive documentation is a great starting point. \nSimply navigate to the \"Authentication\" section, insert your credentials, and you'll obtain an access token behind \nthe scenes. Then, explore the API endpoints described in the Endpoints section.\n\n**a) Interactive Documentation:** Our interactive documentation is a great starting point. Simply navigate to \nthe `Authentication` section, insert your credentials, and you'll obtain an access token behind the scenes. \nThen, explore the API endpoints described in the `Endpoints` section.\n\n**b) Postman Collection:** If you prefer a more hands-on approach, consider downloading [this Postman collection](https://dtn.box.com/s/vpuanadvzarpfvh8jujq1hue0ikjxfom) \nAfter inserting your credentials, you can start testing and using the API in a highly interactive \nenvironment.\n\n**c) Writing Code:** Ready to start coding? Try the Python example below, \nreplacing `client_id` and `client_secret` with proper credentials. \nThis invokes the /bulletins endpoint with a GET request and prints the response.\n\n\n\n\n\n```python\n#--- Obtain an API access token ---\nimport requests\n\n# --- Obtain an API access token ---\nauth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\nbody = {\n    'grant_type': 'client_credentials',\n    'client_id': '...insert your client id here...',\n    'client_secret': '...insert your client secret here...',\n    'audience': 'https://weather.api.dtn.com'\n}\n\nresponse = requests.post(auth_url, json=body)\naccess_token = response.json()['data']['access_token']\n\n# --- Invoke the API ---\napi_base_url = 'https://wxbulletin.api.dtn.com/v2'\nquery_parameters = '&'.join([\n    'showTotal=True',\n    'country=US',\n    'excludeGeometry=True',\n    'agency=NWS',\n])\n\nendpoint = '/bulletins?' + query_parameters\nheaders = {'Authorization': 'Bearer ' + access_token}\nresponse = requests.get(api_base_url + endpoint, headers=headers)\n\n# --- Print the response ---\nprint(response.json())          \n```\n\n\n",
+      "type": "text/plain"
+    }
+  }
+}

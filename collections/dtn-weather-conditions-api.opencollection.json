@@ -1,0 +1,206 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Weather Conditions API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Weather Conditions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/v2/conditions",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query"
+              },
+              {
+                "name": "startTime",
+                "value": "2023-10-01T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "2023-10-14T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "parameters",
+                "value": "airTemp,precipAmount,weatherCode",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query"
+              },
+              {
+                "name": "interval",
+                "value": "24h",
+                "type": "query",
+                "description": "Aggregation or interpolation interval (e.g. 2h, 24h, 1d, 15m)."
+              },
+              {
+                "name": "aggregationTimeLabel",
+                "value": "end",
+                "type": "query",
+                "description": "Controls whether the timestamp in the response represents the start or end of the aggregation window. Only valid when `interval` is specified."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides current, forecast, and historical conditions for any specific point on the globe. Specify the location, the weather parameters of interest, and a time range up to 15 days long, from 1995-01-01T00:00:00Z to 15 days in the future. The API responds with the requested time series in GeoJSON format.\n\nCommon uses include weather monitoring, atmospheric research, and localized operations, such as event planning.\n\n## Using timezone offsets\n\nTo change timezones, specify a UTC offse"
+        },
+        {
+          "info": {
+            "name": "Weather Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/v2/conditions/parameters",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides helpful context in JSON format about the atmospheric weather parameters and operations that the other endpoints support.\n\nUse query parameters to control the results in the response body:\n  * Set `category` to `current-conditions`, `hourly-forecast`, or `hourly-historical` to filter atmospheric parameters by that category.\n  * Specify a `name` to filter atmospheric parameters by that name (e.g., `name=airTemp`).\n  * Specify a `category` and `name` to filter by both.\n  * Om"
+        },
+        {
+          "info": {
+            "name": "Weather Codes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://weather.api.dtn.com/v2/conditions/codes",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides helpful context in JSON format about the weather codes and their descriptions.\n"
+        },
+        {
+          "info": {
+            "name": "Batch Request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://weather.api.dtn.com/v2/conditions/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides hourly forecast, current, and historical conditions for any specific point on the globe. You can specify the location(s), the weather parameters of interest, and both the start time from 1995-01-01T00:00:00Z to an end time 15 days in the future. This endpoint supports requests with hourly data for up to two hundred locations. It does not provide aggregated data. The API returns a presigned URL that allows the requested data to be downloaded in a CSV.\n \nCommon uses include "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

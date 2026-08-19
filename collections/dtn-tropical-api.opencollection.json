@@ -1,0 +1,335 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Tropical Cyclone API",
+    "version": "1.0.6"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "DTN",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Active Storms Tracks And Cones",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/cyclones",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Array of FeatureCollection Objects, Contains Error Cone, Observed Positions, Forecast Positions.\n\n**Data returned from this endpoint contains data from DTN advisories ONLY**\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (e.g., FORECAST_POSITION, OBSERVED_POSITION).\n* **forecastHour** ***(integer)***: Forecast hour for the data (applicable for FORECAST_POSITION elements).\n* **windSpeedKnots** ***(float)***: Wind speed in knots.\n* **windGustKnots** ***(float)***: W"
+        },
+        {
+          "info": {
+            "name": "Get Radii",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/cyclone-radii",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returns Array of FeatureCollection Objects, Contain wind radii features. \n\n**Data returned from this endpoint contains data from DTN advisories ONLY**\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (\"FORECAST_RADII\" in this case).\n* **radiiType** ***(string)***: Type of wind radii being provided (e.g., \"34kt\" for 34-knot winds).\n* **forecastHour** ***(integer)***: Forecast hour for which the wind radii are valid.\n* **ne** ***(integer)***: Radius of the wind field "
+        },
+        {
+          "info": {
+            "name": "Get Swaths",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/cyclone-swaths",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returns Array of FeatureCollection Objects, Contain wind swath features.\n\n**Data returned from this endpoint contains data from DTN advisories ONLY**\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (\"SWATH\" in this case).\n* **swathType** ***(string)***: Type of swath (34kt, 50kt, 64kt)."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Agency",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Agency Active Storms Tracks And Cones",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/agency-cyclones",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              },
+              {
+                "name": "source",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by source of weather advisories"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Array of FeatureCollection Objects, Contains Error Cone, Observed Positions, Forecast Positions\n\n**Data returned from this endpoint contains data from Agency advisories ONLY**\n\nMutliple Agency sources can be specified in a single query:\n\nhttp://tropical.api.dtn.com/v1/agency-cyclones?source=JTWC&source=NHC\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (e.g., FORECAST_POSITION, OBSERVED_POSITION).\n* **forecastHour** ***(integer)***: Forecast hour for the data (app"
+        },
+        {
+          "info": {
+            "name": "Agency Get Radii",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/agency-cyclone-radii",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              },
+              {
+                "name": "source",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by source of weather advisories"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returns Array of FeatureCollection Objects, Contain wind radii features. \n\n**Data returned from this endpoint contains data from Agency advisories ONLY**\n\nMutliple Agency sources can be specified in a single query:\n\nhttp://tropical.api.dtn.com/v1/agency-radii?source=JTWC&source=NHC\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (\"FORECAST_RADII\" in this case).\n* **radiiType** ***(string)***: Type of wind radii being provided (e.g., \"34kt\" for 34-knot winds).\n* **f"
+        },
+        {
+          "info": {
+            "name": "Agency Get Swaths",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/agency-cyclone-swaths",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              },
+              {
+                "name": "source",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by source of weather advisories"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returns Array of FeatureCollection Objects, Contain wind swath features.\n\n**Data returned from this endpoint contains data from Agency advisories ONLY**\n\nMutliple Agency sources can be specified in a single query:\n\nhttp://tropical.api.dtn.com/v1/agency-swaths?source=JTWC&source=NHC\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (\"SWATH\" in this case).\n* **swathType** ***(string)***: Type of swath (34kt, 50kt, 64kt)."
+        },
+        {
+          "info": {
+            "name": "Get Spaghetti Models",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/cyclone-models",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returns FeatureCollections containing model forecast point and line Features.\n\n**Data returned from this endpoint contains data from Agency advisories ONLY**\n\nThis GeoJSON feature contains properties related to a storm forecast point from a specific model:\n\n* **forecastModel** ***(string)***: Name of the weather forecast model that generated the data (e.g., HWRF - Hurricane Weather Research and Forecasting model).\n* **stormElement** ***(string)***: Type of storm element (\"MODEL_POINT\" in this ca"
+        },
+        {
+          "info": {
+            "name": "Get Recon",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/v1/cyclone-recon",
+            "params": [
+              {
+                "name": "stormName",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by name of storm"
+              },
+              {
+                "name": "stormNum",
+                "value": "",
+                "type": "query",
+                "description": "Optional: Filter results by number of storm"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Returned GeoJson FeatureCollections contain recon points and lines.\n\n**Data returned from this endpoint contains data from Agency advisories ONLY**\n\nGeoJson properties:\n\n* **stormElement** ***(string)***: Type of storm element (\"RECON_POINT\" in this case).\n* **aircraft** ***(string)***: Aircraft callsign that made the observation.\n* **reconAgency** ***(string)***: Agency responsible for the reconnaissance mission (e.g., KNHC - National Hurricane Center Reconnaissance).\n* **mission** ***(integer)"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Default",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Redirect Docs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tropical.api.dtn.com/"
+          },
+          "docs": "Redirect Docs"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

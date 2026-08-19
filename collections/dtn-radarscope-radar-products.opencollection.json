@@ -1,0 +1,1673 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "RadarScope Radar Data",
+    "version": "3.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Server Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Health check NIDS webservers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/singlesite/health.html"
+          },
+          "docs": "Verifies the server is running and can access radar storage"
+        },
+        {
+          "info": {
+            "name": "Health check Text Products webservers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/:text_products_version/healthcheck",
+            "params": [
+              {
+                "name": "text_products_version",
+                "value": "",
+                "type": "path",
+                "description": "API version, one of:\nv1 (included for backwards compatibility)\nv2 (included for backwards compatibility)\nv3 (should be used in all new development)"
+              }
+            ]
+          },
+          "docs": "Verifies the server is running and can access text products database"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Radar Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a directory list file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/singlesite/:site_id/:year/:month/:day/:product_code/dirlist.txt",
+            "params": [
+              {
+                "name": "site_id",
+                "value": "",
+                "type": "path",
+                "description": "The radar site's ID."
+              },
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "product_code",
+                "value": "",
+                "type": "path",
+                "description": "Product Code, e.g. WDTR1."
+              }
+            ]
+          },
+          "docs": "Requests a list of files available for the given site for a specific product on a specific day."
+        },
+        {
+          "info": {
+            "name": "Retrieves a NIDS-formatted radar file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/singlesite/:site_id/:year/:month/:day/:product_code/:nids_filename",
+            "params": [
+              {
+                "name": "site_id",
+                "value": "",
+                "type": "path",
+                "description": "The radar site's ID."
+              },
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "product_code",
+                "value": "",
+                "type": "path",
+                "description": "Product Code, e.g. WDTR1."
+              },
+              {
+                "name": "nids_filename",
+                "value": "",
+                "type": "path",
+                "description": "The filename of a NIDS-formatted file, as returned by the directory list query."
+              }
+            ]
+          },
+          "docs": "Retrieves a NIDS formatted radar file"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Lightning",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieves a directory list file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/:site_id/LTG/dirlist.txt",
+            "params": [
+              {
+                "name": "site_id",
+                "value": "",
+                "type": "path",
+                "description": "The radar site's ID."
+              }
+            ]
+          },
+          "docs": "Requests a list of lightning files available for the given site for the past 24 hours"
+        },
+        {
+          "info": {
+            "name": "Retrieves a CSV-formatted lightning data file",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/:site_id/LTG/:lightning_filename",
+            "params": [
+              {
+                "name": "site_id",
+                "value": "",
+                "type": "path",
+                "description": "The radar site's ID."
+              },
+              {
+                "name": "lightning_filename",
+                "value": "",
+                "type": "path",
+                "description": "Filename of a lightning strike file, CSV-formatted with longitude, latitude, and the number of seconds offset from the minute."
+              }
+            ]
+          },
+          "docs": "Retrieves a CSV-formatted lightning data file"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Local Storm Reports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get list of current Local Storm Reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/lsr"
+          },
+          "docs": "Get list of current Local Storm Reports"
+        },
+        {
+          "info": {
+            "name": "Get the raw text of a Local Storm Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/lsr/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "id of LSR to retrieve, specified in the 'a' field of the LSR listing"
+              }
+            ]
+          },
+          "docs": "Get the raw text of a Local Storm Report"
+        },
+        {
+          "info": {
+            "name": "Get historical Local Storm Reports for a given day",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/lsr/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "Get historical Local Storm Reports for a given day"
+        },
+        {
+          "info": {
+            "name": "Get historical Local Storm Reports for a given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/lsr/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historical Local Storm Reports for a given timestamp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Mesoscale Discussions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get list of current Mesoscale Discussions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/discussion"
+          },
+          "docs": "Get list of current Mesoscale Discussions"
+        },
+        {
+          "info": {
+            "name": "Get the raw text of a Mesoscale Discussion",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/discussion/:mesoscale_discussion_id",
+            "params": [
+              {
+                "name": "mesoscale_discussion_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the discussion to be retrieved"
+              }
+            ]
+          },
+          "docs": "Get the raw text of a Mesoscale Discussion"
+        },
+        {
+          "info": {
+            "name": "Get historical Mesoscale Discussions for a given day",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/discussion/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "Get historical Mesoscale Discussions for a given day"
+        },
+        {
+          "info": {
+            "name": "Get historical Mesoscale Discussions for a given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/discussion/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historical Mesoscale Discussions for a given timestamp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Outlooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get current Outlooks, Day{1-8}",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/outlook/day:convective_outlook_horizon",
+            "params": [
+              {
+                "name": "convective_outlook_horizon",
+                "value": "",
+                "type": "path",
+                "description": "horizon in days, 1 through 8 inclusive"
+              }
+            ]
+          },
+          "docs": "Get current Outlooks, Day{1-8}"
+        },
+        {
+          "info": {
+            "name": "Get historic Outlooks, Day{1-8}, for a given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/outlook/day:horizon/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "convective_outlook_horizon",
+                "value": "",
+                "type": "path",
+                "description": "horizon in days, 1 through 8 inclusive"
+              },
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historic Outlooks, Day{1-8}, for a given timestamp"
+        },
+        {
+          "info": {
+            "name": "Get current Outlooks, defaulting to Day1",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/outlook"
+          },
+          "docs": "Get current Outlooks, defaulting to Day1"
+        },
+        {
+          "info": {
+            "name": "Get raw text of a specific outlook ",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/outlook/:convective_outlook_id",
+            "params": [
+              {
+                "name": "convective_outlook_id",
+                "value": "",
+                "type": "path",
+                "description": "id of the outlook to be retrieved"
+              }
+            ]
+          },
+          "docs": "Get raw text of a specific outlook "
+        },
+        {
+          "info": {
+            "name": "Get historic Outlooks, defaulting to Day1, for a given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/outlook/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historic Outlooks, defaulting to Day1, for a given timestamp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Atmospheric Soundings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List stations with current Soundings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sounding"
+          },
+          "docs": "List stations with current Soundings"
+        },
+        {
+          "info": {
+            "name": "List stations with historic Soundings on a given day",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sounding/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List stations with historic Soundings on a given day"
+        },
+        {
+          "info": {
+            "name": "Retrieve Sounding for given time and station",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sounding/:sounding_event_time/:sounding_station_id",
+            "params": [
+              {
+                "name": "sounding_event_time",
+                "value": "",
+                "type": "path",
+                "description": "event time, as returned from current or historical station listing"
+              },
+              {
+                "name": "sounding_station_id",
+                "value": "",
+                "type": "path",
+                "description": "id of station reporting the sounding"
+              }
+            ]
+          },
+          "docs": "Retrieve Sounding for given time and station"
+        },
+        {
+          "info": {
+            "name": "Retrieve specific Sounding product in raw form for given time and station",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sounding/raw/:sounding_event_time/:sounding_station_id/:sounding_product_id",
+            "params": [
+              {
+                "name": "sounding_event_time",
+                "value": "",
+                "type": "path",
+                "description": "event time, as returned from current or historical station listing"
+              },
+              {
+                "name": "sounding_station_id",
+                "value": "",
+                "type": "path",
+                "description": "id of station reporting the sounding"
+              },
+              {
+                "name": "sounding_product_id",
+                "value": "",
+                "type": "path",
+                "description": "sounding product; one of: ABV, MAN, SGL"
+              }
+            ]
+          },
+          "docs": "Retrieve specific Sounding product in raw form for given time and station"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Special Weather Statements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List current Special Weather Statements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sps"
+          },
+          "docs": "List current Special Weather Statements"
+        },
+        {
+          "info": {
+            "name": "Retrieve raw text of Special Weather Statement",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sps/:special_weather_statement_id",
+            "params": [
+              {
+                "name": "special_weather_statement_id",
+                "value": "",
+                "type": "path",
+                "description": "id (usually a filename) of Statement to retrieve"
+              }
+            ]
+          },
+          "docs": "Retrieve raw text of Special Weather Statement"
+        },
+        {
+          "info": {
+            "name": "List historic Special Weather Statements for a given date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sps/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List historic Special Weather Statements for a given date"
+        },
+        {
+          "info": {
+            "name": "List historic Special Weather Statements for a given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/sps/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List historic Special Weather Statements for a given timestamp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tropical Events",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all current tropical events ",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical"
+          },
+          "docs": "List all current tropical events "
+        },
+        {
+          "info": {
+            "name": "List all historic tropical events for given date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List all historic tropical events for given date"
+        },
+        {
+          "info": {
+            "name": "List all historic tropical events for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List all historic tropical events for given timestamp"
+        },
+        {
+          "info": {
+            "name": "List all current tropical warning events ",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/warn"
+          },
+          "docs": "List all current tropical warning events "
+        },
+        {
+          "info": {
+            "name": "List all historic tropical warning events for given date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/warn/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List all historic tropical warning events for given date"
+        },
+        {
+          "info": {
+            "name": "List all historic tropical warning events for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/warn/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List all historic tropical warning events for given timestamp"
+        },
+        {
+          "info": {
+            "name": "List all current tropical watch events ",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/watch"
+          },
+          "docs": "List all current tropical watch events "
+        },
+        {
+          "info": {
+            "name": "List all historic tropical watch events for given date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/watch/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List all historic tropical watch events for given date"
+        },
+        {
+          "info": {
+            "name": "List all historic tropical watch events for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/watch/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List all historic tropical watch events for given timestamp"
+        },
+        {
+          "info": {
+            "name": "Get raw text for a given tropical event",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt"
+              }
+            ]
+          },
+          "docs": "Get raw text for a given tropical event"
+        },
+        {
+          "info": {
+            "name": "Get raw text for a given tropical warning",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/warn/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt"
+              }
+            ]
+          },
+          "docs": "Get raw text for a given tropical warning"
+        },
+        {
+          "info": {
+            "name": "Get raw text for a given tropical watch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical/watch/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt"
+              }
+            ]
+          },
+          "docs": "Get raw text for a given tropical watch"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tropical Cyclones",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get current tropical cyclone advisories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/advisories"
+          },
+          "docs": "Get current tropical cyclone advisories"
+        },
+        {
+          "info": {
+            "name": "Get historical tropical cyclone advisories for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/advisories/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historical tropical cyclone advisories for given timestamp"
+        },
+        {
+          "info": {
+            "name": "Get raw advisory text for a tropical cyclone",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/advisories/:year/:storm_code/:storm_update_number",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "storm_code",
+                "value": "",
+                "type": "path",
+                "description": "storm code, e.g. AL12, NOT English friendly name e.g. 'Lorenzo'"
+              },
+              {
+                "name": "storm_update_number",
+                "value": "",
+                "type": "path",
+                "description": "iterative update number, e.g. 1 - x"
+              }
+            ]
+          },
+          "docs": "Get raw advisory text for a tropical cyclone"
+        },
+        {
+          "info": {
+            "name": "Get current tropical cyclone forecasts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/forecasts"
+          },
+          "docs": "Get current tropical cyclone forecasts"
+        },
+        {
+          "info": {
+            "name": "Get historical tropical cyclone forecasts for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/forecasts/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historical tropical cyclone forecasts for given timestamp"
+        },
+        {
+          "info": {
+            "name": "Get raw forecast text for tropical cyclone",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/forecasts/:year/:storm/:update",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "storm_code",
+                "value": "",
+                "type": "path",
+                "description": "storm code, e.g. AL12, NOT English friendly name e.g. 'Lorenzo'"
+              },
+              {
+                "name": "storm_update_number",
+                "value": "",
+                "type": "path",
+                "description": "iterative update number, e.g. 1 - x"
+              }
+            ]
+          },
+          "docs": "Get raw forecast text for tropical cyclone"
+        },
+        {
+          "info": {
+            "name": "Get current tropical cyclone summaries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/summaries"
+          },
+          "docs": "Get current tropical cyclone summaries"
+        },
+        {
+          "info": {
+            "name": "Get historical tropical cyclone summaries for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/tropical_cyclone/summaries/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "Get historical tropical cyclone summaries for given timestamp"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Warnings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List current warnings from the Storm Prediction Center",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/warn"
+          },
+          "docs": "List current warnings from the Storm Prediction Center"
+        },
+        {
+          "info": {
+            "name": "List historical warnings for given date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/warn/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List historical warnings for given date"
+        },
+        {
+          "info": {
+            "name": "List historical warnings for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/warn/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List historical warnings for given timestamp"
+        },
+        {
+          "info": {
+            "name": "Get raw text of warning",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/warn/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt"
+              }
+            ]
+          },
+          "docs": "Get raw text of warning"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Watches",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List current watches from the Storm Prediction Center",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/watch"
+          },
+          "docs": "List current watches from the Storm Prediction Center"
+        },
+        {
+          "info": {
+            "name": "List historical watches for given date",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/watch/archive/:year/:month/:day",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              }
+            ]
+          },
+          "docs": "List historical watches for given date"
+        },
+        {
+          "info": {
+            "name": "List historical watches for given timestamp",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/watch/archive/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List historical watches for given timestamp"
+        },
+        {
+          "info": {
+            "name": "Get raw text of watch",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/watch/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt"
+              }
+            ]
+          },
+          "docs": "Get raw text of watch"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Excessive Rainfall Outlook",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List current Excessive Rainfall Outlooks, defaulting to Day1",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/ero"
+          },
+          "docs": "List current Excessive Rainfall Outlooks, defaulting to Day1"
+        },
+        {
+          "info": {
+            "name": "Get current Excessive Rainfall Outlook for given time horizon",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/ero/day:ero_horizon",
+            "params": [
+              {
+                "name": "ero_horizon",
+                "value": "",
+                "type": "path",
+                "description": "horizon in days, from 1 to 5 inclusive"
+              }
+            ]
+          },
+          "docs": "Get current Excessive Rainfall Outlook for given time horizon"
+        },
+        {
+          "info": {
+            "name": "Get raw text of Excessive Rainfall Outlook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/ero/:ero_id",
+            "params": [
+              {
+                "name": "ero_id",
+                "value": "",
+                "type": "path",
+                "description": "identifier of outlook to retrieve"
+              }
+            ]
+          },
+          "docs": "Get raw text of Excessive Rainfall Outlook"
+        },
+        {
+          "info": {
+            "name": "List historic Excessive Rainfall Outlooks for given time horizon on given date and time",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://radarscope-feeds.wdtinc.com/feeds/v3/ero/day:ero_horizon/:year/:month/:day/:hour/:minute",
+            "params": [
+              {
+                "name": "ero_horizon",
+                "value": "",
+                "type": "path",
+                "description": "horizon in days, from 1 to 5 inclusive"
+              },
+              {
+                "name": "year",
+                "value": "",
+                "type": "path",
+                "description": "4 digit year, e.g. 2026"
+              },
+              {
+                "name": "month",
+                "value": "",
+                "type": "path",
+                "description": "2 digit month, 01-12"
+              },
+              {
+                "name": "day",
+                "value": "",
+                "type": "path",
+                "description": "2 digit day, 01-31"
+              },
+              {
+                "name": "hour",
+                "value": "",
+                "type": "path",
+                "description": "2 digit hour, 00-23"
+              },
+              {
+                "name": "minute",
+                "value": "",
+                "type": "path",
+                "description": "2 digit minute, 00-59"
+              }
+            ]
+          },
+          "docs": "List historic Excessive Rainfall Outlooks for given time horizon on given date and time"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

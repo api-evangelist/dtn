@@ -1,0 +1,154 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Storm Impact Analytics API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Health check endpoint",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/health-check"
+      },
+      "docs": "Returns the health status of the API"
+    },
+    {
+      "info": {
+        "name": "Get all active weather events.",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/weather-events"
+      },
+      "docs": "Returns list of all of the non-archived weather events. These are the same weather events that are visible within the SIA web application."
+    },
+    {
+      "info": {
+        "name": "Get hourly predictions for each of your entire service region.",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/hourly-predictions"
+      },
+      "docs": "Returns hourly predictions for an entire service territory. Includes hourly \"best\" and \"base\" values for each hour for the next 7 days. Predictions are generated every six (6) hours."
+    },
+    {
+      "info": {
+        "name": "Get the geoJson of the entire service area.",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/service-area-geojson",
+        "params": [
+          {
+            "name": "geolevel",
+            "value": "Division",
+            "type": "query",
+            "description": "Name of desired geo level."
+          }
+        ]
+      },
+      "docs": "Returns a feature collection containing the geoJson of the entire service region."
+    },
+    {
+      "info": {
+        "name": "Get predictions for each of your regions for a specific weather event.",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/event-predictions/:weatherEventId",
+        "params": [
+          {
+            "name": "weatherEventId",
+            "value": "bc2cb2cb-ce88-12bd-b946-2ce642e5bfae",
+            "type": "path",
+            "description": "Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+          },
+          {
+            "name": "geolevel",
+            "value": "Division",
+            "type": "query",
+            "description": "Name of desired geo level."
+          },
+          {
+            "name": "predictionType",
+            "value": "",
+            "type": "query",
+            "description": "Type of prediction (defaults to \"outages\" if not provided)"
+          }
+        ]
+      },
+      "docs": "Returns predictions for each geo area included in a specific weather event."
+    },
+    {
+      "info": {
+        "name": "Get predictions and geoJson for each of your regions for a specific weather event.",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/event-geojson/:weatherEventId",
+        "params": [
+          {
+            "name": "weatherEventId",
+            "value": "bc2cb2cb-ce88-12bd-b946-2ce642e5bfae",
+            "type": "path",
+            "description": "Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+          },
+          {
+            "name": "geolevel",
+            "value": "Division",
+            "type": "query",
+            "description": "Name of desired geo level."
+          }
+        ]
+      },
+      "docs": "Returns a feature collection containing the geoJson of the service region affected by a weather event."
+    },
+    {
+      "info": {
+        "name": "Get the historic events that are similar to the passed in event.",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://sia.dtn.com/v1/similar-storms/:weatherEventId",
+        "params": [
+          {
+            "name": "weatherEventId",
+            "value": "bc2cb2cb-ce88-12bd-b946-2ce642e5bfae",
+            "type": "path",
+            "description": "Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+          },
+          {
+            "name": "territoryId",
+            "value": "Oklahoma",
+            "type": "query",
+            "description": "Name of desired territory id, if not passed in, the highest level territory will be selected automatically."
+          }
+        ]
+      },
+      "docs": "Returns the historic events that match the passed in event the closest. It tries to match on weather conditions as well as time frame."
+    }
+  ],
+  "bundled": true
+}

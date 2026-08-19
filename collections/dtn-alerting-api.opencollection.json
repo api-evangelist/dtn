@@ -1,0 +1,88 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Agency Bulletin API",
+    "version": "1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "alerts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Alerts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/v2/alerts",
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "Specify the country code of the alerts request. This is a required parameter. The reference for acceptable values is ISO 3166 two-letter codes (alpha-2). example: US"
+              },
+              {
+                "name": "language",
+                "value": "",
+                "type": "query",
+                "description": "Specify the language the language to use in the text values of the alert. Values should follow RFC 3066. example: en-US"
+              },
+              {
+                "name": "sender",
+                "value": "",
+                "type": "query",
+                "description": "Specify the source of the alerts request. example: NWS"
+              },
+              {
+                "name": "event",
+                "value": "",
+                "type": "query",
+                "description": "When specified, the API will return only alerts that match the specified event types. example: Flood Warning"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Specify the date and time alerts are sent. When set, all alerts sent from this timestamp are returned. ISO8601 date-time format specified int RFC 3339. example: 2022-11-25T00:00:00"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "Specify the date and time alerts are sent. When set, all alerts sent until this timestamp are returned. ISO8601 date-time format specified int RFC 3339. example: 2022-11-26T00:00:00"
+              },
+              {
+                "name": "excludeGeometry",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether or not to include the geojson geometry for each alert."
+              },
+              {
+                "name": "showTotal",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether or not to include total number of alerts."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Get Alerts"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

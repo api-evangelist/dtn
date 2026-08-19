@@ -1,0 +1,706 @@
+{
+  "item": [
+    {
+      "id": "98d097f2-b186-4459-b503-74a954257058",
+      "name": "Health check endpoint",
+      "request": {
+        "name": "Health check endpoint",
+        "description": {
+          "content": "Returns the health status of the API",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "health-check"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "ad257770-2b18-4da6-8858-fa9c8b5de819",
+          "name": "API is healthy",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "health-check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"up\",\n  \"version\": \"1.0.0\",\n  \"info\": \"Service is healthy\",\n  \"timestamp\": \"2025-09-12T05:37:42.053Z\",\n  \"env\": \"production\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "25edd5aa-8e2c-4a23-b293-38aefcd4d6e2",
+      "name": "Get all active weather events.",
+      "request": {
+        "name": "Get all active weather events.",
+        "description": {
+          "content": "Returns list of all of the non-archived weather events. These are the same weather events that are visible within the SIA web application.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "weather-events"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "0e637eae-5147-4da9-97ae-9476870ee37e",
+          "name": "Success",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "weather-events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"weatherEventId\": \"5a1ca18f-223b-4b2b-8b75-6cb0baba2717\",\n    \"modelType\": \"rain-wind-model\",\n    \"predictionType\": \"outages-prediction\",\n    \"startDate\": \"2025-09-14T21:00:00Z\",\n    \"endDate\": \"2025-09-15T15:00:00Z\",\n    \"confidence\": \"medium-confidence\",\n    \"updateDateTime\": \"2025-09-14T04:13:25.262Z\",\n    \"videoLink\": \"\"\n  },\n  {\n    \"weatherEventId\": \"5a1ca18f-223b-4b2b-8b75-6cb0baba2717\",\n    \"modelType\": \"rain-wind-model\",\n    \"predictionType\": \"outages-prediction\",\n    \"startDate\": \"2025-09-14T21:00:00Z\",\n    \"endDate\": \"2025-09-15T15:00:00Z\",\n    \"confidence\": \"medium-confidence\",\n    \"updateDateTime\": \"2025-09-14T04:13:25.262Z\",\n    \"videoLink\": \"\"\n  }\n]",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "e7e6e55c-6d3a-4c3b-808f-c041a23d26e2",
+      "name": "Get hourly predictions for each of your entire service region.",
+      "request": {
+        "name": "Get hourly predictions for each of your entire service region.",
+        "description": {
+          "content": "Returns hourly predictions for an entire service territory. Includes hourly \"best\" and \"base\" values for each hour for the next 7 days. Predictions are generated every six (6) hours.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "hourly-predictions"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "5a5d09ea-8ed6-4bd4-a7d5-6e080374ce50",
+          "name": "Success",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "hourly-predictions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"predictionType\": \"outages-prediction\",\n    \"modelType\": \"rain-wind-model\",\n    \"wrfDateTime\": \"2025-09-14T00:00:00Z\",\n    \"insertedDateTime\": \"2025-09-14T02:18:38.959Z\",\n    \"regionName\": \"AusNet\",\n    \"regionAbbreviation\": null,\n    \"estimates\": [\n      {\n        \"best\": 1.09,\n        \"base\": 1.09,\n        \"predictionDateTime\": \"2025-09-14T00:00:00Z\"\n      },\n      {\n        \"best\": 1.09,\n        \"base\": 1.09,\n        \"predictionDateTime\": \"2025-09-14T00:00:00Z\"\n      }\n    ]\n  },\n  {\n    \"predictionType\": \"outages-prediction\",\n    \"modelType\": \"rain-wind-model\",\n    \"wrfDateTime\": \"2025-09-14T00:00:00Z\",\n    \"insertedDateTime\": \"2025-09-14T02:18:38.959Z\",\n    \"regionName\": \"AusNet\",\n    \"regionAbbreviation\": null,\n    \"estimates\": [\n      {\n        \"best\": 1.09,\n        \"base\": 1.09,\n        \"predictionDateTime\": \"2025-09-14T00:00:00Z\"\n      },\n      {\n        \"best\": 1.09,\n        \"base\": 1.09,\n        \"predictionDateTime\": \"2025-09-14T00:00:00Z\"\n      }\n    ]\n  }\n]",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "d21dd02f-681a-462b-a658-a49b0c3abff9",
+      "name": "Get the geoJson of the entire service area.",
+      "request": {
+        "name": "Get the geoJson of the entire service area.",
+        "description": {
+          "content": "Returns a feature collection containing the geoJson of the entire service region.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "service-area-geojson"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "disabled": false,
+              "key": "geolevel",
+              "value": "<string>",
+              "description": "Name of desired geo level."
+            }
+          ],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "830043cd-d669-4134-aabf-cb02e1b40daf",
+          "name": "Success",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "service-area-geojson"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "geolevel",
+                  "value": "Division"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"CENTRAL\",\n        \"description\": \"Zone\",\n        \"prediction\": 293,\n        \"prediction_high\": 312,\n        \"prediction_low\": 216\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              4187.640145835989,\n              7036.279845213642\n            ],\n            [\n              6932.7206747758155,\n              8736.89951673041\n            ]\n          ],\n          [\n            [\n              1761.0542303981779,\n              4536.981296097387\n            ],\n            [\n              7126.738346893841,\n              320.1499481751557\n            ]\n          ]\n        ]\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"name\": \"CENTRAL\",\n        \"description\": \"Zone\",\n        \"prediction\": 293,\n        \"prediction_high\": 312,\n        \"prediction_low\": 216\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              7885.672929883664,\n              2250.313848579011\n            ],\n            [\n              9283.20017008574,\n              2334.302904848833\n            ]\n          ],\n          [\n            [\n              8921.65259062885,\n              2454.7024063412614\n            ],\n            [\n              243.31621604184116,\n              401.62290314517566\n            ]\n          ]\n        ]\n      }\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "2b6bb34f-02c3-4d71-a987-5703d210fd2f",
+      "name": "Get predictions for each of your regions for a specific weather event.",
+      "request": {
+        "name": "Get predictions for each of your regions for a specific weather event.",
+        "description": {
+          "content": "Returns predictions for each geo area included in a specific weather event.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "event-predictions",
+            ":weatherEventId"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "disabled": false,
+              "key": "geolevel",
+              "value": "<string>",
+              "description": "Name of desired geo level."
+            },
+            {
+              "disabled": false,
+              "key": "predictionType",
+              "value": "<string>",
+              "description": "Type of prediction (defaults to \"outages\" if not provided)"
+            }
+          ],
+          "variable": [
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<string>",
+              "key": "weatherEventId",
+              "description": "(Required) Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "12038ef5-eb31-40ae-b8dc-56aefc51eee6",
+          "name": "Success",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "event-predictions",
+                ":weatherEventId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "geolevel",
+                  "value": "Division"
+                },
+                {
+                  "key": "predictionType",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "weatherEventId",
+                  "description": "(Required) Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"geoLevelName\": \"Zone\",\n    \"geoAreaName\": \"CENTRAL\",\n    \"predictionType\": \"outages-prediction\",\n    \"prediction\": 140,\n    \"maxPrediction\": 149,\n    \"minPrediction\": 100,\n    \"predictionRunTime\": \"2025-09-14T04:13:27.014Z\"\n  },\n  {\n    \"geoLevelName\": \"Zone\",\n    \"geoAreaName\": \"CENTRAL\",\n    \"predictionType\": \"outages-prediction\",\n    \"prediction\": 140,\n    \"maxPrediction\": 149,\n    \"minPrediction\": 100,\n    \"predictionRunTime\": \"2025-09-14T04:13:27.014Z\"\n  }\n]",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "40dba757-4e8b-42ca-9791-eafea75c4bb2",
+      "name": "Get predictions and geoJson for each of your regions for a specific weather event.",
+      "request": {
+        "name": "Get predictions and geoJson for each of your regions for a specific weather event.",
+        "description": {
+          "content": "Returns a feature collection containing the geoJson of the service region affected by a weather event.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "event-geojson",
+            ":weatherEventId"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "disabled": false,
+              "key": "geolevel",
+              "value": "<string>",
+              "description": "Name of desired geo level."
+            }
+          ],
+          "variable": [
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<string>",
+              "key": "weatherEventId",
+              "description": "(Required) Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "2876d636-308a-4a12-9c96-b9ab7059c0d4",
+          "name": "Success",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "event-geojson",
+                ":weatherEventId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "geolevel",
+                  "value": "Division"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "weatherEventId",
+                  "description": "(Required) Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"id\": \"0\",\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"description\": \"Zone\",\n        \"geosubdivision_name\": \"CENTRAL\",\n        \"outage_model_run_date\": 1757808000000,\n        \"predicted_outage_count\": 140,\n        \"max_predicted_outage_count\": 149,\n        \"min_predicted_outage_count\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              8720.208041644084,\n              5069.12591450633\n            ],\n            [\n              9255.819254716533,\n              1456.918082563442\n            ]\n          ],\n          [\n            [\n              9504.386192378548,\n              9830.416804243156\n            ],\n            [\n              8723.91568670953,\n              7458.673580121696\n            ]\n          ]\n        ]\n      }\n    },\n    {\n      \"id\": \"0\",\n      \"type\": \"Feature\",\n      \"properties\": {\n        \"description\": \"Zone\",\n        \"geosubdivision_name\": \"CENTRAL\",\n        \"outage_model_run_date\": 1757808000000,\n        \"predicted_outage_count\": 140,\n        \"max_predicted_outage_count\": 149,\n        \"min_predicted_outage_count\": 100\n      },\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              5787.0088417638535,\n              7431.247729044429\n            ],\n            [\n              9356.031873481454,\n              8248.110740690741\n            ]\n          ],\n          [\n            [\n              7396.105425667463,\n              9215.103131416037\n            ],\n            [\n              7973.749491728747,\n              11.744777516828897\n            ]\n          ]\n        ]\n      }\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "22c424d6-5bf7-417e-984e-f0750740e6e2",
+      "name": "Get the historic events that are similar to the passed in event.",
+      "request": {
+        "name": "Get the historic events that are similar to the passed in event.",
+        "description": {
+          "content": "Returns the historic events that match the passed in event the closest. It tries to match on weather conditions as well as time frame.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "similar-storms",
+            ":weatherEventId"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "disabled": false,
+              "key": "territoryId",
+              "value": "<string>",
+              "description": "Name of desired territory id, if not passed in, the highest level territory will be selected automatically."
+            }
+          ],
+          "variable": [
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<string>",
+              "key": "weatherEventId",
+              "description": "(Required) Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "bddad527-534a-423e-9d9c-9cb5aae595d0",
+          "name": "Success",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "similar-storms",
+                ":weatherEventId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "territoryId",
+                  "value": "Oklahoma"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "weatherEventId",
+                  "description": "(Required) Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"eventId\": \"5a1ca18f-223b-4b2b-8b75-6cb0baba2717\",\n  \"geoAreaId\": \"Ausnet\",\n  \"startDate\": \"2025-09-14T21:00:00.000+00:00\",\n  \"duration\": 18,\n  \"maxWind\": 57,\n  \"windDirection\": \"N\",\n  \"totalPrecipitation\": 0,\n  \"snowPrecipitation\": 0,\n  \"bestPrediction\": 174,\n  \"similarEvents\": [\n    {\n      \"geoAreaId\": \"Ausnet\",\n      \"startDate\": \"2020-09-06T18:00:00.000+00:00\",\n      \"duration\": {\n        \"value\": 35,\n        \"similarityLegend\": \"L\"\n      },\n      \"maxWind\": {\n        \"value\": 60,\n        \"similarityLegend\": \"H\"\n      },\n      \"windDirection\": {\n        \"value\": \"N\",\n        \"similarityLegend\": \"H\"\n      },\n      \"totalPrecipitation\": {\n        \"value\": 0.06,\n        \"similarityLegend\": \"L\"\n      },\n      \"snowPrecipitation\": {\n        \"value\": 0,\n        \"similarityLegend\": \"\"\n      },\n      \"outages\": {\n        \"value\": 319,\n        \"similarityLegend\": \"L\"\n      },\n      \"totalCustomersOut\": 22564,\n      \"restorationTime\": 23,\n      \"peakHourlyIncidents\": 19,\n      \"peakHourlyCustomersOut\": 7461\n    },\n    {\n      \"geoAreaId\": \"Ausnet\",\n      \"startDate\": \"2020-09-06T18:00:00.000+00:00\",\n      \"duration\": {\n        \"value\": 35,\n        \"similarityLegend\": \"L\"\n      },\n      \"maxWind\": {\n        \"value\": 60,\n        \"similarityLegend\": \"H\"\n      },\n      \"windDirection\": {\n        \"value\": \"N\",\n        \"similarityLegend\": \"H\"\n      },\n      \"totalPrecipitation\": {\n        \"value\": 0.06,\n        \"similarityLegend\": \"L\"\n      },\n      \"snowPrecipitation\": {\n        \"value\": 0,\n        \"similarityLegend\": \"\"\n      },\n      \"outages\": {\n        \"value\": 319,\n        \"similarityLegend\": \"L\"\n      },\n      \"totalCustomersOut\": 22564,\n      \"restorationTime\": 23,\n      \"peakHourlyIncidents\": 19,\n      \"peakHourlyCustomersOut\": 7461\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://sia.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ef628035-0fd9-4afb-aeb4-daa855a2a588",
+    "name": "Storm Impact Analytics API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction  \n<p>The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.</p>",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,3709 @@
+{
+  "item": [
+    {
+      "id": "f602dc94-4999-4e4c-8f41-6333ebdc579c",
+      "name": "Parameters",
+      "description": {
+        "content": "Parameter metadata endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "898ee7a9-71be-4365-b077-688d6d66a249",
+          "name": "Get Parameters",
+          "request": {
+            "name": "Get Parameters",
+            "description": {
+              "content": "Retrieves parameter details for v2 API. If the `name` query parameter is empty, it returns all parameters.\n**v2 includes pagination parameters**: total, limit, page, nextOffset\n\n| Variable Name | Description | Imperial Unit | Metric Unit |\n| ------------- | ----------- | ------------- | ----------- |\n| total | Total number of records available inside the BBox | N/A | N/A |\n| limit | Maximum number of records per page | N/A | N/A |\n| page | Current page number | N/A | N/A |\n| nextOffset | Offset for the next page of results | N/A | N/A |\n| id | Database table primary key ID | N/A | N/A |\n| segmentId | Road segment identifier (string) | N/A | N/A |\n| lat | Latitude for center point of road segment | Degrees | Degrees |\n| lon | Longitude for center point of road segment | Degrees | Degrees |\n| timestamp | Date/time for when the output variables are valid (UTC) - Use this for assigning time to the output | N/A | N/A |\n| pavementCreationTime | Date/time when the pavement model was run (UTC) | N/A | N/A |\n| pavementValidTime | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementValidEndTime | Date/time for when the pavement forecast validity period ends (UTC) | N/A | N/A |\n| airTemp | Air temperature | Fahrenheit | Celsius |\n| visibility | Visibility distance | mi | km |\n| windDirection | Wind direction relative to true North (range from 0 to 360) | Degrees | Degrees |\n| windGust | Wind gust speed | mi/hr | km/hr |\n| windSpeed | Wind speed | mi/hr | km/hr |\n| iceRate | Ice precipitation rate | in/hr | mm/hr |\n| liquidRate | Liquid precipitation rate | in/hr | mm/hr |\n| snowRate | Snow precipitation rate | in/hr | mm/hr |\n| mobilityIndex | Mobility of vehicles compared to expected traffic patterns (100% mobility means traffic movement is expected to be unaffected by the conditions) - Same as in MDSS | Percent | Percent |\n| pavementTemperature | Temperature of the road surface | Fahrenheit | Celsius |\n| blowingSnowAlertLevel | Level of blowing snow intensity (2 - Lowest, 5 - Highest) | N/A | N/A |\n| compactedSnowDepth | Depth of compacted snow on the road | in | mm |\n| frostDepth | Depth of frost on the road | in | mm |\n| iceDepth | Depth of ice on the road | in | mm |\n| liquidDepth | Depth of liquid on the road | in | mm |\n| snowDepth | Depth of snow on the road | in | mm |\n| unbondedIceDepth | Depth of ice on the road that is not bonded to the road surface | in | mm |\n| pavementCondition | Classification of the road condition. Possible conditions are dry, slush, chemical_wet, damp, wet, frost, ice, snow, compacted_snow - Same as in MDSS | N/A | N/A |\n| crashRiskIndex | Crash risk factor compared to average conditions (ex: 2.0 means the risk of crash is two times the average) | N/A | N/A |\n| crashRiskUncertainty | One standard deviation on the crash risk factor (statistical error) | N/A | N/A |\n| geometry | Array of coordinate pairs representing the road geometry | N/A | N/A |\n| osmClass | OpenStreetMap road classification (e.g., motorway, trunk, primary) | N/A | N/A |\n| roadName | Name of the road or highway | N/A | N/A |\n| createdAt | Record creation timestamp | N/A | N/A |\n| updatedAt | Record last update timestamp | N/A | N/A |\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>",
+                  "description": "Name of the parameter to retrieve"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6a18086e-ad85-4506-8583-8a509fe0af21",
+              "name": "Successful response - returns parameter details including pagination parameters.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"name\": \"total\",\n    \"unit\": \"N/A\",\n    \"imperial_unit\": \"N/A\",\n    \"type\": \"integer\",\n    \"precision\": \"N/A\",\n    \"description\": \"Total number of records available inside the BBox\",\n    \"notes\": \"\"\n  },\n  {\n    \"name\": \"pavementTemperature\",\n    \"unit\": \"Fahrenheit\",\n    \"imperial_unit\": \"Celsius\",\n    \"type\": \"float\",\n    \"precision\": 14,\n    \"description\": \"Temperature of the road surface\",\n    \"notes\": \"\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1f6afc7-c942-4143-ae0a-cce11af40981",
+              "name": "No matching parameter found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9245c255-5ac4-42d3-bd79-604ff1d86548",
+              "name": "Unauthorized - Missing or invalid Bearer token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8f5b4cd6-16bc-47ac-8349-ee78fe935695",
+              "name": "Forbidden - No valid Bearer token provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e352b601-db18-49ad-ba00-a5a25b86df0a",
+      "name": "Pavement Conditions",
+      "description": {
+        "content": "Pavement condition data endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b39348f2-a7e2-4546-9071-18d93439abc6",
+          "name": "Get Pavement Conditions",
+          "request": {
+            "name": "Get Pavement Conditions",
+            "description": {
+              "content": "Retrieves pavement conditions for road segments in GeoJSON FeatureCollection format. Returns up to 1000 records by default.\nData is grouped by segment ID with pagination metadata included in the response.\n\n**Query modes:**\n- By bounding box (`bbox`) — returns all segments within the area\n- By route (`startPoint` + `endPoint`) — uses Mapbox Directions API to generate a route, then returns segments along it\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a bounding box (`bbox`).\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n**Return Data:**\n\n| Field Name | Description | Imperial Unit | Metric Unit |\n| ---------- | ----------- | ------------- | ----------- |\n| id | Database table primary key ID | N/A | N/A |\n| segmentId | Road segment identifier (string) | N/A | N/A |\n| lat | Latitude for center point of road segment | Degrees | Degrees |\n| lon | Longitude for center point of road segment | Degrees | Degrees |\n| timestamp | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementCreationTime | Date/time when the pavement model was run (UTC) | N/A | N/A |\n| pavementValidTime | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementValidEndTime | Date/time for when the pavement forecast validity period ends (UTC) | N/A | N/A |\n| airTemp | Air temperature | Fahrenheit | Celsius |\n| visibility | Visibility distance | mi | km |\n| windDirection | Wind direction relative to true North (range from 0 to 360) | Degrees | Degrees |\n| windGust | Wind gust speed | mi/hr | km/hr |\n| windSpeed | Wind speed | mi/hr | km/hr |\n| iceRate | Ice precipitation rate | in/hr | mm/hr |\n| liquidRate | Liquid precipitation rate | in/hr | mm/hr |\n| snowRate | Snow precipitation rate | in/hr | mm/hr |\n| mobilityIndex | Mobility of vehicles compared to expected traffic patterns (100% mobility means traffic movement is expected to be unaffected by the conditions) | Percent | Percent |\n| pavementTemperature | Temperature of the road surface | Fahrenheit | Celsius |\n| blowingSnowAlertLevel | Level of blowing snow intensity (2 - Lowest, 5 - Highest) | N/A | N/A |\n| compactedSnowDepth | Depth of compacted snow on the road | in | mm |\n| frostDepth | Depth of frost on the road | in | mm |\n| iceDepth | Depth of ice on the road | in | mm |\n| liquidDepth | Depth of liquid on the road | in | mm |\n| snowDepth | Depth of snow on the road | in | mm |\n| unbondedIceDepth | Depth of ice on the road that is not bonded to the road surface | in | mm |\n| pavementCondition | Classification of the road condition. Possible conditions are dry, slush, chemical_wet, damp, wet, frost, ice, snow, compacted_snow | N/A | N/A |\n| crashRiskIndex | Crash risk factor compared to average conditions (ex: 2.0 means the risk of crash is two times the average) | N/A | N/A |\n| crashRiskUncertainty | One standard deviation on the crash risk factor (statistical error) | N/A | N/A |\n| roadName | Name of the road or highway | N/A | N/A |\n| osmClass | OpenStreetMap road classification (e.g., motorway, trunk, primary) | N/A | N/A |\n| geometry | GeoJSON geometry representing the road segment (LineString or MultiLineString) | N/A | N/A |\n| createdAt | Record creation timestamp | N/A | N/A |\n| updatedAt | Record last update timestamp | N/A | N/A |\n\n**Sample Requests:**\n\n1. **Get default data (1000 records):**\n   ```\n   GET /v2/pavement/conditions\n   ```\n\n2. **Get data for specific geographic area (US):**\n   ```\n   GET /v2/pavement/conditions?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521\n   ```\n\n3. **Get data for European area:**\n   ```\n   GET /v2/pavement/conditions?bbox=3.555,49.470,6.262,50.849\n   ```\n\n4. **Get specific page:**\n   ```\n   GET /v2/pavement/conditions?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&limit=1000&page=2\n   ```\n\n5. **Filter by time range:**\n   ```\n   GET /v2/pavement/conditions?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&startTime=2025-12-04T20:00:00.000Z&endTime=2025-12-05T20:00:00.000Z\n   ```\n\n6. **Get data in metric units:**\n   ```\n   GET /v2/pavement/conditions?units=metric\n   ```\n\n7. **Route-based filtering with departure time:**\n   ```\n   GET /v2/pavement/conditions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n8. **Route-based filtering with arrival time:**\n   ```\n   GET /v2/pavement/conditions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n9. **Route-based with ETA filter (single forecast per segment):**\n   ```\n   GET /v2/pavement/conditions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&etaFilter=true\n   ```\n\n10. **Route-based with parameter filter:**\n    ```\n    GET /v2/pavement/conditions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&parameter=crashRiskIndex,mobilityIndex\n    ```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pavement",
+                "conditions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates to filter results by geographic area.\nFormat: `minLongitude,minLatitude,maxLongitude,maxLatitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Maximum number of records to return. Default is 1000."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination. Default is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "imperial",
+                  "description": "Unit system for response values. Default is imperial."
+                },
+                {
+                  "disabled": false,
+                  "key": "startPoint",
+                  "value": "<string>",
+                  "description": "Starting point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endPoint",
+                  "value": "<string>",
+                  "description": "Ending point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "departAt",
+                  "value": "<dateTime>",
+                  "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "arriveAt",
+                  "value": "<dateTime>",
+                  "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "bufferMeters",
+                  "value": "5",
+                  "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+                },
+                {
+                  "disabled": false,
+                  "key": "etaFilter",
+                  "value": "false",
+                  "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameter",
+                  "value": "<string>",
+                  "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ef314b46-66bb-4f51-8f66-459de6047506",
+              "name": "Successful response with GeoJSON FeatureCollection and pagination metadata.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"pagination\": {\n    \"total\": 26496,\n    \"limit\": 10,\n    \"nextOffset\": 10\n  },\n  \"geojson\": {\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"id\": \"SL-100727058\",\n        \"geometry\": {\n          \"type\": \"MultiLineString\",\n          \"coordinates\": [\n            [\n              [\n                5.0157406,\n                49.7305403\n              ],\n              [\n                5.0144574,\n                49.7288971\n              ],\n              [\n                5.0137122,\n                49.7278154\n              ]\n            ],\n            [\n              [\n                4.9970947,\n                49.6874619\n              ],\n              [\n                4.9966223,\n                49.6868132\n              ],\n              [\n                4.9960744,\n                49.6862484\n              ]\n            ]\n          ]\n        },\n        \"properties\": {\n          \"segmentId\": \"SL-100727058\",\n          \"roadName\": null,\n          \"osmClass\": \"R-N-58-000\",\n          \"data\": [\n            {\n              \"id\": 6638317100,\n              \"lat\": 49.70771017429127,\n              \"lon\": 5.0404408386138515,\n              \"timestamp\": \"2026-06-14T15:00:00.000Z\",\n              \"pavementCreationTime\": \"2026-06-15T15:39:49.000Z\",\n              \"pavementValidTime\": \"2026-06-14T15:00:00.000Z\",\n              \"pavementValidEndTime\": \"2026-06-14T16:00:00.000Z\",\n              \"airTemp\": 19.05,\n              \"visibility\": 36.04,\n              \"windDirection\": 309,\n              \"windGust\": 34.92,\n              \"windSpeed\": 15.84,\n              \"iceRate\": 0,\n              \"liquidRate\": 0,\n              \"snowRate\": 0,\n              \"mobilityIndex\": 100,\n              \"pavementTemperature\": 34.69,\n              \"blowingSnowAlertLevel\": 2,\n              \"compactedSnowDepth\": 0,\n              \"frostDepth\": 0,\n              \"iceDepth\": 0,\n              \"liquidDepth\": 0,\n              \"snowDepth\": 0,\n              \"unbondedIceDepth\": 0,\n              \"pavementCondition\": \"dry\",\n              \"crashRiskIndex\": 0.97,\n              \"crashRiskUncertainty\": 0,\n              \"createdAt\": \"2026-06-15T15:53:04.676Z\",\n              \"updatedAt\": \"2026-06-15T15:53:04.676Z\"\n            }\n          ]\n        }\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0a803124-cfed-4ade-9a1e-df6c7d9099de",
+              "name": "Bad Request - Invalid units parameter",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Invalid unit. Allowed values are \\\"metric\\\" or \\\"imperial\\\".\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b7a3d6cc-02aa-41b4-9f84-d7fba76ae874",
+              "name": "Unauthorized - Missing or invalid Bearer token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "66589bfa-96e7-419e-99aa-1aef3892630a",
+              "name": "Forbidden - No valid Bearer token provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7566222e-2109-4544-858a-21fa3466a7da",
+              "name": "Service Unavailable - Data partition temporarily unavailable for the requested region.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"service-unavailable\",\n  \"title\": \"Backend or Database Unavailable\",\n  \"status\": 503,\n  \"detail\": \"No active partition available for domain: EuropeV2. No metadata entry found for key=active_folder_EuropeV2\",\n  \"instance\": \"urn:dtn:one-transport-api:/v2/pavement/conditions:requestId:b0d7ac21-459c-45a5-ab6f-e09cea96cf9e\",\n  \"error\": \"No metadata entry found for key=active_folder_EuropeV2\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ca3dc794-4b27-4f1d-b849-33dd3a6a6c44",
+          "name": "Get Pavement Conditions by Route",
+          "request": {
+            "name": "Get Pavement Conditions by Route",
+            "description": {
+              "content": "Retrieves pavement conditions along a route in GeoJSON FeatureCollection format.\nSupports two modes:\n\n**Option 1 - Mapbox waypoints (query params):**\nProvide `startPoint` and `endPoint` to automatically generate a route via Mapbox Directions API.\nOptionally provide `departAt` or `arriveAt` (mutually exclusive) for per-segment timing.\n\n**Option 2 - Direct route (body):**\nProvide a GeoJSON LineString or FeatureCollection in the request body.\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\nQuery parameters take priority over the request body when both are provided.\n\n**Timing behavior:**\n- When `departAt` is provided: each feature includes `arrivalTime` and the response includes `properties.arrivalTimeUTC` (departAt + route duration)\n- When `arriveAt` is provided: each feature includes `departureTime` and the response includes `properties.departureTimeUTC` (arriveAt - route duration)\n\n**Sample Requests:**\n\n1. **Route via Mapbox with departure time:**\n   ```\n   POST /v2/pavement/conditions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n2. **Route via Mapbox with arrival time:**\n   ```\n   POST /v2/pavement/conditions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n3. **Direct route via body:**\n   ```\n   POST /v2/pavement/conditions\n   Body: { \"type\": \"LineString\", \"coordinates\": [[-93.39, 45.13], [-93.27, 45.14]] }\n   ```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pavement",
+                "conditions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "departAt",
+                  "value": "<dateTime>",
+                  "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "arriveAt",
+                  "value": "<dateTime>",
+                  "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "bufferMeters",
+                  "value": "5",
+                  "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Maximum number of records to return. Default is 100 for route-based requests.\nMaximum allowed is 300 for route-based requests.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination. Default is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "imperial",
+                  "description": "Unit system for response values. Default is imperial."
+                },
+                {
+                  "disabled": false,
+                  "key": "etaFilter",
+                  "value": "false",
+                  "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameter",
+                  "value": "<string>",
+                  "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "71a6c46a-496b-44bd-b438-6bfc692816d6",
+              "name": "Successful response with GeoJSON FeatureCollection, pagination metadata, and route timing properties.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"pagination\": {\n    \"total\": 50,\n    \"limit\": 1000,\n    \"nextOffset\": 50\n  },\n  \"geojson\": {\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"id\": 40341366,\n        \"geometry\": {\n          \"type\": \"LineString\",\n          \"coordinates\": [\n            [\n              -93.3905,\n              45.131\n            ],\n            [\n              -93.35,\n              45.135\n            ]\n          ]\n        },\n        \"properties\": {\n          \"routeId\": 40341366,\n          \"roadName\": \"I-94\",\n          \"osmClass\": \"motorway\",\n          \"arrivalTime\": \"2026-03-13T15:05:00.000Z\",\n          \"data\": [\n            {\n              \"id\": 1001,\n              \"lat\": 45.131,\n              \"lon\": -93.3905,\n              \"timestamp\": \"2026-03-13T15:00:00.000Z\",\n              \"airTemp\": 32.5,\n              \"pavementCondition\": \"wet\"\n            }\n          ]\n        }\n      }\n    ]\n  },\n  \"properties\": {\n    \"arrivalTimeUTC\": \"2026-03-13T15:30:00.000Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82fc6deb-bc31-4aeb-951a-c2e50b449ea2",
+              "name": "Bad Request - Invalid parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Cannot use both departAt and arriveAt\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "67c94c12-3261-4b41-8e64-1e30de01e522",
+              "name": "Unauthorized - Missing or invalid Bearer token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3a9bb5fb-6443-44e4-b6c9-9cbea233cf0f",
+              "name": "Forbidden - No valid Bearer token provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3dd948fe-2c57-470e-a6f6-c1326312adf1",
+              "name": "No conditions found along the route",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"No conditions found along route(s)\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "61cefba1-3f9b-4927-901c-9a2d74ab4274",
+              "name": "Bad Gateway - External service (Mapbox) failure or unreachable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5638ed2-f5af-465d-877a-d7b22b5d1e65",
+              "name": "Service Unavailable - Data partition temporarily unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pavement",
+                    "conditions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"LineString\",\n  \"coordinates\": [\n    [\n      -93.3905,\n      45.131\n    ],\n    [\n      -93.35,\n      45.135\n    ],\n    [\n      -93.2695,\n      45.142\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "c7f32b00-0850-40da-934b-aaba3f3a00b9",
+      "name": "Logistics",
+      "description": {
+        "content": "Logistics-focused pavement data endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "68f291fe-0c5e-496e-8de8-ef2942403e4f",
+          "name": "Get Logistics Data",
+          "request": {
+            "name": "Get Logistics Data",
+            "description": {
+              "content": "Retrieves logistics-focused pavement data in GeoJSON FeatureCollection format. Returns up to 1000 records by default.\nData is grouped by segment ID with pagination metadata included in the response.\n\n**Query modes:**\n- By bounding box (`bbox`) — returns all segments within the area\n- By route (`startPoint` + `endPoint`) — uses Mapbox Directions API to generate a route, then returns segments along it\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a bounding box (`bbox`).\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n**Return Data:**\n\n| Field Name | Description | Imperial Unit | Metric Unit |\n| ---------- | ----------- | ------------- | ----------- |\n| id | Database table primary key ID | N/A | N/A |\n| segmentId | Road segment identifier (string) | N/A | N/A |\n| lat | Latitude for center point of road segment | Degrees | Degrees |\n| lon | Longitude for center point of road segment | Degrees | Degrees |\n| timestamp | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementCreationTime | Date/time when the pavement model was run (UTC) | N/A | N/A |\n| pavementValidTime | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementValidEndTime | Date/time for when the pavement forecast validity period ends (UTC) | N/A | N/A |\n| airTemp | Air temperature | Fahrenheit | Celsius |\n| visibility | Visibility distance | mi | km |\n| windDirection | Wind direction relative to true North (range from 0 to 360) | Degrees | Degrees |\n| windGust | Wind gust speed | mi/hr | km/hr |\n| windSpeed | Wind speed | mi/hr | km/hr |\n| iceRate | Ice precipitation rate | in/hr | mm/hr |\n| liquidRate | Liquid precipitation rate | in/hr | mm/hr |\n| snowRate | Snow precipitation rate | in/hr | mm/hr |\n| pavementTemperature | Temperature of the road surface | Fahrenheit | Celsius |\n| pavementCondition | Classification of the road condition. Possible conditions are dry, slush, chemical_wet, damp, wet, frost, ice, snow, compacted_snow | N/A | N/A |\n| crashRiskIndex | Crash risk factor compared to average conditions (ex: 2.0 means the risk of crash is two times the average) | N/A | N/A |\n| crashRiskUncertainty | One standard deviation on the crash risk factor (statistical error) | N/A | N/A |\n| roadName | Name of the road or highway | N/A | N/A |\n| osmClass | OpenStreetMap road classification (e.g., motorway, trunk, primary) | N/A | N/A |\n| geometry | GeoJSON geometry representing the road segment (LineString or MultiLineString) | N/A | N/A |\n| createdAt | Record creation timestamp | N/A | N/A |\n| updatedAt | Record last update timestamp | N/A | N/A |\n\n**Sample Requests:**\n\n1. **Get default data (1000 records):**\n   ```\n   GET /v2/logistics\n   ```\n\n2. **Get data for specific geographic area (US):**\n   ```\n   GET /v2/logistics?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521\n   ```\n\n3. **Get data for European area:**\n   ```\n   GET /v2/logistics?bbox=3.555,49.470,6.262,50.849\n   ```\n\n3. **Get specific page:**\n   ```\n   GET /v2/logistics?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&limit=1000&page=2\n   ```\n\n4. **Filter by time range:**\n   ```\n   GET /v2/logistics?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&startTime=2025-12-04T20:00:00.000Z&endTime=2025-12-05T20:00:00.000Z\n   ```\n\n5. **Get data in metric units:**\n   ```\n   GET /v2/logistics?units=metric\n   ```\n\n6. **Route-based filtering with departure time:**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n7. **Route-based filtering with arrival time:**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n8. **Route-based with ETA filter (single forecast per segment):**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&etaFilter=true\n   ```\n\n9. **Route-based with parameter filter:**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&parameter=crashRiskIndex,mobilityIndex\n   ```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "logistics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates to filter results by geographic area.\nFormat: `minLongitude,minLatitude,maxLongitude,maxLatitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Maximum number of records to return. Default is 1000."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination. Default is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "imperial",
+                  "description": "Unit system for response values. Default is imperial."
+                },
+                {
+                  "disabled": false,
+                  "key": "startPoint",
+                  "value": "<string>",
+                  "description": "Starting point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endPoint",
+                  "value": "<string>",
+                  "description": "Ending point coordinates for Mapbox route generation.\nFormat: `longitude,latitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "departAt",
+                  "value": "<dateTime>",
+                  "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "arriveAt",
+                  "value": "<dateTime>",
+                  "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "bufferMeters",
+                  "value": "5",
+                  "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+                },
+                {
+                  "disabled": false,
+                  "key": "etaFilter",
+                  "value": "false",
+                  "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameter",
+                  "value": "<string>",
+                  "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8af6759e-14ee-4211-a159-f1be0720a7a9",
+              "name": "Successful response with GeoJSON FeatureCollection and pagination metadata.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"pagination\": {\n    \"total\": 2642,\n    \"limit\": 4659,\n    \"nextOffset\": 3622\n  },\n  \"geojson\": {\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"id\": \"string\",\n        \"geometry\": {\n          \"type\": \"MultiLineString\",\n          \"coordinates\": [\n            [\n              8830.686963485477,\n              6898.764240290691\n            ],\n            [\n              6110.244260902336,\n              4202.982878666058\n            ]\n          ]\n        },\n        \"properties\": {\n          \"segmentId\": \"string\",\n          \"roadName\": \"string\",\n          \"osmClass\": \"string\",\n          \"data\": [\n            {\n              \"id\": 5307,\n              \"lat\": 8693.350069475984,\n              \"lon\": 237.3680747798279,\n              \"timestamp\": \"1954-06-14T16:55:04.514Z\",\n              \"pavementCreationTime\": \"2001-02-20T14:54:26.275Z\",\n              \"pavementValidTime\": \"1967-07-30T13:42:59.555Z\",\n              \"pavementValidEndTime\": \"2012-08-10T10:27:52.875Z\",\n              \"airTemp\": 2325.2876969188164,\n              \"visibility\": 8489.48951597286,\n              \"windDirection\": 7112.510094371891,\n              \"windGust\": 197.93409126672046,\n              \"windSpeed\": 919.9177147384885,\n              \"iceRate\": 3906.7940763384822,\n              \"liquidRate\": 981.9702870246483,\n              \"snowRate\": 4174.4573950439235,\n              \"pavementTemperature\": 3947.3508077578313,\n              \"pavementCondition\": \"string\",\n              \"crashRiskIndex\": 3384.575763311083,\n              \"crashRiskUncertainty\": 7283.715763254839,\n              \"createdAt\": \"2009-03-14T16:56:43.438Z\",\n              \"updatedAt\": \"1948-07-21T04:33:09.981Z\"\n            },\n            {\n              \"id\": 8988,\n              \"lat\": 5567.042976932342,\n              \"lon\": 8116.739087887616,\n              \"timestamp\": \"1985-04-29T19:13:47.999Z\",\n              \"pavementCreationTime\": \"1977-05-09T15:11:00.158Z\",\n              \"pavementValidTime\": \"1974-09-26T02:56:07.925Z\",\n              \"pavementValidEndTime\": \"2022-10-29T12:03:14.900Z\",\n              \"airTemp\": 8020.027724457027,\n              \"visibility\": 3691.509799877719,\n              \"windDirection\": 102.90089524426227,\n              \"windGust\": 264.88856235354683,\n              \"windSpeed\": 3412.794156163069,\n              \"iceRate\": 7136.999639671709,\n              \"liquidRate\": 6894.654774024754,\n              \"snowRate\": 8998.892381478714,\n              \"pavementTemperature\": 1454.7019680335982,\n              \"pavementCondition\": \"string\",\n              \"crashRiskIndex\": 6881.470376205876,\n              \"crashRiskUncertainty\": 3833.6966252555794,\n              \"createdAt\": \"2024-12-01T05:43:14.459Z\",\n              \"updatedAt\": \"1978-05-28T01:12:07.913Z\"\n            }\n          ]\n        }\n      },\n      {\n        \"type\": \"Feature\",\n        \"id\": \"string\",\n        \"geometry\": {\n          \"type\": \"LineString\",\n          \"coordinates\": [\n            [\n              7800.041718795259,\n              8904.865230941288\n            ],\n            [\n              8410.98238788564,\n              8575.94339186835\n            ]\n          ]\n        },\n        \"properties\": {\n          \"segmentId\": \"string\",\n          \"roadName\": \"string\",\n          \"osmClass\": \"string\",\n          \"data\": [\n            {\n              \"id\": 5230,\n              \"lat\": 9990.416078032415,\n              \"lon\": 381.1663226928197,\n              \"timestamp\": \"1973-01-02T01:47:03.896Z\",\n              \"pavementCreationTime\": \"1981-08-09T09:08:10.822Z\",\n              \"pavementValidTime\": \"2005-01-18T12:11:33.830Z\",\n              \"pavementValidEndTime\": \"2025-03-27T19:25:01.717Z\",\n              \"airTemp\": 2407.4165540196236,\n              \"visibility\": 929.31718974675,\n              \"windDirection\": 6070.3023346821365,\n              \"windGust\": 6174.506807487971,\n              \"windSpeed\": 8129.4172157233825,\n              \"iceRate\": 8829.932057692047,\n              \"liquidRate\": 9859.121154104616,\n              \"snowRate\": 7919.1030447526755,\n              \"pavementTemperature\": 1242.4509375411253,\n              \"pavementCondition\": \"string\",\n              \"crashRiskIndex\": 5306.0088494364445,\n              \"crashRiskUncertainty\": 6338.69465873008,\n              \"createdAt\": \"1953-01-09T13:05:50.156Z\",\n              \"updatedAt\": \"1982-06-17T23:06:07.113Z\"\n            },\n            {\n              \"id\": 8067,\n              \"lat\": 3331.4292255504483,\n              \"lon\": 4290.399391068362,\n              \"timestamp\": \"2006-02-08T04:55:49.356Z\",\n              \"pavementCreationTime\": \"1954-08-18T12:39:41.225Z\",\n              \"pavementValidTime\": \"1962-01-18T18:37:23.706Z\",\n              \"pavementValidEndTime\": \"1974-12-27T09:49:00.859Z\",\n              \"airTemp\": 8447.360552268448,\n              \"visibility\": 4917.734873123975,\n              \"windDirection\": 6092.654289033375,\n              \"windGust\": 8897.163599514279,\n              \"windSpeed\": 782.8024625378715,\n              \"iceRate\": 413.206536438403,\n              \"liquidRate\": 605.545142812749,\n              \"snowRate\": 5965.970505049984,\n              \"pavementTemperature\": 4168.024382952129,\n              \"pavementCondition\": \"string\",\n              \"crashRiskIndex\": 364.1689275407045,\n              \"crashRiskUncertainty\": 511.85010987120694,\n              \"createdAt\": \"1986-02-27T03:36:37.883Z\",\n              \"updatedAt\": \"1995-10-27T01:03:31.990Z\"\n            }\n          ]\n        }\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d5e37584-0199-4c4c-9d73-0f0eda53637d",
+              "name": "Bad Request - Invalid units parameter",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Invalid unit. Allowed values are \\\"metric\\\" or \\\"imperial\\\".\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b99fa574-9fd9-4f52-9d64-3f7e8c25cc34",
+              "name": "Unauthorized - Missing or invalid Bearer token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0028533-3a3a-42ef-8855-2ed646444fc8",
+              "name": "Forbidden - No valid Bearer token provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e20bda98-16ea-4586-a81e-05e4c5f7a13c",
+              "name": "Service Unavailable - Data partition temporarily unavailable for the requested region.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "bbox",
+                      "value": "-156.1317111,19.6270521,-155.9317111,19.8270521"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"service-unavailable\",\n  \"title\": \"Backend or Database Unavailable\",\n  \"status\": 503,\n  \"detail\": \"No active partition available for domain: EuropeV2. No metadata entry found for key=active_folder_EuropeV2\",\n  \"instance\": \"urn:dtn:one-transport-api:/v2/logistics:requestId:b0d7ac21-459c-45a5-ab6f-e09cea96cf9e\",\n  \"error\": \"No metadata entry found for key=active_folder_EuropeV2\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ee2867d7-0807-42ad-9fc9-c2b612df9d38",
+          "name": "Get Logistics Data by Route",
+          "request": {
+            "name": "Get Logistics Data by Route",
+            "description": {
+              "content": "Retrieves logistics-focused pavement data along a route in GeoJSON FeatureCollection format.\nSupports two modes:\n\n**Option 1 - Mapbox waypoints (query params):**\nProvide `startPoint` and `endPoint` to automatically generate a route via Mapbox Directions API.\nOptionally provide `departAt` or `arriveAt` (mutually exclusive) for per-segment timing.\n\n**Option 2 - Direct route (body):**\nProvide a GeoJSON LineString or FeatureCollection in the request body.\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\nQuery parameters take priority over the request body when both are provided.\n\n**Timing behavior:**\n- When `departAt` is provided: each feature includes `arrivalTime` and the response includes `properties.arrivalTimeUTC` (departAt + route duration)\n- When `arriveAt` is provided: each feature includes `departureTime` and the response includes `properties.departureTimeUTC` (arriveAt - route duration)\n\n**Sample Requests:**\n\n1. **Route via Mapbox with departure time:**\n   ```\n   POST /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n2. **Route via Mapbox with arrival time:**\n   ```\n   POST /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n3. **Direct route via body:**\n   ```\n   POST /v2/logistics\n   Body: { \"type\": \"LineString\", \"coordinates\": [[-93.39, 45.13], [-93.27, 45.14]] }\n   ```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "logistics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "departAt",
+                  "value": "<dateTime>",
+                  "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, the response includes per-feature `arrivalTime` and top-level `properties.arrivalTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "arriveAt",
+                  "value": "<dateTime>",
+                  "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, the response includes per-feature `departureTime` and top-level `properties.departureTimeUTC`.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "bufferMeters",
+                  "value": "5",
+                  "description": "Buffer distance in meters around the route for spatial query. Default is 5."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Maximum number of records to return. Default is 1000."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination. Default is 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp greater than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>",
+                  "description": "Filter records with timestamp less than or equal to this value.\nFormat: ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "imperial",
+                  "description": "Unit system for response values. Default is imperial."
+                },
+                {
+                  "disabled": false,
+                  "key": "etaFilter",
+                  "value": "false",
+                  "description": "When true, filters condition data to only return the record matching the segment's arrival time window.\nRequires `departAt` and either `startPoint`/`endPoint` or duration in body.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameter",
+                  "value": "<string>",
+                  "description": "Comma-separated list of field names to include in the response data.\nWhen provided, only the specified fields are returned per condition record.\nUse the /v2/parameters endpoint to see valid options.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "75c20f5d-a563-4955-b911-f5b80e1c0714",
+              "name": "Successful response with GeoJSON FeatureCollection, pagination metadata, and route timing properties.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"pagination\": {\n    \"total\": 50,\n    \"limit\": 1000,\n    \"nextOffset\": 50\n  },\n  \"geojson\": {\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"id\": 40341366,\n        \"geometry\": {\n          \"type\": \"LineString\",\n          \"coordinates\": [\n            [\n              -93.3905,\n              45.131\n            ],\n            [\n              -93.35,\n              45.135\n            ]\n          ]\n        },\n        \"properties\": {\n          \"routeId\": 40341366,\n          \"roadName\": \"I-94\",\n          \"osmClass\": \"motorway\",\n          \"arrivalTime\": \"2026-03-13T15:05:00.000Z\",\n          \"data\": [\n            {\n              \"id\": 1001,\n              \"lat\": 45.131,\n              \"lon\": -93.3905,\n              \"timestamp\": \"2026-03-13T15:00:00.000Z\",\n              \"airTemp\": 32.5,\n              \"pavementCondition\": \"wet\"\n            }\n          ]\n        }\n      }\n    ]\n  },\n  \"properties\": {\n    \"arrivalTimeUTC\": \"2026-03-13T15:30:00.000Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1365a317-b795-44ae-9855-f8d7a15a78d1",
+              "name": "Bad Request - Invalid parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Cannot use both departAt and arriveAt\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "efc73edf-7803-4eb2-a95b-0a111abedc02",
+              "name": "Unauthorized - Missing or invalid Bearer token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a35f7810-89ba-48a2-9cc8-34577df668ae",
+              "name": "Forbidden - No valid Bearer token provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96183fb4-252b-402b-a3d7-92bc79a6ed61",
+              "name": "No conditions found along the route",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"No conditions found along route(s)\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6d79ceb5-6d30-41d6-bbbb-80d198824246",
+              "name": "Bad Gateway - External service (Mapbox) failure or unreachable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f0a9cd0b-e368-4a72-ba0c-db357f58fefa",
+              "name": "Service Unavailable - Data partition temporarily unavailable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "logistics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00.000Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00.000Z"
+                    },
+                    {
+                      "key": "bufferMeters",
+                      "value": "5"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2025-12-04T20:00:00.000Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2025-12-05T20:00:00.000Z"
+                    },
+                    {
+                      "key": "units",
+                      "value": "imperial"
+                    },
+                    {
+                      "key": "etaFilter",
+                      "value": "true"
+                    },
+                    {
+                      "key": "parameter",
+                      "value": "crashRiskIndex,mobilityIndex"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"coordinates\": [\n    [\n      \"<number>\",\n      \"<number>\"\n    ],\n    [\n      \"<number>\",\n      \"<number>\"\n    ]\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "2807c852-a720-411f-ac0d-4d7feff4a616",
+      "name": "Directions",
+      "description": {
+        "content": "Cacheable route geometry endpoints (Mapbox Directions API)",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ca36bef9-0615-4ca9-8050-e8bdf8bee075",
+          "name": "Get Route Directions",
+          "request": {
+            "name": "Get Route Directions",
+            "description": {
+              "content": "Returns cacheable route geometry from the Mapbox Directions API as a GeoJSON FeatureCollection.\nThis endpoint decouples route geometry from weather/pavement data, enabling independent caching\nof the route so the frontend can lock in a stable geometry for navigation (similar to Waze/Google Maps).\n\nThe `geojson` field in the response is directly compatible with the POST `/v2/pavement/conditions`\nand POST `/v2/logistics` endpoints — it can be passed as the `route` body without transformation.\n\n**Timing behavior:**\n- When `departAt` is provided: each feature includes `arrivalTimeUTC` (departAt + route duration)\n- When `arriveAt` is provided: each feature includes `departureTimeUTC` (arriveAt - route duration)\n- When neither is provided: current server time is used as `departAt` and `arrivalTimeUTC` is computed\n\n**Alternative routes:**\n- When `alternatives=true`: returns 1–3 routes sorted by ascending duration\n- When `alternatives=false` or omitted: returns exactly 1 route\n\n**Sample Requests:**\n\n1. **Basic route with departure time:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n2. **Route with arrival time:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n3. **Multiple alternative routes:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&alternatives=true\n   ```\n\n4. **Default timing (uses current server time as departure):**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420\n   ```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "directions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "startPoint",
+                  "value": "<string>",
+                  "description": "(Required) Starting point coordinates for the route.\nFormat: `longitude,latitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "endPoint",
+                  "value": "<string>",
+                  "description": "(Required) Ending point coordinates for the route.\nFormat: `longitude,latitude`\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "departAt",
+                  "value": "<dateTime>",
+                  "description": "Departure time for the route. Mutually exclusive with `arriveAt`.\nWhen provided, `arrivalTimeUTC` is calculated as `departAt + route duration`.\nFormat: ISO 8601 UTC with \"Z\" suffix (e.g., 2026-03-13T15:00:00Z)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "arriveAt",
+                  "value": "<dateTime>",
+                  "description": "Desired arrival time at the destination. Mutually exclusive with `departAt`.\nWhen provided, `departureTimeUTC` is calculated as `arriveAt - route duration`.\nFormat: ISO 8601 UTC with \"Z\" suffix (e.g., 2026-03-13T16:00:00Z)\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "alternatives",
+                  "value": "false",
+                  "description": "When \"true\", returns up to 3 alternative routes sorted by ascending duration.\nWhen \"false\" or omitted, returns exactly 1 route.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6f12b28b-b08f-4733-a25e-0bae305c6e3f",
+              "name": "Successful response with GeoJSON FeatureCollection containing route geometry and timing metadata.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"geojson\": {\n    \"type\": \"FeatureCollection\",\n    \"features\": [\n      {\n        \"type\": \"Feature\",\n        \"geometry\": {\n          \"type\": \"LineString\",\n          \"coordinates\": [\n            [\n              -93.3905,\n              45.131\n            ],\n            [\n              -93.37,\n              45.135\n            ],\n            [\n              -93.2695,\n              45.142\n            ]\n          ]\n        },\n        \"properties\": {\n          \"duration\": 1800,\n          \"distance\": 15000,\n          \"arrivalTimeUTC\": \"2026-03-13T15:30:00.000Z\",\n          \"departureTimeUTC\": null\n        }\n      }\n    ]\n  },\n  \"properties\": {\n    \"arrivalTimeUTC\": \"2026-03-13T15:30:00.000Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "95e3bf32-906d-4ad6-ba4e-be5d4f895a03",
+              "name": "Bad Request - Invalid or missing parameters",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"startPoint is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d921709f-35c6-48d0-917c-f780b3df2a5a",
+              "name": "Unauthorized - Missing or invalid Bearer token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b050df5b-03bc-4fc6-8cd3-372a5d983c58",
+              "name": "Forbidden - No valid Bearer token provided",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "799abfc5-8c45-4b15-b575-3e81c92f368a",
+              "name": "No routes found between the specified waypoints",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"No routes found between the specified waypoints\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "57eb2640-7195-4bbc-a343-f6c6e7fa8548",
+              "name": "Internal Server Error - Mapbox token not configured",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Mapbox access token not configured\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03de13b1-d553-4b21-bec5-2d770caeb78e",
+              "name": "Bad Gateway - Mapbox API failure or unreachable",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "directions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startPoint",
+                      "value": "-93.3905,45.1310"
+                    },
+                    {
+                      "key": "endPoint",
+                      "value": "-93.2695,45.1420"
+                    },
+                    {
+                      "key": "departAt",
+                      "value": "2026-03-13T15:00:00Z"
+                    },
+                    {
+                      "key": "arriveAt",
+                      "value": "2026-03-13T16:00:00Z"
+                    },
+                    {
+                      "key": "alternatives",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Gateway",
+              "code": 502,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Failed to get routes from Mapbox\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "48b89c5f-8bdd-4e4a-85b2-ef2576398ec5",
+      "name": "Health",
+      "description": {
+        "content": "Service health endpoints",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "75060d8c-63f5-425e-96d4-67cb0933d1a7",
+          "name": "Health Check",
+          "request": {
+            "name": "Health Check",
+            "description": {
+              "content": "The health check endpoint provides information about the health of a web service.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "health-check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "75f2a2ca-36ce-4e7c-abe4-bab616c2ce6e",
+              "name": "Health Check report",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health-check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"string\",\n  \"version\": \"string\",\n  \"info\": \"string\",\n  \"timestamp\": \"1962-10-21T19:04:02.151Z\",\n  \"env\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f316f22e-f131-43bd-abda-0fcf58cf5108",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health-check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 1437,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://pavement-condition.prd.wx.zones.dtn.com/v2",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "75c8b749-1c54-48e2-9196-be31a70e745e",
+    "name": "Pavement Conditions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination. DTN supplies road data on segments across North America and Europe, allowing users to request data for a geographic area or specific roadway within the database.\n\n**What's New in v2.0.2:**\n- Route Generation \n  \n  — A new `GET /v2/directions` endpoint generates route geometry via the Mapbox Directions API.\n\n- Query Pavement Conditions Along a Route or Route-Based Filtering (RB Filter)\n\n  - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - When `startPoint` and `endPoint` are supplied to the `v2/logistics` or `v2/pavement/conditions` endpoints, a route is automatically generated internally via the Mapbox API.\n  - Pagination is determined by the number of route `segments` when RB Filter is active.\n  - Each paginated response includes a `statistics` object summarizing covered, uncovered, and total segment counts.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n- Added pavementValidEndTime in returned data\n\n**Authentication**: This API uses Bearer token authentication. When obtaining your access token, use the following audience values:\n- **Production**: `https://pavement-condition.prd.wx.zones.dtn.com`\n- **Staging**: `https://pavement-condition.stg.wx.zones.dtn.com`\n\nContact Support:\n Name: Ben Hershey\n Email: ben.hershey@dtn.com",
+      "type": "text/plain"
+    }
+  }
+}

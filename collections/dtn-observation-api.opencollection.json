@@ -1,0 +1,252 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Observation API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Observations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://obs.api.dtn.com/v2/observations",
+            "params": [
+              {
+                "name": "parameters",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of parameters, e.g. `airTemp,precipAcc60Min,windSpeed`. A full list of supported parameters and definitions is available through the parameters endpoint."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start of the time range, in the format `2023-04-30T19:00:00Z`"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End of the time range, in the format `2023-04-30T19:00:00Z`. Limited to 1 month per query."
+              },
+              {
+                "name": "stationCode",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of up to 100 DTN station codes, e.g. `YNQXX,CPTR3,KNYC1`. You can request observations for multiple stations at once (maximum 100)."
+              },
+              {
+                "name": "obsTypes",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of obsTypes, e.g. `METAR,SYNOP,RWIS,AG` If unspecified, all types are shown."
+              },
+              {
+                "name": "onlyGood",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to hide observations that have failed QC. QC flags may not be available for historic data."
+              },
+              {
+                "name": "obsProperties",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to view properties such as `qc` flag (result of checks: pass, suspicious or fail), `obsType` (see parameters endpoint documentation) and `isDerived` (True if the value is calculated by us from other parameters e.g. relativeHumidity from dewPoint and airTemp). Properties may not be available for historic data."
+              },
+              {
+                "name": "showTags",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to include station tags (such as name and management ID) in the response. When set to `True`, each feature in the response will include a `tags` object containing station metadata. Default is `False` to maintain backward compatibility."
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "Set to `15m` for 15-minute intervals, `1h` for hourly, `24h` for daily, or exclude for all observations received from the station. 15-minute interval data will be calculated on the fly and can only be used with parameters that end in the `15Min` suffix. Daily aggregated data will be calculated on the fly and the definition of 1 day is determined by the startTime. To get data aggregated from midnight to midnight, set the start time to your local midnight (expressed in UTC). Can only be used with parameters that end in the `24Hour` suffix. Data is representative of the 24 hours before the given timestamp. E.g. airTempMax24Hour at 2024-09-10T00:00 is the maximum temperature for the 9th September UTC day."
+              },
+              {
+                "name": "gapFill",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to fill gaps in hourly time-series with values from our gridded weather model. Hourly model data is available up to 10 years in the past for all locations and selected parameters. Requires gap-filling scope."
+              },
+              {
+                "name": "units",
+                "value": "",
+                "type": "query",
+                "description": "Set to `us-std` to change units from `si-std` to Imperial Units. Default value is `si-std`"
+              },
+              {
+                "name": "aggregationTimeLabel",
+                "value": "",
+                "type": "query",
+                "description": "Specifies how the timestamp is labeled in the response when using time-aggregated data (e.g., `interval=24h`).\n\nThis parameter controls whether the timestamp returned for each data point reflects the start or end of the aggregation window.\n\nSupported values:\n\n`end` (default) - The timestamp represents the end of the aggregation period.\n\n`start` - The timestamp represents the start of the aggregation period.\nNote: This parameter is only applicable when interval=24h."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Use this endpoint to get near-real time or historic observations for one or more stations (up to 100 stations per request).\n\n### Finding Stations and Parameters\n\n* Use the `/stations` endpoint to search for and identify stations of interest.\n* Use the `/parameters` endpoint to explore available parameters.\n* Observation type (`obsType`) descriptions are also listed in the `/stations` documentation.\n\n### Intervals\n\nControl the temporal resolution of the returned data with the `interval` parameter"
+        },
+        {
+          "info": {
+            "name": "Stations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://obs.api.dtn.com/v2/observations/stations",
+            "params": [
+              {
+                "name": "by",
+                "value": "",
+                "type": "query",
+                "description": "Get stations by `radius`|`boundingBox`|`stationCodes`|`tags`"
+              },
+              {
+                "name": "stationCodes",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of up to 100 DTN station codes, e.g. `YNQXX,CPTR3,KNYC1`. Supports retrieving metadata for multiple stations at once."
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude for radial search in decimal degrees, e.g. `54.85`. Valid range: -90 to 90."
+              },
+              {
+                "name": "lon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude for radial search in decimal degrees, e.g. `-0.50`. Valid range: -180 to 180."
+              },
+              {
+                "name": "radius",
+                "value": "",
+                "type": "query",
+                "description": "Radius for radial search in kilometres. If not set, default is `25`."
+              },
+              {
+                "name": "minLat",
+                "value": "",
+                "type": "query",
+                "description": "Minimum latitude for boundingBox search in decimal degrees, e.g. `50.85`. Valid range: -90 to 90."
+              },
+              {
+                "name": "maxLat",
+                "value": "",
+                "type": "query",
+                "description": "Maximum latitude for boundingBox search in decimal degrees, e.g. `54.85`"
+              },
+              {
+                "name": "minLon",
+                "value": "",
+                "type": "query",
+                "description": "Minimum longitude for boundingBox search in decimal degrees, e.g. `-1.85`"
+              },
+              {
+                "name": "maxLon",
+                "value": "",
+                "type": "query",
+                "description": "Maximum longitude for boundingBox search in decimal degrees, e.g. `0.85`"
+              },
+              {
+                "name": "obsTypes",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of obsTypes, e.g. `METAR,SYNOP,RWIS,AG`. If not set, default are `METAR,SYNOP`."
+              },
+              {
+                "name": "showTags",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to include station tags (such as name and management ID) in the response. When set to `True`, each feature in the response will include a `tags` object containing station metadata. Default is `False` to maintain backward compatibility."
+              },
+              {
+                "name": "showBest",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to rank stations by how representative they are of the entered location. This accounts for elevation differences (measured in meters) between stations."
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "URL encoded json string or a free hand string for wild card search. For multiple tags, they are filtered individually (OR), e.g. `{\"icao\": \"KJFK\", \"wmo\": \"3240\"}` means you're searching for stations with the ICAO code KJFK **OR** WMO code 3240. For wild card search, results will show what matches your entry."
+              },
+              {
+                "name": "isArchived",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to only return stations where data is available older than 1 month."
+              },
+              {
+                "name": "archiveCounts",
+                "value": "",
+                "type": "query",
+                "description": "Set to `True` to view how many historical observations are available per parameter, month, and year for a single stationCode. **Restriction:** When `archiveCounts=True`, you must provide only one stationCode. Multiple stations are not supported with this parameter."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Use this endpoint to retrieve station metadata and details about available observation types. You can search for one or more stations by providing their `stationCodes` in a single request.\n\n### Station Metadata\n\nEach station record includes key metadata fields such as:\n\n- **Elevation** — height above mean sea level, expressed in meters (SI units)\n- **Location** — latitude and longitude\n- **Observation Types (obsTypes)** — list of supported observation categories (see table below)\n- **Available P"
+        },
+        {
+          "info": {
+            "name": "Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://obs.api.dtn.com/v2/observations/parameters",
+            "params": [
+              {
+                "name": "names",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of parameter names to include in the response, eg. `airTemp,precipAcc60Min,windSpeed`"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Use this endpoint to retrieve a complete list of supported observation parameters, including their descriptions, units, and availability across networks. This is your authoritative source of truth for which parameters can be queried from `/observations` and `/stations`.\n\n### Purpose\n\nEach parameter represents a specific type of meteorological or environmental observation — such as temperature, precipitation, humidity, radiation, or wind. Parameters define what data can be retrieved for a given s"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

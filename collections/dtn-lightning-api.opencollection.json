@@ -1,0 +1,273 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Lightning API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Strikes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Lightning Strikes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lightning.api.dtn.com/v1/strikes",
+            "params": [
+              {
+                "name": "by",
+                "value": "",
+                "type": "query",
+                "description": "Get observations by radius | boundingBox."
+              },
+              {
+                "name": "radius",
+                "value": "",
+                "type": "query",
+                "description": "Radius for radial search in km."
+              },
+              {
+                "name": "lon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude for radial search."
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude for radial search."
+              },
+              {
+                "name": "minLon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude of the lower-left corner."
+              },
+              {
+                "name": "minLat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude of the lower-left corner."
+              },
+              {
+                "name": "maxLon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude of the upper-right corner."
+              },
+              {
+                "name": "maxLat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude of the upper-right corner."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time of a time range query in ISO format."
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time of a time range query in ISO format."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint allows users to retrieve all lightning strikes that match the set criteria.\n#### NOTES:\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To search within a time window:\n    - For time range, provide `startTime` and `endTime`. All should be in `ISO` format. Maximum time range is 2 weeks.\n    - If only `startTime` or `end"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Archive",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Request for Fetching Historical Lightning Strikes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lightning.api.dtn.com/v1/archive",
+            "params": [
+              {
+                "name": "by",
+                "value": "",
+                "type": "query",
+                "description": "Get observations by radius | boundingBox."
+              },
+              {
+                "name": "radius",
+                "value": "",
+                "type": "query",
+                "description": "Radius for radial search in km."
+              },
+              {
+                "name": "lon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude for radial search."
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude for radial search."
+              },
+              {
+                "name": "minLon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude of the lower-left corner."
+              },
+              {
+                "name": "minLat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude of the lower-left corner."
+              },
+              {
+                "name": "maxLon",
+                "value": "",
+                "type": "query",
+                "description": "Longitude of the upper-right corner."
+              },
+              {
+                "name": "maxLat",
+                "value": "",
+                "type": "query",
+                "description": "Latitude of the upper-right corner."
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time of a time range query in ISO format."
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time of a time range query in ISO format."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint generates a Request ID that will fetch all lightning strikes that match the given criteria.\n#### NOTES:\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To search within a time window:\n    - For time range, provide `startTime` and `endTime`. All should be in `ISO` format. Maximum time range is 2 weeks.\n    - If only `st"
+        },
+        {
+          "info": {
+            "name": "Get Historical Lightning Strikes in Bulk",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lightning.api.dtn.com/v1/archive/bulkResult",
+            "params": [
+              {
+                "name": "requestId",
+                "value": "",
+                "type": "query",
+                "description": "Request ID that was provided by the `/strikes/archive` endpoint."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint allows users to gather the results of the query that was made using the Request ID that was generated by the `/strikes/archive` endpoint as a downloadable `CSV` file.\n#### NOTES:\n  - returns a link that contains all lightning strikes that matches the criteria of the `requestId` in a CSV format."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lightning.api.dtn.com/v1/parameters",
+            "params": [
+              {
+                "name": "names",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated included parameter names."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "The `parameters` endpoint shows the properties of each parameter of a lightning strike.\n#### NOTES:\n  - Define the parameter `names` to filter fields you wish to include in the response.\n  - Leave parameter `names` blank to include all parameters of a lightning strike."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Health Check Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://lightning.api.dtn.com/v1/health-check"
+          },
+          "docs": "Get Health Check Report"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

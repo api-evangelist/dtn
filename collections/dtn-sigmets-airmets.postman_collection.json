@@ -1,0 +1,3028 @@
+{
+  "item": [
+    {
+      "id": "24a49683-d1da-4220-99f0-ec37c0491d84",
+      "name": "SIGMET",
+      "description": {
+        "content": "On demand SIGMETs via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8478c6b0-910e-4185-b2ba-3a7e948c822e",
+          "name": "Get active SIGMETs",
+          "request": {
+            "name": "Get active SIGMETs",
+            "description": {
+              "content": "Get all available SIGMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "sigmets",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in SIGMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `movement`: default=`...##KT`, metric=`...##M/S`<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "geometry",
+                  "value": "true",
+                  "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+                },
+                {
+                  "disabled": false,
+                  "key": "intersection",
+                  "value": "false",
+                  "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+                },
+                {
+                  "disabled": false,
+                  "key": "srid",
+                  "value": "4326",
+                  "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "untilDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "reportTypes",
+                  "value": "<string>,<string>",
+                  "description": "Comma-separated list of report type values.  Must include only allowed values.  Limits to objects whose `reportType` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "issueOffices",
+                  "value": "<string>",
+                  "description": "Comma-separated list of issuing office values.  Values should be each 4 letters and need to match a Meteorological Watch Office.  Limits to objects whose `issueOffice` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "firs",
+                  "value": "<string>",
+                  "description": "Comma-separated list of FIR names values.  Values must exactly match items in defined population.  Limits to objects whose `firStandardName` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "firStartsWith",
+                  "value": "<string>",
+                  "description": "Beginning characters of FIR name.  Must be between 2 and 10 characters and only letters, spaces, dashes, and apostrophes allowed.  Results will be provided including data for any FIRs whose `firStandardName` values match the input, like for both `GUANGZHOU` and `GUAYAQUIL` if provide `GUA` as value."
+                },
+                {
+                  "disabled": false,
+                  "key": "isUrgent",
+                  "value": "<boolean>",
+                  "description": "Boolean indicator for isUrgent flag.  Limits to objects whose `isUrgent` value matches parameter value."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7789ccc5-548e-427e-82d2-37d813a50ff9",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sigmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reportTypes",
+                      "value": "<string>,<string>"
+                    },
+                    {
+                      "key": "issueOffices",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firs",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firStartsWith",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "isUrgent",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/sigmets/?firs=AUCKLAND%20OCEANIC\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -180,\n              -31.946133562731603\n            ],\n            [\n              -176.5,\n              -32.6667\n            ],\n            [\n              -163,\n              -33.6667\n            ],\n            [\n              -162.833,\n              -35.6667\n            ],\n            [\n              -180,\n              -34.42072816083611\n            ],\n            [\n              -180,\n              -31.946133562731603\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"reportType\": \"TURB\",\n        \"seriesNumber\": \"12\",\n        \"severity\": \"SEVERE\",\n        \"iceType\": null,\n        \"rawTxt\": \"NZZO SIGMET 12 VALID 241909/242309 NZKL-  NZZO AUCKLAND OCEANIC FIR SEV TURB FCST WI S3410 E17630 - S2800  E17220 - S3130 E17750 - S3240 W17630 - S3340 W16300 - S3540 W16250 -  S3410 E17630 FL250/320 STNR NC=\",\n        \"issueOffice\": \"NZKL\",\n        \"firNameStandard\": \"AUCKLAND OCEANIC\",\n        \"obsFcst\": \"FCST\",\n        \"movement\": \"STNR\",\n        \"intensityChange\": \"NC\",\n        \"vaTcName\": null,\n        \"validDateTime\": \"2024-07-24T19:09:00.000Z\",\n        \"expirationDateTime\": \"2024-07-24T23:09:00.000Z\",\n        \"insertedDateTime\": \"2024-07-24T19:11:15.190Z\",\n        \"isUrgent\": false,\n        \"isCancelled\": false,\n        \"sigmetId\": 12394260,\n        \"topLevel\": 32000,\n        \"bottomLevel\": 25000\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -165.5,\n              -11.3333\n            ],\n            [\n              -164.167,\n              -12.6667\n            ],\n            [\n              -164,\n              -14.1667\n            ],\n            [\n              -170.667,\n              -12\n            ],\n            [\n              -169.833,\n              -10.3333\n            ],\n            [\n              -165.5,\n              -11.3333\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"reportType\": \"TS\",\n        \"seriesNumber\": \"14\",\n        \"severity\": null,\n        \"iceType\": null,\n        \"rawTxt\": \"NZZO SIGMET 14 VALID 242217/250217 NZKL-  NZZO AUCKLAND OCEANIC FIR EMBD TS OBS WI S1120 W16530 - S1240 W16410  - S1410 W16400 - S1200 W17040 - S1020 W16950 - S1120 W16530 TOP  FL530 STNR WKN=\",\n        \"issueOffice\": \"NZKL\",\n        \"firNameStandard\": \"AUCKLAND OCEANIC\",\n        \"obsFcst\": \"OBS\",\n        \"movement\": \"STNR\",\n        \"intensityChange\": \"WKN\",\n        \"vaTcName\": null,\n        \"validDateTime\": \"2024-07-24T22:17:00.000Z\",\n        \"expirationDateTime\": \"2024-07-25T02:17:00.000Z\",\n        \"insertedDateTime\": \"2024-07-24T22:18:44.338Z\",\n        \"isUrgent\": false,\n        \"isCancelled\": false,\n        \"sigmetId\": 12396480,\n        \"topLevel\": 53000,\n        \"bottomLevel\": 0\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.sigmets.?limit=5&firs=AUCKLAND%20OCEANIC\",\n    \"uuid\": \"0c79e5ca-9e7f-48d1-bc2f-a8819a555f24\",\n    \"request_id\": \"88b452d4-bfd0-4e7e-a953-e4e0d1cac547\",\n    \"start_timestamp\": 1721860091060,\n    \"end_timestamp\": 1721860091528,\n    \"execution_time\": 468\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dddb8ac9-2444-46d3-842b-a3b15d2b10f1",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sigmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reportTypes",
+                      "value": "<string>,<string>"
+                    },
+                    {
+                      "key": "issueOffices",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firs",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firStartsWith",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "isUrgent",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/sigmets?reportTypes=TURB,ST\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/sigmets/:requestId:fa051103-4844-4012-822b-dfb651cb42e7\",\n  \"errors\": [\n    {\n      \"message\": \"Parameter value includes unpermitted characters or is otherwise not allowed\",\n      \"parameter\": \"reportTypes\",\n      \"value\": \"TURB,ST\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.sigmets?reportTypes=TURB,ST\",\n    \"uuid\": \"aaa1d697-6dfc-47f9-be23-f0a103330eb0\",\n    \"request_id\": \"fa051103-4844-4012-822b-dfb651cb42e7\",\n    \"start_timestamp\": 1721860434569,\n    \"end_timestamp\": 1721860434576,\n    \"execution_time\": 7\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "95eac2a0-5c00-489a-b7e2-1c8702850696",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sigmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "reportTypes",
+                      "value": "<string>,<string>"
+                    },
+                    {
+                      "key": "issueOffices",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firs",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firStartsWith",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "isUrgent",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "bfd5d586-f480-44b2-9b30-b756b530814a",
+      "name": "Possible SIGMET FIR names",
+      "description": {
+        "content": "List of possible FIR names that may be used with firNames parameter for SIGMET requests via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e9bd32c9-4ccb-4941-8323-359ff3c7b8d4",
+          "name": "Get possible SIGMET FIR names that might be represented in data response",
+          "request": {
+            "name": "Get possible SIGMET FIR names that might be represented in data response",
+            "description": {
+              "content": "Get FIR names that may provide data if used with 'firNames' parameter.  May filtered by certain query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "possibleFirNames",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "srid",
+                  "value": "4326",
+                  "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "firs",
+                  "value": "<string>",
+                  "description": "Comma-separated list of FIR names values.  Values must exactly match items in defined population.  Limits to objects whose `firStandardName` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "firStartsWith",
+                  "value": "<string>",
+                  "description": "Beginning characters of FIR name.  Must be between 2 and 10 characters and only letters, spaces, dashes, and apostrophes allowed.  Results will be provided including data for any FIRs whose `firStandardName` values match the input, like for both `GUANGZHOU` and `GUAYAQUIL` if provide `GUA` as value."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8c7dff19-1d10-4aed-acf4-62fe02eb2196",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "possibleFirNames",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "firs",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firStartsWith",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/possibleFirNames/\",\n  \"possibleFirNames\": [\n    \"ACCRA FIR\",\n    \"ADDIS ABABA FIR\",\n    \"AKTOBE FIR\",\n    \"ALBUQUERQUE ARTCC\",\n    \"ALGIERS FIR\",\n    \"ALMATY FIR\",\n    \"AMAZONICA FIR\",\n    \"AMMAN FIR\",\n    \"AMSTERDAM FIR\",\n    \"ANCHORAGE ARCTIC FIR\",\n    \"ANCHORAGE ARTCC LOW\",\n    \"ANCHORAGE CONTINENTAL FIR\",\n    \"ANCHORAGE OCEANIC FIR\",\n    \"ANKARA FIR\",\n    \"ANTANANARIVO FIR/UIR\",\n    \"ANTOFAGASTA FIR\",\n    \"ASHGABAT FIR\",\n    \"ASMARA FIR\",\n    \"ASTANA FIR\",\n    \"ASUNCION FIR\",\n    \"ATHENS FIR/HELLAS UIR\",\n    \"ATLANTA ARTCC\",\n    \"ATLANTICO FIR/UIR\",\n    \"AUCKLAND OCEANIC FIR\",\n    \"BAGHDAD FIR\",\n    \"BAHRAIN FIR\",\n    \"BAKU FIR\",\n    \"BANGKOK FIR\",\n    \"BARCELONA FIR/UIR\",\n    \"BARRANQUILLA FIR\",\n    \"BEIJING FIR\",\n    \"BEIRA FIR\",\n    \"BEIRUT FIR/UIR\",\n    \"BELGRADE FIR\",\n    \"BISHKEK FIR\",\n    \"BODO OCEANIC FIR\",\n    \"BOGOTA FIR\",\n    \"BORDEAUX FIR\",\n    \"BOSTON ARTCC\",\n    \"BRASILIA FIR\",\n    \"BRATISLAVA FIR\",\n    \"BRAZZAVILLE FIR/UIR\",\n    \"BREMEN FIR\",\n    \"BREST FIR\",\n    \"BRINDISI FIR/UIR\",\n    \"BRISBANE FIR\",\n    \"BRUSSELS FIR\",\n    \"BUCHAREST FIR\",\n    \"BUDAPEST FIR\",\n    \"BUJUMBURA FIR\",\n    \"CAIRO FIR\",\n    \"CANARIES FIR\",\n    \"CAPE TOWN FIR\",\n    \"CASABLANCA FIR\",\n    \"CAYENNE FIR\",\n    \"CENTRAL AMERICA FIR\",\n    \"CHENNAI FIR\",\n    \"CHICAGO ARTCC\",\n    \"CHISINAU FIR\",\n    \"CLEVELAND ARTCC\",\n    \"COLOMBO FIR\",\n    \"COMODORO RIVADAVIA FIR\",\n    \"COPENHAGEN FIR\",\n    \"CORDOBA FIR\",\n    \"CURACAO FIR/UIR\",\n    \"CURITIBA FIR\",\n    \"DAKAR FIR\",\n    \"DAKAR OCEANIC FIR\",\n    \"DAMASCUS FIR\",\n    \"DAR ES SALAAM FIR\",\n    \"DASHOGUZ FIR\",\n    \"DELHI FIR\",\n    \"DENVER ARTCC\",\n    \"DHAKA FIR\",\n    \"DNIPRO FIR\",\n    \"DOHA FIR\",\n    \"DUSHANBE FIR\",\n    \"EDMONTON FIR\",\n    \"EMIRATES FIR\",\n    \"ENTEBBE FIR\",\n    \"EZEIZA FIR\",\n    \"FORT WORTH ARTCC\",\n    \"FUKUOKA FIR\",\n    \"GABORONE FIR\",\n    \"GANDER DOMESTIC FIR\",\n    \"GANDER OCEANIC FIR\",\n    \"GEORGETOWN FIR/UIR\",\n    \"GUAM CERAP\",\n    \"GUANGZHOU\",\n    \"GUAYAQUIL FIR\",\n    \"HANOI FIR\",\n    \"HARARE FIR/UIR\",\n    \"HAVANA FIR/UIR\",\n    \"HELSINKI FIR\",\n    \"HO CHI MINH FIR\",\n    \"HONG KONG\",\n    \"HONIARA FIR\",\n    \"HONOLULU ARTCC\",\n    \"HOUSTON ARTCC\",\n    \"HOUSTON OCEANIC FIR\",\n    \"INCHEON FIR\",\n    \"INDIANAPOLIS ARTCC\",\n    \"IRKUTSK FIR\",\n    \"ISLA DE PASCUA FIR\",\n    \"ISTANBUL FIR\",\n    \"JACKSONVILLE ARTCC\",\n    \"JAKARTA FIR\",\n    \"JEDDAH FIR\",\n    \"JOHANNESBURG FIR\",\n    \"JOHANNESBURG OCEANIC FIR\",\n    \"JUBA FIR\",\n    \"KABUL FIR\",\n    \"KALININGRAD FIR\",\n    \"KANO FIR\",\n    \"KANSAS CITY ARTCC\",\n    \"KARACHI FIR\",\n    \"KATHMANDU FIR\",\n    \"KHABAROVSK FIR\",\n    \"KHARTOUM FIR\",\n    \"KIGALI FIR/UIR\",\n    \"KINGSTON FIR\",\n    \"KINSHASA FIR\",\n    \"KOLKATA FIR\",\n    \"KOTA KINABALU FIR\",\n    \"KRASNOYARSK FIR\",\n    \"KUALA LUMPUR FIR\",\n    \"KUNMING FIR\",\n    \"KUWAIT FIR\",\n    \"KYIV FIR\",\n    \"LAHORE FIR\",\n    \"LANGEN FIR\",\n    \"LANZHOU FIR\",\n    \"LA PAZ FIR\",\n    \"LILONGWE FIR\",\n    \"LIMA FIR\",\n    \"LISBON FIR\",\n    \"LJUBLJANA FIR\",\n    \"LONDON FIR/UIR\",\n    \"LOS ANGELES ARTCC\",\n    \"LUANDA FIR\",\n    \"LUSAKA FIR\",\n    \"LVIV FIR\",\n    \"MADRID FIR/UIR\",\n    \"MAGADAN FIR\",\n    \"MAIQUETIA FIR\",\n    \"MALE FIR\",\n    \"MALTA FIR/UIR\",\n    \"MANILA FIR\",\n    \"MARSEILLE FIR\",\n    \"MAURITIUS FIR\",\n    \"MAZATLAN OCEANIC FIR\",\n    \"MELBOURNE FIR\",\n    \"MEMPHIS ARTCC\",\n    \"MENDOZA FIR\",\n    \"MEXICO FIR\",\n    \"MIAMI ARTCC\",\n    \"MIAMI OCEANIC FIR\",\n    \"MILAN FIR/UIR\",\n    \"MINNEAPOLIS ARTCC\",\n    \"MINSK FIR\",\n    \"MOGADISHU FIR\",\n    \"MONCTON FIR\",\n    \"MONTEVIDEO FIR\",\n    \"MONTREAL FIR\",\n    \"MOSCOW FIR\",\n    \"MUMBAI FIR\",\n    \"MUNICH FIR\",\n    \"MUSCAT FIR\",\n    \"NADI FIR\",\n    \"NAIROBI FIR\",\n    \"NASSAU FIR\",\n    \"NAURU FIR\",\n    \"NDJAMENA FIR/UIR\",\n    \"NEW YORK ARTCC\",\n    \"NEW YORK OCEANIC FIR\",\n    \"NEW ZEALAND FIR\",\n    \"NIAMEY FIR/UIR\",\n    \"NICOSIA FIR\",\n    \"NO FIR\",\n    \"NO FIR\",\n    \"NOVOSIBIRSK FIR\",\n    \"NUUK FIR\",\n    \"OAKLAND ARTCC\",\n    \"OAKLAND OCEANIC FIR\",\n    \"ODESA FIR\",\n    \"OSH FIR\",\n    \"PANAMA FIR\",\n    \"PARAMARIBO FIR\",\n    \"PARIS FIR\",\n    \"PHNOM PENH FIR\",\n    \"PIARCO FIR\",\n    \"POLARIS FIR\",\n    \"PORT AU PRINCE FIR\",\n    \"PORT MORESBY FIR\",\n    \"PRAGUE FIR\",\n    \"PUERTO MONTT FIR\",\n    \"PUNTA ARENAS FIR\",\n    \"PYONGYANG FIR\",\n    \"RECIFE FIR\",\n    \"REIMS FIR\",\n    \"RESISTENCIA FIR\",\n    \"REYKJAVIK FIR\",\n    \"RIGA FIR\",\n    \"ROBERTS FIR\",\n    \"ROME FIR/UIR\",\n    \"ROSTOV-NA-DONU FIR\",\n    \"SAL OCEANIC FIR/UIR\",\n    \"SALT LAKE ARTCC\",\n    \"SAMARA FIR\",\n    \"SAMARKAND FIR\",\n    \"SANAA FIR\",\n    \"SAN JUAN OCEANIC FIR\",\n    \"SANKT-PETERBURG FIR\",\n    \"SANTA MARIA OCEANIC FIR\",\n    \"SANTIAGO FIR\",\n    \"SANTO DOMINGO FIR\",\n    \"SANYA FIR\",\n    \"SARAJEVO FIR\",\n    \"SCOTTISH FIR/UIR\",\n    \"SEATTLE ARTCC\",\n    \"SEYCHELLES FIR\",\n    \"SHANGHAI FIR\",\n    \"SHANNON FIR/UIR\",\n    \"SHANWICK OCEANIC FIR\",\n    \"SHENYANG FIR\",\n    \"SHYMKENT FIR\",\n    \"SIMFEROPOL FIR\",\n    \"SINGAPORE FIR\",\n    \"SKOPJE FIR\",\n    \"SOFIA FIR\",\n    \"SWEDEN FIR\",\n    \"SWITZERLAND FIR/UIR\",\n    \"TAHITI FIR\",\n    \"TAIPEI FIR\",\n    \"TALLINN FIR\",\n    \"TASHKENT FIR\",\n    \"TBILISI FIR\",\n    \"TEHRAN FIR\",\n    \"TEL AVIV FIR\",\n    \"TIRANA FIR\",\n    \"TORONTO FIR\",\n    \"TRIPOLI FIR\",\n    \"TUNIS FIR/UIR\",\n    \"TURKMENABAT FIR\",\n    \"TURKMENBASHI FIR\",\n    \"TYUMEN FIR\",\n    \"UJUNG PANDANG FIR\",\n    \"ULAANBAATAR FIR\",\n    \"URUMQI FIR\",\n    \"VANCOUVER FIR\",\n    \"VIENNA FIR\",\n    \"VIENTIANE FIR\",\n    \"VILNIUS FIR\",\n    \"WARSAW FIR\",\n    \"WASHINGTON ARTCC\",\n    \"WINDHOEK FIR\",\n    \"WINNIPEG FIR\",\n    \"WUHAN FIR\",\n    \"YAKUTSK FIR\",\n    \"YANGON FIR\",\n    \"YEKATERINBURG FIR\",\n    \"YEREVAN FIR\",\n    \"ZAGREB FIR\"\n  ],\n  \"meta\": {\n    \"name\": \"v1.possibleFirNames\",\n    \"uuid\": \"88e24e0f-9ce4-42cb-8ef8-c9bd4b14cd99\",\n    \"request_id\": \"86794145-31bd-4116-a498-acd8201cd41f\",\n    \"start_timestamp\": 1748458784850,\n    \"end_timestamp\": 1748458787562,\n    \"execution_time\": 2712\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "577da278-ceb6-4b17-9fb3-8e0c7d3660df",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "possibleFirNames",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "firs",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firStartsWith",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/sigmets?reportTypes=TURB,ST\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/sigmets/:requestId:fa051103-4844-4012-822b-dfb651cb42e7\",\n  \"errors\": [\n    {\n      \"message\": \"Parameter value includes unpermitted characters or is otherwise not allowed\",\n      \"parameter\": \"reportTypes\",\n      \"value\": \"TURB,ST\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.sigmets?reportTypes=TURB,ST\",\n    \"uuid\": \"aaa1d697-6dfc-47f9-be23-f0a103330eb0\",\n    \"request_id\": \"fa051103-4844-4012-822b-dfb651cb42e7\",\n    \"start_timestamp\": 1721860434569,\n    \"end_timestamp\": 1721860434576,\n    \"execution_time\": 7\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d73df3c5-46e0-44b0-9d36-ff0daf8c46d9",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "possibleFirNames",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "firs",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "firStartsWith",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "45486d31-6770-41ca-9e3c-3020f5252f04",
+      "name": "Convective SIGMET",
+      "description": {
+        "content": "On demand Convective SIGMETs via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "066d722c-b48f-4826-9cda-48d75f890eb3",
+          "name": "Get active Convective SIGMETs",
+          "request": {
+            "name": "Get active Convective SIGMETs",
+            "description": {
+              "content": "Get all available Convective SIGMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "convectiveSigmets",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in convective SIGMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `speed`: default=`kts`, metric=`m/s`"
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "geometry",
+                  "value": "true",
+                  "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+                },
+                {
+                  "disabled": false,
+                  "key": "intersection",
+                  "value": "false",
+                  "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+                },
+                {
+                  "disabled": false,
+                  "key": "srid",
+                  "value": "4326",
+                  "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "untilDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "minSpeedKts",
+                  "value": "<integer>",
+                  "description": "Minimum speed in knots.  Limits to objects whose `speed` value is greater than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxSpeedKts",
+                  "value": "<integer>",
+                  "description": "Maximum speed in knots.  Limits to objects whose `speed` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "922f2d02-6a51-4798-81a6-f1a843cfdabb",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "convectiveSigmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minSpeedKts",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxSpeedKts",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/convectiveSigmets/?limit=2&bbox=-100,20,-90,40\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -90.1,\n              31.93\n            ],\n            [\n              -88.7036,\n              30.8487\n            ],\n            [\n              -91.15,\n              29.53\n            ],\n            [\n              -91.15,\n              30.6967\n            ],\n            [\n              -90.1,\n              31.93\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"rawTxt\": \"MKCC WST 252255  \\\\nCONVECTIVE SIGMET 81C  \\\\nVALID UNTIL 0055Z  \\\\nMS LA  \\\\nFROM 30S MHZ-20WNW SJI-60S LSU-10N LSU-30S MHZ  \\\\nAREA TS MOV FROM 22020KT. TOPS ABV FL450.  \\\\n  \\\\nCONVECTIVE SIGMET 82C  \\\\nVALID UNTIL 0055Z  \\\\nIL MO IA  \\\\nFROM 50SSW DSM-40NW COU-30SE UIN  \\\\nLINE TS 35 NM WIDE MOV FROM 36010KT. TOPS ABV FL450.  \\\\n  \\\\nCONVECTIVE SIGMET 83C  \\\\nVALID UNTIL 0055Z  \\\\nKY IN IL MO  \\\\nFROM 50W IIU-40SSW FAM  \\\\nLINE TS 40 NM WIDE MOV FROM 02010KT. TOPS TO FL430.  \\\\n  \\\\nCONVECTIVE SIGMET 84C  \\\\nVALID UNTIL 0055Z  \\\\nMO KS  \\\\n20SSE MCI  \\\\nISOL SEV TS D30 MOV FROM 02010KT. TOPS TO FL450.  \\\\nHAIL TO 1 IN...WIND GUSTS TO 50KT POSS.  \\\\n  \\\\nOUTLOOK VALID 260055-260455  \\\\nAREA 1...FROM 30SW FSM-MSL-210S CEW-120SSW LCH-80E BRO-90W  \\\\nBRO-60NW LRD-SPS-30SW FSM  \\\\nWST ISSUANCES EXPD. REFER TO MOST RECENT ACUS01 KWNS FROM STORM  \\\\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.  \\\\n  \\\\nAREA 2...FROM 30SW IRK-40S TTH-MSL-30SW FSM-TUL-40W SGF-MCI-30SW  \\\\nIRK  \\\\nWST ISSUANCES EXPD. REFER TO MOST RECENT ACUS01 KWNS FROM STORM  \\\\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.  \\\\n  \\\\nAREA 3...FROM 70NW LAR-30NE LAR-30SW PUB-40E FTI-60SW  \\\\nCME-DMN-70NW LAR  \\\\nWST ISSUANCES EXPD. REFER TO MOST RECENT ACUS01 KWNS FROM STORM  \\\\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.  \\\\n  \\\\n  \\\\n\\\\n\\\\n\\\\n\\\\n\\\\n\\\\n\",\n        \"objectTxt\": \"CONVECTIVE SIGMET 81C  \\\\nVALID UNTIL 0055Z  \\\\nMS LA  \\\\nFROM 30S MHZ-20WNW SJI-60S LSU-10N LSU-30S MHZ  \\\\nAREA TS MOV FROM 22020KT. TOPS ABV FL450.  \\\\n\",\n        \"validDateTime\": \"2024-07-25T22:55:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T00:55:00.000Z\",\n        \"insertedDateTime\": \"2024-07-25T22:51:37.849Z\",\n        \"direction\": 220,\n        \"speed\": 20,\n        \"topLevel\": 45000\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -94.3325,\n              40.489\n            ],\n            [\n              -93.7207,\n              40.8139\n            ],\n            [\n              -92.6511,\n              39.5361\n            ],\n            [\n              -90.833,\n              39.7623\n            ],\n            [\n              -90.7434,\n              39.1999\n            ],\n            [\n              -92.9373,\n              39.0146\n            ],\n            [\n              -94.3325,\n              40.489\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"rawTxt\": \"MKCC WST 252255  \\\\nCONVECTIVE SIGMET 81C  \\\\nVALID UNTIL 0055Z  \\\\nMS LA  \\\\nFROM 30S MHZ-20WNW SJI-60S LSU-10N LSU-30S MHZ  \\\\nAREA TS MOV FROM 22020KT. TOPS ABV FL450.  \\\\n  \\\\nCONVECTIVE SIGMET 82C  \\\\nVALID UNTIL 0055Z  \\\\nIL MO IA  \\\\nFROM 50SSW DSM-40NW COU-30SE UIN  \\\\nLINE TS 35 NM WIDE MOV FROM 36010KT. TOPS ABV FL450.  \\\\n  \\\\nCONVECTIVE SIGMET 83C  \\\\nVALID UNTIL 0055Z  \\\\nKY IN IL MO  \\\\nFROM 50W IIU-40SSW FAM  \\\\nLINE TS 40 NM WIDE MOV FROM 02010KT. TOPS TO FL430.  \\\\n  \\\\nCONVECTIVE SIGMET 84C  \\\\nVALID UNTIL 0055Z  \\\\nMO KS  \\\\n20SSE MCI  \\\\nISOL SEV TS D30 MOV FROM 02010KT. TOPS TO FL450.  \\\\nHAIL TO 1 IN...WIND GUSTS TO 50KT POSS.  \\\\n  \\\\nOUTLOOK VALID 260055-260455  \\\\nAREA 1...FROM 30SW FSM-MSL-210S CEW-120SSW LCH-80E BRO-90W  \\\\nBRO-60NW LRD-SPS-30SW FSM  \\\\nWST ISSUANCES EXPD. REFER TO MOST RECENT ACUS01 KWNS FROM STORM  \\\\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.  \\\\n  \\\\nAREA 2...FROM 30SW IRK-40S TTH-MSL-30SW FSM-TUL-40W SGF-MCI-30SW  \\\\nIRK  \\\\nWST ISSUANCES EXPD. REFER TO MOST RECENT ACUS01 KWNS FROM STORM  \\\\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.  \\\\n  \\\\nAREA 3...FROM 70NW LAR-30NE LAR-30SW PUB-40E FTI-60SW  \\\\nCME-DMN-70NW LAR  \\\\nWST ISSUANCES EXPD. REFER TO MOST RECENT ACUS01 KWNS FROM STORM  \\\\nPREDICTION CENTER FOR SYNOPSIS AND METEOROLOGICAL DETAILS.  \\\\n  \\\\n  \\\\n\\\\n\\\\n\\\\n\\\\n\\\\n\\\\n\",\n        \"objectTxt\": \"CONVECTIVE SIGMET 82C  \\\\nVALID UNTIL 0055Z  \\\\nIL MO IA  \\\\nFROM 50SSW DSM-40NW COU-30SE UIN  \\\\nLINE TS 35 NM WIDE MOV FROM 36010KT. TOPS ABV FL450.  \\\\n\",\n        \"validDateTime\": \"2024-07-25T22:55:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T00:55:00.000Z\",\n        \"direction\": 360,\n        \"speed\": 10,\n        \"topLevel\": 45000\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.convectiveSigmets.?limit=2&bbox=-100,20,-90,40\",\n    \"uuid\": \"ea1c7afd-a0f5-4742-94b5-3d67ee65f409\",\n    \"request_id\": \"6508af73-db41-46fe-bb11-12683ed76053\",\n    \"start_timestamp\": 1721948963493,\n    \"end_timestamp\": 1721948963869,\n    \"execution_time\": 376\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cfe8632c-1a0a-4e3f-8b72-38a742e4564e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "convectiveSigmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minSpeedKts",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxSpeedKts",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/convectiveSigmets?isValidAt=2024-07-17%2018:90:00 UTC\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/convectiveSigmets/:requestId:fa051103-4844-4012-822b-dfb651cb42e7\",\n  \"errors\": [\n    {\n      \"message\": \"Parameter value includes unpermitted characters or is otherwise not allowed\",\n      \"parameter\": \"reportTypes\",\n      \"value\": \"TURB,ST\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.convectiveSigmets?reportTypes=TURB,ST\",\n    \"uuid\": \"aaa1d697-6dfc-47f9-be23-f0a103330eb0\",\n    \"request_id\": \"fa051103-4844-4012-822b-dfb651cb42e7\",\n    \"start_timestamp\": 1721860434569,\n    \"end_timestamp\": 1721860434576,\n    \"execution_time\": 7\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef48a9e3-4a81-40d3-8ea9-533c461a14da",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "convectiveSigmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minSpeedKts",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxSpeedKts",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "a0cdcdd9-2b8d-4a2f-b9a8-10b1528ab456",
+      "name": "Sierra (IFR) AIRMET",
+      "description": {
+        "content": "On demand Sierra (IFR) AIRMETs via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e0c1d321-1e11-426e-bae9-d893b886146e",
+          "name": "Get active Sierra (IFR) AIRMETs",
+          "request": {
+            "name": "Get active Sierra (IFR) AIRMETs",
+            "description": {
+              "content": "Get all available Sierra (IFR) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "sierraAirmets",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "geometry",
+                  "value": "true",
+                  "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+                },
+                {
+                  "disabled": false,
+                  "key": "intersection",
+                  "value": "false",
+                  "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+                },
+                {
+                  "disabled": false,
+                  "key": "srid",
+                  "value": "4326",
+                  "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "untilDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "messageTypes",
+                  "value": "<string>,<string>",
+                  "description": "Comma-separated list of message type values.  Must match specified allowed values.  Limits to objects whose `messageType` value matches one of specified parameter values."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f200bfa8-65ef-4457-86b8-f1dca4ac5737",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sierraAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "messageTypes",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/sierraAirmets/?limit=5&circle=-13124567.965,4150299.834,200&distanceUnits=km&srid=3857\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -116.273,\n              39.5125\n            ],\n            [\n              -113.776,\n              38.0503\n            ],\n            [\n              -114.764,\n              37.4726\n            ],\n            [\n              -115.717,\n              36.5436\n            ],\n            [\n              -116.08,\n              35.7513\n            ],\n            [\n              -117.998,\n              34.7054\n            ],\n            [\n              -118.699,\n              35.6038\n            ],\n            [\n              -118.545,\n              36.8703\n            ],\n            [\n              -117.336,\n              38.7621\n            ],\n            [\n              -116.273,\n              39.5125\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"messageType\": \"MTN OBSC\",\n        \"messageTxt\": \"AIRMET MTN OBSCN...NV UT CA  \\\\nFROM 70SSE BAM TO 30ESE ILC TO 50SSW ILC TO 40NW LAS TO 50WSW  \\\\nLAS TO 50NNE LAX TO 20ENE EHF TO 60E CZQ TO 50NNE OAL TO 70SSE  \\\\nBAM  \\\\nMTNS OBSC BY FU/HZ. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:42:07.518Z\",\n        \"topLevel\": null,\n        \"bottomLevel\": null\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -116.273,\n              39.5125\n            ],\n            [\n              -113.776,\n              38.0503\n            ],\n            [\n              -114.764,\n              37.4726\n            ],\n            [\n              -115.717,\n              36.5436\n            ],\n            [\n              -116.08,\n              35.7513\n            ],\n            [\n              -117.998,\n              34.7054\n            ],\n            [\n              -118.699,\n              35.6038\n            ],\n            [\n              -118.545,\n              36.8703\n            ],\n            [\n              -117.336,\n              38.7621\n            ],\n            [\n              -116.273,\n              39.5125\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"messageType\": \"MTN OBSC\",\n        \"messageTxt\": \"AIRMET MTN OBSCN...CA NV UT  \\\\nFROM 70SSE BAM TO 30ESE ILC TO 50SSW ILC TO 40NW LAS TO 50WSW  \\\\nLAS TO 50NNE LAX TO 20ENE EHF TO 60E CZQ TO 50NNE OAL TO 70SSE  \\\\nBAM  \\\\nMTNS OBSC BY FU/HZ. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:42:07.756Z\",\n        \"topLevel\": null,\n        \"bottomLevel\": null\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -122.421,\n              38.0756\n            ],\n            [\n              -119.654,\n              35.0043\n            ],\n            [\n              -118.015,\n              34.0633\n            ],\n            [\n              -116.815,\n              32.7767\n            ],\n            [\n              -117.513,\n              32.1612\n            ],\n            [\n              -120.21,\n              30.1503\n            ],\n            [\n              -123.457,\n              35.1101\n            ],\n            [\n              -123.587,\n              37.4851\n            ],\n            [\n              -122.421,\n              38.0756\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"messageType\": \"IFR\",\n        \"messageTxt\": \"AIRMET IFR...CA AND CSTL WTRS  \\\\nFROM 20E PYE TO 40SW EHF TO 20ENE LAX TO 20E MZB TO 40SSW MZB TO  \\\\n220SW MZB TO 130SW SNS TO 50SW PYE TO 20E PYE  \\\\nCIG BLW 010/VIS BLW 3SM BR/FG. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:42:07.972Z\",\n        \"topLevel\": null,\n        \"bottomLevel\": null\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.sierraAirmets.?limit=5&circle=-13124567.965,4150299.834,200&distanceUnits=km&srid=3857\",\n    \"uuid\": \"343a92b6-faef-4670-9c68-f2e93c54b2ce\",\n    \"request_id\": \"87f02fea-1f75-4196-a854-e3b61e994214\",\n    \"start_timestamp\": 1722008314797,\n    \"end_timestamp\": 1722008316123,\n    \"execution_time\": 1326\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4ffa11b-1545-4b99-bfa9-1d58cf025343",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sierraAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "messageTypes",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/sierraAirmets/?limit=5&circle=-13124567.965,4150299.834,200&distanceUnits=km&srid=900913\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/sierraAirmets/:requestId:a6b34099-4766-4fbe-8bfb-eb86a01196ab\",\n  \"errors\": [\n    {\n      \"message\": \"SRID must be one of '4326' (default), '3857'\",\n      \"parameter\": \"srid\",\n      \"value\": 900913\n    },\n    {\n      \"message\": \"X dimension value outside bounds for SRID, e.g., longitude <-180 or >180 for default SRID 4326\",\n      \"parameter\": \"circle\",\n      \"value\": \"-13124567.965,4150299.834,200\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.sierraAirmets.?limit=5&circle=-13124567.965,4150299.834,200&distanceUnits=km&srid=900913\",\n    \"uuid\": \"008747e1-2eac-4ebf-af44-c5cea73d943d\",\n    \"request_id\": \"a6b34099-4766-4fbe-8bfb-eb86a01196ab\",\n    \"start_timestamp\": 1722008802117,\n    \"end_timestamp\": 1722008802137,\n    \"execution_time\": 20\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2fbcbfd2-bb03-45b4-b36c-9a19f6f2ff00",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "sierraAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "messageTypes",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "4bd72988-0f99-42f7-a932-d3f22eda6fce",
+      "name": "Tango (Turbulence) AIRMET",
+      "description": {
+        "content": "On demand Tango (Turbulence) AIRMETs via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6bc9300b-28a7-4561-bfbe-0f1adfe32eed",
+          "name": "Get active Tango (Turbulence) AIRMETs",
+          "request": {
+            "name": "Get active Tango (Turbulence) AIRMETs",
+            "description": {
+              "content": "Get all available Tango (Turbulence) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tangoAirmets",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "geometry",
+                  "value": "true",
+                  "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+                },
+                {
+                  "disabled": false,
+                  "key": "intersection",
+                  "value": "false",
+                  "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+                },
+                {
+                  "disabled": false,
+                  "key": "srid",
+                  "value": "4326",
+                  "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "untilDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "severities",
+                  "value": "<string>,<string>",
+                  "description": "Comma-separated list of severity values.  Must include only allowed values, which include empty string.  Limits to objects whose `severity` value matches one of specified parameter values."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ee0031b8-4347-44e7-85e2-d71b84a8e5ba",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tangoAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severities",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/tangoAirmets/?limit=5&corridor=-104.67,39.86,-94.71,39.30,-73.87,40.78,30\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -82.2795,\n              43.1138\n            ],\n            [\n              -82.6764,\n              42.207\n            ],\n            [\n              -82.1493,\n              41.6384\n            ],\n            [\n              -80.2167,\n              41.1667\n            ],\n            [\n              -78.9873,\n              40.6165\n            ],\n            [\n              -78.8339,\n              39.8161\n            ],\n            [\n              -79.4473,\n              38.7542\n            ],\n            [\n              -81.9522,\n              37.7774\n            ],\n            [\n              -82.0167,\n              38.75\n            ],\n            [\n              -84.6687,\n              39.0463\n            ],\n            [\n              -85.195,\n              40.9783\n            ],\n            [\n              -82.2795,\n              43.1138\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"severity\": \"MODERATE\",\n        \"messageTxt\": \"AIRMET TURB...PA OH LE WV MD  \\\\nFROM 20ESE ECK TO 30E DXO TO 20NW CLE TO 20N EWC TO 20NNW JST TO  \\\\n30S JST TO 20ESE EKN TO 40W BKW TO HNN TO CVG TO FWA TO 20ESE ECK  \\\\nMOD TURB BTN FL280 AND FL420. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:41:35.362Z\",\n        \"topLevel\": 42000,\n        \"bottomLevel\": 28000\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -69.2528,\n              47.4988\n            ],\n            [\n              -67.3392,\n              47.1496\n            ],\n            [\n              -67.5962,\n              45.8065\n            ],\n            [\n              -66.1286,\n              44.9368\n            ],\n            [\n              -68.1562,\n              44.3259\n            ],\n            [\n              -71.005,\n              42.3642\n            ],\n            [\n              -72.0318,\n              41.5234\n            ],\n            [\n              -73.4537,\n              40.8675\n            ],\n            [\n              -74.5333,\n              40.5667\n            ],\n            [\n              -76.0082,\n              41.1912\n            ],\n            [\n              -75.7516,\n              42.0581\n            ],\n            [\n              -73.9582,\n              45.1794\n            ],\n            [\n              -72.0983,\n              44.9641\n            ],\n            [\n              -70.9742,\n              45.6174\n            ],\n            [\n              -69.2528,\n              47.4988\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"severity\": \"MODERATE\",\n        \"messageTxt\": \"AIRMET TURB...ME NH VT MA RI CT NY NJ PA AND CSTL WTRS  \\\\nFROM 70NW PQI TO 40NE PQI TO 20SSE HUL TO 30SSW YSJ TO 40SE BGR  \\\\nTO BOS TO 30WSW PVD TO 20NE JFK TO 30S SAX TO 40NNW ETX TO 20W  \\\\nHNK TO 40ENE MSS TO 50NNE MPV TO 70SSE YQB TO 70NW PQI  \\\\nMOD TURB BLW 070. CONDS ENDG 15-18Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"topLevel\": 7000,\n        \"bottomLevel\": 0\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -82.2795,\n              43.1138\n            ],\n            [\n              -85.195,\n              40.9783\n            ],\n            [\n              -84.6687,\n              39.0463\n            ],\n            [\n              -82.0167,\n              38.75\n            ],\n            [\n              -81.9522,\n              37.7774\n            ],\n            [\n              -84.5024,\n              36.7262\n            ],\n            [\n              -94.1167,\n              36.25\n            ],\n            [\n              -95.2,\n              37.15\n            ],\n            [\n              -95.9575,\n              37.3958\n            ],\n            [\n              -95.7632,\n              37.3331\n            ],\n            [\n              -94.2992,\n              39.1621\n            ],\n            [\n              -92.5447,\n              40.0936\n            ],\n            [\n              -90.842,\n              40.5505\n            ],\n            [\n              -88.5694,\n              41.382\n            ],\n            [\n              -86.725,\n              42.266\n            ],\n            [\n              -84.3571,\n              42.7645\n            ],\n            [\n              -82.2795,\n              43.1138\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"severity\": \"MODERATE\",\n        \"messageTxt\": \"AIRMET TURB...KS IA MO LM MI LH IL IN KY  \\\\nFROM 20ESE ECK TO FWA TO CVG TO HNN TO 40W BKW TO 30SW LOZ TO  \\\\nRZC TO OSW TO 40WNW OSW TO 30WNW OSW TO 20ESE MCI TO IRK TO  \\\\n40NNE UIN TO 20WSW JOT TO 30WSW PMM TO 30WSW FNT TO 20ESE ECK  \\\\nMOD TURB BTN FL280 AND FL420. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:41:35.514Z\",\n        \"topLevel\": 42000,\n        \"bottomLevel\": 28000\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.tangoAirmets.?limit=5&corridor=-104.67,39.86,-94.71,39.30,-73.87,40.78,30\",\n    \"uuid\": \"d6d78723-2dd6-4425-8625-eb94b6c7f10e\",\n    \"request_id\": \"426269a5-14ff-4421-9f51-2de2e8235d87\",\n    \"start_timestamp\": 1722009232857,\n    \"end_timestamp\": 1722009234977,\n    \"execution_time\": 2120\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7f2f8a49-1e3b-417e-b71e-b9f0a4781673",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tangoAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severities",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/tangoAirmets/?limit=5&polygon=-210,40,-100,40,-90,50,-110,50\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/tangoAirmets/:requestId:b86763bd-8409-4188-95e3-0034aa903e11\",\n  \"errors\": [\n    {\n      \"message\": \"X dimension value outside bounds for SRID, e.g., longitude <-180 or >180 for default SRID 4326\",\n      \"parameter\": \"polygon\",\n      \"value\": \"-210,40,-100,40,-90,50,-110,50\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.tangoAirmets.?limit=5&polygon=-210,40,-100,40,-90,50,-110,50\",\n    \"uuid\": \"4b6876bb-e948-4f37-8d3e-da7e8bfaf467\",\n    \"request_id\": \"b86763bd-8409-4188-95e3-0034aa903e11\",\n    \"start_timestamp\": 1722009867583,\n    \"end_timestamp\": 1722009867599,\n    \"execution_time\": 16\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "71a88dcb-2334-486b-9a7d-298024c8e74e",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tangoAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severities",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "4a64d006-fc8b-48b0-a7c6-57ad1f8edcd8",
+      "name": "Zulu (Icing) AIRMET",
+      "description": {
+        "content": "On demand Zulu (Icing) AIRMETs via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f170deba-60cf-44c2-a32f-a65a9541bf5a",
+          "name": "Get active Zulu (Icing) AIRMETs",
+          "request": {
+            "name": "Get active Zulu (Icing) AIRMETs",
+            "description": {
+              "content": "Get all available Zulu (Icing) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "zuluAirmets",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`"
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "geometry",
+                  "value": "true",
+                  "description": "Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty."
+                },
+                {
+                  "disabled": false,
+                  "key": "intersection",
+                  "value": "false",
+                  "description": "Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate."
+                },
+                {
+                  "disabled": false,
+                  "key": "srid",
+                  "value": "4326",
+                  "description": "SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "untilDateTime",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "severities",
+                  "value": "<string>,<string>",
+                  "description": "Comma-separated list of severity values.  Must include only allowed values, which include empty string.  Limits to objects whose `severity` value matches one of specified parameter values."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "fe0ea447-d86a-47db-baab-ba4e906b90e6",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "zuluAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severities",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/zuluAirmets/?bbox=-85,32,-80,37&isValidAt=2024-07-26%2018:00:00Z\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -88.6558,\n              36.5787\n            ],\n            [\n              -82.8811,\n              36.1693\n            ],\n            [\n              -85.15,\n              34.9667\n            ],\n            [\n              -84.7751,\n              33.2379\n            ],\n            [\n              -90.6037,\n              30.8646\n            ],\n            [\n              -93.478,\n              29.8844\n            ],\n            [\n              -95.3171,\n              31.2269\n            ],\n            [\n              -94.3988,\n              33.8002\n            ],\n            [\n              -91.939,\n              36.1144\n            ],\n            [\n              -88.6558,\n              36.5787\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"severity\": \"MODERATE\",\n        \"iceType\": null,\n        \"messageTxt\": \"AIRMET ICE...OK TX AR TN LA MS AL  \\\\nFROM 50NE DYR TO 40WSW HMV TO GQO TO 20NE LGC TO 20SSW MCB TO  \\\\n20SW LCH TO 30W LFK TO 30NW TXK TO 50W ARG TO 50NE DYR  \\\\nMOD ICE BTN 140 AND FL280. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:39:48.276Z\",\n        \"topLevel\": 28000,\n        \"bottomLevel\": 14000\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -82.8811,\n              36.1693\n            ],\n            [\n              -81.5357,\n              35.9541\n            ],\n            [\n              -81.5118,\n              34.555\n            ],\n            [\n              -82.7241,\n              34.5012\n            ],\n            [\n              -83.3,\n              33.8667\n            ],\n            [\n              -84.7751,\n              33.2379\n            ],\n            [\n              -85.15,\n              34.9667\n            ],\n            [\n              -82.8811,\n              36.1693\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"severity\": \"MODERATE\",\n        \"iceType\": null,\n        \"messageTxt\": \"AIRMET ICE...NC SC GA  \\\\nFROM 40WSW HMV TO 40SE HMV TO 30SE SPA TO 30ESE ODF TO 50S ODF TO  \\\\n20NE LGC TO GQO TO 40WSW HMV  \\\\nMOD ICE BTN 140 AND FL280. CONDS DVLPG AFT 15Z. CONDS CONTG BYD  \\\\n21Z ENDG BY 00Z.  \\\\n.  \\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:39:48.442Z\",\n        \"topLevel\": 28000,\n        \"bottomLevel\": 14000\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Polygon\",\n        \"coordinates\": [\n          [\n            [\n              -72.419,\n              37.1841\n            ],\n            [\n              -72.5889,\n              34.9899\n            ],\n            [\n              -76.6865,\n              31.7956\n            ],\n            [\n              -80.0403,\n              33.2319\n            ],\n            [\n              -80.8211,\n              33.6965\n            ],\n            [\n              -81.3695,\n              34.4367\n            ],\n            [\n              -80.6821,\n              35.8336\n            ],\n            [\n              -78.3345,\n              36.2236\n            ],\n            [\n              -75.8673,\n              36.4892\n            ],\n            [\n              -72.419,\n              37.1841\n            ]\n          ]\n        ]\n      },\n      \"properties\": {\n        \"severity\": \"MODERATE\",\n        \"iceType\": null,\n        \"messageTxt\": \"AIRMET ICE...NC SC AND CSTL WTRS  \\\\nFROM 160SE SIE TO 190ESE ECG TO 160SSE ILM TO 20N CHS TO 20SE CAE  \\\\nTO 40SE SPA TO 40WSW GSO TO 30NE RDU TO 20NE ECG TO 160SE SIE  \\\\nMOD ICE BTN 140 AND FL280. CONDS CONTG BYD 21Z THRU 03Z.  \\\\n.  \\\\nFRZLVL...RANGING FROM 145-160 ACRS AREA  \\\\n....  \\\\n  \\\\n\\\\n\\\\n\\\\n\\\\n\\\\n\\\\n\",\n        \"validDateTime\": \"2024-07-26T14:45:00.000Z\",\n        \"expirationDateTime\": \"2024-07-26T21:00:00.000Z\",\n        \"insertedDateTime\": \"2024-07-26T14:39:48.628Z\",\n        \"topLevel\": 28000,\n        \"bottomLevel\": 14000\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.zuluAirmets.?bbox=-85,32,-80,37&isValidAt=2024-07-26%2018:00:00Z\",\n    \"uuid\": \"be04973d-5143-4388-8a17-3910f4aef49e\",\n    \"request_id\": \"f7980cf0-e3b5-44c5-81de-25c7e90b4c9f\",\n    \"start_timestamp\": 1722010050894,\n    \"end_timestamp\": 1722010051258,\n    \"execution_time\": 364\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc5fdb56-d2b1-4b33-a4f3-b2c0c160c81d",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "zuluAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severities",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/zuluAirmets/?severities=MOODERATE,SEVERE,EXTREME&polygon=-90,30,-80,30,-80,40,-90,40\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/zuluAirmets/:requestId:a9564162-8120-4647-8d4a-69c9cb197b73\",\n  \"errors\": [\n    {\n      \"message\": \"Parameter value includes unpermitted characters or is otherwise not allowed\",\n      \"parameter\": \"severities\",\n      \"value\": \"MOODERATE,SEVERE,EXTREME\"\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.zuluAirmets.?severities=MOODERATE,SEVERE,EXTREME&polygon=-90,30,-80,30,-80,40,-90,40\",\n    \"uuid\": \"26468c4c-2a0f-4279-9539-4699aa47b194\",\n    \"request_id\": \"a9564162-8120-4647-8d4a-69c9cb197b73\",\n    \"start_timestamp\": 1722010468309,\n    \"end_timestamp\": 1722010468320,\n    \"execution_time\": 11\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d75bd701-2ab2-4957-9c4b-5f6a8a9e903b",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "zuluAirmets",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "geometry",
+                      "value": "true"
+                    },
+                    {
+                      "key": "intersection",
+                      "value": "false"
+                    },
+                    {
+                      "key": "srid",
+                      "value": "4326"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "fromDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "untilDateTime",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "severities",
+                      "value": "<string>,<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://aviation.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1daf7a41-057b-4b16-a547-50392484d394",
+    "name": "DTN Aviation SIGMET/AIRMET API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The DTN Aviation SIGMET/AIRMET API retrieves available SIGMET, Convective SIGMET, SIERRA (visibility) AIRMETs, TANGO (turbulence) AIRMETs, and ZULU (icing) AIRMETs.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.",
+      "type": "text/plain"
+    }
+  }
+}

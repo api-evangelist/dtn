@@ -1,0 +1,94 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Agency Bulletin WebSocket API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Stream",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "http://wxbulletin-ws.api.dtn.com/v1",
+            "params": [
+              {
+                "name": "country",
+                "value": "",
+                "type": "query",
+                "description": "Specify the country code of the alerts request. This is a required parameter. The reference for acceptable values is ISO 3166 two-letter codes (alpha-2). "
+              },
+              {
+                "name": "lat",
+                "value": "",
+                "type": "query",
+                "description": "The latitude in decimal degrees. When specified, it must be used together with the `lon` parameter. This parameter can also be used with the `radius` parameter. This parameter cannot be used with the `country` or the `bbox` parameters."
+              },
+              {
+                "name": "lon",
+                "value": "",
+                "type": "query",
+                "description": "The longitude in decimal degrees. When specified, it must be used together with the `lat` parameter. This parameter can also be used with the `radius` parameter. This parameter cannot be used with the `country` or the `bbox` parameters."
+              },
+              {
+                "name": "radius",
+                "value": "",
+                "type": "query",
+                "description": "The radius in km. When specified, alerts intersecting the circle with the POINT(`lon`,`lat`) as the center will be returned.This parameter cannot be used with the `country` or the `bbox` parameters."
+              },
+              {
+                "name": "bbox",
+                "value": "",
+                "type": "query",
+                "description": "The bounding box coordinates in the format `minLon,minLat,maxLon,maxLat`. This parameter cannot be used with the `country` or the `lat/lon/radius` parameters."
+              },
+              {
+                "name": "language",
+                "value": "",
+                "type": "query",
+                "description": "Specify the language to use in the text values of the alert. Values should follow RFC 3066. "
+              },
+              {
+                "name": "agency",
+                "value": "",
+                "type": "query",
+                "description": "Specify the agency of the alert request. "
+              },
+              {
+                "name": "event",
+                "value": "",
+                "type": "query",
+                "description": "When specified, the API will return only alerts that match the specified event types. "
+              },
+              {
+                "name": "excludeGeometry",
+                "value": "",
+                "type": "query",
+                "description": "Specify whether or not to include the root geojson geometry for each alert."
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "\n```shell \nGET wss://wxbulletin-ws.api.dtn.com/v1/\n```\n\nThis endpoint returns the latest active weather bulletins from the requested national meteorological agency. \nIt is the primary source of information for real-time weather alerts and updates.\n\nUnderstanding and Utilizing Key Query Parameters:\n- **country:** \nUse this parameter to access all active weather bulletins within a specific country. \nThis parameter accepts ISO 3166-1 alpha-2 codes. This parameter cannot be used with the `lat/lon/ra"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

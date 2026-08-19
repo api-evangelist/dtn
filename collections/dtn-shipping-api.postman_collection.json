@@ -1,0 +1,636 @@
+{
+  "item": [
+    {
+      "id": "39fef456-76de-4ee0-b2da-32d6ce9dee4f",
+      "name": "CustomerVesselSubscription",
+      "description": {
+        "content": "Consists of http methods for managing customer vessel subscriptions.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "68c92333-1ae7-4746-819a-acd805a6838e",
+          "name": "Gets the list of vessel subscriptions.",
+          "request": {
+            "name": "Gets the list of vessel subscriptions.",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "subscriptions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9f948d91-07b7-48d7-89f5-cb1f5be3588a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"imo\": \"string\",\n    \"mmsi\": 9866,\n    \"dateSubscribed\": \"2023-06-25T14:53:08.735Z\"\n  },\n  {\n    \"imo\": \"string\",\n    \"mmsi\": 995,\n    \"dateSubscribed\": \"2020-05-24T12:38:48.947Z\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "74b11c30-ad53-41b3-9e69-1a57bdd1e0c7",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 8709,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b0db5334-932b-4928-8642-60396a8ba14a",
+          "name": "Add bulk vessel subscriptions.",
+          "request": {
+            "name": "Add bulk vessel subscriptions.",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "subscriptions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  },\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "98527e28-bf59-416a-92dd-889c80280d8c",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  },\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"succeeded\": [\n    {\n      \"imo\": \"string\",\n      \"mmsi\": 8925,\n      \"dateSubscribed\": \"1999-08-13T02:49:01.406Z\"\n    },\n    {\n      \"imo\": \"string\",\n      \"mmsi\": 1524,\n      \"dateSubscribed\": \"1948-12-18T12:45:27.879Z\"\n    }\n  ],\n  \"failed\": [\n    {\n      \"imo\": \"string\",\n      \"mmsi\": 8888,\n      \"errorMessage\": \"string\"\n    },\n    {\n      \"imo\": \"string\",\n      \"mmsi\": 9063,\n      \"errorMessage\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "08b37401-f83f-4a01-9eab-44be4d66c81c",
+              "name": "Multi status",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  },\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Multi-Status (WebDAV) (RFC 4918)",
+              "code": 207,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "603eecd6-ab2a-47c6-b147-6572330cebcd",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  },\n  {\n    \"imo\": \"<string>\",\n    \"mmsi\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 8709,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "75210c81-6685-46da-ba4f-93bb5bf4ef67",
+          "name": "Delete vessel subscription.",
+          "request": {
+            "name": "Delete vessel subscription.",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "subscriptions",
+                ":imo"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "imo",
+                  "description": "(Required) The vessel's imo."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a49ad66c-2481-4742-87f2-32ab3345258c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions",
+                    ":imo"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "imo",
+                      "description": "(Required) The vessel's imo."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7a70b921-29e5-4cf0-aec7-8b315af0ac1f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions",
+                    ":imo"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "imo",
+                      "description": "(Required) The vessel's imo."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"title\": \"string\",\n  \"status\": 8709,\n  \"detail\": \"string\",\n  \"instance\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "345affd5-33a6-4124-b4dd-13ec2d40cc56",
+      "name": "Auth",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6d637021-daa0-430e-a3a8-aedd7577050c",
+          "name": "Get a token",
+          "request": {
+            "name": "Get a token",
+            "description": {},
+            "url": {
+              "path": [
+                "oauth",
+                "token"
+              ],
+              "host": [
+                "{{oauth-token-Url}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_id\": \"<string>\",\n  \"client_secret\": \"<string>\",\n  \"audience\": \"https://dev-test.vesselinsightssubscription.api.shipping.dtn.com\",\n  \"grant_type\": \"client_credentials\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b4b18ebc-0bcb-4b4c-85d6-1de6110fea53",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "oauth",
+                    "token"
+                  ],
+                  "host": [
+                    "{{oauth-token-Url}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"<string>\",\n  \"client_secret\": \"<string>\",\n  \"audience\": \"https://dev-test.vesselinsightssubscription.api.shipping.dtn.com\",\n  \"grant_type\": \"client_credentials\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"access_token\": \"string\",\n    \"scope\": \"string\",\n    \"expires_in\": 170,\n    \"token_type\": \"string\"\n  },\n  \"meta\": {\n    \"date_time\": \"1968-11-16T23:28:23.312Z\",\n    \"name\": \"string\",\n    \"uuid\": \"string\",\n    \"start_timestamp\": 8585,\n    \"end_timestamp\": 852,\n    \"execution_time\": 9033\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.dev-test.stg.odyssea.zones.dtn.com",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "https://shipping-cs-dev-test.eu.auth0.com",
+      "key": "oauth-token-Url"
+    }
+  ],
+  "info": {
+    "_postman_id": "406a2dd7-a16f-4b9f-a043-1eca52cea41a",
+    "name": "Vessel Insight Subscription API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\n\nDTN Vessel Insights Subscription API can be used by customers to self-manage vessel subscription for [DTN Vessel Insights API](https://documenter.getpostman.com/view/19830375/UVypyx2G). For questions, contact DTN customer service: [customerservice@dtn.com](mailto:customerservice@dtn.com).\n\n# Getting started\n\nMake sure that a valid token (as seen in the Auth section) is used to call the API. See below for a valid query body. You can use the [Auth0](https://shipping-cs.eu.auth0.com/oauth/token) endpoint to authenticate and get a JWT token. \n\nSubscribing a vessel to Vessel Insights API is done by sending a corresponding IMO and MMSI number to the Vessel Insight Subscription API. It is also possible to bulk subscribe vessels to Vessel Insights API using the Vessel Insight Subscription API.\n\nThe Vessel Insights API will start collecting data from the moment a vessel has been subscribed. The first set of calculations for Vessel Insights API will trigger at 0 UTC after the subscription. From here onwards, new data is added to Vessel Insights API once every day at every 0 UTC. This data covers the ships timeline from ‘0 UTC – 48 hours’ to ‘0 UTC – 24 hours’.\n\nDepending on when a customer calls the Vessel Insights API, data for last 24 to 48 hours will not be available in Vessel Insights API. Therefore, please be aware that subscribing a vessel will not immediately result in data being available in Vessel Insights API for this vessel.\n\n# Troubleshooting\n## Resource conflict\nThis error message indicates that the vessel you are trying to subscribe to Vessel Insights API is already subscribed by you or another customer with a different MMSI number than the one you provided in the subscription request. So when you tried to subscribe the same vessel (IMO) with a different MMSI number, our system noticed a conflict and gave this “Resource conflict” error. At this moment, you cannot resolve this error yourself. Please notify this to our customer service at [customerservice@dtn.com](mailto:customerservice@dtn.com) and we will fix this for you.\n\nContact Support:\n Name: DTN\n Email: customerservice@dtn.com",
+      "type": "text/plain"
+    }
+  }
+}

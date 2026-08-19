@@ -1,0 +1,611 @@
+{
+  "item": [
+    {
+      "id": "2cfc157b-5306-4c84-9963-a70dfe6e6713",
+      "name": "PIREP",
+      "description": {
+        "content": "On demand PIREPS via API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cc2a9847-7834-4d6b-9eb7-bd4e4ff21a2b",
+          "name": "Get active PIREPs",
+          "request": {
+            "name": "Get active PIREPs",
+            "description": {
+              "content": "Get all available PIREPs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.  For some PIREPs coordinate locations can not be determined, thus they will have longitude=0 & latitude=0 in output and thus would not be correctly obtained by a spatial filter.  Most data fields will not be present when they have no defined value.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "pireps",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip over this many into the response set; used for paginated results."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Provide no more than this many items in the response set."
+                },
+                {
+                  "disabled": false,
+                  "key": "unitSystem",
+                  "value": "default",
+                  "description": "Identifier for units system used for numerical output values in PIREP.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `temperature`: default=`degC`, metric=`degC`<br>                * `visibility`: default=`mi`, metric=`m`<br>                * `windSpeed`: default=`kts`, metric=`m/s`<br>                * `flightLevel`: default=`ft`, metric=`m`<br>                * `turbulenceBase#`/`turbulenceTop#`: default=`ft`, metric=`m`<br>                * `icingBase#`/`icingTop#`: default=`ft`, metric=`m`<br>                * `weatherBase#`/`weatherTop#`: default=`ft`, metric=`m`<br>                * `coverageBase#`/`coverageTop#`: default=`ft`, metric=`m`"
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<string>",
+                  "description": "Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail."
+                },
+                {
+                  "disabled": false,
+                  "key": "polygon",
+                  "value": "<string>",
+                  "description": "Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results."
+                },
+                {
+                  "disabled": false,
+                  "key": "circle",
+                  "value": "<string>",
+                  "description": "Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "corridor",
+                  "value": "<string>",
+                  "description": "Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "distanceUnits",
+                  "value": "nm",
+                  "description": "Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles)."
+                },
+                {
+                  "disabled": false,
+                  "key": "isValidAt",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedAfter",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "insertedThrough",
+                  "value": "<string>",
+                  "description": "UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response."
+                },
+                {
+                  "disabled": false,
+                  "key": "aircraftTypes",
+                  "value": "<string>",
+                  "description": "Comma-separated list of aircraft type values.  Limits to objects whose `aircraftType` value matches one of specified parameter values.  Note that aircraftType is not specified properly and cannot be obtained for all reports."
+                },
+                {
+                  "disabled": false,
+                  "key": "aircraftSizes",
+                  "value": "<string>",
+                  "description": "Comma-separated list of aircraft size values.  Limits to objects whose `aircraftSize` value matches one of specified parameter values.  Note that aircraftSize cannot be determined based on aircraftType for all reports, but can use `null` to include reports with undefined aircraftSize."
+                },
+                {
+                  "disabled": false,
+                  "key": "aircraftSizes",
+                  "value": "<string>",
+                  "description": "Comma-separated list of aircraft size values.  Limits to objects whose `aircraftSize` value matches one of specified parameter values.  Note that aircraftSize cannot be determined based on aircraftType for all reports, but can use `null` to include reports with undefined aircraftSize."
+                },
+                {
+                  "disabled": false,
+                  "key": "navaidIds",
+                  "value": "<string>",
+                  "description": "Comma-separated list of Navaid identifier values.  Limits to objects whose `navaidId` value matches one of specified parameter values."
+                },
+                {
+                  "disabled": false,
+                  "key": "minFlightLevelFt",
+                  "value": "<integer>",
+                  "description": "Minimum flight level in feet.  Limits to objects whose `flightLevel` is greater than or equal to this.  Must set value in feet even if output `unitSystem` would not give response in feet."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxFlightLevelFt",
+                  "value": "<integer>",
+                  "description": "Maximum flight level in feet.  Limits to objects whose `flightLevel` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in feet."
+                },
+                {
+                  "disabled": false,
+                  "key": "minTurbulenceScore",
+                  "value": "<integer>",
+                  "description": "Minimum turbulence score.  Limits to objects whose `turbulenceScore` is greater than or equal to this."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxTurbulenceScore",
+                  "value": "<integer>",
+                  "description": "Maximum turbulence score.  Limits to objects whose `turbulenceScore` value is less than or equal to this."
+                },
+                {
+                  "disabled": false,
+                  "key": "minIcingScore",
+                  "value": "<integer>",
+                  "description": "Minimum icing score.  Limits to objects whose `icingScore` is greater than or equal to this."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxIcingScore",
+                  "value": "<integer>",
+                  "description": "Maximum icing score.  Limits to objects whose `icingScore` value is less than or equal to this."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "fa8f7b87-9ac1-4435-ac9d-ee83aa7361af",
+              "name": "Successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "pireps",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftSizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftSizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "navaidIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minFlightLevelFt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxFlightLevelFt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minTurbulenceScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxTurbulenceScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minIcingScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxIcingScore",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/pireps/?distanceUnits=nm&navaidIds=OWB,EVV\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -87.167,\n          37.74\n        ]\n      },\n      \"properties\": {\n        \"navaidId\": \"OWB\",\n        \"aircraftType\": \"MD11\",\n        \"aircraftSize\": \"L\",\n        \"rawTxt\": \"EVV UA /OV OWB/TM 1752/FL190/TP MD11/TB NEG\",\n        \"validDateTime\": \"2025-01-23T17:52:00.000Z\",\n        \"insertedDateTime\": \"2025-01-23T18:02:03.000Z\",\n        \"flightLevel\": 19000,\n        \"flightLevelType\": \"LEVEL\",\n        \"turbulenceScore\": 1,\n        \"icingScore\": 0,\n        \"turbulenceBase1\": 19000,\n        \"turbulenceTop1\": 19000,\n        \"turbulenceIntensity1\": \"NEG\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -87.531,\n          38.038\n        ]\n      },\n      \"properties\": {\n        \"navaidId\": \"EVV\",\n        \"aircraftType\": \"CRJ2\",\n        \"aircraftSize\": \"I\",\n        \"rawTxt\": \"EVV UA /OV EVV/TM 1921/FLDURD/TP CRJ2/SK BKN050-TOPS068\",\n        \"validDateTime\": \"2025-01-23T19:21:00.000Z\",\n        \"insertedDateTime\": \"2025-01-23T19:25:39.000Z\",\n        \"flightLevel\": 0,\n        \"flightLevelType\": \"DURD\",\n        \"turbulenceScore\": 0,\n        \"icingScore\": 0,\n        \"coverage1\": \"BKN\",\n        \"coverageBase1\": 5000,\n        \"coverageTop1\": 6800,\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -87.167,\n          37.74\n        ]\n      },\n      \"properties\": {\n        \"navaidId\": \"OWB\",\n        \"aircraftType\": \"CL60\",\n        \"aircraftSize\": \"I\",\n        \"rawTxt\": \"OWB UA /OV OWB/TM 1859/FL230/TP CL60/TB NEG\",\n        \"validDateTime\": \"2025-01-23T18:59:00.000Z\",\n        \"insertedDateTime\": \"2025-01-23T19:32:08.000Z\",\n        \"flightLevel\": 23000,\n        \"flightLevelType\": \"LEVEL\",\n        \"turbulenceScore\": 1,\n        \"icingScore\": 0,\n        \"turbulenceBase1\": 23000,\n        \"turbulenceTop1\": 23000,\n        \"turbulenceIntensity1\": \"NEG\",\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -87.531,\n          38.038\n        ]\n      },\n      \"properties\": {\n        \"navaidId\": \"EVV\",\n        \"aircraftType\": \"PC12\",\n        \"aircraftSize\": \"S\",\n        \"rawTxt\": \"EVV UA /OV EVV/TM 1928/FLDURC/TP PC12/SK SCT032\",\n        \"validDateTime\": \"2025-01-23T19:28:00.000Z\",\n        \"insertedDateTime\": \"2025-01-23T19:32:04.000Z\",\n        \"flightLevel\": 0,\n        \"flightLevelType\": \"DURC\",\n        \"turbulenceScore\": 0,\n        \"icingScore\": 0,\n        \"coverage1\": \"SCT\",\n        \"coverageBase1\": 3200,\n        \"coverageTop1\": 0,\n        \"unitSystem\": \"default\"\n      }\n    },\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -87.531,\n          38.038\n        ]\n      },\n      \"properties\": {\n        \"navaidId\": \"EVV\",\n        \"aircraftType\": \"BE36\",\n        \"aircraftSize\": \"S\",\n        \"rawTxt\": \"EVV UA /OV EVV/TM 1943/FL060/TP BE36/TA M07/IC TRACE RIME\",\n        \"validDateTime\": \"2025-01-23T19:43:00.000Z\",\n        \"insertedDateTime\": \"2025-01-23T19:45:15.000Z\",\n        \"temperature\": -7,\n        \"flightLevel\": 6000,\n        \"flightLevelType\": \"LEVEL\",\n        \"turbulenceScore\": 0,\n        \"icingScore\": 2,\n        \"icingBase1\": 6000,\n        \"icingTop1\": 6000,\n        \"icingType1\": \"RIME\",\n        \"icingIntensity1\": \"TRACE\",\n        \"unitSystem\": \"default\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.pireps.?navaidIds=OWB,EVV\",\n    \"uuid\": \"e2be64ac-fd9d-4208-b429-787e36226a1a\",\n    \"request_id\": \"1d05f133-9054-49eb-a849-92a58f80fd5b\",\n    \"start_timestamp\": 1737663016812,\n    \"end_timestamp\": 1737663017501,\n    \"execution_time\": 689\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8222976a-5992-449d-b395-7dc55a58f829",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "pireps",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftSizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftSizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "navaidIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minFlightLevelFt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxFlightLevelFt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minTurbulenceScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxTurbulenceScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minIcingScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxIcingScore",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://aviation.api.dtn.com/v1/pireps?circle=-97,48,200&distanceUnits=nm&minFlightLevelFt=14000&maxFlightLevelFt=7000\",\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"Validation failed.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/pireps/:requestId:45a0ce39-d5ea-483b-811b-e22b9fb71428\",\n  \"errors\": [\n    {\n      \"message\": \"`minFlightLevelFt` must not be greater than `maxFlightLevelFt`\",\n      \"parameter\": \"minFlightLevelFt\",\n      \"value\": 14000\n    },\n    {\n      \"message\": \"`minFlightLevelFt` must not be greater than `maxFlightLevelFt`\",\n      \"parameter\": \"maxFlightLevelFt\",\n      \"value\": 7000\n    }\n  ],\n  \"meta\": {\n    \"name\": \"v1.pireps.?circle=-97,48,200&distanceUnits=nm&minFlightLevelFt=14000&maxFlightLevelFt=7000\",\n    \"uuid\": \"ced14d2f-45f4-4fa4-b102-583eef1e370d\",\n    \"request_id\": \"45a0ce39-d5ea-483b-811b-e22b9fb71428\",\n    \"start_timestamp\": 1737663193013,\n    \"end_timestamp\": 1737663193202,\n    \"execution_time\": 189\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea4d2df5-e2ce-485a-9502-171fb911e73b",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "pireps",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "unitSystem",
+                      "value": "default"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "polygon",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "circle",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "corridor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "distanceUnits",
+                      "value": "nm"
+                    },
+                    {
+                      "key": "isValidAt",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedAfter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "insertedThrough",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftTypes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftSizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "aircraftSizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "navaidIds",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "minFlightLevelFt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxFlightLevelFt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minTurbulenceScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxTurbulenceScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "minIcingScore",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "maxIcingScore",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Missing Authorization token.\",\n  \"instance\": \"urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n  \"meta\": {\n    \"name\": \"v1.notams.KIND\",\n    \"uuid\": \"d64fc634-9bee-430d-8ab1-200337e6e9b2\",\n    \"request_id\": \"19e1b83a-cb2e-4460-b687-ce9d0c50b4b6\",\n    \"start_timestamp\": 1714019217213,\n    \"end_timestamp\": 1714019217246,\n    \"execution_time\": 33\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://aviation.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "eccc033d-0f00-41ca-917d-8fcc277e44d4",
+    "name": "DTN PIREP API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "PIREPS are a key piece of information required for flight planning and flight operations. DTN PIREP API allows customers to get the data critical to them without unnecessary extra data.",
+      "type": "text/plain"
+    }
+  }
+}

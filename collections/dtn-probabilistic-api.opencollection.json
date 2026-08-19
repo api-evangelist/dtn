@@ -1,0 +1,146 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Probabilistic Weather API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://probabilistic.api.dtn.com/"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Probabilistic Weather Forecast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://probabilistic.api.dtn.com/v1/probabilistic",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query",
+                "description": "Latitude coordinate in decimal degrees"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query",
+                "description": "Longitude coordinate in decimal degrees"
+              },
+              {
+                "name": "startTime",
+                "value": "2024-08-15T00:00:00Z",
+                "type": "query",
+                "description": "Start time for forecast period in ISO 8601 format. If no timezone is specified, defaults to local timezone of the requested location. Use timezone offset (e.g., \"+05:00\") or \"Z\" for UTC."
+              },
+              {
+                "name": "endTime",
+                "value": "2024-08-17T00:00:00Z",
+                "type": "query",
+                "description": "End time for forecast period in ISO 8601 format. If no timezone is specified, defaults to local timezone of the requested location. Use timezone offset (e.g., \"+05:00\") or \"Z\" for UTC."
+              },
+              {
+                "name": "parameters",
+                "value": "airTempP10,airTempP90,windSpeedPoE10",
+                "type": "query",
+                "description": "Comma-separated list of probabilistic parameters to include in response"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query",
+                "description": "Unit system for response values (si-std for metric, us-std for imperial)"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides probabilistic weather forecasts for any specific point on the globe. Specify the location, the probabilistic parameters of interest, and a time range up to 10 days in the future.\n\nCommon uses include risk assessment, decision-making under uncertainty, and operations planning with specific confidence levels.\n\n## Using timezone offsets\n\nTo change timezones, specify a UTC offset (such as `+08:00` or `-05:00` instead of `Z`) for query parameters `startTime` and `endTime`. Time"
+        },
+        {
+          "info": {
+            "name": "Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://probabilistic.api.dtn.com/v1/parameters",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides helpful context in JSON format about the probabilistic parameters that the API supports.\n\nUse the `name` query string parameter to filter parameters by name (for example, `name=airTempP10`), or omit the query string to obtain all available parameters in the response.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

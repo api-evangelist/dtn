@@ -1,0 +1,809 @@
+{
+  "item": [
+    {
+      "id": "e707929b-852b-4290-b8c9-aa333b9500ab",
+      "name": "Endpoints",
+      "description": {
+        "content": "Climatology API has 2 endpoints that each cater to a specific need, whether it's the climatological data at a location for a series of days, or the associated metadata.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cfd414a1-1e2c-4ea5-927b-4240d9f777da",
+          "name": "Daily Climatology",
+          "request": {
+            "name": "Daily Climatology",
+            "description": {
+              "content": "This endpoint provides daily climatology parameters for any point on Earth. Specify the location, parameters of interest, and a date range up to 366 days (from January 1 through December 31, including February 29).  Results are valid from local midnight-to-midnight at the requested location and not specific to any year.\n\nUse the query string to customize the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).  These are required.\n\n  * Specify `parameters` to filter the response to a specific, comma-separated list of environmental parameters. The API returns defaults when this is omitted.\n\n  * Specify `startDate` and `endDate` (using `MM-DD` format for month and day), or `startDate` alone for just one date.\n\n  * Specify `units=us-std` to receive values as United States customary (imperial) units. The API returns metric units by default and when `units=si-std` is expressly requested.\n\n  * Specify the `interval` parameter to request aggregated data for parameters such as airTempAvgAvg.\n    + **Format:** The interval must be in the format {n}, where {n} is an integer greater than 1 (e.g., 2, 6, or 12).\n\nAll together, a complete request looks like:\n\n```\nhttps://climatology.api.dtn.com/v1/daily/ten-year?lat={lat}&lon={lon}&startDate={start_date}&endDate={end_date}&interval={n}&parameters={param1,param2}&units={units}\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "daily",
+                "ten-year"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "299c08cb-400e-457a-aa20-463e90f06627",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "daily",
+                    "ten-year"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://climatology.api.dtn.com/v1/daily/ten-year?lat=35.47&lon=-97.51&parameters=airTempAvg,airTempStdDev,airTempMaxAvg,airTempMaxStdDev,airTempMinAvg,airTempMinStdDev,dewPointAvg,dewPointStdDev,potentialEvapotranspirationAmountAvg,longWaveRadiationAvg,longWaveRadiationStdDev,precipAmountAvg,shortWaveRadiationAvg,shortWaveRadiationStdDev,surfacePressureAvg,surfacePressureStdDev,windSpeedAvg,windSpeedStdDev&startDate=08-01&endDate=08-03&units=us-std\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -97.51,\n          35.47\n        ]\n      },\n      \"properties\": {\n        \"08-01\": {\n          \"airTempAvg\": 86,\n          \"airTempStdDev\": 2.7,\n          \"airTempMaxAvg\": 95,\n          \"airTempMaxStdDev\": 3.6,\n          \"airTempMinAvg\": 77,\n          \"airTempMinStdDev\": 2.2,\n          \"dewPointAvg\": 64.4,\n          \"dewPointStdDev\": 1.4,\n          \"potentialEvapotranspirationAmountAvg\": 0.2,\n          \"longWaveRadiationAvg\": 400,\n          \"longWaveRadiationStdDev\": 20,\n          \"precipAmountAvg\": 0.08,\n          \"shortWaveRadiationAvg\": 800,\n          \"shortWaveRadiationStdDev\": 50,\n          \"surfacePressureAvg\": 1015,\n          \"surfacePressureStdDev\": 3,\n          \"windSpeedAvg\": 7.8,\n          \"windSpeedStdDev\": 2.2\n        },\n        \"08-02\": {\n          \"airTempAvg\": 87.8,\n          \"airTempStdDev\": 2.9,\n          \"airTempMaxAvg\": 96.8,\n          \"airTempMaxStdDev\": 3.8,\n          \"airTempMinAvg\": 78.8,\n          \"airTempMinStdDev\": 2.3,\n          \"dewPointAvg\": 65.3,\n          \"dewPointStdDev\": 1.6,\n          \"potentialEvapotranspirationAmountAvg\": 0.2,\n          \"longWaveRadiationAvg\": 405,\n          \"longWaveRadiationStdDev\": 22,\n          \"precipAmountAvg\": 0.06,\n          \"shortWaveRadiationAvg\": 820,\n          \"shortWaveRadiationStdDev\": 55,\n          \"surfacePressureAvg\": 1014,\n          \"surfacePressureStdDev\": 3.2,\n          \"windSpeedAvg\": 8.3,\n          \"windSpeedStdDev\": 2.5\n        },\n        \"08-03\": {\n          \"airTempAvg\": 85.1,\n          \"airTempStdDev\": 2.5,\n          \"airTempMaxAvg\": 94.1,\n          \"airTempMaxStdDev\": 3.6,\n          \"airTempMinAvg\": 76.1,\n          \"airTempMinStdDev\": 2,\n          \"dewPointAvg\": 63.5,\n          \"dewPointStdDev\": 1.3,\n          \"potentialEvapotranspirationAmountAvg\": 0.19,\n          \"longWaveRadiationAvg\": 398,\n          \"longWaveRadiationStdDev\": 18,\n          \"precipAmountAvg\": 0.12,\n          \"shortWaveRadiationAvg\": 810,\n          \"shortWaveRadiationStdDev\": 52,\n          \"surfacePressureAvg\": 1016,\n          \"surfacePressureStdDev\": 2.8,\n          \"windSpeedAvg\": 7.4,\n          \"windSpeedStdDev\": 2\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0279afb4-197e-4d12-a271-d748293d9aeb",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "daily",
+                    "ten-year"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"badRequest\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:climatology:/v1/daily:requestId:123e4567-e89b-12d3-a458-426614176000\",\n  \"errors\": [\n    {\n      \"message\": \"the following parameters are invalid: invalidParameter1,invalidParameter2\",\n      \"parameter\": \"parameters\",\n      \"value\": [\n        \"invalidParameter1\",\n        \"invalidParameter2\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8688b066-0bf1-4619-935f-317479579b31",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "daily",
+                    "ten-year"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:climatology:/v1/daily:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b11a8c53-f53b-4d07-aec1-eef4e253ae6e",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "daily",
+                    "ten-year"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"notAcceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:climatology:/v1/daily:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "45457b28-5b27-49cc-8331-b8adce3320ef",
+          "name": "Parameters",
+          "request": {
+            "name": "Parameters",
+            "description": {
+              "content": "This endpoint provides helpful context in JSON format about the environmental parameters and operations that the other endpoints support.\n\nUse the `name` query string parameter to filter environmental parameters by that name (for example, `name=airTempAvg`), or omit the query string to obtain all environmental parameters in the response.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8c8967d4-fc9c-489a-861b-6e6b04efd202",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"daily-climatology\": {\n    \"airTempAvg\": {\n      \"metricUnit\": \"Celsius\",\n      \"imperialUnit\": \"Fahrenheit\",\n      \"type\": \"number\",\n      \"description\": \"Average daily air temperature at 2 meters above ground level.\",\n      \"notes\": \"\",\n      \"aggregationMethods\": [\n        \"Avg\"\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a4ad883-45d7-480a-b5d4-9ebc56ed829f",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"badRequest\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:climatology:/v1/daily:requestId:123e4567-e89b-12d3-a458-426614176000\",\n  \"errors\": [\n    {\n      \"message\": \"the following parameters are invalid: invalidParameter1,invalidParameter2\",\n      \"parameter\": \"parameters\",\n      \"value\": [\n        \"invalidParameter1\",\n        \"invalidParameter2\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eb1c5355-199b-43ac-ac57-a8e71200a485",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:climatology:/v1/daily:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4cfa6702-d54c-4195-b8d1-c108a05fa617",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"notAcceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:climatology:/v1/daily:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e9155209-0bf7-4f83-99bb-d9b4ada39221",
+      "name": "Parameters",
+      "description": {
+        "content": "This API offers climatological data for any numerical month and day, including leap day (February 29).\nIt’s possible to aggregate certain parameters over multiple days. To request an aggregation, just substitute the desired parameter name and specify an `interval` greater than 1 day (see `Endpoints` section for details).  For example, if air temperature maximum average (`airTempMaxAvg`) has corresponding parameters `airTempMaxAvgMax`, `airTempMaxAvgAvg`, request parameter `airTempMaxAvgAvg` with `interval=2` in the query string to obtain the 2 day average daily maximum air temperature average.\nExpand the table below to view available environmental parameters and each one's description and unit of measurement. The API returns all parameters by default unless specific parameters are requested.\nThe table that follow identify which parameters have corresponding aggregation parameter names.   <details> <summary>Click to expand...</summary>\n\n| Parameter                | Default | Description | Metric units | Imperial units | Aggregation Parameters |\n|--------------------------|---------|-------------|--------------|----------------|------------------------|\n| airTempAvg               | Yes     | Average daily air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempAvgAvg|\n| airTempStdDev            | Yes     | Standard deviation of daily average air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempStdDevAvg|\n| airTempMaxAvg            | Yes     | Average daily maximum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMaxAvgMax, airTempMaxAvgAvg|\n| airTempMaxStdDev         | Yes     | Standard deviation of daily maximum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMaxStdDevAvg|\n| airTempMinAvg            | Yes     | Average daily minimum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMinAvgMin, airTempMinAvgAvg|\n| airTempMinStdDev         | Yes     | Standard deviation of daily minimum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMinStdDevAvg|\n| dewPointAvg              | Yes     | Average daily dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |dewPointAvgAvg|\n| dewPointStdDev           | Yes     | Standard deviation of daily average dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |dewPointStdDevAvg|\n| potentialEvapotranspirationAmountAvg    | Yes     | Average daily reference evapotranspiration (amount of water that would transpire and evaporate from a hypothetical reference crop when ample water is available). | millimeter | inch |potentialEvapotranspirationAmountAvgSum|\n| longWaveRadiationAvg     | Yes     | Average daily downwelling longWave radiation flux (energy emitted from non-solar radiation sources). | watt per square meter | watt per square meter |longWaveRadiationAvgMax, longWaveRadiationAvgMin, longWaveRadiationAvgAvg|\n| longWaveRadiationStdDev  | Yes     | Standard deviation of daily downwelling longWave radiation flux. | watt per square meter | watt per square meter |longWaveRadiationStdDevAvg|\n| precipAmountAvg          | Yes     | Average daily accumulated liquid-equivalent precipitation. | millimeter | inch |precipAmountAvgAvg, precipAmountAvgSum|\n| shortWaveRadiationAvg    | Yes     | Average daily downwelling shortWave radiation flux (high-energy solar radiation that reaches Earth’s surface). | watt per square meter | watt per square meter |shortWaveRadiationAvgMax, shortWaveRadiationAvgMin, shortWaveRadiationAvgAvg|\n| shortWaveRadiationStdDev | Yes     | Standard deviation of daily downwelling shortWave radiation flux. | watt per square meter | watt per square meter |shortWaveRadiationStdDevAvg|\n| sunshineDurationAvg      | Yes     | Average daily duration of sunshine based on cloud cover and downwelling shortWave radiation. | minute | minute |sunshineDurationAvgAvg, sunshineDurationAvgSum|\n| surfacePressureAvg       | Yes     | Average daily surface barometric pressure. | hectopascal | millibar |surfacePressureAvgAvg|\n| surfacePressureStdDev    | Yes     | Standard deviation of daily surface barometric pressure. | hectopascal | millibar |surfacePressureStdDevAvg|\n| windSpeedAvg             | Yes     | Average daily wind speed at 10 meters above ground level. | meter per second | mile per hour |windSpeedAvgAvg|\n| windSpeedStdDev          | Yes     | Standard deviation of daily wind speed at 10 meters above ground level. | meter per second | mile per hour |windSpeedStdDevAvg|\n</details>",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "99d28705-720d-4853-a102-757c4c842550",
+          "name": "/",
+          "request": {
+            "name": "/",
+            "description": {},
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://climatology.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "9cdc448a-dcb0-4027-9806-9e503e9f5e89",
+    "name": "DTN Climatology API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nWelcome to DTN's Climatology API.  This service empowers consumers with accurate, global, location-specific climatological data to help inform decisions, optimize operations, and develop strategies based on historical environmental conditions.\n\nIt caters to a wide variety of scenarios, including:\n\n  * Agricultural planners developing effective crop rotation schedules, planting strategies, and nutrient application plans to enhance crop health and growth.\n  * Environmental researchers analyzing trends and their impacts on local plants and animals.\n  * Renewable energy planners determining the best dates and locations for projects and predicting demand based on historical climate data.\n  * Urban planners designing resilient infrastructure and evaluating risk for development projects.\n  * Health and safety officials enhancing disease prevention and emergency response based on climate.\n  * Recreational planners choosing optimal dates for outdoor events and informing tourists.\n\nKey Features:\n\n  * Obtain a series of daily climatological parameters for any location on Earth up to 366 days long (January 1 to December 31 including leap day).\n  * Access essential content related to air temperature, surface pressure, wind speed, solar radiation, evapotranspiration, and more.\n  * Customize requests using easy-to-understand query arguments and receive a standard GeoJSON-formatted response.\n\nThe Daily Historical 10-Year Climatology endpoint provides daily weather climatology of the past ten complete years.  The data provided by this endpoint is valid from midnight to 11:59 p.m. in the time zone of the location queried, with a maximum of 366 days of data returned per query.  This data is not year-specific; therefore, users can select a specific date and receive data specific to that day each year from the past ten years.\n\nThe interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of the Climatology API.\n# Getting Started\n## Obtaining credentials\nTo get started, all users need their own client ID and client secret. Please contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. Then, review the `Authentication` section to learn how to request an API access token. Do not share or use others' API credentials, since doing so may compromise information security.\n\n## Making requests\nThere are multiple ways to make an initial API request:\n\n**1. Interactive documentation:** Navigate to the `Authentication` section on this page, insert credentials to obtain an access token, then explore the API endpoints described in the `Endpoints` section.\n\n**2. Postman collection:** For a hands-on approach, consider downloading the Postman collection and environment from the top of this page. Insert credentials and start testing the API in Postman's interactive application.\n\n**3. Writing code:** Ready to start coding? Try the Python example below, replacing `client_id` and `client_secret` with proper credentials.  This invokes the daily climatology endpoint with a GET request and prints the response.\n\n```python\n  import requests\n  import urllib\n\n  #--- Obtain an API access token ---\n\n  auth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\n\n  body = {\n      'grant_type': 'client_credentials',\n      'client_id': '...insert your client id here...',\n      'client_secret': '...insert your client secret here...',\n      'audience': 'https://climatology.api.dtn.com'\n  }\n  response = requests.post(auth_url, json=body)\n  access_token = response.json()['data']['access_token']\n\n  #--- Invoke the API ---\n\n  api_base_url = 'https://climatology.api.dtn.com/v1'\n  query_parameters = urllib.parse.urlencode({\n      \"lat\": 35.47,\n      \"lon\": -97.51,\n      \"startDate\": \"08-01\",\n      \"endDate\": \"08-03\",\n  })\n  endpoint = '/daily/ten-year?' + query_parameters\n\n  headers = {'Authorization': 'Bearer ' + access_token}\n  response = requests.get(api_base_url + endpoint, headers=headers)\n\n  #--- Print the response ---\n\n  print(response.json())\n```",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Energy Event Index Customer API",
+    "version": "1.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Check the health status of the API",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://eei.dtn.com/v1/health-check"
+      },
+      "docs": "This endpoint provides information about the current health status of the API service."
+    },
+    {
+      "info": {
+        "name": "Retrieve EEI Thresholds for an Account",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://eei.dtn.com/v1/account/eeithreshold"
+      },
+      "docs": "This endpoint retrieves the Energy Event Index (EEI) thresholds for a specific account. It provides detailed information about various weather-related thresholds that impact energy infrastructure for different EEI levels."
+    },
+    {
+      "info": {
+        "name": "Retrieve EEI Forecast Schedule for an Account",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://eei.dtn.com/v1/account/eeischedule"
+      },
+      "docs": "This endpoint retrieves the Energy Event Index (EEI) forecast schedule for a specific account. \nIt provides information about the scheduled publication times for EEI forecasts.\n"
+    },
+    {
+      "info": {
+        "name": "Retrieve Regions for EEI Account",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://eei.dtn.com/v1/region"
+      },
+      "docs": "This endpoint retrieves a list of all regions associated with the Energy Event Index (EEI) account.\n\nThe regions returned by this endpoint represent distinct areas or divisions within the EEI service territory. These regions may correspond to different operational zones, service areas, or administrative divisions relevant to energy infrastructure and weather impact assessment.\n"
+    },
+    {
+      "info": {
+        "name": "Retrieve EEI forecast data for client's regions",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://eei.dtn.com/v1/get-eei-forecast"
+      },
+      "docs": "Fetches detailed EEI (Energy Event Index) forecast data for various regions, including confidence levels and weather parameters."
+    },
+    {
+      "info": {
+        "name": "Retrieve specific EEI forecast parameter data for Iberdrola USA regions",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://eei.dtn.com/v1/get-eei-forecast/:parameter",
+        "params": [
+          {
+            "name": "parameter",
+            "value": "",
+            "type": "path",
+            "description": "The specific EEI forecast parameter to retrieve"
+          }
+        ]
+      },
+      "docs": "Fetches EEI (Energy Event Index) forecast data for a specific parameter across various regions. \nThis endpoint allows you to retrieve data for a single parameter, reducing the payload size when only specific information is needed.\nAvailable parameters are:\n- wind-speed\n- confidence-level\n- flooding\n- ice\n- lightning\n- rainfall\n- snow\n- wildfire\n- wind-gust\n"
+    }
+  ],
+  "bundled": true
+}

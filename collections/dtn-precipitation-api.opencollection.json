@@ -1,0 +1,140 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Precipitation API",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://precipitation.api.dtn.com/"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Precipitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://precipitation.api.dtn.com/v1/",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query"
+              },
+              {
+                "name": "startTime",
+                "value": "2024-10-01T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "2024-10-14T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "parameters",
+                "value": "precipAmount",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides detailed precipitation data for any specified global location. Users can request various weather parameters for a time range of up to 15 days.\n\nCommon uses include weather monitoring, atmospheric research, and localized operations, such as event planning.\n\n## Query Parameters:\nUse query parameters to control the results in the response body:\n### location\n* Specify a location as latitude (`lat`) and longitude (`lon`).\n\n### parameters\n* Specify `parameters` to filter by spec"
+        },
+        {
+          "info": {
+            "name": "Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://precipitation.api.dtn.com/v1/parameters",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "Specify parameters to filter by specific weather parameters. \nInclude multiple as comma-separated values. \nThis endpoint only returns data for precipAmount and its aggregations.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

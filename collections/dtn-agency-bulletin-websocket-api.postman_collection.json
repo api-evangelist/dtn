@@ -1,0 +1,410 @@
+{
+  "item": [
+    {
+      "id": "31f168f5-26a7-459c-ba44-201f1085ab4d",
+      "name": "Endpoints",
+      "description": {
+        "content": "The the Agency Bulletin WebSocket API is designed on a single endpoint, offering unique functionalities tailored to your diverse weather bulletin data needs. Whether you require forecast and current data for a single point, country, or a bounding box, our API has got you covered. ",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "88002294-fedf-4fea-8b47-73e146721bd1",
+          "name": "Stream",
+          "request": {
+            "name": "Stream",
+            "description": {
+              "content": "\n```shell \nGET wss://wxbulletin-ws.api.dtn.com/v1/\n```\n\nThis endpoint returns the latest active weather bulletins from the requested national meteorological agency. \nIt is the primary source of information for real-time weather alerts and updates.\n\nUnderstanding and Utilizing Key Query Parameters:\n- **country:** \nUse this parameter to access all active weather bulletins within a specific country. \nThis parameter accepts ISO 3166-1 alpha-2 codes. This parameter cannot be used with the `lat/lon/radius` or the `bbox` parameters.<br>\nExample: `country=US`\n\n- **lat**, **lon**:\nUse these parameters to access all active weather bulletins that intersect a point location in the map. When used with,\nthe `radius` parameter, the active bulletins intersecting a circle with the lat/lon at the center and the radius in\nkilometers will be returned. This combination cannot be used with the `country` or the `bbox` parameters.<br>\nExample: `lat=52.52&lon=13.40`, `lat=52.52&lon=13.40&radius=50` \n\n- **bbox**:\nUse this parameter to access all active weather bulletins that intersect a bounding box with the format `minLon,minLat,maxLon,maxLat`.\nThis combination cannot be used with the `country` or the `lat/lon/radius` parameters.<br>\nExample: `bbox=30.1,45.1,30.5,45.5`, `bbox=13.10,52.66,13.77,52.37`\n\n- **excludeGeometry:**\nThis parameter is crucial and is set to false by default, meaning the response will include detailed geometry of the \npolygons corresponding to each active warning. This can be particularly useful for understanding the exact impacted \nareas or for visualizing warnings in GIS applications. However, be mindful that including this detailed information \nmight substantially increase the payload size when dealing with numerous active bulletins. \nIf you prefer to exclude the detailed geometry and reduce payload size, set this parameter to true.<br>\nExample: `excludeGeometry=True`\n\nQuery Examples: <br>\n- `wss://wxbulletin-ws.api.dtn.com/v1?country=US&excludeGeometry=true` <br>\n- `wss://wxbulletin-ws.api.dtn.com/v1?lon=13.4&lat=52.52&radius=5.5` <br>\n- `wss://wxbulletin-ws.api.dtn.com/v1?bbox=13.10,52.66,13.77,52.37` <br>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "country",
+                  "value": "<string>",
+                  "description": "(Required) Specify the country code of the alerts request. This is a required parameter. The reference for acceptable values is ISO 3166 two-letter codes (alpha-2). "
+                },
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<number>",
+                  "description": "The latitude in decimal degrees. When specified, it must be used together with the `lon` parameter. This parameter can also be used with the `radius` parameter. This parameter cannot be used with the `country` or the `bbox` parameters."
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<number>",
+                  "description": "The longitude in decimal degrees. When specified, it must be used together with the `lat` parameter. This parameter can also be used with the `radius` parameter. This parameter cannot be used with the `country` or the `bbox` parameters."
+                },
+                {
+                  "disabled": false,
+                  "key": "radius",
+                  "value": "<number>",
+                  "description": "The radius in km. When specified, alerts intersecting the circle with the POINT(`lon`,`lat`) as the center will be returned.This parameter cannot be used with the `country` or the `bbox` parameters."
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<number>",
+                  "description": "The bounding box coordinates in the format `minLon,minLat,maxLon,maxLat`. This parameter cannot be used with the `country` or the `lat/lon/radius` parameters."
+                },
+                {
+                  "disabled": false,
+                  "key": "bbox",
+                  "value": "<number>",
+                  "description": "The bounding box coordinates in the format `minLon,minLat,maxLon,maxLat`. This parameter cannot be used with the `country` or the `lat/lon/radius` parameters."
+                },
+                {
+                  "disabled": false,
+                  "key": "language",
+                  "value": "<string>",
+                  "description": "Specify the language to use in the text values of the alert. Values should follow RFC 3066. "
+                },
+                {
+                  "disabled": false,
+                  "key": "agency",
+                  "value": "<string>",
+                  "description": "Specify the agency of the alert request. "
+                },
+                {
+                  "disabled": false,
+                  "key": "event",
+                  "value": "<string>",
+                  "description": "When specified, the API will return only alerts that match the specified event types. "
+                },
+                {
+                  "disabled": false,
+                  "key": "event",
+                  "value": "<string>",
+                  "description": "When specified, the API will return only alerts that match the specified event types. "
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeGeometry",
+                  "value": "false",
+                  "description": "Specify whether or not to include the root geojson geometry for each alert."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e8851b1f-3c60-4714-a91c-8b85496f7e8f",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "US"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "35.67"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "139.65"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "10"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "NWS"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "excludeGeometry",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Switching Protocols",
+              "code": 101,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"agency\": \"string\",\n  \"country\": \"string\",\n  \"properties\": {\n    \"identifier\": \"string\",\n    \"sender\": \"string\",\n    \"sent\": \"2021-04-18T18:38:12.289Z\",\n    \"status\": \"string\",\n    \"msgType\": \"string\",\n    \"scope\": \"string\",\n    \"updated\": \"1962-04-30T20:10:33.340Z\",\n    \"info\": [\n      {\n        \"event\": \"string\",\n        \"category\": \"string\",\n        \"language\": \"string\",\n        \"urgency\": \"string\",\n        \"severity\": \"string\",\n        \"certainty\": \"string\",\n        \"expires\": \"2005-03-04T21:00:19.883Z\",\n        \"area\": [\n          {\n            \"areaDesc\": \"string\",\n            \"polygon\": {},\n            \"circle\": \"string\",\n            \"ceiling\": 267.0656012050254,\n            \"altitude\": 1378.5963456101103,\n            \"geocodes\": [\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              },\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              }\n            ]\n          },\n          {\n            \"areaDesc\": \"string\",\n            \"polygon\": {},\n            \"circle\": \"string\",\n            \"ceiling\": 8745.13414978799,\n            \"altitude\": 7297.4500691045,\n            \"geocodes\": [\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              },\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              }\n            ]\n          }\n        ],\n        \"eventCode\": [\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          }\n        ],\n        \"responseType\": \"string\",\n        \"effective\": \"1997-05-17T21:06:54.021Z\",\n        \"onset\": \"1979-08-08T08:07:38.861Z\",\n        \"audience\": \"string\",\n        \"senderName\": \"string\",\n        \"headline\": \"string\",\n        \"description\": \"string\",\n        \"instruction\": \"string\",\n        \"web\": \"string\",\n        \"contact\": \"string\",\n        \"parameters\": [\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          }\n        ]\n      },\n      {\n        \"event\": \"string\",\n        \"category\": \"string\",\n        \"language\": \"string\",\n        \"urgency\": \"string\",\n        \"severity\": \"string\",\n        \"certainty\": \"string\",\n        \"expires\": \"1996-08-28T02:33:24.097Z\",\n        \"area\": [\n          {\n            \"areaDesc\": \"string\",\n            \"polygon\": {},\n            \"circle\": \"string\",\n            \"ceiling\": 3088.2068690147225,\n            \"altitude\": 7941.639093468494,\n            \"geocodes\": [\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              },\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              }\n            ]\n          },\n          {\n            \"areaDesc\": \"string\",\n            \"polygon\": {},\n            \"circle\": \"string\",\n            \"ceiling\": 6703.506213529938,\n            \"altitude\": 8444.063626409637,\n            \"geocodes\": [\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              },\n              {\n                \"valueName\": \"string\",\n                \"value\": \"string\"\n              }\n            ]\n          }\n        ],\n        \"eventCode\": [\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          }\n        ],\n        \"responseType\": \"string\",\n        \"effective\": \"2009-12-23T19:09:19.932Z\",\n        \"onset\": \"2023-08-25T15:46:53.071Z\",\n        \"audience\": \"string\",\n        \"senderName\": \"string\",\n        \"headline\": \"string\",\n        \"description\": \"string\",\n        \"instruction\": \"string\",\n        \"web\": \"string\",\n        \"contact\": \"string\",\n        \"parameters\": [\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"valueName\": \"string\",\n            \"value\": \"string\"\n          }\n        ]\n      }\n    ],\n    \"code\": \"string\",\n    \"source\": \"string\",\n    \"restriction\": \"string\",\n    \"addresses\": \"string\",\n    \"note\": \"string\",\n    \"references\": \"string\"\n  },\n  \"dtnInfo\": {\n    \"dtnMsgType\": \"string\",\n    \"dtnExpires\": \"1978-01-21T07:41:27.209Z\",\n    \"dtnEvent\": \"string\",\n    \"dtnEventCode\": \"string\",\n    \"dtnDisclaimer\": \"string\"\n  },\n  \"type\": \"Feature\",\n  \"geometry\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "572726ee-81cf-4acd-9396-6c2c1ca216d9",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "US"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "35.67"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "139.65"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "10"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "NWS"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "excludeGeometry",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Could not validate credentials\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "45533933-bc22-479d-be4f-df0cbd1284a8",
+              "name": "Unprocessable Entity",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "country",
+                      "value": "US"
+                    },
+                    {
+                      "key": "lat",
+                      "value": "35.67"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "139.65"
+                    },
+                    {
+                      "key": "radius",
+                      "value": "10"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "bbox",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "language",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "agency",
+                      "value": "NWS"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "excludeGeometry",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": \"Validation Error. ['language': invalid value. Examples: 'en-US', 'de-DE', 'fr-FR', 'es-ES', 'en-AU']\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "http://wxbulletin-ws.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "2bc90502-d047-4f7a-ba27-84026dd71f4c",
+    "name": "Agency Bulletin WebSocket API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction \n \nWelcome to the DTN Agency Bulletin WebSocket API documentation. \n\n\nThe ABA WebSocket is designed to provide developers with a seamless and convenient way to access the latest weather bulletins \npublished by the national meteorological agencies across the globe (e.g. NWS, UKMO, BoM) all in a standardized and \neasily interpretable GeoJSON format. By unifying the global weather bulletins data into one standardized API, \nwe aim to simplify the process of working with such weather alerts, eliminating the need to understand \nmultiple systems or formats. \n\n\n**Key Features**\n\n* Near real-time delivery using secure WebSocket protocol (wss://) \n* Unified access to latest weather bulletins from national meteorological agencies worldwide.\n* Standardized GeoJSON format for all the weather bulletins, eliminating the need to grapple with various \ndata formats and data pipelines, facilitating easy data visualization and integration with mapping and GIS solutions. \n* Exact geometries of affected areas' polygons included in the response, facilitating precise and granular \nmapping of weather bulletins.\n* Inclusion of a Common Alerting Protocol (CAP) section in our GeoJSON response, preserving the original CAP data \nwhen issued by a national agency.\n\n**Applications**\n\nThis API caters to a wide range of users and applications, including:\n\n* Emergency alert systems\n* Software developers building weather applications\n* Travel planning websites\n* Climate research projects \n\n\nThis interactive documentation will get you up to speed on setting up requests, understanding responses, \nand leveraging the DTN Weather API for your needs.\n\n\n# Getting Started\n## Obtaining Credentials \nTo start making requests, you will first need your API credentials that includes your client ID and client secret. \nPlease contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. \nThen, review the `Authentication` section to learn how to request an API access token. Do not share or use others' \nAPI credentials, since doing so may compromise information security.\n\n## Making requests\nStarting off your journey with the the Agency Bulletin API Websocket couldn't be easier. \nWe've provided a variety of options to suit your needs and comfort level:\nInteractive Documentation: Our interactive documentation is a great starting point. \nSimply navigate to the \"Authentication\" section, insert your credentials, and you'll obtain an access token behind \nthe scenes. Then, explore the API endpoints described in the Endpoints section.\n\n**a) Interactive Documentation:** Our interactive documentation is a great starting point. Simply navigate to \nthe `Authentication` section, insert your credentials, and you'll obtain an access token behind the scenes. \nThen, explore the API endpoints described in the `Endpoints` section.\n\n**b) Writing Code:** Ready to start coding? Try the Python example below, \nreplacing `client_id` and `client_secret` with proper credentials. \nThis creates a threaded websocket client that listens to new messages on the endpoint.\n\n\n\n\n\n```python\n#--- Initialize imports ---\nimport requests\nimport websocket\nimport json\nimport threading\nfrom datetime import datetime\n\n\n# Create a class to handle the WebSocket connection\nclass WSClient:\n    def __init__(self, url):\n        self.url = url\n        self.ws = None\n        self.messages = []\n        self.connected = False\n        \n    def on_message(self, ws, message):\n        \"\"\"Called when a message is received\"\"\"\n        try:\n            # Try to parse as JSON\n            data = json.loads(message)\n            print(f\"{datetime.now()}: {data}\")\n        except Exception as e:\n            print(f\"Error on {message}: {e}\")\n    \n    def on_error(self, ws, error):\n        \"\"\"Called when an error occurs\"\"\"\n        print(f\"Error: {error}\")\n    \n    def on_close(self, ws, close_status_code, close_msg):\n        \"\"\"Called when connection is closed\"\"\"\n        self.connected = False\n        print(f\"{datetime.now()}: Connection closed\")\n    \n    def on_open(self, ws):\n        \"\"\"Called when connection is established\"\"\"\n        self.connected = True\n        print(f\"{datetime.now()}: Connection opened\")\n    \n    def connect(self):\n        \"\"\"Establish WebSocket connection\"\"\"\n        self.ws = websocket.WebSocketApp(self.url,\n                                        on_open=self.on_open,\n                                        on_message=self.on_message,\n                                        on_error=self.on_error,\n                                        on_close=self.on_close)\n        \n        # Start WebSocket connection in a separate thread\n        self.thread = threading.Thread(target=self.ws.run_forever)\n        self.thread.daemon = True\n        self.thread.start()\n      \n    def close(self):\n        \"\"\"Close the WebSocket connection\"\"\"\n        if self.ws:\n            self.ws.close()\n\n\n# --- Obtain an API access token ---\nauth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\nbody = {\n    'grant_type': 'client_credentials',\n    'client_id': '...insert your client id here...',\n    'client_secret': '...insert your client secret here...',\n    'audience': 'https://weather.api.dtn.com'\n}\n\nresponse = requests.post(auth_url, json=body)\naccess_token = response.json()['data']['access_token']\n\n# Initialize the websocket endpoint and connection parameters\napi_base_url = 'wss://wxbulletin-ws.api.dtn.com/v1?'\nquery_parameters = '&'.join([\n    'lon=13.39',\n    'lat=52.52',\n    'radius=5.0',  # in km\n])\n\nendpoint = api_base_url + query_parameters + '&token=' + access_token\n\n\n# Initialize the WebSocket client\nclient = WSClient(endpoint)\nclient.connect()\n```",
+      "type": "text/plain"
+    }
+  }
+}

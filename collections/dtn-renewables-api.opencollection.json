@@ -1,0 +1,212 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Renewables API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://renewables.api.dtn.com/"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Hub Height Winds Forecast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://renewables.api.dtn.com/v1/hub-height-winds/forecast",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query"
+              },
+              {
+                "name": "startTime",
+                "value": "2024-10-01T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "2024-10-14T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "interval",
+                "value": "30m",
+                "type": "query"
+              },
+              {
+                "name": "parameters",
+                "value": "windSpeed100m,windGust100m,windDirection100m",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides forecast wind parameters from 10-300 meters above ground level for any point on Earth. Specify the location, parameters of interest, and a time range from now until 15 days ahead. The API responds with the requested time series in GeoJSON format.\n\nUse the query string to customize the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).  These are required.\n\n  * Specify `parameters` to filter the response to a specific, comma-sep"
+        },
+        {
+          "info": {
+            "name": "Solar Irradiance Forecast",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://renewables.api.dtn.com/v1/solar-irradiance/forecast",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query"
+              },
+              {
+                "name": "startTime",
+                "value": "2024-10-01T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "2024-10-14T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "interval",
+                "value": "30m",
+                "type": "query"
+              },
+              {
+                "name": "parameters",
+                "value": "directNormalIrradiance,diffuseHorizontalIrradiance",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides forecast solar radiation and related parameters for any point on Earth. Specify the location, parameters of interest, and a time range from now until 15 days ahead. The API responds with the requested time series in GeoJSON format.\n\nUse the query string to customize the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).  These are required.\n\n  * Specify `parameters` to filter the response to a specific, comma-separated list of "
+        },
+        {
+          "info": {
+            "name": "Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://renewables.api.dtn.com/v1/parameters",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides helpful context in JSON format about the environmental parameters and operations that the other endpoints support.\n\nUse query parameters to control the results in the response body:\n  * Set `category` to `hub-height-winds-forecast` or `solar-irradiance-forecast` to filter environmental parameters by that category.\n  * Specify a `name` to filter environmental parameters by that name (for example, `name=windSpeed100m`).\n  * Specify a `category` and `name` to filter by both.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

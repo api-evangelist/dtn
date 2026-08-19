@@ -1,0 +1,830 @@
+{
+  "item": [
+    {
+      "id": "d760c2c7-c123-43c1-bd64-bb13abdd1223",
+      "name": "Endpoints",
+      "description": {
+        "content": "The Probabilistic Weather API has 2 endpoints that each cater to a specific need, whether it's the probabilistic time series at a single location, or the associated metadata.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "944d2c9f-0dcb-412c-81ff-7b7c1ce245d7",
+          "name": "Probabilistic Weather Forecast",
+          "request": {
+            "name": "Probabilistic Weather Forecast",
+            "description": {
+              "content": "This endpoint provides probabilistic weather forecasts for any specific point on the globe. Specify the location, the probabilistic parameters of interest, and a time range up to 10 days in the future.\n\nCommon uses include risk assessment, decision-making under uncertainty, and operations planning with specific confidence levels.\n\n## Using timezone offsets\n\nTo change timezones, specify a UTC offset (such as `+08:00` or `-05:00` instead of `Z`) for query parameters `startTime` and `endTime`. Timestamps in the response will automatically match the `startTime` offset. Remove the offset entirely to obtain the local timezone for the requested location.\n\n\n\n#### Valid examples\n\n* `?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:00:00Z`\n\n* `?startTime=2024-01-01T00:00:00%2B08:00&endTime=2024-01-01T23:00:00+02:00`\n\n* `?startTime=2024-01-01T00:00:00-08:00&endTime=2024-01-01T23:00:00-08:00`\n\n* `?startTime=2024-01-01T00:00:00&endTime=2024-01-01T23:00:00`\n\n\n### Latitude and Longitude\n\n**Important note**: Requested latitudes and longitudes in response are rounded to five (5) decimal places when presented in `$.features.*.geometry.coordinates`. Floating point precision might affect the last digit.\n\n### Rounding examples\n\n* 1.5555 => 1.556\n\n* 1.5545 => 1.554\n\n* -1.5555 => -1.556\n\n\n## Query Parameters:\nUse query parameters to control the results in the response body:\n### location\n* Specify a location as latitude (`lat`) and longitude (`lon`).\n\n### parameters\n* Specify `parameters` to filter by specific probabilistic weather parameters. Include multiple as comma-separated values.\n\n### startTime and endTime\n* Two key parameters are `startTime` and `endTime`. These parameters determine the time range for which the API returns probabilistic forecast data. Both `startTime` and `endTime` are inclusive, meaning that data at the top of the UTC hour for both timestamps is included in the response.\n\n* API Behavior Based on startTime and endTime:\n\n  * **Omitted startTime and endTime:** Returns current probabilistic conditions.\n\n  * **Both in the Future:** Returns probabilistic forecast data when both `startTime` and `endTime` are in the future.\n\n  * **Only startTime Specified:** Returns only one timestamp, representing the probabilistic data at the specified `startTime`.\n\n* Inclusivity of Timestamps\n\n  * **Inclusive `startTime` and `endTime`:** Both parameters are inclusive, affecting the total duration and the number of data points returned.\n\n\n### units\n  * Use `units` to request values either as SI (metric) or United States customary (imperial) units.\n    + The API returns metric units by default and when `si-std` is specified.\n    + The API returns imperial units only when `us-std` is specified.\n\nAll together, a complete request looks like:\n\n```\nhttps://probabilistic.api.dtn.com/v1/probabilistic?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&parameters={param1,param2}&units={units}\n```\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "probabilistic"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) Latitude coordinate in decimal degrees"
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) Longitude coordinate in decimal degrees"
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>",
+                  "description": "Start time for forecast period in ISO 8601 format. If no timezone is specified, defaults to local timezone of the requested location. Use timezone offset (e.g., \"+05:00\") or \"Z\" for UTC."
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>",
+                  "description": "End time for forecast period in ISO 8601 format. If no timezone is specified, defaults to local timezone of the requested location. Use timezone offset (e.g., \"+05:00\") or \"Z\" for UTC."
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>",
+                  "description": "Comma-separated list of probabilistic parameters to include in response"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>",
+                  "description": "Comma-separated list of probabilistic parameters to include in response"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "si-std",
+                  "description": "Unit system for response values (si-std for metric, us-std for imperial)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8839663b-6ddb-43d7-9076-a16ab389c000",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "probabilistic"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-08-15T00:00:00Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-08-17T00:00:00Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://probabilistic.api.dtn.com/v1/probabilistic?lat=35.47&lon=-97.51&startTime=2024-08-15T00:00:00Z&endTime=2024-08-15T06:00:00Z&parameters=airTempP10,airTempP90,windSpeedPoE10&units=us-std\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -97.51,\n          35.47\n        ]\n      },\n      \"properties\": {\n        \"2024-08-15T00:00:00Z\": {\n          \"airTempP10\": 72.5,\n          \"airTempP90\": 85.2,\n          \"windSpeedPoE10\": 15.3\n        },\n        \"2024-08-15T01:00:00Z\": {\n          \"airTempP10\": 71.8,\n          \"airTempP90\": 84.7,\n          \"windSpeedPoE10\": 18.7\n        },\n        \"2024-08-15T02:00:00Z\": {\n          \"airTempP10\": 71.2,\n          \"airTempP90\": 84.1,\n          \"windSpeedPoE10\": 22.1\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e361d8da-8265-4cbc-a43d-d7e05d758b5a",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "probabilistic"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-08-15T00:00:00Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-08-17T00:00:00Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:probabilistic:/v1/probabilistic:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1d5f4d1-7de6-45a7-b2b8-d89b6e142798",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "probabilistic"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-08-15T00:00:00Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-08-17T00:00:00Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:probabilistic:/v1/probabilistic:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "480e9227-66a7-4a9e-8f26-c58723c752f6",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "probabilistic"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-08-15T00:00:00Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-08-17T00:00:00Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:probabilistic:/v1/probabilistic:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "11f27263-56f9-417b-92d0-2934bfde776e",
+          "name": "Parameters",
+          "request": {
+            "name": "Parameters",
+            "description": {
+              "content": "This endpoint provides helpful context in JSON format about the probabilistic parameters that the API supports.\n\nUse the `name` query string parameter to filter parameters by name (for example, `name=airTempP10`), or omit the query string to obtain all available parameters in the response.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7d4872ca-c14a-47cb-a521-5f6fe4017457",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "airTempP10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "temperature"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"probabilistic\": {\n    \"airTempP10\": {\n      \"metricUnit\": \"degree Celsius\",\n      \"imperialUnit\": \"degree Fahrenheit\",\n      \"type\": \"number\",\n      \"description\": \"10th percentile air temperature at 2 meters above ground level.\",\n      \"notes\": \"\",\n      \"category\": \"temperature\"\n    },\n    \"windSpeedPoE10\": {\n      \"metricUnit\": \"percent\",\n      \"imperialUnit\": \"percent\",\n      \"type\": \"number\",\n      \"description\": \"Probability of wind speed exceeding 10 m/s at 10 meters above ground level.\",\n      \"notes\": \"\",\n      \"category\": \"wind\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6d2cd37a-ef9b-4202-b7a3-b613fcec755c",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "airTempP10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "temperature"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:probabilistic:/v1/probabilistic:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9304b6cd-883f-45e4-8ade-07e77132bf51",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "airTempP10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "temperature"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:probabilistic:/v1/probabilistic:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82c98e0d-63e0-4e29-b88b-c8d413bdb7b4",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "airTempP10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "temperature"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:probabilistic:/v1/probabilistic:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "e8610dd0-17d9-4a02-a4d8-43eb9f81dc3b",
+      "name": "Parameters",
+      "description": {
+        "content": "Probabilistic Weather API offers probabilistic weather parameters that provide detailed insights into forecast uncertainty for planning operations with specific risk tolerance levels. These parameters are derived using sophisticated distribution fitting techniques applied to DTN's OneFX forecast system.\n\nThe API provides three main types of probabilistic parameters:\n* **Percentiles (P{n})**: The value at a specific point in the forecast distribution, where {n} represents the percentile (0-100). For reliable results, use percentiles between 0.1 and 99.9.\n* **Probabilities of Exceedance (PoE{n})**: The likelihood that a weather parameter will exceed any specified threshold value\n## Probabilistic Parameters\nProbabilistic parameters provide forecast uncertainty quantification for key weather variables. Expand the table below to view available parameters and each one's description, unit of measurement, and whether it is a core parameter. The API returns only core parameters unless specific parameters are requested.\n<details> <summary>Click to expand...</summary>\n\n| Parameter                     | Description | Metric units | Imperial units |\n|-------------------------------|-------------|--------------|----------------|\n| airTempP{n}                   | {n}th percentile air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |\n| airTempPoE{n}                 | Probability of air temperature exceeding {n}°C. | percentage | percentage |\n| relativeHumidityP{n}          | {n}th percentile relative humidity at 2 meters above ground level. | percentage | percentage |\n| relativeHumidityPoE{n}        | Probability of relative humidity at 2 meters above ground level exceeding {n}%. | percentage | percentage |\n| totalCloudCoverP{n}           | {n}th percentile percentage of the sky covered by clouds. | percentage | percentage |\n| totalCloudCoverPoE{n}         | Probability of percentage of the sky covered by clouds exceeding {n}% | percentage | percentage |\n| windDirectionP{n}             | {n}th percentile direction from which the wind is blowing at 10 meters above the ground, measured in degrees with respect to true north. | degree | degree |\n| windDirectionPoE{n}           | Probability of the direction from which the wind is blowing at 10 meters above the ground, measured in degrees with respect to true north exceeding {n} degrees. | percentage | percentage |\n| windSpeedP{n}                 | {n}th percentile wind speed at 10 meters above ground level. | meter per second | mile per hour |\n| windSpeedPoE{n}               | Probability of wind speed exceeding {n} m/s. | percentage | percentage |\n| windSpeed100mP{n}             | {n}th percentile wind speed at 100 meters above ground level. | meter per second | mile per hour |\n| windSpeed100mPoE{n}           | Probability of wind speed at 100 meters exceeding {n} m/s. | percentage | percentage |\n| windSpeedGustP{n}             | {n}th percentile wind gust at 10 meters above ground level. | meter per second | mile per hour |\n| windSpeedGustPoE{n}           | Probability of wind gust exceeding {n} m/s. | percentage | percentage |\n| precipAmount1hP{n}            | {n}th percentile precipitation amount over the past hour. | millimeter | inch |\n| precipAmount1hPoE{n}          | Probability of the precipitation amount in the past hour exceeding {n}mm. | percentage | percentage |\n| precipAmount6hP{n}            | {n}th percentile precipitation amount over the previous 6 hours. | millimeter | inch |\n| precipAmount6hPoE{n}          | Probability of precipitation exceeding {n}mm. | percentage | percentage |\n</details>",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9aeefae1-5fc1-4c54-8122-7165273e7941",
+          "name": "/",
+          "request": {
+            "name": "/",
+            "description": {},
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://probabilistic.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "fc00ffaf-4d49-4bf3-9273-19f635d07cb4",
+    "name": "DTN Probabilistic Weather API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nWelcome to DTN's Probabilistic Weather API – the gateway to probabilistic weather forecasts that quantify uncertainty in weather predictions. This API caters to a wide range of users, including:\n  * Risk managers assessing weather-related operational risks\n  * Agricultural planners making decisions under weather uncertainty\n  * Energy companies optimizing operations based on probabilistic forecasts\n  * Emergency managers preparing for weather events with known probabilities\n\n\n**Key features:** The Probabilistic Weather API provides probabilistic weather parameters including percentiles and probabilities of exceedance (POEs). It leverages advanced statistical methods and DTN's OneFX forecast system to quantify forecast uncertainty through sophisticated distribution fitting techniques.\n\n**Probabilistic forecasts at a location:** The API provides probabilistic weather data for any specific point on the globe. Specify a location, the probabilistic parameters of interest, and a time range up to 10 days in the future.\n\nThe interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of DTN's Probabilistic Weather API.\n# Getting Started\n## Obtaining credentials\nTo get started, all users need their own client ID and client secret. Please contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. Then, review the `Authentication` section to learn how to request an API access token. Do not share or use others' API credentials, since doing so may compromise information security.\n\n## Making requests\nThere are multiple ways to make an initial API request:\n\n**1. Interactive documentation:** Navigate to the `Authentication` section on this page, insert credentials to obtain an access token, then explore the API endpoints described in the `Endpoints` section.\n\n**2. Postman collection:** For a hands-on approach, consider downloading the Postman collection and environment from the top of this page. Insert credentials and start testing the API in Postman's interactive application.\n\n**3. Writing code:** Ready to start coding? Try the Python example below, replacing `client_id` and `client_secret` with proper credentials. This invokes the Probabilistic endpoint with a GET request and prints the response.\n\n```python\n  import requests\n  import urllib\n\n  #--- Obtain an API access token ---\n\n  auth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\n\n  body = {\n      'grant_type': 'client_credentials',\n      'client_id': '...insert your client id here...',\n      'client_secret': '...insert your client secret here...',\n      'audience': 'https://probabilistic.api.dtn.com'\n  }\n  response = requests.post(auth_url, json=body)\n  access_token = response.json()['data']['access_token']\n\n  #--- Invoke the API ---\n\n  api_base_url = 'https://probabilistic.api.dtn.com/v1'\n  query_parameters = urllib.parse.urlencode({\n      \"lat\": 35.47,\n      \"lon\": -97.51,\n      \"startTime\": \"2024-08-15T00:00:00Z\",\n      \"endTime\": \"2024-08-17T00:00:00Z\",\n  })\n  endpoint = '/probabilistic?' + query_parameters\n\n  headers = {'Authorization': 'Bearer ' + access_token}\n  response = requests.get(api_base_url + endpoint, headers=headers)\n\n  #--- Print the response ---\n\n  print(response.json())\n```",
+      "type": "text/plain"
+    }
+  }
+}

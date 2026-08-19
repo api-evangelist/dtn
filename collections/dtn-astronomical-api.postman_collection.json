@@ -1,0 +1,401 @@
+{
+  "item": [
+    {
+      "id": "76ea395f-25a1-4e87-b9da-579c1ee912a0",
+      "name": "Endpoints",
+      "description": {
+        "content": "The Astronomical API has a single endpoint that streamlines the process of obtaining Sun and Moon data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "3c655636-861c-49f5-b65e-8a54688967d4",
+          "name": "Sun and Moon",
+          "request": {
+            "name": "Sun and Moon",
+            "description": {
+              "content": "This endpoint provides comprehensive astronomical data including sunrise and sunset times, current moon phase, and more related to the Sun's and Moon's status for any specific point on Earth. Specify the location and an optional date range up to 15 days long. The API responds with the requested data in GeoJSON format.\n\nUse query parameters to control the results in the response body:\n\n  * Specify a location as latitude (`lat`) and longitude (`lon`).\n\n  * Two important parameters are `startDate` and `endDate`:\n    + The API returns data for the specified date range when both are specified.\n    + The API returns data for the specified UTC day when only `startTime` is specified.\n    + The API returns data for the current UTC day when neither are specified.\n\n  * Complete example: `https://astronomical.api.dtn.com/v2/sun-moon?lat={lat}&lon={lon}&startDate={start_date}&endDate={end_date}`\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "sun-moon"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<date>"
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<date>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "35c61b95-ecd3-4103-b8f2-66feb288fcb6",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "sun-moon"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "52.369"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "4.875"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2023-08-10"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2023-08-12"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://astronomical.api.dtn.com/v2/sun-moon?lat=52.369298973574985&lon=4.874941498041485&startDate=2023-08-10&endDate=2023-08-12\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          4.875,\n          52.369\n        ]\n      },\n      \"properties\": {\n        \"2023-08-10\": {\n          \"sun\": {\n            \"solarNoon\": \"2023-08-10T11:47:17Z\",\n            \"nadir\": \"2023-08-09T23:47:17Z\",\n            \"sunrise\": \"2023-08-10T04:15:46Z\",\n            \"sunset\": \"2023-08-10T19:18:47Z\",\n            \"sunriseEnd\": \"2023-08-10T04:19:41Z\",\n            \"sunsetStart\": \"2023-08-10T19:14:52Z\",\n            \"dawn\": \"2023-08-10T03:36:02Z\",\n            \"dusk\": \"2023-08-10T19:58:31Z\",\n            \"nauticalDawn\": \"2023-08-10T02:43:49Z\",\n            \"nauticalDusk\": \"2023-08-10T20:50:45Z\",\n            \"nightEnd\": \"2023-08-10T01:35:56Z\",\n            \"night\": \"2023-08-10T21:58:38Z\",\n            \"goldenHourEnd\": \"2023-08-10T05:04:21Z\",\n            \"goldenHour\": \"2023-08-10T18:30:13Z\"\n          },\n          \"moon\": {\n            \"illumination\": \"29.7%\",\n            \"phaseId\": 8,\n            \"phaseName\": \"Waning Crescent\",\n            \"moonrise\": \"2023-08-10T22:46:37Z\",\n            \"moonset\": \"2023-08-10T15:49:49Z\"\n          }\n        },\n        \"2023-08-11\": {\n          \"sun\": {\n            \"solarNoon\": \"2023-08-11T11:47:08Z\",\n            \"nadir\": \"2023-08-10T23:47:08Z\",\n            \"sunrise\": \"2023-08-11T04:17:25Z\",\n            \"sunset\": \"2023-08-11T19:16:52Z\",\n            \"sunriseEnd\": \"2023-08-11T04:21:19Z\",\n            \"sunsetStart\": \"2023-08-11T19:12:58Z\",\n            \"dawn\": \"2023-08-11T03:37:55Z\",\n            \"dusk\": \"2023-08-11T19:56:22Z\",\n            \"nauticalDawn\": \"2023-08-11T02:46:10Z\",\n            \"nauticalDusk\": \"2023-08-11T20:48:06Z\",\n            \"nightEnd\": \"2023-08-11T01:39:41Z\",\n            \"night\": \"2023-08-11T21:54:36Z\",\n            \"goldenHourEnd\": \"2023-08-11T05:05:49Z\",\n            \"goldenHour\": \"2023-08-11T18:28:28Z\"\n          },\n          \"moon\": {\n            \"illumination\": \"20.8%\",\n            \"phaseId\": 8,\n            \"phaseName\": \"Waning Crescent\",\n            \"moonrise\": \"2023-08-11T23:28:00Z\",\n            \"moonset\": \"2023-08-11T17:01:30Z\"\n          }\n        },\n        \"2023-08-12\": {\n          \"sun\": {\n            \"solarNoon\": \"2023-08-12T11:47:00Z\",\n            \"nadir\": \"2023-08-11T23:47:00Z\",\n            \"sunrise\": \"2023-08-12T04:19:03Z\",\n            \"sunset\": \"2023-08-12T19:14:56Z\",\n            \"sunriseEnd\": \"2023-08-12T04:22:57Z\",\n            \"sunsetStart\": \"2023-08-12T19:11:02Z\",\n            \"dawn\": \"2023-08-12T03:39:47Z\",\n            \"dusk\": \"2023-08-12T19:54:12Z\",\n            \"nauticalDawn\": \"2023-08-12T02:48:32Z\",\n            \"nauticalDusk\": \"2023-08-12T20:45:28Z\",\n            \"nightEnd\": \"2023-08-12T01:43:21Z\",\n            \"night\": \"2023-08-12T21:50:38Z\",\n            \"goldenHourEnd\": \"2023-08-12T05:07:17Z\",\n            \"goldenHour\": \"2023-08-12T18:26:42Z\"\n          },\n          \"moon\": {\n            \"illumination\": \"13.4%\",\n            \"phaseId\": 8,\n            \"phaseName\": \"Waning Crescent\",\n            \"moonrise\": \"Never Rise\",\n            \"moonset\": \"2023-08-12T17:57:59Z\"\n          }\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "47390762-89f4-4b34-95dc-36058b633ec3",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "sun-moon"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "52.369"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "4.875"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2023-08-10"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2023-08-12"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7f28752-a111-4265-8644-e4cc8a67ce8c",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "sun-moon"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "52.369"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "4.875"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2023-08-10"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2023-08-12"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2c82c740-70f1-49ee-859a-98fb5b2a07be",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "sun-moon"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "52.369"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "4.875"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2023-08-10"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2023-08-12"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://astronomical.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a358b1c0-3cce-4fa8-a405-236352b71f9a",
+    "name": "DTN Astronomical API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nWelcome to DTN's Astronomical API - the comprehensive source for Sun and Moon-based data. This API offers precise information concerning the Sun's position in the sky, encompassing both rising and setting times, as well as Moon phases for any location on Earth.\n\nThe Astronomical API is an ideal solution for various application types, including weather, astronomical, calendar, outdoor activity, photography (e.g., golden hour tracking), and navigation applications, among others.\n\nWhether you are a hobbyist developer with an interest in astronomical phenomena or a professional software engineer seeking to enhance user experiences in your applications, this API delivers dependable and accurate data to meet your specific requirements.\n\nThe interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of DTN’s Astronomical API.\n# Getting Started\n## Obtaining credentials\nTo get started, all users need their own client ID and client secret. Please contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. Then, review the `Authentication` section to learn how to request an API access token. Do not share or use others' API credentials, since doing so may compromise information security.\n\n## Making requests\nThere are multiple ways to make an initial API request:\n\n**1. Interactive documentation:** Navigate to the `Authentication` section on this page, insert credentials to obtain an access token, then explore the API endpoints described in the `Endpoints` section.\n\n**2. Postman collection:** For a hands-on approach, consider downloading the Postman collection from the top of this page. Insert credentials and start testing the API in Postman's interactive application.\n\n**3. Writing code:** Ready to start coding? Try the Python example below, replacing `client_id` and `client_secret` with proper credentials.  This invokes the API endpoint with a GET request and prints the response.\n\n```python\n  import requests\n\n  #--- Obtain an API access token ---\n\n  auth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\n\n  body = {\n      'grant_type': 'client_credentials',\n      'client_id': '...insert your client id here...',\n      'client_secret': '...insert your client secret here...',\n      'audience': 'https://astronomical.api.dtn.com'\n  }\n  response = requests.post(auth_url, json=body)\n  access_token = response.json()['data']['access_token']\n\n  #--- Invoke the API ---\n\n  api_base_url = 'https://astronomical.api.dtn.com/v2/'\n  query_parameters = '&'.join([\n      'lat=52.369',\n      'lon=4.875',\n      'startDate=2023-08-10',\n      'endDate=2023-08-12',\n  ])\n  endpoint = '/sun-moon?' + query_parameters\n\n  headers = {'Authorization': 'Bearer ' + access_token}\n  response = requests.get(api_base_url + endpoint, headers=headers)\n\n  #--- Print the response ---\n\n  print(response.json())\n```\n## Latitude and longitude in the response\nRequested latitudes and longitudes are rounded to three (3) decimal places when presented in `$.features.*.geometry.coordinates`. Floating point precision might affect the last digit.\n### Rounding examples\n* 1.5555 => 1.556\n* 1.5545 => 1.554\n* -1.5555 => -1.556",
+      "type": "text/plain"
+    }
+  }
+}

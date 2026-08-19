@@ -1,0 +1,140 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DTN Soil Conditions API V1",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "GET /",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://soil.api.dtn.com/"
+          }
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Soil Conditions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://soil.api.dtn.com/v1/",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "lat",
+                "value": "35.47",
+                "type": "query"
+              },
+              {
+                "name": "lon",
+                "value": "-97.51",
+                "type": "query"
+              },
+              {
+                "name": "startTime",
+                "value": "2023-10-01T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "endTime",
+                "value": "2023-10-14T00:06:10Z",
+                "type": "query"
+              },
+              {
+                "name": "parameters",
+                "value": "soilTemp0To10cm,soilMoisture0To10cm",
+                "type": "query"
+              },
+              {
+                "name": "units",
+                "value": "us-std",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides current, forecast, and historical conditions for any specific point on the globe. Specify the location, the soil parameters of interest, and a time range up to 10 days long, from 2013-01-01T00:00:00Z to 10 days in the future. The API responds with the requested time series in GeoJSON format.\n\nCommon uses include precision farming, fetilizer management, pest and disease control, climate modeling and more\n\n## Using timezone offsets\n\nTo change timezones, specify a UTC offset "
+        },
+        {
+          "info": {
+            "name": "Soil Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://soil.api.dtn.com/v1/parameters",
+            "headers": [
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "category",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "oauth2",
+              "flow": "client_credentials",
+              "accessTokenUrl": "https://api.auth.dtn.com/v1/tokens/authorize",
+              "credentials": {
+                "clientId": "{{clientId}}",
+                "clientSecret": "{{clientSecret}}"
+              }
+            }
+          },
+          "docs": "This endpoint provides helpful context in JSON format about the soil parameters and operations that the other endpoints support.\n\nUse query parameters to control the results in the response body:\n  * Set `category` to `soil` to filter atmospheric parameters by that category.\n  * Specify a `name` to filter soil parameters by that name (e.g., `name=soilTemp0To10cm`).\n  * Specify a `category` and `name` to filter by both.\n  * Omit all query parameters to obtain all soil parameters in the response.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

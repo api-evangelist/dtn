@@ -1,0 +1,77 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "External Orders Microservice",
+    "version": "0.0.2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "health",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": " https://ext-svc-orders-2a698b99-digitalcommerce-uat.onlinefuelslabs.io/health"
+      },
+      "docs": "Returns Health Status to the caller"
+    },
+    {
+      "info": {
+        "name": "getOrders",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": " https://ext-svc-orders-2a698b99-digitalcommerce-uat.onlinefuelslabs.io/orders",
+        "params": [
+          {
+            "name": "startDate",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "endDate",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "status",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "page",
+            "value": "",
+            "type": "query"
+          },
+          {
+            "name": "limit",
+            "value": "",
+            "type": "query"
+          }
+        ]
+      },
+      "docs": "Gets all orders within the provided timeFrame"
+    },
+    {
+      "info": {
+        "name": "updateOrder",
+        "type": "http"
+      },
+      "http": {
+        "method": "PUT",
+        "url": " https://ext-svc-orders-2a698b99-digitalcommerce-uat.onlinefuelslabs.io/order/:orderId",
+        "params": [
+          {
+            "name": "orderId",
+            "value": "",
+            "type": "path"
+          }
+        ]
+      },
+      "docs": "updates an order"
+    }
+  ],
+  "bundled": true
+}

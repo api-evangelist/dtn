@@ -1,0 +1,825 @@
+{
+  "item": [
+    {
+      "id": "1dd78185-2502-4183-8f48-f96c2f2057ef",
+      "name": "Endpoints",
+      "description": {
+        "content": "The Weather Precipitation API has 2 endpoints that each cater to a specific need, whether it's the time series at a single location, or the associated metadata.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a914d90b-76a9-4b01-81d5-7d2cf6ab4f03",
+          "name": "Precipitation",
+          "request": {
+            "name": "Precipitation",
+            "description": {
+              "content": "This endpoint provides detailed precipitation data for any specified global location. Users can request various weather parameters for a time range of up to 15 days.\n\nCommon uses include weather monitoring, atmospheric research, and localized operations, such as event planning.\n\n## Query Parameters:\nUse query parameters to control the results in the response body:\n### location\n* Specify a location as latitude (`lat`) and longitude (`lon`).\n\n### parameters\n* Specify `parameters` to filter by specific atmospheric weather parameters. Include multiple as comma-separated values. The API returns only defaults when no specific parameters are requested.\n\n### startTime and endTime\n* Two key parameters are `startTime` and `endTime`. These parameters determine the time range for which the API returns data. Both `startTime` and `endTime` are inclusive, meaning that data at the top of the UTC hour for both timestamps is included in the response.\n* The time between `startTime` and `endTime` must be less than or equal to 15 days.\n* `startTime` must be greater than `2023-05-12T00:00:00Z` and `endTime` must be less than or equal to the current hour.\n\n* API Behavior Based on startTime and endTime:\n\n  * **Omitted startTime and endTime:** Returns only data for the current hour.\n\n  * **Only startTime Specified:** Returns data only for `startTime`.\n\n  * **Only endTime Specified:** Returns data only for `endTime`.\n\n* Inclusivity of Timestamps\n\n  * **Inclusive `startTime` and `endTime`:** Both parameters are inclusive, affecting the total duration and the number of data points returned, especially when using the interval parameter.\n\n  * **Effect on Data Retrieval and Aggregation:** The inclusivity can result in additional aggregation periods or data points.\n  \n  * **Example:** If `startTime` is 2024-01-01T01:00:00Z and `endTime` is 2024-01-01T02:00:00Z and the requested parameter is `precipAmount`,\n  the API will return data for both timestamps.\n  The data timestamped 2024-01-01T01:00:00Z would represent the amount of precipitation within the hour window of\n  2024-01-01T00:00:01Z to 2024-01-01T01:00:00Z. Likewise, the data timestamped 2024-01-01T02:00:00Z would represent the\n  amount of precipitation within the hour window of 2024-01-01T01:00:01Z to 2024-01-01T02:00:00Z.\n\n### units\n  * Use `units` to request values either as SI (metric) or United States customary (imperial) units.\n    + The API returns metric units by default and when `si-std` is specified.\n    + The API returns imperial units only when `us-std` is specified.\n\n### interval\n  * Specify the `interval` parameter to request aggregated data for parameters such as precipAmountSum.\n    + **Format:** The interval for hourly aggregations must be in the format {n}h, where {n} is an integer greater than 1 (e.g., 2h, 6h, or 24h).  For local timezone-aware daily aggregations, use '1d'.\n    + **Constraints:** The interval must not exceed the total duration between `startTime` and `endTime`.  For '1d' intervals, only local timezones (no UTC offsets) are supported to ensure accurate daily aggregation.\n\n  * Aggregation Behavior:\n    + **Aggregation Periods:** Data aggregation starts from the specified `startTime`. Each timestamp in the response represents the beginning of an aggregation period. For each interval, the API aggregates data from the timestamp up to (but not including) the next interval's start time.\n    + **Final Interval Handling:** If the duration between `startTime` and `endTime` doesn't divide evenly by the interval, the final interval may be shorter. The last data point aggregates up to the inclusive endTime.\n  * Examples using interval:\n    + Example 1: 12-Hour Interval Aggregation\n      +  Parameters:\n          + **startTime:** 2024-11-06T15:00:00Z\n          + **endTime:** 2024-11-07T15:00:00Z\n          + **interval:** 12h\n          + **parameter:** precipAmountSum\n      + Response:\n        ```json\n        {\n          \"properties\": {\n            \"2024-11-06T15:00:00Z\": {\n                \"precipAmountSum\": 0.5\n            },\n            \"2024-11-07T03:00:00Z\": {\n                \"precipAmountSum\": 1.0\n            },\n            \"2024-11-07T15:00:00Z\": {\n                \"precipAmountSum\": 0.4\n            }\n        }\n        ```\n      + Explanation:\n        + **First Data Point (2024-11-06T15:00:00Z):** Aggregates data from 2024-11-06T15:00:00Z up to including 2024-11-07T02:00:00Z.\n        + **Second Data Point (2024-11-07T03:00:00Z):** Aggregates data from 2024-11-07T03:00:00Z up to including 2024-11-07T14:00:00Z.\n        + **Third Data Point (2024-11-07T15:00:00Z):** Since `endTime` is inclusive, this final data point includes data from 2024-11-07T15:00:00Z up to the endTime.\n    + Example 2: 24-Hour Interval with Inclusive `endTime`\n      +  Parameters:\n          + **startTime:** 2024-10-23T00:00:00Z\n          + **endTime:** 2024-10-24T00:00:00Z\n          + **interval:** 24h\n          + **parameter:** precipAmountSum\n      + Response:\n        ```json\n        {\n          \"properties\": {\n            \"2024-10-23T00:00:00Z\": {\n                \"precipAmount\": 1.0\n            },\n            \"2024-10-24T00:00:00Z\": {\n                \"precipAmount\": 0.6\n          }\n        }\n        ```\n      + Explanation:\n          + **First Data Point (2024-10-23T00:00:00Z):** Aggregates data from 2024-10-23T00:00:00Z up to including 2024-10-24T24:00:00Z.\n          + **Second Data Point (2024-10-24T00:00:00Z):** Since endTime is inclusive and matches the start of the next interval, this data point includes data at 2024-10-24T00:00:00Z.\n          + **Total Duration:** Due to inclusivity, the time span covers 25 hours, resulting in two data points.\n    + Example 3: Adjusting endTime to Control Data Points\n      + Objective: Retrieve data for only one day with a single data point.\n      + Adjusted endTime: Set to 2024-10-23T23:59:59Z.\n      + Parameters:\n        + **startTime:** 2024-10-23T00:00:00Z\n        + **endTime:** 2024-10-23T23:59:59Z\n        + **interval:** 24h\n        + **parameter:** precipAmountSum\n      + Response:\n        ```json\n        \"properties\": {\n          \"2024-10-23T00:00:00Z\": {\n              \"precipAmountSum\": 19.3\n          }\n        }\n        ```\n      * Explanation:\n        * **Single Data Point:** Aggregates data over the 24-hour period without including the next day's data.\n        * **Duration:** Exactly 24 hours, resulting in one data point.\n    + Example 4: Fractional time zones\n      + Parameters:\n        + **startTime:** 2024-05-27T00:00:00\n        + **endTime:** 2024-05-27T23:59:59\n        + **interval:** 24h\n        + **parameter:** precipAmountSum\n        + **lat:** 30.251\n        + **lon:** 62.569\n        \n      + Response:\n        ```json\n        \"properties\": {\n          \"2024-05-26T23:30:00+0430\": {\n              \"precipAmountSum\": 11.1,\n          },\n          \"2024-05-27T23:30:00+0430\": {\n              \"precipAmountSum\": 12.3,\n          }\n        }\n        ```\n      * Explanation:\n        * **Why** This response seems confusing at first becuase we have 2 data points when we seemingly only requested a single 24 hour interval.\n        * **Local Timezone Assumption** When requesting a start and end time that has no timezone, the timezone of the location requested will be used.\n          * For the example requested lat/lon the local timezone is UTC+04:30 (fractional timezone)\n        * **Inclusive Time Range** startTime is hour inclusive, meaning the API will return data for the top of the requested hour (in UTC).\n        * **UTC Conversion** All data is stored in UTC hourly.\n          * When we convert these requested timestamps to UTC, `startTime=2024-05-26T19:30:00Z`, `endTime=2024-05-27T19:29:59Z`\n        * Since startTime and endTime are `inclusive`, so the time range spans exactly 25 hours, not 24.\n        * Changing `endTime` to `2024-05-27T23:00:00` will result in a single interval returned.\n\n\n### Complete example:\n\n`https://precipitation.api.dtn.com/v1/?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&interval={n}h&parameters={param1,param2}&units={units}`\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "lat",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "lon",
+                  "value": "<float>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "parameters",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "units",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "10c7dc56-db7c-4097-bc5f-2308b7e46e29",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"url\": \"https://precipitation.api.dtn.com/v1/?lat=35.47&lon=-97.51&parameters=precipAmount&startTime=2023-10-01T00:06:10Z&endTime=2023-10-01T02:06:10Z&units=us-std\",\n  \"type\": \"FeatureCollection\",\n  \"features\": [\n    {\n      \"type\": \"Feature\",\n      \"geometry\": {\n        \"type\": \"Point\",\n        \"coordinates\": [\n          -97.51,\n          35.47\n        ]\n      },\n      \"properties\": {\n        \"2023-10-01T00:00:00Z\": {\n          \"precipAmount\": 2.1\n        },\n        \"2023-10-01T01:00:00Z\": {\n          \"precipAmount\": 0.6\n        },\n        \"2023-10-01T02:00:00Z\": {\n          \"precipAmount\": 1\n        }\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b0773a5f-bf06-47ea-9c63-85dc88de3e91",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:precipitations-service:/v1/:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a979b04e-2e5a-402a-b28f-05b3687b7374",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:precipitations-service:/v1/:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f378ecbf-b8cf-4bff-801e-e3616924aa8f",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "lat",
+                      "value": "35.47"
+                    },
+                    {
+                      "key": "lon",
+                      "value": "-97.51"
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "2024-10-01T00:06:10Z"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "2024-10-14T00:06:10Z"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "parameters",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "units",
+                      "value": "us-std"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:precipitations-service:/v1/:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5585ed05-2adf-4d0f-b240-97738965937e",
+          "name": "Parameters",
+          "request": {
+            "name": "Parameters",
+            "description": {
+              "content": "Specify parameters to filter by specific weather parameters. \nInclude multiple as comma-separated values. \nThis endpoint only returns data for precipAmount and its aggregations.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "parameters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "name",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "category",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Accept-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "069b2e95-f85f-4cf7-83ed-7bb50d975f4a",
+              "name": "A successful request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "precipAmount"
+                    },
+                    {
+                      "key": "category",
+                      "value": "hourly-precipitations"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"hourly-precipitations\": {\n    \"precipAmount\": {\n      \"metricUnit\": \"millimeter\",\n      \"imperialUnit\": \"inch\",\n      \"type\": \"number\",\n      \"description\": \"Best estimate of liquid-equivalent precipitation.\",\n      \"notes\": \"\",\n      \"aggregationParameters\": [\n        \"precipAmountSum\"\n      ],\n      \"requiredScope\": [\n        \"weather.precipitation.core:read\",\n        \"weather.precipitation.plus:read\"\n      ]\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9b84aa78-1db8-43a7-9ca3-9c1090801ea8",
+              "name": "An invalid request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "precipAmount"
+                    },
+                    {
+                      "key": "category",
+                      "value": "hourly-precipitations"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"detail\": \"Validation failed.\",\n  \"status\": 400,\n  \"instance\": \"urn:dtn:precipitations-service:/v1/:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "99dd7416-6564-4e28-81b9-264937f2a4ca",
+              "name": "Unable to authenticate credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "precipAmount"
+                    },
+                    {
+                      "key": "category",
+                      "value": "hourly-precipitations"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user.\",\n  \"detail\": \"invalid token\",\n  \"status\": 401,\n  \"instance\": \"urn:dtn:precipitations-service:/v1/:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6afa6e5f-94d7-4d1a-889f-fbfc2d816e53",
+              "name": "Unable to produce a response matching the Accept request header.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "parameters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": "precipAmount"
+                    },
+                    {
+                      "key": "category",
+                      "value": "hourly-precipitations"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept-Encoding",
+                    "value": "gzip",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Accept",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/problem+json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Acceptable",
+              "code": 406,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/problem+json"
+                }
+              ],
+              "body": "{\n  \"type\": \"not-acceptable\",\n  \"title\": \"Not Acceptable\",\n  \"detail\": \"The Accept header value is invalid or unsupported.\",\n  \"status\": 406,\n  \"instance\": \"urn:dtn:precipitations-service:/v1/:requestId:123e4567-e89b-12d3-a458-426614176000\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "02983a19-72ab-4b53-80d5-cd7481154182",
+      "name": "Parameters",
+      "description": {
+        "content": "DTN's Precipitation API offers atmospheric precipitation related parameters that provide detailed insights for analyzing past weather patterns.\n\n\nData returned by DTN's Precipitation API refers to actual precipitation estimates, not forecasts.\n\n\nIt’s possible to aggregate certain parameters over multiple hours.\nTo request an aggregation, just substitute the desired parameter name and specify an `interval` greater than 1 hour (see `Endpoints` section for details).\n\n\nFor example, precipitation amount (`precipAmount`) has the corresponding parameter `precipAmountSum`, request parameter `precipAmountSum` with `interval=6h` in the query string to obtain the sum of precipAmount over 6-hours.\n\n\nThe tables that follow identify which parameters have corresponding aggregation parameter names.  \n<details> <summary>Click to expand...</summary>\n\n| Parameter                     | Core | Description | Metric units | Imperial units | Aggregation Parameters |\n|-------------------------------|---------|-------------|--------------|----------------|------------------------|\n| precipAmount                  | Yes | Best estimate of liquid-equivalent precipitation every hour. Incorporates radar, model/ analysis data, and observations to estimate actual amounts of precipitation. | millimeter | inch | precipAmountSum |\n\n</details>",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b2c2ad6e-27a3-4237-8539-fe85dbc38287",
+          "name": "/",
+          "request": {
+            "name": "/",
+            "description": {},
+            "url": {
+              "path": [
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://precipitation.api.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "56b78554-931d-4b25-aa13-38fa016a036c",
+    "name": "DTN Precipitation API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Introduction\nWelcome to DTN’s Precipitation API – Your gateway to high-resolution Precipitation Estimates.\n \nThis API caters to a wide range of users, including:\n  * Scientists engaged in environmental research\n  * Airlines optimizing routes and schedules\n  * Event planners enhancing weather safety measures\n  * Retailers adjusting inventory and marketing strategies\n  * Software developers building weather applications\n\n\n**Key features:** The Precipitation API provides a time series of quantitative atmospheric precipitation parameters. \nIt leverages state-of-the-art cloud technology and DTN's extensive global models. \nThe data is continuously validated, calibrated, and enhanced.\n\n**Precipitation at a location:** For simplicity, the API provides a single endpoint for precipitation data. \nSpecify a location, the weather parameters of interest, and a time range up to 15 days long.\nThe API responds with the requested time series in GeoJSON format.\n\n**Note:** Data returned by DTN's Precipitation API refers to actual precipitation estimates, not forecasts.\n\nThe interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of DTN’s Weather Precipitation API.\n# Getting Started\n## Obtaining credentials\nTo get started, all users need their own client ID and client secret. Please contact an account manager or the [DTN sales team](https://www.dtn.com/contact-us/) to obtain these. Then, review the `Authentication` section to learn how to request an API access token. Do not share or use others' API credentials, since doing so may compromise information security.\n\n## Making requests\nThere are multiple ways to make an initial API request:\n\n**1. Interactive documentation:** Navigate to the `Authentication` section on this page, insert credentials to obtain an access token, then explore the API endpoints described in the `Endpoints` section.\n\n**2. Postman collection:** For a hands-on approach, consider downloading the Postman collection and environment from the top of this page. Insert credentials and start testing the API in Postman's interactive application.\n\n**3. Writing code:** Ready to start coding? Try the Python example below, replacing `client_id` and `client_secret` with proper credentials.  This invokes the Conditions endpoint with a GET request and prints the response.\n\n```python\n  import requests\n  import urllib\n\n  #--- Obtain an API access token ---\n\n  auth_url = 'https://api.auth.dtn.com/v1/tokens/authorize'\n\n  body = {\n      'grant_type': 'client_credentials',\n      'client_id': '...insert your client id here...',\n      'client_secret': '...insert your client secret here...',\n      'audience': 'https://precipitation.api.dtn.com'\n  }\n  response = requests.post(auth_url, json=body)\n  access_token = response.json()['data']['access_token']\n\n  #--- Invoke the API ---\n\n  api_base_url = 'https://precipitation.api.dtn.com/v1'\n  query_parameters = urllib.parse.urlencode({\n      \"lat\": 35.47,\n      \"lon\": -97.51,\n      \"startTime\": \"2025-01-01T01:00:00Z\",\n      \"endTime\": \"2025-01-02T01:00:00Z\",\n      \"parameters\", \"precipAmount\"\n  })\n  endpoint = '/?' + query_parameters\n\n  headers = {'Authorization': 'Bearer ' + access_token}\n  response = requests.get(api_base_url + endpoint, headers=headers)\n\n  #--- Print the response ---\n\n  print(response.json())\n```\n\n## Using timezone offsets\nTo change timezones, specify a UTC offset (such as `+08:00` or `-05:00` instead of `Z`) for query parameters `startTime` and `endTime`. Timestamps in the response will automatically match the `startTime` offset. Remove the offset entirely to obtain the local timezone for the requested location.\n\n**Important note**: Because the `+` symbol is a special URL character, it must be encoded as `%2B` for use within the query parameter string.\n#### Valid examples\n* `?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:00:00Z`\n* `?startTime=2024-01-01T00:00:00%2B08:00&endTime=2024-01-01T23:00:00%2B02:00`\n* `?startTime=2024-01-01T00:00:00-08:00&endTime=2024-01-01T23:00:00-08:00`\n* `?startTime=2024-01-01T00:00:00&endTime=2024-01-01T23:00:00`\n#### Invalid example\n* `?startTime=2024-01-01T00:00:00+08:00&endTime=2024-01-01T23:00:00+08:00` (need to encode `+` as `%2B`)\n## Latitude and longitude in the response\nRequested latitudes and longitudes are rounded to three (3) decimal places when presented in `$.features.*.geometry.coordinates`. Floating point precision might affect the last digit.\n### Rounding examples\n* 1.5555 => 1.556\n* 1.5545 => 1.554\n* -1.5555 => -1.556",
+      "type": "text/plain"
+    }
+  }
+}

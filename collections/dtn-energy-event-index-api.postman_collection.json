@@ -1,0 +1,998 @@
+{
+  "item": [
+    {
+      "id": "11c9610d-9126-4284-9ef6-c354f8ae1ec8",
+      "name": "Check the health status of the API",
+      "request": {
+        "name": "Check the health status of the API",
+        "description": {
+          "content": "This endpoint provides information about the current health status of the API service.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "health-check"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "a4ac0c4c-a642-4ad3-b4bc-4b1f095e925e",
+          "name": "Successful health check response",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "health-check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"service\": \"wx-eei-api\",\n  \"version\": \"1.0.0\",\n  \"status\": \"up\",\n  \"info\": \"Service is healthy\",\n  \"environment\": \"production\",\n  \"timestamp\": \"2024-12-02T06:10:45.451Z\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "7358f106-f2b1-4efe-b9b5-5052ea47474e",
+      "name": "Retrieve EEI Thresholds for an Account",
+      "request": {
+        "name": "Retrieve EEI Thresholds for an Account",
+        "description": {
+          "content": "This endpoint retrieves the Energy Event Index (EEI) thresholds for a specific account. It provides detailed information about various weather-related thresholds that impact energy infrastructure for different EEI levels.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "account",
+            "eeithreshold"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "20913a1c-ebb5-4038-a621-eb7f83020ff5",
+          "name": "Successful retrieval of EEI thresholds",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "account",
+                "eeithreshold"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"accountId\": 132,\n    \"energyEventIndex\": 1,\n    \"flooding\": null,\n    \"ice\": 0.1,\n    \"id\": 29,\n    \"lightning\": null,\n    \"rainfallSummer\": null,\n    \"rainfallWinter\": null,\n    \"snowSummer\": 4,\n    \"snowWinter\": 6,\n    \"wildfireSummer\": null,\n    \"wildfireWinter\": null,\n    \"windGustSummer\": 35,\n    \"windGustWinter\": 45,\n    \"windSpeedSummer\": 30,\n    \"windSpeedWinter\": 40\n  },\n  {\n    \"accountId\": 132,\n    \"energyEventIndex\": 2,\n    \"flooding\": null,\n    \"ice\": 0.1,\n    \"id\": 28,\n    \"lightning\": null,\n    \"rainfallSummer\": null,\n    \"rainfallWinter\": null,\n    \"snowSummer\": 4,\n    \"snowWinter\": 6,\n    \"wildfireSummer\": null,\n    \"wildfireWinter\": null,\n    \"windGustSummer\": 35,\n    \"windGustWinter\": 45,\n    \"windSpeedSummer\": 30,\n    \"windSpeedWinter\": 40\n  }\n]",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "2407693e-6a3b-496b-95cf-b3202f4a014f",
+          "name": "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "account",
+                "eeithreshold"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Unauthorized. Please make sure you provided the correct headers\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/region:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "03230260-2310-4dfb-84ce-a10ef786d198",
+          "name": "Internal Server Error - An unexpected error occurred on the server.\nIf you encounter this error, please contact your administrator for assistance.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "account",
+                "eeithreshold"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"internal-server-error\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"Failed to request data from the Identity API.\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/eeithreshold:requestId:e4547111-872e-4ab6-afa2-42015133433f\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "8fc68b0c-ceef-4ff5-bd5d-3b63abc286e7",
+      "name": "Retrieve EEI Forecast Schedule for an Account",
+      "request": {
+        "name": "Retrieve EEI Forecast Schedule for an Account",
+        "description": {
+          "content": "This endpoint retrieves the Energy Event Index (EEI) forecast schedule for a specific account. \nIt provides information about the scheduled publication times for EEI forecasts.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "account",
+            "eeischedule"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "093f5a4a-a61c-440e-87fc-a1b27df46aca",
+          "name": "Successful retrieval of EEI forecast schedule",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "account",
+                "eeischedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"accountId\": 132,\n    \"hourDue\": 5,\n    \"id\": 52,\n    \"insertDateTime\": {\n      \"dateLong\": \"September 30, 2024\",\n      \"dateShort\": \"9/30/24\",\n      \"dateShortest\": \"9/30\",\n      \"timeShort\": \"17:21 UTC\",\n      \"timeShortest\": \"1700\",\n      \"dowShortest\": \"Mon\",\n      \"timeZone\": \"UTC\",\n      \"utcValue\": 1727716915767\n    }\n  },\n  {\n    \"accountId\": 132,\n    \"hourDue\": 6,\n    \"id\": 53,\n    \"insertDateTime\": {\n      \"dateLong\": \"September 30, 2024\",\n      \"dateShort\": \"9/30/24\",\n      \"dateShortest\": \"9/30\",\n      \"timeShort\": \"17:21 UTC\",\n      \"timeShortest\": \"1700\",\n      \"dowShortest\": \"Mon\",\n      \"timeZone\": \"UTC\",\n      \"utcValue\": 1727716915767\n    }\n  }\n]",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "6e51e6da-737c-4d64-a36e-9d7b45986b7f",
+          "name": "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "account",
+                "eeischedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Unauthorized. Please make sure you provided the correct headers\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/eeischedule:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "d00769c1-4544-4ef8-8f0e-0c77bf7bb2d0",
+          "name": "Internal Server Error - An unexpected error occurred on the server.\nIf you encounter this error, please contact your administrator for assistance.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "account",
+                "eeischedule"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"internal-server-error\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"Failed to request data from the Identity API.\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/eeischedule:requestId:e4547111-872e-4ab6-afa2-42015133433f\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "36857217-4152-4eb9-84b1-6ccb2aa9bb85",
+      "name": "Retrieve Regions for EEI Account",
+      "request": {
+        "name": "Retrieve Regions for EEI Account",
+        "description": {
+          "content": "This endpoint retrieves a list of all regions associated with the Energy Event Index (EEI) account.\n\nThe regions returned by this endpoint represent distinct areas or divisions within the EEI service territory. These regions may correspond to different operational zones, service areas, or administrative divisions relevant to energy infrastructure and weather impact assessment.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "region"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "e794f7ca-c852-4d1d-b9de-e9b3c6bd3e5d",
+          "name": "Successful retrieval of regions",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "region"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  \"REGION 6\",\n  \"SEACOAST\",\n  \"CAPITAL\",\n  \"FITCHBURG\",\n  \"PORTLAND\",\n  \"REGION 4\"\n]",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "0b8cbc72-f57a-4006-8b56-d2fdbcf93d35",
+          "name": "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "region"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Unauthorized. Please make sure you provided the correct headers\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/region:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "d9fd0afa-4123-4ec1-9619-9e9cdcef2741",
+          "name": "Internal Server Error - An unexpected error occurred on the server.\nIf you encounter this error, please contact your administrator for assistance.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "region"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"internal-server-error\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"Failed to request data from the Identity API.\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/region:requestId:e4547111-872e-4ab6-afa2-42015133433f\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "fc0eb8dc-e11f-4e0d-92bd-db01f0f75193",
+      "name": "Retrieve EEI forecast data for client's regions",
+      "request": {
+        "name": "Retrieve EEI forecast data for client's regions",
+        "description": {
+          "content": "Fetches detailed EEI (Energy Event Index) forecast data for various regions, including confidence levels and weather parameters.",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "get-eei-forecast"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "b5297fdc-a2c0-4d94-8ef7-071d038a7e6d",
+          "name": "Successful retrieval of all EEI forecast parameters.\nFor array values such as confidenceLevel, windGust, windSpeed etc.: ({ confidenceLevel: [1,2,3]})\nThe array [1, 3, 5] corresponds to three consecutive days starting from the date in updated_at_utc.\nFor example, if updated_at_utc converts to December 1, 2024 in the local timezone:\n- The first value (1) represents December 1\n- The second value (3) represents December 2\n- The third value (5) represents December 3\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "get-eei-forecast"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"name\": \"string\",\n  \"forecaster\": \"string\",\n  \"updated_at_utc\": 8636,\n  \"discussion\": \"string\",\n  \"regions\": {\n    \"key_0\": {\n      \"confidenceLevel\": [\n        2438,\n        5515\n      ],\n      \"flooding\": [\n        6851,\n        986\n      ],\n      \"ice\": [\n        8109,\n        8216\n      ],\n      \"lightning\": [\n        2506,\n        4925\n      ],\n      \"rainfall\": [\n        6026,\n        5759\n      ],\n      \"snow\": [\n        8459,\n        5126\n      ],\n      \"wildfire\": [\n        9344,\n        2066\n      ],\n      \"windGust\": [\n        8404,\n        1627\n      ],\n      \"windSpeed\": [\n        3593,\n        3770\n      ]\n    },\n    \"key_1\": {\n      \"confidenceLevel\": [\n        3843,\n        7040\n      ],\n      \"flooding\": [\n        8432,\n        539\n      ],\n      \"ice\": [\n        7571,\n        9223\n      ],\n      \"lightning\": [\n        8868,\n        8564\n      ],\n      \"rainfall\": [\n        1970,\n        1830\n      ],\n      \"snow\": [\n        1878,\n        9728\n      ],\n      \"wildfire\": [\n        7770,\n        2778\n      ],\n      \"windGust\": [\n        594,\n        9051\n      ],\n      \"windSpeed\": [\n        3428,\n        5929\n      ]\n    }\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "377aac29-48a0-4b3d-80d1-ed58688821f7",
+          "name": "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "get-eei-forecast"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Unauthorized. Please make sure you provided the correct headers\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/get-eei-forecast:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "eb99a01e-6acd-4dfa-ba05-ca0008cedd8a",
+          "name": "Internal Server Error - An unexpected error occurred on the server.\nIf you encounter this error, please contact your administrator for assistance.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "get-eei-forecast"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"internal-server-error\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"Failed to request data from the Identity API.\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/get-eei-forecast:requestId:e4547111-872e-4ab6-afa2-42015133433f\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "d35f074a-50d0-4cb4-bacc-a93c3433e158",
+      "name": "Retrieve specific EEI forecast parameter data for Iberdrola USA regions",
+      "request": {
+        "name": "Retrieve specific EEI forecast parameter data for Iberdrola USA regions",
+        "description": {
+          "content": "Fetches EEI (Energy Event Index) forecast data for a specific parameter across various regions. \nThis endpoint allows you to retrieve data for a single parameter, reducing the payload size when only specific information is needed.\nAvailable parameters are:\n- wind-speed\n- confidence-level\n- flooding\n- ice\n- lightning\n- rainfall\n- snow\n- wildfire\n- wind-gust\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "v1",
+            "get-eei-forecast",
+            ":parameter"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<string>",
+              "key": "parameter",
+              "description": "(Required) The specific EEI forecast parameter to retrieve"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "a2c28ef5-cb41-40ce-942f-550eba87e29c",
+          "name": "Successful retrieval of the specified EEI forecast parameter.\nFor array values such as windSpeed, confidenceLevel, and windGust:\nThe array [1, 1, 1] corresponds to three consecutive days starting from the date in updated_at_utc.\nFor example, if updated_at_utc converts to December 1, 2024 in the local timezone:\n- The first value represents December 1\n- The second value represents December 2\n- The third value represents December 3\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "get-eei-forecast",
+                ":parameter"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "parameter",
+                  "description": "(Required) The specific EEI forecast parameter to retrieve"
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"name\": \"string\",\n  \"forecaster\": \"string\",\n  \"updated_at_utc\": 4473,\n  \"discussion\": \"string\",\n  \"regions\": {\n    \"key_0\": {\n      \"windSpeed\": [\n        2792,\n        8988\n      ],\n      \"confidenceLevel\": [\n        3903,\n        6056\n      ],\n      \"flooding\": [\n        5571,\n        2952\n      ],\n      \"ice\": [\n        7214,\n        8214\n      ],\n      \"lightning\": [\n        4310,\n        5196\n      ],\n      \"rainfall\": [\n        4002,\n        3462\n      ],\n      \"snow\": [\n        3524,\n        6921\n      ],\n      \"wildfire\": [\n        9464,\n        9545\n      ],\n      \"windGust\": [\n        1546,\n        9024\n      ]\n    },\n    \"key_1\": {\n      \"windSpeed\": [\n        4425,\n        8703\n      ],\n      \"confidenceLevel\": [\n        1455,\n        9154\n      ],\n      \"flooding\": [\n        1214,\n        6060\n      ],\n      \"ice\": [\n        2497,\n        4105\n      ],\n      \"lightning\": [\n        6817,\n        4916\n      ],\n      \"rainfall\": [\n        6874,\n        1660\n      ],\n      \"snow\": [\n        1608,\n        1619\n      ],\n      \"wildfire\": [\n        3588,\n        8819\n      ],\n      \"windGust\": [\n        2117,\n        9207\n      ]\n    },\n    \"key_2\": {\n      \"windSpeed\": [\n        2258,\n        5468\n      ],\n      \"confidenceLevel\": [\n        3486,\n        9622\n      ],\n      \"flooding\": [\n        2282,\n        2589\n      ],\n      \"ice\": [\n        5932,\n        1921\n      ],\n      \"lightning\": [\n        8315,\n        3164\n      ],\n      \"rainfall\": [\n        5044,\n        6380\n      ],\n      \"snow\": [\n        7564,\n        3185\n      ],\n      \"wildfire\": [\n        6258,\n        3374\n      ],\n      \"windGust\": [\n        4096,\n        4381\n      ]\n    },\n    \"key_3\": {\n      \"windSpeed\": [\n        7311,\n        7979\n      ],\n      \"confidenceLevel\": [\n        5477,\n        3165\n      ],\n      \"flooding\": [\n        5847,\n        9877\n      ],\n      \"ice\": [\n        4264,\n        9277\n      ],\n      \"lightning\": [\n        8483,\n        2866\n      ],\n      \"rainfall\": [\n        4163,\n        4504\n      ],\n      \"snow\": [\n        7113,\n        9338\n      ],\n      \"wildfire\": [\n        6494,\n        6976\n      ],\n      \"windGust\": [\n        4367,\n        9371\n      ]\n    }\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "465c0f11-eea5-4b23-8e00-3e7545f3331a",
+          "name": "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "get-eei-forecast",
+                ":parameter"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "parameter",
+                  "description": "(Required) The specific EEI forecast parameter to retrieve"
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Unauthorized. Please make sure you provided the correct headers\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/get-eei-forecast/{parameter}:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "9e16f9c7-105f-4e93-8d9f-0497b73ec18b",
+          "name": "Internal Server Error - An unexpected error occurred on the server.\nIf you encounter this error, please contact your administrator for assistance.\n",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "v1",
+                "get-eei-forecast",
+                ":parameter"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "parameter",
+                  "description": "(Required) The specific EEI forecast parameter to retrieve"
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: oauth2",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "<token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"type\": \"internal-server-error\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"Failed to request data from the Identity API.\",\n  \"instance\": \"urn:dtn:wx-eei-api:/v1/get-eei-forecast/{parameter}:requestId:e4547111-872e-4ab6-afa2-42015133433f\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://eei.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessTokenUrl",
+        "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+      },
+      {
+        "key": "grant_type",
+        "value": "client_credentials"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d1fbad2f-f4d3-4e17-bbc8-ac4b69bb1b76",
+    "name": "Energy Event Index Customer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Energy Event Index (EEI) Customer API\n\nThis API provides access to Energy Event Index (EEI) data for individual existing EEI customers. The Energy Event Index is a way to describe the impact of weather on energy/utility infrastructure, as well as wildfire risks.\n\n## About Energy Event Index (EEI)\nThe EEI applies a risk level (the index) to not only a range of weather parameters, but the likelihood in which they will occur, as well as the confidence/likelihood of change. A customer's EEI scale is applied to their specific requirements and their service areas.\n\n### EEI Parameters\nThe EEI system evaluates multiple weather parameters that can impact energy infrastructure:\n- **Wind Speed & Wind Gust**: Both synoptically-driven and storm-driven winds\n- **Snow**: Accumulation amounts that can affect power lines and equipment\n- **Ice**: Ice accumulation on infrastructure\n- **Lightning**: Electrical storm activity\n- **Flooding**: Water-related impacts to facilities\n- **Wildfire**: Fire risk assessment\n- **Rainfall**: Precipitation impacts (measured in 4-hour periods)\n\n### Seasonal Considerations\nMost customers have two sets of criteria:\n- **\"Leaves On\" Season**: Typically spring through fall when foliage can impact power grids\n- **\"Leaves Off\" Season**: Winter months when trees are bare\n\nThese seasonal thresholds account for how regional foliage impacts the power grid at different times of the year.\n\n## Purpose\nThe primary purpose of this API is to:\n1. Retrieve EEI data from the Weather Sentry Online (WSO)\n2. Process and format this data according to customer-specific configurations\n3. Serve the processed EEI information to existing customers through a customer-facing interface\n4. Provide threshold data that reflects seasonal \"leaves on/off\" criteria\n\n## Key Features\n- Secure authentication for existing EEI customers\n- Retrieval of up-to-date EEI forecast data\n- Customer-specific threshold configurations\n- Seasonal threshold adjustments (leaves on/off periods)\n- Regional forecast data for customer service territories\n\n## Target Audience\nThis API is designed for use by:\n- Energy and utility companies with EEI subscriptions\n- Emergency management systems requiring weather impact forecasts\n- Internal systems that require EEI data for customer-facing applications\n- Decision-making tools for utility operations and crew deployment\n\n## Data Flow\n1. The API retrieves raw EEI data from the Weather Sentry Online (WSO)\n2. Data is processed according to customer-specific configurations and seasonal criteria\n3. Customers can access their relevant EEI information through authenticated API calls\n4. Forecast data includes confidence levels and multi-day outlooks\n\n## Security\nThis API implements robust security measures to ensure that only authenticated and authorized customers can access their EEI data.\n\nFor detailed information on endpoints, request/response formats, and authentication, please refer to the API documentation below.",
+      "type": "text/plain"
+    }
+  }
+}

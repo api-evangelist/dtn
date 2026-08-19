@@ -1,0 +1,1250 @@
+{
+  "item": [
+    {
+      "id": "937faf6a-41fb-483d-9dee-46e4506d2237",
+      "name": "Health",
+      "description": {
+        "content": "Energy Sales & Marketing Integrations Health Check",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a156aa55-5f7c-4ed8-89f1-0bc81d86d0e8",
+          "name": "Health Check",
+          "request": {
+            "name": "Health Check",
+            "description": {
+              "content": "",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a10a107b-f769-41ed-bf08-54b0eede159e",
+              "name": "Health Check report",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"up\",\n  \"version\": \"v2\",\n  \"info\": \"Service is healthy.\",\n  \"timestamp\": \"2018-02-10T09:30Z\",\n  \"env\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad3411c8-950a-4d8d-8f49-62704df2acb2",
+              "name": "info about error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"error\",\n  \"code\": \"invalid-token\",\n  \"description\": \"bad token\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "8bb517fa-1394-4bea-b43a-71ccda0f5fb3",
+      "name": "Orders",
+      "description": {
+        "content": "Energy Sales & Marketing Orders API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2bd2f8e0-e4bc-49d6-987b-8b71f2dadad8",
+          "name": "get Spot Orders",
+          "request": {
+            "name": "get Spot Orders",
+            "description": {
+              "content": "Get Prompt Orders",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<dateTime>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "25"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c7ca0f8c-7af2-4d92-bfa9-662bd263a7c7",
+              "name": "A successful response containing details of the orders requested",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"orders\": [\n    {\n      \"orderId\": \"13ABCDE\",\n      \"contractNumber\": \"order123\",\n      \"status\": \"PENDING\",\n      \"buyer\": {\n        \"name\": \"Fuel Buyer\",\n        \"customCode\": \"44444\",\n        \"user\": {\n          \"username\": \"john.smith@fuelbuyer.dtn.com\",\n          \"email\": \"john.smith@fuelbuyer.dtn.com\"\n        }\n      },\n      \"seller\": {\n        \"name\": \"Fuel Seller\",\n        \"user\": {\n          \"username\": \"jane.smith@fuelseller.dtn.com\",\n          \"email\": \"jane.smith@fuelseller.dtn.com\"\n        }\n      },\n      \"marketIndex\": \"NYMEX\",\n      \"type\": \"Trade At Settlement\",\n      \"terminals\": [\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"terminalCustomCode\": \"MT2\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"terminalCustomCode\": \"MT2\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"consignee\": {\n        \"name\": \"Fuel Buyer Contract\",\n        \"id\": \"Fuel Buyer Contract\"\n      },\n      \"soldTo\": {\n        \"name\": \"Sold to\",\n        \"id\": \"Sold to\"\n      },\n      \"productGroup\": {\n        \"name\": \"Reg Gas\",\n        \"quantityOrdered\": 25000\n      },\n      \"liftingPeriod\": {\n        \"start\": \"2022-08-11T12:00:00.000Z\",\n        \"end\": \"2022-08-13T12:00:00.000Z\"\n      },\n      \"created\": \"2022-08-11T10:31:27.182Z\"\n    },\n    {\n      \"orderId\": \"13ABCDE\",\n      \"contractNumber\": \"order123\",\n      \"status\": \"CONFIRMED\",\n      \"buyer\": {\n        \"name\": \"Fuel Buyer\",\n        \"customCode\": \"44444\",\n        \"user\": {\n          \"username\": \"john.smith@fuelbuyer.dtn.com\",\n          \"email\": \"john.smith@fuelbuyer.dtn.com\"\n        }\n      },\n      \"seller\": {\n        \"name\": \"Fuel Seller\",\n        \"user\": {\n          \"username\": \"jane.smith@fuelseller.dtn.com\",\n          \"email\": \"jane.smith@fuelseller.dtn.com\"\n        }\n      },\n      \"marketIndex\": \"NYMEX\",\n      \"type\": \"Trade At Settlement\",\n      \"terminals\": [\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"terminalCustomCode\": \"MT2\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"terminalCustomCode\": \"MT2\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"consignee\": {\n        \"name\": \"Fuel Buyer Contract\",\n        \"id\": \"Fuel Buyer Contract\"\n      },\n      \"soldTo\": {\n        \"name\": \"Sold to\",\n        \"id\": \"Sold to\"\n      },\n      \"productGroup\": {\n        \"name\": \"Reg Gas\",\n        \"quantityOrdered\": 25000\n      },\n      \"liftingPeriod\": {\n        \"start\": \"2022-08-11T12:00:00.000Z\",\n        \"end\": \"2022-08-13T12:00:00.000Z\"\n      },\n      \"created\": \"2022-08-11T10:31:27.182Z\"\n    }\n  ],\n  \"pageInformation\": {\n    \"total\": 10,\n    \"limit\": 25,\n    \"page\": 1,\n    \"pages\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9e1f87a9-4920-4253-bb6c-732ae43cb347",
+          "name": "get Forward Orders",
+          "request": {
+            "name": "get Forward Orders",
+            "description": {
+              "content": "Get Forward Orders",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "forward"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "startDate",
+                  "value": "<dateTime>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "endDate",
+                  "value": "<dateTime>"
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "25"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "130788b7-d636-4d93-8a93-0e1b01ff1187",
+              "name": "A successful response containing details of the forward orders requested",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "forward"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "<dateTime>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"orders\": [\n    {\n      \"orderId\": \"13ABCDE\",\n      \"contractNumber\": \"order123\",\n      \"status\": \"CANCELLED\",\n      \"buyer\": {\n        \"name\": \"Fuel Buyer\",\n        \"customCode\": \"44444\",\n        \"user\": {\n          \"username\": \"john.smith@fuelbuyer.dtn.com\",\n          \"email\": \"john.smith@fuelbuyer.dtn.com\"\n        }\n      },\n      \"seller\": {\n        \"name\": \"Fuel Seller\",\n        \"user\": {\n          \"username\": \"jane.smith@fuelseller.dtn.com\",\n          \"email\": \"jane.smith@fuelseller.dtn.com\"\n        }\n      },\n      \"marketIndex\": \"NYMEX\",\n      \"type\": \"Forward-Order\",\n      \"contractType\": \"STRIP\",\n      \"contractPrice\": 6.6531,\n      \"terminals\": [\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"contractPeriods\": [\n        {\n          \"liftingPeriod\": {\n            \"start\": \"2022-08-11T12:00:00.000Z\",\n            \"end\": \"2022-08-13T12:00:00.000Z\"\n          },\n          \"basis\": 0.1,\n          \"margin\": 0.25,\n          \"costs\": 0.045,\n          \"quantity\": 50000,\n          \"marketPrice\": 6.2581\n        },\n        {\n          \"liftingPeriod\": {\n            \"start\": \"2022-08-11T12:00:00.000Z\",\n            \"end\": \"2022-08-13T12:00:00.000Z\"\n          },\n          \"basis\": 0.1,\n          \"margin\": 0.25,\n          \"costs\": 0.045,\n          \"quantity\": 50000,\n          \"marketPrice\": 6.2581\n        }\n      ],\n      \"consignee\": {\n        \"name\": \"Fuel Buyer Contract\",\n        \"id\": \"Fuel Buyer Contract\"\n      },\n      \"soldTo\": {\n        \"name\": \"Sold to\",\n        \"id\": \"Sold to\"\n      },\n      \"productGroup\": {\n        \"name\": \"Reg Gas\",\n        \"quantityOrdered\": 25000\n      },\n      \"liftingPeriod\": {\n        \"start\": \"2022-08-11T12:00:00.000Z\",\n        \"end\": \"2022-08-13T12:00:00.000Z\"\n      },\n      \"created\": \"2022-08-11T10:31:27.182Z\"\n    },\n    {\n      \"orderId\": \"13ABCDE\",\n      \"contractNumber\": \"order123\",\n      \"status\": \"CONFIRMED\",\n      \"buyer\": {\n        \"name\": \"Fuel Buyer\",\n        \"customCode\": \"44444\",\n        \"user\": {\n          \"username\": \"john.smith@fuelbuyer.dtn.com\",\n          \"email\": \"john.smith@fuelbuyer.dtn.com\"\n        }\n      },\n      \"seller\": {\n        \"name\": \"Fuel Seller\",\n        \"user\": {\n          \"username\": \"jane.smith@fuelseller.dtn.com\",\n          \"email\": \"jane.smith@fuelseller.dtn.com\"\n        }\n      },\n      \"marketIndex\": \"OPIS\",\n      \"type\": \"Forward-Order\",\n      \"contractType\": \"FLEX\",\n      \"contractPrice\": 6.6531,\n      \"terminals\": [\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"splc\": \"123456\",\n          \"owner\": \"123\",\n          \"name\": \"Terminal Name 1\",\n          \"tcn\": \"T00GA0000\",\n          \"plantId\": \"M17\",\n          \"products\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"productCustomCode\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"basePrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"finalPrice\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"differential\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"customerAdjustment\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contractMonth\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quote\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quoteType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"market\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"supplier\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantityOrdered\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"contractPeriods\": [\n        {\n          \"liftingPeriod\": {\n            \"start\": \"2022-08-11T12:00:00.000Z\",\n            \"end\": \"2022-08-13T12:00:00.000Z\"\n          },\n          \"basis\": 0.1,\n          \"margin\": 0.25,\n          \"costs\": 0.045,\n          \"quantity\": 50000,\n          \"marketPrice\": 6.2581\n        },\n        {\n          \"liftingPeriod\": {\n            \"start\": \"2022-08-11T12:00:00.000Z\",\n            \"end\": \"2022-08-13T12:00:00.000Z\"\n          },\n          \"basis\": 0.1,\n          \"margin\": 0.25,\n          \"costs\": 0.045,\n          \"quantity\": 50000,\n          \"marketPrice\": 6.2581\n        }\n      ],\n      \"consignee\": {\n        \"name\": \"Fuel Buyer Contract\",\n        \"id\": \"Fuel Buyer Contract\"\n      },\n      \"soldTo\": {\n        \"name\": \"Sold to\",\n        \"id\": \"Sold to\"\n      },\n      \"productGroup\": {\n        \"name\": \"Reg Gas\",\n        \"quantityOrdered\": 25000\n      },\n      \"liftingPeriod\": {\n        \"start\": \"2022-08-11T12:00:00.000Z\",\n        \"end\": \"2022-08-13T12:00:00.000Z\"\n      },\n      \"created\": \"2022-08-11T10:31:27.182Z\"\n    }\n  ],\n  \"pageInformation\": {\n    \"total\": 10,\n    \"limit\": 25,\n    \"page\": 1,\n    \"pages\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8f999224-01cc-43e6-9a3f-ebbee444f477",
+          "name": "update Order",
+          "request": {
+            "name": "update Order",
+            "description": {
+              "content": "Update Orders",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "order",
+                ":orderId",
+                "data-management"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orderId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"<string>\",\n  \"quantityOrdered\": \"<number>\",\n  \"liftingEnd\": \"<dateTime>\",\n  \"buyerUsername\": \"<string>\",\n  \"terminals\": [\n    {\n      \"splc\": \"<string>\",\n      \"owner\": \"<string>\",\n      \"products\": [\n        {\n          \"id\": \"<string>\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        },\n        {\n          \"id\": \"<string>\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        }\n      ]\n    },\n    {\n      \"splc\": \"<string>\",\n      \"owner\": \"<string>\",\n      \"products\": [\n        {\n          \"id\": \"<string>\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        },\n        {\n          \"id\": \"<string>\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        }\n      ]\n    }\n  ],\n  \"consigneeId\": \"<string>\",\n  \"tabsAllowAdditionalVolume\": \"<boolean>\",\n  \"contractNumber\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "df08124e-ad3e-43d6-b8b6-76e5956fb20a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "order",
+                    ":orderId",
+                    "data-management"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"<string>\",\n  \"quantityOrdered\": 10000,\n  \"liftingEnd\": \"<dateTime>\",\n  \"buyerUsername\": \"<string>\",\n  \"terminals\": [\n    {\n      \"splc\": \"447850\",\n      \"owner\": \"145\",\n      \"products\": [\n        {\n          \"id\": \"D7B\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        },\n        {\n          \"id\": \"D7B\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        }\n      ]\n    },\n    {\n      \"splc\": \"447850\",\n      \"owner\": \"145\",\n      \"products\": [\n        {\n          \"id\": \"D7B\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        },\n        {\n          \"id\": \"D7B\",\n          \"price\": \"<number>\",\n          \"quantityOrdered\": \"<number>\"\n        }\n      ]\n    }\n  ],\n  \"consigneeId\": \"<string>\",\n  \"tabsAllowAdditionalVolume\": \"<boolean>\",\n  \"contractNumber\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "8f924853-5c1f-44a0-870c-425e4f4f933a",
+      "name": "Pricing",
+      "description": {
+        "content": "Energy Sales & Marketing Pricing API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "119e78d6-6f8e-48ba-a774-7933ef1d8713",
+          "name": "get Pricing Rules",
+          "request": {
+            "name": "get Pricing Rules",
+            "description": {
+              "content": "Get Pricing Rules",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pricing"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "pageNumber",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "key": "pageLimit",
+                  "value": "25"
+                },
+                {
+                  "disabled": false,
+                  "key": "terminalSplc",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "terminalOwner",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "productGroup",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "product",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "areFixedRules",
+                  "value": "<boolean>"
+                },
+                {
+                  "disabled": false,
+                  "key": "labels",
+                  "value": "<string>",
+                  "description": "The internal category behind Basis, Margin and Cost pricing values"
+                },
+                {
+                  "disabled": false,
+                  "key": "labels",
+                  "value": "<string>",
+                  "description": "The internal category behind Basis, Margin and Cost pricing values"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "253c6f80-d13a-48c7-b0e0-e4095b827dd7",
+              "name": "A successful response containing a list of matching differential values",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pricing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "pageNumber",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageLimit",
+                      "value": "25"
+                    },
+                    {
+                      "key": "terminalSplc",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "terminalOwner",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "productGroup",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "product",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "areFixedRules",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "labels",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "labels",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"rules\": [\n    {\n      \"id\": \"string\",\n      \"value\": 1704.312057385029,\n      \"terminalSplc\": \"string\",\n      \"terminalOwner\": \"string\",\n      \"productGroup\": \"string\",\n      \"product\": \"string\",\n      \"label\": \"<string>\"\n    },\n    {\n      \"id\": \"string\",\n      \"value\": 6518.345357787844,\n      \"terminalSplc\": \"string\",\n      \"terminalOwner\": \"string\",\n      \"productGroup\": \"string\",\n      \"product\": \"string\",\n      \"label\": \"<string>\"\n    }\n  ],\n  \"metadata\": {\n    \"pageTotal\": 7481.707970563427,\n    \"pageNumber\": 8202.883073929297,\n    \"pageLimit\": 7.960815728075277\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8918afbd-4f51-41d2-83de-073c132b447e",
+          "name": "put Pricing Rules",
+          "request": {
+            "name": "put Pricing Rules",
+            "description": {
+              "content": "Creates new & updates existing pricing values",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pricing"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"value\": \"<number>\",\n    \"terminalSplc\": \"<string>\",\n    \"terminalOwner\": \"<string>\",\n    \"productGroup\": \"<string>\",\n    \"product\": \"<string>\",\n    \"label\": \"<string>\"\n  },\n  {\n    \"value\": \"<number>\",\n    \"terminalSplc\": \"<string>\",\n    \"terminalOwner\": \"<string>\",\n    \"productGroup\": \"<string>\",\n    \"product\": \"<string>\",\n    \"label\": \"<string>\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b86cb763-cf6d-4529-8cfa-ebd8847556d9",
+              "name": "A successful response containing a list of updated differential values",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pricing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"value\": \"<number>\",\n    \"terminalSplc\": \"<string>\",\n    \"terminalOwner\": \"<string>\",\n    \"productGroup\": \"<string>\",\n    \"product\": \"<string>\",\n    \"label\": \"<string>\"\n  },\n  {\n    \"value\": \"<number>\",\n    \"terminalSplc\": \"<string>\",\n    \"terminalOwner\": \"<string>\",\n    \"productGroup\": \"<string>\",\n    \"product\": \"<string>\",\n    \"label\": \"<string>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created\": [\n    {\n      \"id\": \"string\",\n      \"value\": 1840.4667530277984,\n      \"terminalSplc\": \"string\",\n      \"terminalOwner\": \"string\",\n      \"productGroup\": \"string\",\n      \"product\": \"string\",\n      \"label\": \"<string>\"\n    },\n    {\n      \"id\": \"string\",\n      \"value\": 1088.2435842790937,\n      \"terminalSplc\": \"string\",\n      \"terminalOwner\": \"string\",\n      \"productGroup\": \"string\",\n      \"product\": \"string\",\n      \"label\": \"<string>\"\n    }\n  ],\n  \"updated\": [\n    {\n      \"id\": \"string\",\n      \"value\": 8181.584077471113,\n      \"terminalSplc\": \"string\",\n      \"terminalOwner\": \"string\",\n      \"productGroup\": \"string\",\n      \"product\": \"string\",\n      \"label\": \"<string>\"\n    },\n    {\n      \"id\": \"string\",\n      \"value\": 3149.833742643634,\n      \"terminalSplc\": \"string\",\n      \"terminalOwner\": \"string\",\n      \"productGroup\": \"string\",\n      \"product\": \"string\",\n      \"label\": \"<string>\"\n    }\n  ],\n  \"failed\": [\n    {\n      \"value\": \"<number>\",\n      \"terminalSplc\": \"<string>\",\n      \"terminalOwner\": \"<string>\",\n      \"productGroup\": \"<string>\",\n      \"product\": \"<string>\",\n      \"label\": \"<string>\"\n    },\n    {\n      \"value\": \"<number>\",\n      \"terminalSplc\": \"<string>\",\n      \"terminalOwner\": \"<string>\",\n      \"productGroup\": \"<string>\",\n      \"product\": \"<string>\",\n      \"label\": \"<string>\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ee015684-c940-41bb-8c67-97fa85063e6c",
+          "name": "delete Pricing Rules",
+          "request": {
+            "name": "delete Pricing Rules",
+            "description": {
+              "content": "Delete Pricing Rules",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "pricing"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  \"<string>\"\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8da473c3-3cd9-4dd8-9e4b-e455ef26be3c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "pricing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  \"<string>\"\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "075406b7-14f7-4d43-8531-1c09fc5d4d25",
+      "name": "Users",
+      "description": {
+        "content": "Energy Sales & Marketing Users API",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7f474fe7-5398-4751-9c4c-aa3d83ceda4c",
+          "name": "setup Buyer Accounts And Users",
+          "request": {
+            "name": "setup Buyer Accounts And Users",
+            "description": {
+              "content": "Create and/or update buyer account(s) and user(s) with specified roles and permissions",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "users",
+                "buyers",
+                "setup"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://api.auth.dtn.com/v1/tokens/authorize"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  },\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c409e967-e259-4129-a9d1-b4b71292ade8",
+              "name": "Information about which users were successfully set up and which failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "buyers",
+                    "setup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  },\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"successful\": [\n    {\n      \"customUserId\": \"string\",\n      \"soldTos\": [\n        \"string\",\n        \"string\"\n      ],\n      \"shipTos\": [\n        \"string\",\n        \"string\"\n      ]\n    },\n    {\n      \"customUserId\": \"string\",\n      \"soldTos\": [\n        \"string\",\n        \"string\"\n      ],\n      \"shipTos\": [\n        \"string\",\n        \"string\"\n      ]\n    }\n  ],\n  \"failed\": [\n    {\n      \"customUserId\": \"string\",\n      \"reason\": \"No buyer account has been set up for sold to number(s): 12345, 101010\"\n    },\n    {\n      \"customUserId\": \"string\",\n      \"reason\": \"No buyer account has been set up for sold to number(s): 12345, 101010\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "77f31839-11e3-4c3e-b0b8-61817ef88c7f",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "buyers",
+                    "setup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  },\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"bad-request\",\n  \"title\": \"Invalid Request\",\n  \"status\": 400,\n  \"detail\": \"request/body/0/locale must be equal to one of the allowed values: en-US, fr-FR, es-ES, nb-NO, nl-NL, de-DE, browserDefault\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "51e15c6d-7f8c-4cad-a089-938626821a94",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "buyers",
+                    "setup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  },\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"unauthorized\",\n  \"title\": \"Error while authenticating the user\",\n  \"status\": 401,\n  \"detail\": \"Provided token does not grant access to this route\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c1cbd76f-0397-41a0-a2e0-df93aaaae4b5",
+              "name": "Internal Server Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "users",
+                    "buyers",
+                    "setup"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: oauth2",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "<token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  },\n  {\n    \"status\": \"<string>\",\n    \"userName\": \"<string>\",\n    \"name\": \"<string>\",\n    \"surname\": \"<string>\",\n    \"email\": \"<string>\",\n    \"locale\": \"<string>\",\n    \"customUserId\": \"<string>\",\n    \"soldTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"shipTos\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"permissions\": [\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      },\n      {\n        \"feature\": \"<string>\",\n        \"access\": \"<string>\"\n      }\n    ],\n    \"roles\": [\n      {\n        \"role\": \"<string>\"\n      },\n      {\n        \"role\": \"<string>\"\n      }\n    ]\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"internal-server-error\",\n  \"title\": \"Internal Server Error\",\n  \"status\": 500,\n  \"detail\": \"internal error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://digitalcommerce-integrations.dtn.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "4caad6b9-03f7-4490-bc3c-1ef67e4a435d",
+    "name": "Energy Sales & Marketing - Integrations Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "A service to provide API integrations for Energy Sales & Marketing customers",
+      "type": "text/plain"
+    }
+  }
+}

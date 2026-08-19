@@ -2,8 +2,8 @@ generated: '2026-07-22'
 method: derived
 status: candidate
 source: openapi/ (DTN developer portal specs)
-notes: No official DTN MCP server found (searched MCP registries, npm, DTN docs). Candidate tool list derived one tool per operation from DTN's
-  published OpenAPI specs.
+notes: No official DTN MCP server found (searched MCP registries, npm, DTN docs). Candidate tool list
+  derived one tool per operation from DTN's published OpenAPI specs.
 server:
   name: dtn
   transport: http
@@ -165,7 +165,8 @@ tools:
   description: Returns list of timestamps of a given layer by id.
   source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTimestamps
 - name: getLayerTooltip
-  description: Returns the tooltip of a layer at a specific time given by its id, zoom level, latitude and longitude.
+  description: Returns the tooltip of a layer at a specific time given by its id, zoom level, latitude
+    and longitude.
   source_operation: openapi/dtn-map-tile-api-openapi.json#getLayerTooltip
 - name: getLayerTooltipTemplate
   description: Returns tooltip template of a given layer by id.
@@ -291,14 +292,16 @@ tools:
   description: Daily summaries of transactional refined products volumes for rack loadings at the PADD.
   source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetDailyPADDs
 - name: GetRacksDaily
-  description: Daily summaries of transactional refined products volumes and spot price at the rack city level.
+  description: Daily summaries of transactional refined products volumes and spot price at the rack city
+    level.
   source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetRacksDaily
 - name: GetSupplierTerminalCountsMontly
-  description: Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored
-    rack.
+  description: Monthly details of average supplier and terminal counts for refined products rack loadings
+    by product grade rack city at monitored rack.
   source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetSupplierTerminalCountsMontly
 - name: GetDailyCoverages
-  description: Daily coverage factors for transactional refined product volumes at PADD or United States level.
+  description: Daily coverage factors for transactional refined product volumes at PADD or United States
+    level.
   source_operation: openapi/dtn-refined-fuels-demand-openapi.json#GetDailyCoverages
 - name: get_
   description: null
@@ -759,3 +762,9 @@ tools:
 - name: get_feeds_v3_ero_dayero_horizon_year_month_day_hour_minute
   description: List historic Excessive Rainfall Outlooks for given time horizon on given date and time
   source_operation: openapi/dtn-radarscope-radar-products-openapi.json#get /feeds/v3/ero/day{ero_horizon}/{year}/{month}/{day}/{hour}/{minute}
+deployment:
+  mode: none
+  verified: derived
+  tools: 250
+  checked: '2026-08-12'
+  source: catalog MCP census
