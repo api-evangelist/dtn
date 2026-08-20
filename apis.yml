@@ -166,6 +166,10 @@ apis:
 - aid: dtn:dtn-agency-bulletin-api
   name: DTN Agency Bulletin API
   tags:
+  - Alerts
+  - Data
+  - Weather
+  tags_raw:
   - API
   - Alerts
   - Data
@@ -188,6 +192,10 @@ apis:
 - aid: dtn:dtn-alerting-api
   name: DTN Alerting API
   tags:
+  - Alerts
+  - Data
+  - Weather
+  tags_raw:
   - API
   - Alerts
   - Data
@@ -206,6 +214,9 @@ apis:
 - aid: dtn:dtn-astronomical-api
   name: DTN Astronomical API
   tags:
+  - Astronomy
+  - Data
+  tags_raw:
   - API
   - Astronomy
   - Data
@@ -231,6 +242,10 @@ apis:
 - aid: dtn:dtn-climatology-api
   name: DTN Climatology API
   tags:
+  - Climate
+  - Data
+  - Weather
+  tags_raw:
   - API
   - Climate
   - Data
@@ -253,6 +268,8 @@ apis:
 - aid: dtn:dtn-developer-portal-api
   name: DTN Developer Portal API
   tags:
+  - Data
+  tags_raw:
   - API
   - Data
   - Data
@@ -318,6 +335,10 @@ apis:
 - aid: dtn:dtn-lightning-api
   name: DTN Lightning API
   tags:
+  - Data
+  - Lightning
+  - Weather
+  tags_raw:
   - API
   - Data
   - Lightning
@@ -381,6 +402,10 @@ apis:
 - aid: dtn:dtn-map-tile-api
   name: DTN Map Tile API
   tags:
+  - Data
+  - Maps
+  - Weather
+  tags_raw:
   - API
   - Data
   - Maps
@@ -404,6 +429,10 @@ apis:
 - aid: dtn:dtn-marine-weather-api
   name: DTN Marine Weather API
   tags:
+  - Data
+  - Marine
+  - Weather
+  tags_raw:
   - API
   - Data
   - Marine
@@ -483,6 +512,10 @@ apis:
 - aid: dtn:pavement-conditions-api
   name: DTN Pavement Conditions API
   tags:
+  - Data
+  - Roads
+  - Weather
+  tags_raw:
   - API
   - Data
   - Roads
@@ -505,6 +538,10 @@ apis:
 - aid: dtn:dtn-probabilistic-api
   name: DTN Probabilistic API
   tags:
+  - Data
+  - Forecast
+  - Weather
+  tags_raw:
   - API
   - Data
   - Forecast
@@ -546,6 +583,10 @@ apis:
 - aid: dtn:dtn-refined-fuels-demand
   name: DTN Refined Fuels Demand
   tags:
+  - Data
+  - Energy
+  - Fuel
+  tags_raw:
   - API
   - Data
   - Energy
@@ -587,6 +628,10 @@ apis:
 - aid: dtn:dtn-sigmets-airmets
   name: DTN SIGMETs/AIRMETs API
   tags:
+  - Aviation
+  - Data
+  - Weather
+  tags_raw:
   - API
   - Aviation
   - Data
@@ -614,6 +659,8 @@ apis:
 - aid: dtn:dtn-shipping-api
   name: DTN Shipping API
   tags:
+  - Data
+  tags_raw:
   - API
   - Data
   - Data
@@ -659,6 +706,10 @@ apis:
 - aid: dtn:dtn-storm-impact-analytics
   name: DTN Storm Impact Analytics
   tags:
+  - Data
+  - Storms
+  - Weather
+  tags_raw:
   - API
   - Data
   - Storms
@@ -681,6 +732,10 @@ apis:
 - aid: dtn:dtn-storm-risk-analytics-api
   name: DTN Storm Risk Analytics API
   tags:
+  - Data
+  - Storms
+  - Weather
+  tags_raw:
   - API
   - Data
   - Storms
@@ -758,6 +813,10 @@ apis:
 - aid: dtn:dtn-websocket-api
   name: DTN Websocket API
   tags:
+  - Data
+  - Real-Time
+  - Streaming
+  tags_raw:
   - API
   - Data
   - Real-Time
@@ -838,6 +897,10 @@ apis:
 - aid: dtn:farm-intel-api
   name: DTN Farm Intel API
   tags:
+  - Agriculture
+  - Data
+  - Farming
+  tags_raw:
   - API
   - Agriculture
   - Data
@@ -860,6 +923,10 @@ apis:
 - aid: dtn:radarscope-radar-products
   name: DTN RadarScope API
   tags:
+  - Data
+  - Radar
+  - Weather
+  tags_raw:
   - API
   - Data
   - Radar
