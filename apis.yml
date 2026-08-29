@@ -21832,6 +21832,9 @@ apis:
   - type: Documentation
     url: https://devportal.dtn.com/catalog/Weather/radarscope-radar-products/documentation
 common:
+- type: CapabilityMap
+  url: capabilities/dtn-capability-edges.yml
+  name: DTN Business Capability Map
 - type: PostmanWorkspace
   url: https://www.postman.com/kinlaneapi/dtn/overview
 - type: AgenticAccess
