@@ -34,7 +34,6 @@ apis:
   - Aviation
   - Forecast
   - Weather
-  image: https://raw.githubusercontent.com/api-evangelist/dtn/refs/heads/main/image.png
   humanURL: https://api.weather.mg/api-detail-pages/forecast-parameter.html
   baseURL: https://point-forecast.weather.mg
   properties:
@@ -494,6 +493,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - Alerts
+  tags_raw:
   - alerts
   properties:
   - type: OpenAPI
@@ -935,7 +936,8 @@ apis:
   description: Endpoints for the api/catalog resources
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
-  tags:
+  tags: []
+  tags_raw:
   - APIs
   properties:
   - type: OpenAPI
@@ -1599,6 +1601,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - Authentication
+  tags_raw:
   - Auth
   properties:
   - type: OpenAPI
@@ -3812,7 +3816,8 @@ apis:
     our API has got you covered.
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
-  tags:
+  tags: []
+  tags_raw:
   - Endpoints
   properties:
   - type: OpenAPI
@@ -4697,6 +4702,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - Forecast
+  tags_raw:
   - Forecasts
   properties:
   - type: OpenAPI
@@ -11110,6 +11117,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -12739,6 +12748,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - Portfolio
+  tags_raw:
   - Portfolios
   properties:
   - type: OpenAPI
@@ -20511,6 +20522,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
