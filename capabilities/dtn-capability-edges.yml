@@ -3,7 +3,7 @@ provider: DTN
 generated_by: planning/capability-mapping/scripts/classify_capabilities.py
 model: claude-opus-5
 frame:
-- Power & Water Utilities
+- Oil & Gas
 min_confidence: 0.7
 capability_model:
   source: https://github.com/vincentmakes/turbo-ea-capabilities
@@ -11,16 +11,39 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 1
+edge_count: 3
 edges:
+- tag: Pricing
+  spec_file: dtn-pricing-api-openapi.yml
+  capability_id: BC-440
+  capability_id_l1: BC-440
+  capability_name: Pricing Management
+  confidence: 0.82
+  evidence: '"getPricingRules", "putPricingRules", "deletePricingRules"; schemas PricingRule, PricingRulePut,
+    PricingRuleLabels — "Energy Sales & Marketing - Integrations Service"'
+  reason: Full CRUD over pricing rules for energy sales customers is price setting/administration, i.e.
+    Pricing Management; the evidence does not distinguish pricing strategy from price-list maintenance
+    so no L2 is asserted.
 - tag: APIs
   spec_file: dtn-apis-api-openapi.yml
   capability_id: BC-4270.30
   capability_id_l1: BC-4270
   capability_name: Developer Portal Management
-  confidence: 0.75
-  evidence: '"Backend APIs used by DTN''s Developer Portal Web App"; GET /v1/apis/{slug}/spec/{version}
-    "Get API spec"; GET /v1/apis/{slug}/changelog/{version} "Get API changelog"'
-  reason: The surface catalogues published APIs with their specs, versions and changelogs for the vendor's
-    developer portal — developer portal / public API lifecycle stewardship. Portal management is the closest
-    fit; some ambiguity with BC-4270.10 API lifecycle versioning.
+  confidence: 0.78
+  evidence: '"Backend APIs used by DTN''s Developer Portal Web App"; "Get all APIs on the system", "Get
+    API spec", "Get API changelog"'
+  reason: Operations serve the vendor's developer portal — cataloguing published APIs, their specs, versions
+    and changelogs. That is developer portal / public API lifecycle stewardship, not a domain business
+    function. L2 set to Developer Portal Management since the spec explicitly states it backs the portal
+    web app, though version/changelog operations also touch Public API Lifecycle Management.
+- tag: Orders
+  spec_file: dtn-orders-api-openapi.yml
+  capability_id: BC-3090
+  capability_id_l1: BC-3090
+  capability_name: Hydrocarbon Trading & Marketing Management
+  confidence: 0.72
+  evidence: 'schemas: LiftingPeriod, Order, ForwardOrder, ContractPeriod, Buyer, Seller, Terminal; "dtn-energy-digital-commerce-integrations-api"'
+  reason: Operations retrieve and update fuel orders with buyers, sellers, terminals, lifting periods
+    and contract periods — this is petroleum product sales/trading order management (physical marketing
+    of refined products), so BC-3090 at L1; evidence is split between physical trading operations and
+    term-contract/lifting management, so no L2 is asserted.
