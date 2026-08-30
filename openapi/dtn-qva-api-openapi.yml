@@ -1,0 +1,1028 @@
+openapi: 3.2.0
+info:
+  title: DTN Aviation Enhanced Flight Hazards (EFH) QVA API
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  version: 1.10.3
+servers:
+- url: https://aviation.api.dtn.com
+security:
+- clientCredentials: []
+tags:
+- name: QVA
+  description: Quantitative Volcanic Ash (QVA) data ΓÇö ash cloud polygons, deterministic and probabilistic ash concentration forecasts, and active volcano listings.
+paths:
+  /v1/ashcloudQvas/:
+    get:
+      tags:
+      - QVA
+      summary: Get ash cloud QVA polygons
+      description: Get available IWXXM parsed ash cloud polygons from QVA data, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
+      responses:
+        '200':
+          $ref: '#/components/responses/AshcloudQvaSuccess'
+        '400':
+          $ref: '#/components/responses/AshcloudQvaBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/QueryBbox'
+      - $ref: '#/components/parameters/QueryPolygon'
+      - $ref: '#/components/parameters/QueryCircle'
+      - $ref: '#/components/parameters/QueryCorridor'
+      - $ref: '#/components/parameters/QueryDistanceUnits'
+      - $ref: '#/components/parameters/QuerySrid'
+      - $ref: '#/components/parameters/QueryGeometry'
+      - $ref: '#/components/parameters/QueryIntersection'
+      - $ref: '#/components/parameters/AshcloudQvaQueryFromDateTime'
+      - $ref: '#/components/parameters/AshcloudQvaQueryUntilDateTime'
+      - $ref: '#/components/parameters/AshcloudQvaQueryInsertedAfter'
+      - $ref: '#/components/parameters/AshcloudQvaQueryInsertedThrough'
+      - $ref: '#/components/parameters/QueryAshcloudQvaEventType'
+      - $ref: '#/components/parameters/QueryAshcloudQvaVolcanoid'
+      - $ref: '#/components/parameters/QueryAshcloudQvaVaacid'
+      security:
+      - clientCredentials: []
+  /v1/deterministicQvas/:
+    get:
+      tags:
+      - QVA
+      summary: Get deterministic QVA polygons
+      description: Get available deterministic ash concentration polygons from QVA data, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
+      responses:
+        '200':
+          $ref: '#/components/responses/DeterministicQvaSuccess'
+        '400':
+          $ref: '#/components/responses/DeterministicQvaBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/QueryBbox'
+      - $ref: '#/components/parameters/QueryPolygon'
+      - $ref: '#/components/parameters/QueryCircle'
+      - $ref: '#/components/parameters/QueryCorridor'
+      - $ref: '#/components/parameters/QueryDistanceUnits'
+      - $ref: '#/components/parameters/QuerySrid'
+      - $ref: '#/components/parameters/QueryGeometry'
+      - $ref: '#/components/parameters/QueryIntersection'
+      - $ref: '#/components/parameters/DeterministicQvaQueryFromDateTime'
+      - $ref: '#/components/parameters/DeterministicQvaQueryUntilDateTime'
+      - $ref: '#/components/parameters/DeterministicQvaQueryInsertedAfter'
+      - $ref: '#/components/parameters/DeterministicQvaQueryInsertedThrough'
+      - $ref: '#/components/parameters/DeterministicQvaQueryModelDateTime'
+      - $ref: '#/components/parameters/QueryDeterministicQvaEventType'
+      - $ref: '#/components/parameters/QueryDeterministicQvaFlightLevel'
+      - $ref: '#/components/parameters/QueryDeterministicQvaMinConcentration'
+      - $ref: '#/components/parameters/QueryDeterministicQvaVolcanoid'
+      - $ref: '#/components/parameters/QueryDeterministicQvaVaacid'
+      security:
+      - clientCredentials: []
+  /v1/probabilisticQvas/:
+    get:
+      tags:
+      - QVA
+      summary: Get probabilistic QVA polygons
+      description: Get available probabilistic ash probability polygons from QVA data, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
+      responses:
+        '200':
+          $ref: '#/components/responses/ProbabilisticQvaSuccess'
+        '400':
+          $ref: '#/components/responses/ProbabilisticQvaBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/QueryBbox'
+      - $ref: '#/components/parameters/QueryPolygon'
+      - $ref: '#/components/parameters/QueryCircle'
+      - $ref: '#/components/parameters/QueryCorridor'
+      - $ref: '#/components/parameters/QueryDistanceUnits'
+      - $ref: '#/components/parameters/QuerySrid'
+      - $ref: '#/components/parameters/QueryGeometry'
+      - $ref: '#/components/parameters/QueryIntersection'
+      - $ref: '#/components/parameters/ProbabilisticQvaQueryFromDateTime'
+      - $ref: '#/components/parameters/ProbabilisticQvaQueryUntilDateTime'
+      - $ref: '#/components/parameters/ProbabilisticQvaQueryInsertedAfter'
+      - $ref: '#/components/parameters/ProbabilisticQvaQueryInsertedThrough'
+      - $ref: '#/components/parameters/ProbabilisticQvaQueryModelDateTime'
+      - $ref: '#/components/parameters/QueryProbabilisticQvaEventType'
+      - $ref: '#/components/parameters/QueryProbabilisticQvaFlightLevel'
+      - $ref: '#/components/parameters/QueryProbabilisticQvaMinProbability'
+      - $ref: '#/components/parameters/QueryProbabilisticQvaVolcanoid'
+      - $ref: '#/components/parameters/QueryProbabilisticQvaVaacid'
+      security:
+      - clientCredentials: []
+  /v1/activeVolcanoQvas/:
+    get:
+      tags:
+      - QVA
+      summary: Get active volcanoes with QVA data
+      description: Returns volcanoes that currently have active QVA forecast data (IWXXM, deterministic, or probabilistic). Each feature is a GeoJSON Point at the volcano location. The volcanoid field can be used to filter calls to /v1/ashcloudQvas/, /v1/deterministicQvas/, and /v1/probabilisticQvas/.
+      responses:
+        '200':
+          $ref: '#/components/responses/ActiveVolcanoQvaSuccess'
+        '400':
+          $ref: '#/components/responses/ActiveVolcanoQvaBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryActiveVolcanoQvaEventType'
+      - $ref: '#/components/parameters/QueryActiveVolcanoQvaVaacid'
+      security:
+      - clientCredentials: []
+components:
+  schemas:
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    DeterministicQvaFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/DeterministicQvaItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    ActiveVolcanoQvaItem:
+      type: object
+      properties:
+        volcanoid:
+          type: string
+        volcanoname:
+          type: string
+        iavceinumber:
+          type: string
+        elevation_m:
+          type: integer
+        vaacname:
+          type: string
+        vaacdesignator:
+          type: string
+        latestissuetime:
+          type: string
+          format: date-time
+        latestmodelrundatetime:
+          type: string
+          format: date-time
+        hasiwxxm:
+          type: boolean
+        hasdeterministic:
+          type: boolean
+        hasprobabilistic:
+          type: boolean
+        eventtype:
+          type: string
+    AshcloudQvaItem:
+      type: object
+      properties:
+        cloudid:
+          type: integer
+        validdatetime:
+          type: string
+          format: date-time
+        volcanoid:
+          type: string
+        volcanoname:
+          type: string
+        iavceinumber:
+          type: string
+        volcanolat:
+          type: number
+        volcanolon:
+          type: number
+        lowerfl:
+          type: integer
+        upperfl:
+          type: integer
+        flightlevelrange:
+          type: string
+        ashconcentrationthreshold:
+          type: number
+        concentrationuom:
+          type: string
+        vertexcount:
+          type: integer
+        areasqkm:
+          type: number
+        issuetime:
+          type: string
+          format: date-time
+        vaacname:
+          type: string
+    GeoJsonObject:
+      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
+
+        '
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          - FeatureCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - GeometryCollection
+        bbox:
+          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
+
+            '
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      discriminator:
+        propertyName: type
+    DeterministicQvaItem:
+      type: object
+      properties:
+        polygonid:
+          type: integer
+        runid:
+          type: integer
+        validdatetime:
+          type: string
+          format: date-time
+        flightlevel:
+          type: integer
+        concentration:
+          type: number
+        volcanoname:
+          type: string
+        volcanoid:
+          type: string
+        vaacname:
+          type: string
+        vaacid:
+          type: string
+        eventtype:
+          type: string
+        modelrundatetime:
+          type: string
+          format: date-time
+    ActiveVolcanoQvaFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/ActiveVolcanoQvaFeature'
+    AshcloudQvaFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/AshcloudQvaFeature'
+    ActiveVolcanoQvaFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/ActiveVolcanoQvaItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+    ProbabilisticQvaFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/ProbabilisticQvaItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    ProbabilisticQvaFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProbabilisticQvaFeature'
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    ProbabilisticQvaItem:
+      type: object
+      properties:
+        polygonid:
+          type: integer
+        runid:
+          type: integer
+        validdatetime:
+          type: string
+          format: date-time
+        flightlevel:
+          type: integer
+        thresholdvalue:
+          type: number
+        probability:
+          type: number
+        volcanoname:
+          type: string
+        volcanoid:
+          type: string
+        vaacname:
+          type: string
+        vaacid:
+          type: string
+        eventtype:
+          type: string
+        modelrundatetime:
+          type: string
+          format: date-time
+    AshcloudQvaFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/AshcloudQvaItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    DeterministicQvaFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/DeterministicQvaFeature'
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    ActiveVolcanoQvaSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveVolcanoQvaFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/ActiveVolcanoQvaSuccessResponse'
+    ProbabilisticQvaSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProbabilisticQvaFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/ProbabilisticQvaSuccessResponse'
+    AshcloudQvaBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/AshcloudQvaBadRequestResponse'
+    ActiveVolcanoQvaBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/ActiveVolcanoQvaBadRequestResponse'
+    AshcloudQvaSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AshcloudQvaFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/AshcloudQvaSuccessResponse'
+    DeterministicQvaBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/DeterministicQvaBadRequestResponse'
+    DeterministicQvaSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeterministicQvaFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/DeterministicQvaSuccessResponse'
+    ProbabilisticQvaBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/ProbabilisticQvaBadRequestResponse'
+  parameters:
+    ProbabilisticQvaQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryProbabilisticQvaEventType:
+      name: eventtype
+      description: 'Event type filter. Allowed values: OPERATIONAL (default), EXERCISE, TEST, ALL, or comma-separated combination.'
+      in: query
+      required: false
+      schema:
+        type: string
+        default: OPERATIONAL
+    AshcloudQvaQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    ProbabilisticQvaQueryModelDateTime:
+      name: modelDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    ProbabilisticQvaQueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryActiveVolcanoQvaEventType:
+      name: eventtype
+      in: query
+      required: false
+      description: 'Event type filter. Allowed values: OPERATIONAL (default), EXERCISE, TEST, ALL.'
+      schema:
+        type: string
+        default: OPERATIONAL
+    QueryDeterministicQvaMinConcentration:
+      name: minConcentration
+      description: Minimum ash concentration value to include in results.
+      in: query
+      required: false
+      schema:
+        type: number
+    QueryDeterministicQvaFlightLevel:
+      name: flightLevel
+      description: 'Filter by flight level band. Each value is the top (inclusive upper bound) of a 5,000 ft range. Valid values: 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600. Range definitions: 50=FL000-FL050, 100=FL050-FL100, 150=FL100-FL150, 200=FL150-FL200, 250=FL200-FL250, 300=FL250-FL300, 350=FL300-FL350, 400=FL350-FL400, 450=FL400-FL450, 500=FL450-FL500, 550=FL500-FL550, 600=FL550-FL600.'
+      in: query
+      required: false
+      schema:
+        type: integer
+        enum:
+        - 50
+        - 100
+        - 150
+        - 200
+        - 250
+        - 300
+        - 350
+        - 400
+        - 450
+        - 500
+        - 550
+        - 600
+    QueryAshcloudQvaVaacid:
+      name: vaacid
+      description: Filter by VAAC identifier (e.g., EGRR, VAAC_LONDON).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDeterministicQvaVolcanoid:
+      name: volcanoid
+      description: Filter by volcano identifier (integer). Must be a numeric ID matching the volcanoid in qva_netcdf_forecast_runs. Use the /v1/activeVolcanoQvas/ endpoint to discover available volcano IDs.
+      in: query
+      required: false
+      schema:
+        type: integer
+    QueryAshcloudQvaVolcanoid:
+      name: volcanoid
+      description: Filter by volcano identifier (integer, e.g. 372020). Use the /v1/activeVolcanoQvas/ endpoint to discover available volcano IDs.
+      in: query
+      required: false
+      schema:
+        type: integer
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryProbabilisticQvaFlightLevel:
+      name: flightLevel
+      description: 'Filter by flight level band. Each value is the top (inclusive upper bound) of a 5,000 ft range. Valid values: 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600. Range definitions: 50=FL000-FL050, 100=FL050-FL100, 150=FL100-FL150, 200=FL150-FL200, 250=FL200-FL250, 300=FL250-FL300, 350=FL300-FL350, 400=FL350-FL400, 450=FL400-FL450, 500=FL450-FL500, 550=FL500-FL550, 600=FL550-FL600.'
+      in: query
+      required: false
+      schema:
+        type: integer
+        enum:
+        - 50
+        - 100
+        - 150
+        - 200
+        - 250
+        - 300
+        - 350
+        - 400
+        - 450
+        - 500
+        - 550
+        - 600
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryIntersection:
+      name: intersection
+      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryActiveVolcanoQvaVaacid:
+      name: vaacid
+      in: query
+      required: false
+      description: Filter by VAAC identifier (e.g., EGRR, VAAC_LONDON).
+      schema:
+        type: string
+    QueryProbabilisticQvaMinProbability:
+      name: minProbability
+      description: Minimum probability value to include in results.
+      in: query
+      required: false
+      schema:
+        type: number
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    DeterministicQvaQueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    AshcloudQvaQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryProbabilisticQvaVolcanoid:
+      name: volcanoid
+      description: Filter by volcano identifier (integer). Must be a numeric ID matching the volcanoid in qva_netcdf_forecast_runs. Use the /v1/activeVolcanoQvas/ endpoint to discover available volcano IDs.
+      in: query
+      required: false
+      schema:
+        type: integer
+    ProbabilisticQvaQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    DeterministicQvaQueryModelDateTime:
+      name: modelDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    AshcloudQvaQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryProbabilisticQvaVaacid:
+      name: vaacid
+      description: Filter by VAAC identifier (e.g., EGRR, VAAC_LONDON).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDeterministicQvaVaacid:
+      name: vaacid
+      description: Filter by VAAC identifier (e.g., EGRR, VAAC_LONDON).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryAshcloudQvaEventType:
+      name: eventtype
+      description: 'Event type filter. Allowed values: OPERATIONAL (default), EXERCISE, TEST, ALL, or comma-separated combination.'
+      in: query
+      required: false
+      schema:
+        type: string
+        default: OPERATIONAL
+    DeterministicQvaQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    DeterministicQvaQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    DeterministicQvaQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryDeterministicQvaEventType:
+      name: eventtype
+      description: 'Event type filter. Allowed values: OPERATIONAL (default), EXERCISE, TEST, ALL, or comma-separated combination.'
+      in: query
+      required: false
+      schema:
+        type: string
+        default: OPERATIONAL
+    ProbabilisticQvaQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    AshcloudQvaQueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+  examples:
+    AshcloudQvaSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/ashcloudQvas/?limit=2
+        type: FeatureCollection
+        features: []
+        meta:
+          name: v1.ashcloudQvas.?limit=2
+          request_id: 00000000-0000-0000-0000-000000000000
+          start_timestamp: 0
+          end_timestamp: 0
+          execution_time: 0
+    ProbabilisticQvaBadRequestResponse:
+      value:
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        errors:
+        - message: volcanoid must be a numeric integer for probabilistic QVA data
+          parameter: volcanoid
+          value: test-volcano
+    DeterministicQvaSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/deterministicQvas/?limit=2
+        type: FeatureCollection
+        features: []
+        meta:
+          name: v1.deterministicQvas.?limit=2
+          request_id: 00000000-0000-0000-0000-000000000000
+          start_timestamp: 0
+          end_timestamp: 0
+          execution_time: 0
+    ProbabilisticQvaSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/probabilisticQvas/?limit=2
+        type: FeatureCollection
+        features: []
+        meta:
+          name: v1.probabilisticQvas.?limit=2
+          request_id: 00000000-0000-0000-0000-000000000000
+          start_timestamp: 0
+          end_timestamp: 0
+          execution_time: 0
+    AshcloudQvaBadRequestResponse:
+      value:
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        errors:
+        - message: volcanoid must be a numeric integer
+          parameter: volcanoid
+          value: test-volcano
+    ActiveVolcanoQvaBadRequestResponse:
+      value:
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        errors:
+        - message: vaacid must contain only letters, numbers, underscores, or hyphens
+          parameter: vaacid
+          value: '''; DROP TABLE--'
+    DeterministicQvaBadRequestResponse:
+      value:
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        errors:
+        - message: volcanoid must be a numeric integer for deterministic QVA data
+          parameter: volcanoid
+          value: test-volcano
+    ActiveVolcanoQvaSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/activeVolcanoQvas/
+        type: FeatureCollection
+        features: []
+        meta:
+          name: v1.activeVolcanoQvas.
+          request_id: 00000000-0000-0000-0000-000000000000
+          start_timestamp: 0
+          end_timestamp: 0
+          execution_time: 0
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Enhanced Flight Hazards API, you need to use the following audience: https://aviation.api.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

@@ -1,0 +1,432 @@
+openapi: 3.2.0
+info:
+  title: Energy Event Index Customer Account API
+  description: '# Energy Event Index (EEI) Customer API
+
+
+    This API provides access to Energy Event Index (EEI) data for individual existing EEI customers. The Energy Event Index is a way to describe the impact of weather on energy/utility infrastructure, as well as wildfire risks.
+
+
+    ## About Energy Event Index (EEI)
+
+    The EEI applies a risk level (the index) to not only a range of weather parameters, but the likelihood in which they will occur, as well as the confidence/likelihood of change. A customer''s EEI scale is applied to their specific requirements and their service areas.
+
+
+    ### EEI Parameters
+
+    The EEI system evaluates multiple weather parameters that can impact energy infrastructure:
+
+    - **Wind Speed & Wind Gust**: Both synoptically-driven and storm-driven winds
+
+    - **Snow**: Accumulation amounts that can affect power lines and equipment
+
+    - **Ice**: Ice accumulation on infrastructure
+
+    - **Lightning**: Electrical storm activity
+
+    - **Flooding**: Water-related impacts to facilities
+
+    - **Wildfire**: Fire risk assessment
+
+    - **Rainfall**: Precipitation impacts (measured in 4-hour periods)
+
+
+    ### Seasonal Considerations
+
+    Most customers have two sets of criteria:
+
+    - **"Leaves On" Season**: Typically spring through fall when foliage can impact power grids
+
+    - **"Leaves Off" Season**: Winter months when trees are bare
+
+
+    These seasonal thresholds account for how regional foliage impacts the power grid at different times of the year.
+
+
+    ## Purpose
+
+    The primary purpose of this API is to:
+
+    1. Retrieve EEI data from the Weather Sentry Online (WSO)
+
+    2. Process and format this data according to customer-specific configurations
+
+    3. Serve the processed EEI information to existing customers through a customer-facing interface
+
+    4. Provide threshold data that reflects seasonal "leaves on/off" criteria
+
+
+    ## Key Features
+
+    - Secure authentication for existing EEI customers
+
+    - Retrieval of up-to-date EEI forecast data
+
+    - Customer-specific threshold configurations
+
+    - Seasonal threshold adjustments (leaves on/off periods)
+
+    - Regional forecast data for customer service territories
+
+
+    ## Target Audience
+
+    This API is designed for use by:
+
+    - Energy and utility companies with EEI subscriptions
+
+    - Emergency management systems requiring weather impact forecasts
+
+    - Internal systems that require EEI data for customer-facing applications
+
+    - Decision-making tools for utility operations and crew deployment
+
+
+    ## Data Flow
+
+    1. The API retrieves raw EEI data from the Weather Sentry Online (WSO)
+
+    2. Data is processed according to customer-specific configurations and seasonal criteria
+
+    3. Customers can access their relevant EEI information through authenticated API calls
+
+    4. Forecast data includes confidence levels and multi-day outlooks
+
+
+    ## Security
+
+    This API implements robust security measures to ensure that only authenticated and authorized customers can access their EEI data.
+
+
+    For detailed information on endpoints, request/response formats, and authentication, please refer to the API documentation below.'
+  version: 1.1.0
+servers:
+- url: https://eei.dtn.com
+security:
+- clientCredentials: []
+tags:
+- name: Account
+paths:
+  /v1/account/eeithreshold:
+    get:
+      operationId: getEeiThreshold
+      summary: Retrieve EEI Thresholds for an Account
+      description: This endpoint retrieves the Energy Event Index (EEI) thresholds for a specific account. It provides detailed information about various weather-related thresholds that impact energy infrastructure for different EEI levels.
+      responses:
+        '200':
+          description: Successful retrieval of EEI thresholds
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    accountId:
+                      type: integer
+                      example: 132
+                    energyEventIndex:
+                      type: integer
+                      example: 1
+                    flooding:
+                      type:
+                      - number
+                      - 'null'
+                    ice:
+                      type: number
+                      example: 0.1
+                    id:
+                      type: integer
+                      example: 29
+                    lightning:
+                      type:
+                      - number
+                      - 'null'
+                    rainfallSummer:
+                      type:
+                      - number
+                      - 'null'
+                    rainfallWinter:
+                      type:
+                      - number
+                      - 'null'
+                    snowSummer:
+                      type: number
+                      example: 4
+                    snowWinter:
+                      type: number
+                      example: 6
+                    wildfireSummer:
+                      type:
+                      - number
+                      - 'null'
+                    wildfireWinter:
+                      type:
+                      - number
+                      - 'null'
+                    windGustSummer:
+                      type: number
+                      example: 35
+                    windGustWinter:
+                      type: number
+                      example: 45
+                    windSpeedSummer:
+                      type: number
+                      example: 30
+                    windSpeedWinter:
+                      type: number
+                      example: 40
+              example:
+              - accountId: 132
+                energyEventIndex: 1
+                flooding: null
+                ice: 0.1
+                id: 29
+                lightning: null
+                rainfallSummer: null
+                rainfallWinter: null
+                snowSummer: 4
+                snowWinter: 6
+                wildfireSummer: null
+                wildfireWinter: null
+                windGustSummer: 35
+                windGustWinter: 45
+                windSpeedSummer: 30
+                windSpeedWinter: 40
+              - accountId: 132
+                energyEventIndex: 2
+                flooding: null
+                ice: 0.1
+                id: 28
+                lightning: null
+                rainfallSummer: null
+                rainfallWinter: null
+                snowSummer: 4
+                snowWinter: 6
+                wildfireSummer: null
+                wildfireWinter: null
+                windGustSummer: 35
+                windGustWinter: 45
+                windSpeedSummer: 30
+                windSpeedWinter: 40
+        '401':
+          description: "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  title:
+                    type: string
+                  status:
+                    type: integer
+                  detail:
+                    type: string
+                  instance:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: Invalid or missing token
+                  value:
+                    type: unauthorized
+                    title: Error while authenticating the user
+                    status: 401
+                    detail: Unauthorized. Please make sure you provided the correct headers
+                    instance: urn:dtn:wx-eei-api:/v1/region:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83
+                invalidAccount:
+                  summary: Invalid account configuration
+                  value:
+                    type: forbidden
+                    title: Access to the Requested Resource is Forbidden
+                    status: 401
+                    detail: Account not configured with a valid OM Customer ID.
+                    instance: urn:dtn:wx-eei-api:/v1/eeithreshold:requestId:aa50e28b-7ad4-4764-b1f1-414c55c9db43
+        '500':
+          description: 'Internal Server Error - An unexpected error occurred on the server.
+
+            If you encounter this error, please contact your administrator for assistance.
+
+            '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: internal-server-error
+                  title:
+                    type: string
+                    example: Internal Server Error
+                  status:
+                    type: integer
+                    example: 500
+                  detail:
+                    type: string
+                    example: Failed to request data from the Identity API.
+                  instance:
+                    type: string
+                    example: urn:dtn:wx-eei-api:/v1/eeithreshold:requestId:e4547111-872e-4ab6-afa2-42015133433f
+              example:
+                type: internal-server-error
+                title: Internal Server Error
+                status: 500
+                detail: Failed to request data from the Identity API.
+                instance: urn:dtn:wx-eei-api:/v1/eeithreshold:requestId:e4547111-872e-4ab6-afa2-42015133433f
+      tags:
+      - Account
+  /v1/account/eeischedule:
+    get:
+      operationId: getEeiSchedule
+      summary: Retrieve EEI Forecast Schedule for an Account
+      description: "This endpoint retrieves the Energy Event Index (EEI) forecast schedule for a specific account. \nIt provides information about the scheduled publication times for EEI forecasts.\n"
+      responses:
+        '200':
+          description: Successful retrieval of EEI forecast schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    accountId:
+                      type: integer
+                      example: 132
+                    hourDue:
+                      type: integer
+                      example: 5
+                    id:
+                      type: integer
+                      example: 52
+                    insertDateTime:
+                      type: object
+                      properties:
+                        dateLong:
+                          type: string
+                          example: September 30, 2024
+                        dateShort:
+                          type: string
+                          example: 9/30/24
+                        dateShortest:
+                          type: string
+                          example: 9/30
+                        timeShort:
+                          type: string
+                          example: 17:21 UTC
+                        timeShortest:
+                          type: string
+                          example: '1700'
+                        dowShortest:
+                          type: string
+                          example: Mon
+                        timeZone:
+                          type: string
+                          example: UTC
+                        utcValue:
+                          type: integer
+                          example: 1727716915767
+              example:
+              - accountId: 132
+                hourDue: 5
+                id: 52
+                insertDateTime:
+                  dateLong: September 30, 2024
+                  dateShort: 9/30/24
+                  dateShortest: 9/30
+                  timeShort: 17:21 UTC
+                  timeShortest: '1700'
+                  dowShortest: Mon
+                  timeZone: UTC
+                  utcValue: 1727716915767
+              - accountId: 132
+                hourDue: 6
+                id: 53
+                insertDateTime:
+                  dateLong: September 30, 2024
+                  dateShort: 9/30/24
+                  dateShortest: 9/30
+                  timeShort: 17:21 UTC
+                  timeShortest: '1700'
+                  dowShortest: Mon
+                  timeZone: UTC
+                  utcValue: 1727716915767
+        '401':
+          description: "Unauthorized - Invalid or missing authentication token, or account not properly configured\nIf you receive a message stating \"Account not configured with a valid OM Customer ID\", \nplease contact your administrator to ensure your account is properly set up.\n"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  title:
+                    type: string
+                  status:
+                    type: integer
+                  detail:
+                    type: string
+                  instance:
+                    type: string
+              examples:
+                invalidToken:
+                  summary: Invalid or missing token
+                  value:
+                    type: unauthorized
+                    title: Error while authenticating the user
+                    status: 401
+                    detail: Unauthorized. Please make sure you provided the correct headers
+                    instance: urn:dtn:wx-eei-api:/v1/eeischedule:requestId:3dfcd9b8-04f3-4f8a-8d57-3ab61803dd83
+                invalidAccount:
+                  summary: Invalid account configuration
+                  value:
+                    type: forbidden
+                    title: Access to the Requested Resource is Forbidden
+                    status: 401
+                    detail: Account not configured with a valid OM Customer ID.
+                    instance: urn:dtn:wx-eei-api:/v1/eeischedule:requestId:aa50e28b-7ad4-4764-b1f1-414c55c9db43
+        '500':
+          description: 'Internal Server Error - An unexpected error occurred on the server.
+
+            If you encounter this error, please contact your administrator for assistance.
+
+            '
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: internal-server-error
+                  title:
+                    type: string
+                    example: Internal Server Error
+                  status:
+                    type: integer
+                    example: 500
+                  detail:
+                    type: string
+                    example: Failed to request data from the Identity API.
+                  instance:
+                    type: string
+                    example: urn:dtn:wx-eei-api:/v1/eeischedule:requestId:e4547111-872e-4ab6-afa2-42015133433f
+              example:
+                type: internal-server-error
+                title: Internal Server Error
+                status: 500
+                detail: Failed to request data from the Identity API.
+                instance: urn:dtn:wx-eei-api:/v1/eeischedule:requestId:e4547111-872e-4ab6-afa2-42015133433f
+      tags:
+      - Account
+components:
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Energy Event Index API, you need to use the following audience: https://eei.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

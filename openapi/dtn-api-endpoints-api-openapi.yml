@@ -1,0 +1,2122 @@
+openapi: 3.2.0
+info:
+  title: Dtn API Endpoints API
+  version: '1.0'
+  description: 'Operations tagged API Endpoints across 2 of this provider''s published API definitions: dtn-lightning-websocket-openapi.json, dtn-observation-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://lightning.api.dtn.com
+- url: https://obs.api.dtn.com
+tags:
+- name: API Endpoints
+paths:
+  /v1/:
+    summary: Used to retrieve strikes based upon specific parameters on a stream delivery.
+    description: "- Can be used to retrieve lightning strikes by either:\n    - bounding box\n    - radius\n- Additional time-based filtering can be done using `startTime` - The default for time filters is the time of execution of the request."
+    get:
+      tags:
+      - API Endpoints
+      summary: Stream
+      description: "```\n  https://lightning.api.dtn.com/v1/\n```\n\n This endpoint allows users to retrieve all lightning strikes, in a streaming manner, that match the set criteria.\n\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To stream starting on a specified time:\n    - For start time, provide `startTime` value. \n    - Data on the stream only last for `1 day`, any dates further can be retrieved from our other Lightning API."
+      security:
+      - clientCredentials: []
+      parameters:
+      - name: startTime
+        in: query
+        schema:
+          type: string
+        description: Get observations starting a specific time
+        required: false
+      - name: by
+        in: query
+        schema:
+          type: string
+        description: Get observations by radius | boundingBox.
+        required: false
+      - name: radius
+        in: query
+        schema:
+          type: number
+          minimum: 0
+          maximum: 100
+        description: Radius for radial search in km.
+        required: false
+      - name: lon
+        in: query
+        schema:
+          type: number
+        description: Longitude for radial search in decimal degrees, e.g. `54.85`.
+        required: false
+      - name: lat
+        in: query
+        schema:
+          type: number
+        description: Latitude for radial search in decimal degrees, e.g. `54.85`.
+        required: false
+      - name: minLon
+        in: query
+        schema:
+          type: string
+        description: Minimum longitude for boundingBox search in decimal degrees, e.g. `-1.85`
+        required: false
+      - name: minLat
+        in: query
+        schema:
+          type: string
+        description: Minimum latitude for boundingBox search in decimal degrees, e.g. `50.85`
+        required: false
+      - name: maxLon
+        in: query
+        schema:
+          type: string
+        description: Maximum longitude for boundingBox search in decimal degrees, e.g. `0.85`
+        required: false
+      - name: maxLat
+        in: query
+        schema:
+          type: string
+        description: Maximum latitude for boundingBox search in decimal degrees, e.g. `54.85`
+        required: false
+      responses:
+        Success:
+          $ref: '#/components/responses/GetStrikesDefault'
+        Parameter Error:
+          $ref: '#/components/responses/StrikeValidationError'
+        Server Error:
+          description: Internal server error.
+    servers:
+    - url: https://lightning.api.dtn.com
+  /v2/observations:
+    get:
+      tags:
+      - API Endpoints
+      summary: Observations
+      description: "Use this endpoint to get near-real time or historic observations for one or more stations (up to 100 stations per request).\n\n### Finding Stations and Parameters\n\n* Use the `/stations` endpoint to search for and identify stations of interest.\n* Use the `/parameters` endpoint to explore available parameters.\n* Observation type (`obsType`) descriptions are also listed in the `/stations` documentation.\n\n### Intervals\n\nControl the temporal resolution of the returned data with the `interval` parameter:\n\n| Interval | Description |\n|----------|-------------|\n| `15m` | Returns observations at fixed 15-minute intervals. Each value is interpolated from hourly observations. Can only be used with parameters ending in `15Min`. |\n| `1h` | Returns observations at fixed hourly intervals. Each value represents the closest measurement to the top of the hour. |\n| `24h` | Returns daily aggregations for parameters with a `24Hour` suffix. The aggregation period covers each full 24-hour window between `startTime` and `endTime`. |\n\n### Quota Usage\n\nQuota is calculated **per station**, not per request or observations.\n\n**Example**\n\nIf you request data for 10 stations, your total quota usage is:\n\n```\n10 stations = 10 quota units\n```\n\nThe number of observations returned, parameters requested, or time range does not affect quota usage—only the number of stations in your request.\n\n<details>\n<summary><strong>Deep Dive to Quota Calculations</strong></summary>\n\nThe quota is based solely on the number of stations requested, regardless of how many observations are returned.\n\n**Formula:**\n```\nTotal Quota Usage = Number of Stations Requested\n```\n\n**Example**\n\nLet's say you make a request for 3 stations with the following parameters:\n- **Stations:** `CPTR3, TQTCE, VMWB5`\n- **Parameters:** `airTemp, windSpeed, relativeHumidity` (3 parameters)\n- **Time Range:** 24 hours with hourly data (24 time points)\n\nTotal quota usage:\n```\n3 stations = 3 quota units\n```\n\n**Key Points:**\n- Quota is counted per station requested, not per observation\n- The number of parameters does not affect quota\n- The time range does not affect quota\n- The number of observations returned does not affect quota\n- The number of API requests doesn't affect quota—only the number of stations requested\n\n</details>\n\n### Access Scopes and Data Availability\n\n| Feature | Core Scope | Plus Scope |\n|---------|------------|------------|\n| **Parameters** | Access limited to Core parameters only. Including non-Core parameters (e.g., `soilTemp`, `surfaceTemp`) will not change the response. | Access to all parameters, both Core and Non-Core. |\n| **Stations** | Data limited to public stations, excluding DTN EU stations. | Includes data from all stations, including DTN EU. |\n| **Data Access** | Only latest data (past 32 days) is available. | Supports both latest and archived observations (dating back to 1901). |\n\n### Gap Filling with Model Data\n\n**What is Gap Filling?**\n\nFills missing observations with data from DTN's gridded weather model.\n\n**Important:** When `gapFill=true`, the `obsProperties` parameter is automatically set to `true` by default to help you identify which observations are gap-filled.\n\n<details>\n<summary><strong>Deep Dive to Gap Filling</strong></summary>\n\n**When to Use:**\n- Creating continuous time series for analysis\n- Machine learning training datasets\n- Filling short data gaps in station records\n\n**Requirements:**\n- Gap-filling scope enabled on your account\n- Use with `interval=1h`\n- Available from January 1, 2013 onwards\n\n**Supported Parameters:**\n\nNot all parameters support gap filling. Check the `/parameters` endpoint for details.\n\n**Example:**\n```\nGET /v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-20T00:00:00Z&endTime=2025-01-22T00:00:00Z&interval=1h&gapFill=true\n```\n\n**Identifying Gap-Filled Data:**\n\nWhen `gapFill=true`, observation properties are automatically included in the response. Gap-filled observations will have specific indicators in the properties to distinguish them from actual station measurements.\n\n**Response Comparison:**\n\n**Without Gap Filling (`gapFill=false` or omitted):**\n\nMissing data at 11:00 creates a gap in the time series.\n\n```json\n{\n  \"properties\": {\n    \"2025-01-20T10:00:00Z\": {\n      \"airTemp\": 15.5\n    },\n    \"2025-01-20T12:00:00Z\": {\n      \"airTemp\": 17.2\n    }\n  }\n}\n```\n\n**With Gap Filling (`gapFill=true`):**\n\nGap at 11:00 is filled with model data, indicated by `\"obsType\": \"MODEL\"`.\n\n```json\n{\n  \"properties\": {\n    \"2025-01-20T10:00:00Z\": {\n      \"airTemp\": 15.5,\n      \"airTempProperties\": {\n        \"obsType\": \"METAR\",\n        \"isDerived\": false,\n        \"qc\": \"pass\"\n      }\n    },\n    \"2025-01-20T11:00:00Z\": {\n      \"airTemp\": 16.3,\n      \"airTempProperties\": {\n        \"obsType\": \"MODEL\"\n      }\n    },\n    \"2025-01-20T12:00:00Z\": {\n      \"airTemp\": 17.2,\n      \"airTempProperties\": {\n        \"obsType\": \"METAR\",\n        \"isDerived\": false,\n        \"qc\": \"pass\"\n      }\n    }\n  }\n}\n```\n\n**Key Difference:** Gap-filled observations have `\"obsType\": \"MODEL\"` in the properties, while actual station measurements show the observation type (e.g., `\"METAR\"`, `\"SYNOP\"`).\n\n</details>\n\n### Time Zones and Timestamps\n\n**All Times are in UTC**\n\n**Important:** All timestamps in requests and responses use UTC (Coordinated Universal Time).\n\n**Request Format:**\n- Use ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ` or `YYYY-MM-DDTHH:MM:SS`\n- The `Z` suffix explicitly indicates UTC time, but timestamps without `Z` are also treated as UTC\n- Examples: `2025-01-22T14:30:00Z` or `2025-01-22T14:30:00`\n\n<details>\n<summary><strong>Deep Dive to Time Zones and Timestamps</strong></summary>\n\n**Converting Local Time to UTC**\n\nIf you need data for a specific local time:\n1. Convert your local time to UTC\n2. Use the UTC time in your API request\n\n**Example:**\n- Local time: January 22, 2025, 9:00 AM EST (UTC-5)\n- UTC time: January 22, 2025, 2:00 PM UTC\n- API parameter: `startTime=2025-01-22T14:00:00Z` or `startTime=2025-01-22T14:00:00`\n\n**Daily Aggregations and Time Zones**\n\nWhen using `interval=24h`, the aggregation period is determined by your `startTime`:\n\n**Midnight-to-Midnight Aggregation:**\n- Set `startTime` to midnight in your desired timezone (expressed in UTC)\n- Example for EST (UTC-5): `startTime=2025-01-22T05:00:00Z` (midnight EST)\n\n**Understanding `aggregationTimeLabel`:**\n- `end` (default): Timestamp represents the end of the 24-hour period\n- `start`: Timestamp represents the start of the 24-hour period\n\n**Example:**\n```\nstartTime=2025-01-22T00:00:00Z\nendTime=2025-01-25T00:00:00Z\ninterval=24h\naggregationTimeLabel=end\n```\n\nReturns data for:\n- `2025-01-23T00:00:00Z` (data from Jan 22 00:00 to Jan 23 00:00)\n- `2025-01-24T00:00:00Z` (data from Jan 23 00:00 to Jan 24 00:00)\n- `2025-01-25T00:00:00Z` (data from Jan 24 00:00 to Jan 25 00:00)\n\n</details>\n\n### Data Quality and QC Flags\n\n**Understanding Quality Control**\n\nDTN applies automated quality control checks to all observations to identify potentially erroneous data.\n\n**QC Flag Values:**\n- `pass`: Observation passed all quality checks\n- `suspicious`: Observation flagged as potentially questionable\n- `fail`: Observation failed quality checks\n\n<details>\n<summary><strong>Deep Dive to QC Flags</strong></summary>\n\n**Viewing QC Flags**\n\nSet `obsProperties=true` to include QC information in the response.\n\n**Example Response:**\n```json\n{\n  \"timestamp\": \"2025-01-22T12:00:00Z\",\n  \"airTemp\": 45.2,\n  \"properties\": {\n    \"airTemp\": {\n      \"qc\": \"suspicious\",\n      \"obsType\": \"METAR\",\n      \"isDerived\": false\n    }\n  }\n}\n```\n\n**Filtering by Quality**\n\n**Get Only Good Data:**\n\nUse `onlyGood=true` to automatically filter out observations that failed QC.\n\n```\nGET /v2/observations?stationCode=CPTR3&parameters=airTemp&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T23:59:59Z&onlyGood=true\n```\n\n**Derived Parameters**\n\nSome parameters are calculated from other measurements:\n\n**isDerived Flag:**\n- `true`: Value calculated by DTN (e.g., `relativeHumidity` from `dewPoint` and `airTemp`)\n- `false`: Direct measurement from the station\n\n**Common Derived Parameters:**\n- `relativeHumidity` (from `dewPoint` and `airTemp`)\n- `heatIndex` (from `airTemp` and `relativeHumidity`)\n- `windChill` (from `airTemp` and `windSpeed`)\n\n**Historical Data Limitations**\n\n**Note:** QC flags and observation properties may not be available for archived historical data.\n\n- Latest data (past 32 days): Full QC information available\n- Archived data (older than 32 days): Limited or no QC information\n\n</details>\n\n### Station Tags (showTags Parameter)\n\n**What are Station Tags?**\n\nStation tags contain metadata about observation stations, including identifying information such as station name and management ID. By default, tags are not included in the response to maintain backward compatibility.\n\n**When to Use:**\n\nUse `showTags=true` when you need to display station information alongside observations, such as:\n- Plotting observations on a map with station names\n- Creating reports that identify data sources\n- Correlating observations with station metadata without additional API calls\n\n**How It Works:**\n\n- `showTags=false` (default): Response excludes tags, keeping payload minimal\n- `showTags=true`: Each feature includes a `tags` object with station metadata\n\n**Tag Structure:**\n\nWhen included, tags contain at minimum:\n- `name`: Human-readable station name\n- `mgID`: Management ID for the station\n\n**Example Comparison:**\n\n**Without Tags (`showTags=false` or omitted):**\n```json\n{\n  \"type\": \"Feature\",\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-0.45, 51.4833]\n  },\n  \"properties\": {\n    \"2025-01-22T00:00:00Z\": {\n      \"airTemp\": 3,\n      \"windSpeed\": 2.06\n    }\n  }\n}\n```\n\n**With Tags (`showTags=true`):**\n```json\n{\n  \"type\": \"Feature\",\n  \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": [-0.45, 51.4833]\n  },\n  \"properties\": {\n    \"tags\": {\n      \"name\": \"London Weather Station\",\n      \"mgID\": \"LDN001\"\n    },\n    \"2025-01-22T00:00:00Z\": {\n      \"airTemp\": 3,\n      \"windSpeed\": 2.06\n    }\n  }\n}\n```\n\n**Use Cases:**\n\n1. **Weather Dashboards**: Display station names alongside real-time observations\n2. **Data Analysis**: Identify observation sources in reports and visualizations\n3. **Mobile Apps**: Show user-friendly station names in weather apps\n4. **Integration**: Reduce API calls by getting station info with observations\n\n### Example Request\n\n```\nGET https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T01:00:00Z&obsProperties=true\n```\n\n**With Station Tags:**\n\n```\nGET https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T01:00:00Z&showTags=true\n```\n\n### Notes\n\n* Maximum of 100 stations per request.\n* For detailed parameter definitions, see the `/parameters` endpoint documentation.\n* Station tags are included in the response only when `showTags=true` is explicitly set."
+      operationId: get_observations_v2_observations_get
+      parameters:
+      - description: Comma-separated list of parameters, e.g. `airTemp,precipAcc60Min,windSpeed`. A full list of supported parameters and definitions is available through the parameters endpoint.
+        required: true
+        schema:
+          title: Parameters
+          type: string
+          description: Comma-separated list of parameters, e.g. `airTemp,precipAcc60Min,windSpeed`. A full list of supported parameters and definitions is available through the parameters endpoint.
+        name: parameters
+        in: query
+      - description: Start of the time range, in the format `2023-04-30T19:00:00Z`
+        required: true
+        schema:
+          title: Starttime
+          type: string
+          description: Start of the time range, in the format `2023-04-30T19:00:00Z`
+          format: date-time
+        name: startTime
+        in: query
+      - description: End of the time range, in the format `2023-04-30T19:00:00Z`. Limited to 1 month per query.
+        required: true
+        schema:
+          title: Endtime
+          type: string
+          description: End of the time range, in the format `2023-04-30T19:00:00Z`. Limited to 1 month per query.
+          format: date-time
+        name: endTime
+        in: query
+      - description: Comma-separated list of up to 100 DTN station codes, e.g. `YNQXX,CPTR3,KNYC1`. You can request observations for multiple stations at once (maximum 100).
+        required: true
+        schema:
+          title: Stationcode
+          type: string
+          description: Comma-separated list of up to 100 DTN station codes, e.g. `YNQXX,CPTR3,KNYC1`. You can request observations for multiple stations at once (maximum 100).
+        name: stationCode
+        in: query
+      - description: Comma-separated list of obsTypes, e.g. `METAR,SYNOP,RWIS,AG` If unspecified, all types are shown.
+        required: false
+        schema:
+          title: Obstypes
+          type: string
+          description: Comma-separated list of obsTypes, e.g. `METAR,SYNOP,RWIS,AG` If unspecified, all types are shown.
+        name: obsTypes
+        in: query
+      - description: Set to `True` to hide observations that have failed QC. QC flags may not be available for historic data.
+        required: false
+        schema:
+          title: Onlygood
+          type: boolean
+          description: Set to `True` to hide observations that have failed QC.
+          default: false
+        name: onlyGood
+        in: query
+      - description: 'Set to `True` to view properties such as `qc` flag (result of checks: pass, suspicious or fail), `obsType` (see parameters endpoint documentation) and `isDerived` (True if the value is calculated by us from other parameters e.g. relativeHumidity from dewPoint and airTemp). Properties may not be available for historic data.'
+        required: false
+        schema:
+          title: Obsproperties
+          type: boolean
+          description: 'Set to `True` to view properties such as `qc` flag (result of checks: pass, suspicious or fail), `obsType` (see parameters endpoint documentation) and `isDerived` (True if the value is calculated by us from other parameters e.g. relativeHumidity from dewPoint and airTemp). Properties may not be available for historic data.'
+        name: obsProperties
+        in: query
+      - description: Set to `True` to include station tags (such as name and management ID) in the response. When set to `True`, each feature in the response will include a `tags` object containing station metadata. Default is `False` to maintain backward compatibility.
+        required: false
+        schema:
+          title: ShowTags
+          type: boolean
+          description: Set to `True` to include station tags (such as name and management ID) in the response. When set to `True`, each feature in the response will include a `tags` object containing station metadata. Default is `False` to maintain backward compatibility.
+          default: false
+        name: showTags
+        in: query
+      - description: Set to `15m` for 15-minute intervals, `1h` for hourly, `24h` for daily, or exclude for all observations received from the station. 15-minute interval data will be calculated on the fly and can only be used with parameters that end in the `15Min` suffix. Daily aggregated data will be calculated on the fly and the definition of 1 day is determined by the startTime. To get data aggregated from midnight to midnight, set the start time to your local midnight (expressed in UTC). Can only be used with parameters that end in the `24Hour` suffix. Data is representative of the 24 hours before the given timestamp. E.g. airTempMax24Hour at 2024-09-10T00:00 is the maximum temperature for the 9th September UTC day.
+        required: false
+        schema:
+          type: string
+          pattern: (^15m$|^1h$|^24h$)
+          title: Interval
+          description: Set to `15m` for 15-minute intervals, `1h` for hourly, `24h` for daily, or exclude for all observations received from the station. 15-minute interval data will be calculated on the fly and can only be used with parameters that end in the `15Min` suffix. Daily aggregated data will be calculated on the fly and the definition of 1 day is determined by the startTime. To get data aggregated from midnight to midnight, set the start time to your local midnight (expressed in UTC). Can only be used with parameters that end in the `24Hour` suffix. Data is representative of the 24 hours before the given timestamp. E.g. airTempMax24Hour at 2024-09-10T00:00 is the maximum temperature for the 9th September UTC day.
+        name: interval
+        in: query
+      - description: Set to `True` to fill gaps in hourly time-series with values from our gridded weather model. Hourly model data is available up to 10 years in the past for all locations and selected parameters. Requires gap-filling scope.
+        required: false
+        schema:
+          type: boolean
+          title: Gapfill
+          description: Set to `True` to fill gaps in hourly time-series with values from our gridded weather model. Hourly model data is available from 1st January 2013 for all locations and selected parameters. Requires gap-filling scope.
+          default: false
+        name: gapFill
+        in: query
+      - description: Set to `us-std` to change units from `si-std` to Imperial Units. Default value is `si-std`
+        required: false
+        schema:
+          title: Units
+          pattern: (^si-std$|^us-std$)
+          type: string
+          description: Set to `us-std` to change units from `si-std` to Imperial Units. Default value is `si-std`
+          default: si-std
+        name: units
+        in: query
+      - description: 'Specifies how the timestamp is labeled in the response when using time-aggregated data (e.g., `interval=24h`).
+
+
+          This parameter controls whether the timestamp returned for each data point reflects the start or end of the aggregation window.
+
+
+          Supported values:
+
+
+          `end` (default) - The timestamp represents the end of the aggregation period.
+
+
+          `start` - The timestamp represents the start of the aggregation period.
+
+          Note: This parameter is only applicable when interval=24h.'
+        required: false
+        schema:
+          title: aggregationTimeLabel
+          pattern: (^start$|^end$)
+          type: string
+          description: 'Specifies how the timestamp is labeled in the response when using time-aggregated data (e.g., `interval=24h`).
+
+
+            This parameter controls whether the timestamp returned for each data point reflects the start or end of the aggregation window.
+
+
+            Supported values:
+
+
+            `end` (default) - The timestamp represents the end of the aggregation period.
+
+
+            `start` - The timestamp represents the start of the aggregation period.
+
+            Note: This parameter is only applicable when interval=24h.'
+          default: end
+        name: aggregationTimeLabel
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get Observations V2 Observations Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObsDataRespModel'
+              examples:
+                Observations Endpoint Core Scope:
+                  $ref: '#/components/examples/Observations_Endpoint_Core_Scope'
+                Observations Endpoint Plus Scope:
+                  $ref: '#/components/examples/Observations_Endpoint_Plus_Scope'
+                Observations with showTags=true:
+                  $ref: '#/components/examples/Observations_with_showTags_true'
+                Observations with showTags=false:
+                  $ref: '#/components/examples/Observations_with_showTags_false'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayTimeoutError'
+      security:
+      - clientCredentials: []
+      x-codeSamples:
+      - lang: C + Libcurl
+        source: "#include <stdio.h>\n#include <curl/curl.h>\n\nint main(void) {\n    CURL *curl;\n    CURLcode res;\n    \n    curl = curl_easy_init();\n    if(curl) {\n        struct curl_slist *headers = NULL;\n        headers = curl_slist_append(headers, \"Authorization: Bearer YOUR_ACCESS_TOKEN\");\n        \n        curl_easy_setopt(curl, CURLOPT_URL, \n            \"https://obs.api.dtn.com/v2/observations?\"\n            \"stationCode=CPTR3&\"\n            \"parameters=airTemp,windSpeed&\"\n            \"startTime=2025-01-22T00:00:00Z&\"\n            \"endTime=2025-01-22T12:00:00Z\");\n        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n        \n        res = curl_easy_perform(curl);\n        \n        curl_slist_free_all(headers);\n        curl_easy_cleanup(curl);\n    }\n    return 0;\n}"
+      - lang: Csharp + Restsharp
+        source: "using RestSharp;\nusing System;\n\nclass Program\n{\n    static void Main()\n    {\n        var client = new RestClient(\"https://obs.api.dtn.com\");\n        var request = new RestRequest(\"/v2/observations\", Method.Get);\n        \n        request.AddHeader(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\");\n        request.AddParameter(\"stationCode\", \"CPTR3\");\n        request.AddParameter(\"parameters\", \"airTemp,windSpeed\");\n        request.AddParameter(\"startTime\", \"2025-01-22T00:00:00Z\");\n        request.AddParameter(\"endTime\", \"2025-01-22T12:00:00Z\");\n        \n        var response = client.Execute(request);\n        Console.WriteLine(response.Content);\n    }\n}"
+      - lang: Go + Native
+        source: "package main\n\nimport (\n    \"fmt\"\n    \"io\"\n    \"net/http\"\n    \"net/url\"\n)\n\nfunc main() {\n    baseURL := \"https://obs.api.dtn.com/v2/observations\"\n    \n    params := url.Values{}\n    params.Add(\"stationCode\", \"CPTR3\")\n    params.Add(\"parameters\", \"airTemp,windSpeed\")\n    params.Add(\"startTime\", \"2025-01-22T00:00:00Z\")\n    params.Add(\"endTime\", \"2025-01-22T12:00:00Z\")\n    \n    req, _ := http.NewRequest(\"GET\", baseURL+\"?\"+params.Encode(), nil)\n    req.Header.Add(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n    \n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n    \n    body, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(body))\n}"
+      - lang: Java + Okhttp
+        source: "import okhttp3.OkHttpClient;\nimport okhttp3.Request;\nimport okhttp3.Response;\n\npublic class ObservationsExample {\n    public static void main(String[] args) throws Exception {\n        OkHttpClient client = new OkHttpClient();\n        \n        String url = \"https://obs.api.dtn.com/v2/observations?\" +\n                     \"stationCode=CPTR3&\" +\n                     \"parameters=airTemp,windSpeed&\" +\n                     \"startTime=2025-01-22T00:00:00Z&\" +\n                     \"endTime=2025-01-22T12:00:00Z\";\n        \n        Request request = new Request.Builder()\n            .url(url)\n            .addHeader(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n            .build();\n        \n        try (Response response = client.newCall(request).execute()) {\n            System.out.println(response.body().string());\n        }\n    }\n}"
+      - lang: Java + Unirest
+        source: "import kong.unirest.Unirest;\nimport kong.unirest.HttpResponse;\n\npublic class ObservationsExample {\n    public static void main(String[] args) {\n        HttpResponse<String> response = Unirest.get(\"https://obs.api.dtn.com/v2/observations\")\n            .header(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n            .queryString(\"stationCode\", \"CPTR3\")\n            .queryString(\"parameters\", \"airTemp,windSpeed\")\n            .queryString(\"startTime\", \"2025-01-22T00:00:00Z\")\n            .queryString(\"endTime\", \"2025-01-22T12:00:00Z\")\n            .asString();\n        \n        System.out.println(response.getBody());\n    }\n}"
+      - lang: Javascript + Jquery
+        source: "$.ajax({\n    url: 'https://obs.api.dtn.com/v2/observations',\n    method: 'GET',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    },\n    data: {\n        stationCode: 'CPTR3',\n        parameters: 'airTemp,windSpeed',\n        startTime: '2025-01-22T00:00:00Z',\n        endTime: '2025-01-22T12:00:00Z'\n    },\n    success: function(data) {\n        console.log(data);\n    },\n    error: function(error) {\n        console.error(error);\n    }\n});"
+      - lang: Javascript + Xhr
+        source: "const xhr = new XMLHttpRequest();\nconst params = new URLSearchParams({\n    stationCode: 'CPTR3',\n    parameters: 'airTemp,windSpeed',\n    startTime: '2025-01-22T00:00:00Z',\n    endTime: '2025-01-22T12:00:00Z'\n});\n\nxhr.open('GET', `https://obs.api.dtn.com/v2/observations?${params}`);\nxhr.setRequestHeader('Authorization', 'Bearer YOUR_ACCESS_TOKEN');\n\nxhr.onload = function() {\n    if (xhr.status === 200) {\n        console.log(JSON.parse(xhr.responseText));\n    }\n};\n\nxhr.send();"
+      - lang: Node + Native
+        source: "const https = require('https');\nconst querystring = require('querystring');\n\nconst params = querystring.stringify({\n    stationCode: 'CPTR3',\n    parameters: 'airTemp,windSpeed',\n    startTime: '2025-01-22T00:00:00Z',\n    endTime: '2025-01-22T12:00:00Z'\n});\n\nconst options = {\n    hostname: 'obs.api.dtn.com',\n    path: `/v2/observations?${params}`,\n    method: 'GET',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    }\n};\n\nconst req = https.request(options, (res) => {\n    let data = '';\n    res.on('data', (chunk) => data += chunk);\n    res.on('end', () => console.log(JSON.parse(data)));\n});\n\nreq.end();"
+      - lang: Node + Request
+        source: "const request = require('request');\n\nconst options = {\n    url: 'https://obs.api.dtn.com/v2/observations',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    },\n    qs: {\n        stationCode: 'CPTR3',\n        parameters: 'airTemp,windSpeed',\n        startTime: '2025-01-22T00:00:00Z',\n        endTime: '2025-01-22T12:00:00Z'\n    },\n    json: true\n};\n\nrequest.get(options, (error, response, body) => {\n    if (!error && response.statusCode === 200) {\n        console.log(body);\n    }\n});"
+      - lang: Objc + Nsurlsession
+        source: "#import <Foundation/Foundation.h>\n\nNSString *urlString = @\"https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T12:00:00Z\";\nNSURL *url = [NSURL URLWithString:urlString];\n\nNSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];\n[request setHTTPMethod:@\"GET\"];\n[request setValue:@\"Bearer YOUR_ACCESS_TOKEN\" forHTTPHeaderField:@\"Authorization\"];\n\nNSURLSession *session = [NSURLSession sharedSession];\nNSURLSessionDataTask *task = [session dataTaskWithRequest:request\n    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\n        if (!error) {\n            NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];\n            NSLog(@\"%@\", result);\n        }\n    }];\n[task resume];"
+      - lang: Ocaml + Cohttp
+        source: "open Lwt\nopen Cohttp\nopen Cohttp_lwt_unix\n\nlet uri = Uri.of_string \n  \"https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T12:00:00Z\"\n\nlet headers = Header.init ()\n  |> fun h -> Header.add h \"Authorization\" \"Bearer YOUR_ACCESS_TOKEN\"\n\nlet () =\n  let body = Client.get ~headers uri >>= fun (resp, body) ->\n    body |> Cohttp_lwt.Body.to_string >|= fun body ->\n    print_endline body\n  in\n  Lwt_main.run body"
+      - lang: Php + Curl
+        source: "<?php\n$ch = curl_init();\n\n$params = http_build_query([\n    'stationCode' => 'CPTR3',\n    'parameters' => 'airTemp,windSpeed',\n    'startTime' => '2025-01-22T00:00:00Z',\n    'endTime' => '2025-01-22T12:00:00Z'\n]);\n\ncurl_setopt($ch, CURLOPT_URL, \"https://obs.api.dtn.com/v2/observations?\" . $params);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n    'Authorization: Bearer YOUR_ACCESS_TOKEN'\n]);\n\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;\n?>"
+      - lang: Php + Http1
+        source: '<?php
+
+          require_once ''HTTP/Request.php'';
+
+
+          $request = new HTTP_Request(''https://obs.api.dtn.com/v2/observations'');
+
+          $request->setMethod(HTTP_REQUEST_METHOD_GET);
+
+          $request->addHeader(''Authorization'', ''Bearer YOUR_ACCESS_TOKEN'');
+
+
+          $url = $request->getUrl();
+
+          $url->addQueryString(''stationCode'', ''CPTR3'');
+
+          $url->addQueryString(''parameters'', ''airTemp,windSpeed'');
+
+          $url->addQueryString(''startTime'', ''2025-01-22T00:00:00Z'');
+
+          $url->addQueryString(''endTime'', ''2025-01-22T12:00:00Z'');
+
+
+          $request->sendRequest();
+
+          echo $request->getResponseBody();
+
+          ?>'
+      - lang: Php + Http2
+        source: "<?php\nrequire_once 'HTTP/Request2.php';\n\n$request = new HTTP_Request2('https://obs.api.dtn.com/v2/observations');\n$request->setMethod(HTTP_Request2::METHOD_GET);\n$request->setHeader('Authorization', 'Bearer YOUR_ACCESS_TOKEN');\n\n$url = $request->getUrl();\n$url->setQueryVariables([\n    'stationCode' => 'CPTR3',\n    'parameters' => 'airTemp,windSpeed',\n    'startTime' => '2025-01-22T00:00:00Z',\n    'endTime' => '2025-01-22T12:00:00Z'\n]);\n\n$response = $request->send();\necho $response->getBody();\n?>"
+      - lang: Python + Python3
+        source: "import requests\n\nurl = 'https://obs.api.dtn.com/v2/observations'\n\nheaders = {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n}\n\nparams = {\n    'stationCode': 'CPTR3',\n    'parameters': 'airTemp,windSpeed',\n    'startTime': '2025-01-22T00:00:00Z',\n    'endTime': '2025-01-22T12:00:00Z'\n}\n\nresponse = requests.get(url, headers=headers, params=params)\nprint(response.json())"
+      - lang: Python + Requests
+        source: "import requests\n\nurl = 'https://obs.api.dtn.com/v2/observations'\n\nheaders = {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n}\n\nparams = {\n    'stationCode': 'CPTR3',\n    'parameters': 'airTemp,windSpeed',\n    'startTime': '2025-01-22T00:00:00Z',\n    'endTime': '2025-01-22T12:00:00Z'\n}\n\nresponse = requests.get(url, headers=headers, params=params)\nprint(response.json())"
+      - lang: Ruby + Native
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://obs.api.dtn.com/v2/observations')\nparams = {\n  stationCode: 'CPTR3',\n  parameters: 'airTemp,windSpeed',\n  startTime: '2025-01-22T00:00:00Z',\n  endTime: '2025-01-22T12:00:00Z'\n}\nuri.query = URI.encode_www_form(params)\n\nrequest = Net::HTTP::Get.new(uri)\nrequest['Authorization'] = 'Bearer YOUR_ACCESS_TOKEN'\n\nresponse = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|\n  http.request(request)\nend\n\nputs JSON.parse(response.body)"
+      - lang: Shell + Curl
+        source: "curl -X GET \"https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T12:00:00Z\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" "
+      - lang: Shell + Httpie
+        source: "http GET \"https://obs.api.dtn.com/v2/observations\" \\\n  \"Authorization:Bearer YOUR_ACCESS_TOKEN\" \\\n  stationCode==CPTR3 \\\n  parameters==airTemp,windSpeed \\\n  startTime==2025-01-22T00:00:00Z \\\n  endTime==2025-01-22T12:00:00Z"
+      - lang: Shell + Wget
+        source: "wget --header=\"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  \"https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T12:00:00Z\" \\\n  -O -"
+      - lang: Swift + Nsurlsession
+        source: "import Foundation\n\nlet urlString = \"https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00:00:00Z&endTime=2025-01-22T12:00:00Z\"\nlet url = URL(string: urlString)!\n\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer YOUR_ACCESS_TOKEN\", forHTTPHeaderField: \"Authorization\")\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n    if let data = data {\n        let result = String(data: data, encoding: .utf8)\n        print(result ?? \"\")\n    }\n}\ntask.resume()"
+    servers:
+    - url: https://obs.api.dtn.com
+  /v2/observations/stations:
+    get:
+      tags:
+      - API Endpoints
+      summary: Stations
+      description: 'Use this endpoint to retrieve station metadata and details about available observation types. You can search for one or more stations by providing their `stationCodes` in a single request.
+
+
+        ### Station Metadata
+
+
+        Each station record includes key metadata fields such as:
+
+
+        - **Elevation** — height above mean sea level, expressed in meters (SI units)
+
+        - **Location** — latitude and longitude
+
+        - **Observation Types (obsTypes)** — list of supported observation categories (see table below)
+
+        - **Available Parameters (parameters)** — list of observation parameters that can be requested from this station via the `/observations` endpoint
+
+        - **Archive Availability (isArchived)** — indicates whether historical data is available
+
+        - **Observation Timestamps** — includes both the first and latest observation times for that station
+
+        - **Tags** — identifiers and metadata such as ICAO, WMO, IATA, GHCND, and station name
+
+
+        ### Quota Usage
+
+
+        Quota usage is calculated **per returned station**, not per API request.
+
+
+        **Example:** If you request metadata for 50 stations and all 50 are returned, your quota usage is 50 stations. The quota is applied based on the number of stations returned in the response, regardless of how many you requested.
+
+
+        ### Access Scopes
+
+
+        Your account scope determines which stations you can access:
+
+
+        | Feature | Core Scope | Plus Scope |
+
+        |---------|------------|------------|
+
+        | **Station Access** | Public stations only | Public stations + DTN EU stations |
+
+        | **Coverage** | Global public networks (METAR, SYNOP, etc.) | All public networks + DTN''s European private network |
+
+        | **Typical Use Cases** | General weather monitoring, basic applications | Professional applications requiring comprehensive European coverage |
+
+
+        > **Note:** To check your current scope or upgrade, contact apisupport@dtn.com
+
+
+        ### Observation Types (obsTypes)
+
+
+        The `obsTypes` field identifies the type or source network of a weather station''s observations. Each observation type reflects a specific network, instrumentation standard, or operational purpose, which determines the kind of data available, its frequency, and its reliability.
+
+
+        | obsType | Description |
+
+        |---------|-------------|
+
+        | **SYNOP** | Surface synoptic observation stations (typically WMO official sites, government-operated). |
+
+        | **METAR** | Meteorological Terminal Air Reports, primarily for aviation use. Global coverage across airfields. |
+
+        | **Citizen** | Individually operated stations (primarily report `precipAcc60Min` data). |
+
+        | **HFM** | High-Frequency METAR stations providing more frequent updates. |
+
+        | **AG** | Agricultural or farm-based stations (including some DAVIS non-agricultural units). |
+
+        | **RWIS** | Road Weather Information Systems — roadside sensors for monitoring road conditions, often operated by local or state agencies. |
+
+        | **SHIP** | Observations collected aboard vessels. |
+
+        | **BUOY&#42;* | Observations from floating buoys. |
+
+        | **Hydro** | Hydrological stations (e.g., river or water-level monitoring). |
+
+        | **Others**        |Stations that don’t fall into the above obs types.                                                                                  |
+
+
+
+
+        ### Search Methods
+
+
+        The stations endpoint supports multiple search methods via the `by` parameter. Each method requires different parameters:
+
+
+        | Search Method | Required Parameters | Optional Parameters | Description |
+
+        |---------------|---------------------|---------------------|-------------|
+
+        | `by=stationCodes` | `stationCodes` | `obsTypes`, `archiveCounts` | Search for specific stations by their station codes (up to 100). |
+
+        | `by=radius` | `lat`, `lon` | `radius`, `obsTypes`, `showBest` | Find stations within a radius (km) of a geographic point. Default radius: 25km, max: 100km. |
+
+        | `by=boundingBox` | `minLat`, `maxLat`, `minLon`, `maxLon` | `obsTypes`, `showBest` | Find stations within a rectangular geographic area. |
+
+        | `by=tags` | `tags` | `obsTypes` | Search stations by metadata tags (e.g., ICAO, WMO, IATA, GHCND, name). |
+
+
+        <details>
+
+        <summary><strong>Deep Dive to Search Methods</strong></summary>
+
+
+        ### Use Cases
+
+
+        - **Discover nearby stations** → `by=radius` with `lat`, `lon`, and `radius`
+
+        - **Get all stations in a region** → `by=boundingBox` with geographic boundaries
+
+        - **Retrieve known stations directly** → `by=stationCodes` with specific codes
+
+        - **Search by identifiers** → `by=tags` using `icao`, `wmo`, `iata`, `ghcnd`, or `name` tags
+
+
+        ### Understanding `showBest`
+
+
+        When using `by=radius` or `by=boundingBox`, you can add `showBest=true` to optimize results.
+
+
+        **What showBest Does:**
+
+        - Prioritizes stations with the most complete parameter coverage
+
+        - Favors stations with recent observations
+
+        - Prefers official networks (METAR, SYNOP) over citizen stations
+
+        - Reduces redundant stations in dense areas
+
+
+        **Example:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=radius&lat=51.5074&lon=-0.1278&radius=50&showBest=true
+
+        ```
+
+
+        ### Searching by Tags
+
+
+        Tags allow you to find stations using standard identifiers or names.
+
+
+        **Supported Tag Types:**
+
+
+        | Tag Type | Format | Example | Description |
+
+        |----------|--------|---------|-------------|
+
+        | ICAO | `icao:CODE` | `icao:EGLL` | International Civil Aviation Organization code (airports) |
+
+        | WMO | `wmo:CODE` | `wmo:03772` | World Meteorological Organization code |
+
+        | GHCND | `ghcnd:CODE` | `ghcnd:USW00094728` | Global Historical Climatology Network Daily |
+
+        | IATA | `iata:CODE` | `iata:LHR` | International Air Transport Association code (airports) |
+
+        | Name | `name:TEXT` | `name:Heathrow` | Station name (partial match supported) |
+
+
+        **Example Requests:**
+
+
+        **Find by ICAO code:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=tags&tags={"icao": "EGLL"}
+
+        ```
+
+
+        **Find by WMO code:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=tags&tags={"wmo": "3240"}
+
+        ```
+
+
+        **Find by IATA code:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=tags&tags={"iata": "LHR"}
+
+        ```
+
+
+        **Find by station name:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=tags&tags={"name": "London"}
+
+        ```
+
+        Returns all stations with London in their name.
+
+
+        **Wildcard search (searches across all tag types):**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=tags&tags=3240
+
+        ```
+
+        Searches for "3240" in all tag fields (WMO, ICAO, IATA, GHCND, name).
+
+
+        **Multiple values for same tag type:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=tags&tags={"icao": ["KLXY", "KDHT"]}
+
+        ```
+
+        Returns stations matching either ICAO code.
+
+
+        ### Usage Notes
+
+
+        - You can request up to 100 stations per call.
+
+        - The `archiveCounts` parameter is only valid when requesting metadata for a single station.
+
+        - Use the `/parameters` endpoint to discover available parameters for each observation type.
+
+        - This endpoint returns data in GeoJSON FeatureCollection format for easy spatial processing.
+
+
+        ### Example Requests
+
+
+        **Search by Station Codes:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,WXYZ1
+
+        ```
+
+
+        **Search by Radius:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=radius&lat=44.55194&lon=-70.544170&radius=10
+
+        ```
+
+
+        **Search by Bounding Box:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/stations?by=boundingBox&minLat=50.85&maxLat=54.85&minLon=-1.85&maxLon=0.85
+
+        ```
+
+
+        </details>'
+      operationId: get_stations_v2_observations_stations_get
+      parameters:
+      - description: Get stations by `radius`|`boundingBox`|`stationCodes`|`tags`
+        required: true
+        schema:
+          title: By
+          pattern: (^radius$|^boundingBox$|^stationCodes$|^tags$)
+          type: string
+          description: Get stations by `radius`|`boundingBox`|`stationCodes`|`tags`
+        name: by
+        in: query
+      - description: Comma-separated list of up to 100 DTN station codes, e.g. `YNQXX,CPTR3,KNYC1`. Supports retrieving metadata for multiple stations at once.
+        required: false
+        schema:
+          title: Stationcodes
+          type: string
+          description: Comma-separated list of up to 100 DTN station codes, e.g. `YNQXX,CPTR3,KNYC1`. Supports retrieving metadata for multiple stations (maximum 100). **Quota Usage:** Quota is calculated per returned station, not per request.
+        name: stationCodes
+        in: query
+      - description: 'Latitude for radial search in decimal degrees, e.g. `54.85`. Valid range: -90 to 90.'
+        required: false
+        schema:
+          title: Lat
+          type: number
+          minimum: -90
+          maximum: 90
+          description: 'Latitude for radial search in decimal degrees, e.g. `54.85`. Valid range: -90 to 90.'
+        name: lat
+        in: query
+      - description: 'Longitude for radial search in decimal degrees, e.g. `-0.50`. Valid range: -180 to 180.'
+        required: false
+        schema:
+          title: Lon
+          type: number
+          minimum: -180
+          maximum: 180
+          description: 'Longitude for radial search in decimal degrees, e.g. `-0.50`. Valid range: -180 to 180.'
+        name: lon
+        in: query
+      - description: Radius for radial search in kilometres. If not set, default is `25`.
+        required: false
+        schema:
+          title: Radius
+          maximum: 100
+          minimum: 0
+          type: number
+          description: Radius for radial search in kilometres. If not set, default is `25`.
+          default: 25
+        name: radius
+        in: query
+      - description: 'Minimum latitude for boundingBox search in decimal degrees, e.g. `50.85`. Valid range: -90 to 90.'
+        required: false
+        schema:
+          title: Minlat
+          type: number
+          minimum: -90
+          maximum: 90
+          description: 'Minimum latitude for boundingBox search in decimal degrees, e.g. `50.85`. Valid range: -90 to 90.'
+        name: minLat
+        in: query
+      - description: Maximum latitude for boundingBox search in decimal degrees, e.g. `54.85`
+        required: false
+        schema:
+          title: Maxlat
+          type: number
+          minimum: -90
+          maximum: 90
+          description: Maximum latitude for boundingBox search in decimal degrees, e.g. `54.85`
+        name: maxLat
+        in: query
+      - description: Minimum longitude for boundingBox search in decimal degrees, e.g. `-1.85`
+        required: false
+        schema:
+          title: Minlon
+          type: number
+          minimum: -180
+          maximum: 180
+          description: Minimum longitude for boundingBox search in decimal degrees, e.g. `-1.85`
+        name: minLon
+        in: query
+      - description: Maximum longitude for boundingBox search in decimal degrees, e.g. `0.85`
+        required: false
+        schema:
+          title: Maxlon
+          type: number
+          minimum: -180
+          maximum: 180
+          description: Maximum longitude for boundingBox search in decimal degrees, e.g. `0.85`
+        name: maxLon
+        in: query
+      - description: Comma-separated list of obsTypes, e.g. `METAR,SYNOP,RWIS,AG`. If not set, default are `METAR,SYNOP`.
+        required: false
+        schema:
+          title: Obstypes
+          type: string
+          description: Comma-separated list of obsTypes, e.g. `METAR,SYNOP,RWIS,AG`. If not set, default are `METAR,SYNOP`.
+        name: obsTypes
+        in: query
+      - description: Set to `True` to include station tags (such as name and management ID) in the response. When set to `True`, each feature in the response will include a `tags` object containing station metadata. Default is `False` to maintain backward compatibility.
+        required: false
+        schema:
+          title: ShowTags
+          type: boolean
+          description: Set to `True` to include station tags (such as name and management ID) in the response. When set to `True`, each feature in the response will include a `tags` object containing station metadata. Default is `False` to maintain backward compatibility.
+          default: false
+        name: showTags
+        in: query
+      - description: Set to `True` to rank stations by how representative they are of the entered location. This accounts for elevation differences (measured in meters) between stations.
+        required: false
+        schema:
+          title: Showbest
+          type: boolean
+          description: Set to `True` to rank stations by how representative they are of the entered location. This accounts for elevation differences (measured in meters) between stations.
+          default: false
+        name: showBest
+        in: query
+      - description: 'URL encoded json string or a free hand string for wild card search. For multiple tags, they are filtered individually (OR), e.g. `{"icao": "KJFK", "wmo": "3240"}` means you''re searching for stations with the ICAO code KJFK **OR** WMO code 3240. For wild card search, results will show what matches your entry.'
+        required: false
+        schema:
+          title: Tags
+          type: string
+          description: 'URL encoded json string or a free hand string for wild card search. For multiple tags, they are filtered individually (OR), e.g. `{"icao": "KJFK", "wmo": "3240"}` means you''re searching for stations with the ICAO code KJFK **OR** WMO code 3240. For wild card search, results will show what matches your entry.'
+        name: tags
+        in: query
+      - description: Set to `True` to only return stations where data is available older than 1 month.
+        required: false
+        schema:
+          title: Isarchived
+          type: boolean
+          description: Set to `True` to only return stations where data is available older than 1 month.
+        name: isArchived
+        in: query
+      - description: Set to `True` to view how many historical observations are available per parameter, month, and year for a single stationCode. **Restriction:** When `archiveCounts=True`, you must provide only one stationCode. Multiple stations are not supported with this parameter.
+        required: false
+        schema:
+          title: Archivecounts
+          type: boolean
+          description: Set to `True` to view how many historical observations are available per parameter, month, and year for a single stationCode. **Restriction:** When `archiveCounts=True`, you must provide only one stationCode.
+          default: false
+        name: archiveCounts
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StnDataRespModel'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayTimeoutError'
+      security:
+      - clientCredentials: []
+      x-codeSamples:
+      - lang: C + Libcurl
+        source: "#include <stdio.h>\n#include <curl/curl.h>\n\nint main(void) {\n    CURL *curl;\n    CURLcode res;\n    \n    curl = curl_easy_init();\n    if(curl) {\n        struct curl_slist *headers = NULL;\n        headers = curl_slist_append(headers, \"Authorization: Bearer YOUR_ACCESS_TOKEN\");\n        \n        curl_easy_setopt(curl, CURLOPT_URL, \n            \"https://obs.api.dtn.com/v2/observations/stations?\"\n            \"by=stationCodes&\"\n            \"stationCodes=CPTR3,KNYC\");\n        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n        \n        res = curl_easy_perform(curl);\n        \n        curl_slist_free_all(headers);\n        curl_easy_cleanup(curl);\n    }\n    return 0;\n}"
+      - lang: Csharp + Restsharp
+        source: "using RestSharp;\nusing System;\n\nclass Program\n{\n    static void Main()\n    {\n        var client = new RestClient(\"https://obs.api.dtn.com\");\n        var request = new RestRequest(\"/v2/observations/stations\", Method.Get);\n        \n        request.AddHeader(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\");\n        request.AddParameter(\"by\", \"stationCodes\");\n        request.AddParameter(\"stationCodes\", \"CPTR3,KNYC\");\n        \n        var response = client.Execute(request);\n        Console.WriteLine(response.Content);\n    }\n}"
+      - lang: Go + Native
+        source: "package main\n\nimport (\n    \"fmt\"\n    \"io\"\n    \"net/http\"\n    \"net/url\"\n)\n\nfunc main() {\n    baseURL := \"https://obs.api.dtn.com/v2/observations/stations\"\n    \n    params := url.Values{}\n    params.Add(\"by\", \"stationCodes\")\n    params.Add(\"stationCodes\", \"CPTR3,KNYC\")\n    \n    req, _ := http.NewRequest(\"GET\", baseURL+\"?\"+params.Encode(), nil)\n    req.Header.Add(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n    \n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n    \n    body, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(body))\n}"
+      - lang: Java + Okhttp
+        source: "import okhttp3.OkHttpClient;\nimport okhttp3.Request;\nimport okhttp3.Response;\n\npublic class StationsExample {\n    public static void main(String[] args) throws Exception {\n        OkHttpClient client = new OkHttpClient();\n        \n        String url = \"https://obs.api.dtn.com/v2/observations/stations?\" +\n                     \"by=stationCodes&\" +\n                     \"stationCodes=CPTR3,KNYC\";\n        \n        Request request = new Request.Builder()\n            .url(url)\n            .addHeader(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n            .build();\n        \n        try (Response response = client.newCall(request).execute()) {\n            System.out.println(response.body().string());\n        }\n    }\n}"
+      - lang: Java + Unirest
+        source: "import kong.unirest.Unirest;\nimport kong.unirest.HttpResponse;\n\npublic class StationsExample {\n    public static void main(String[] args) {\n        HttpResponse<String> response = Unirest.get(\"https://obs.api.dtn.com/v2/observations/stations\")\n            .header(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n            .queryString(\"by\", \"stationCodes\")\n            .queryString(\"stationCodes\", \"CPTR3,KNYC\")\n            .asString();\n        \n        System.out.println(response.getBody());\n    }\n}"
+      - lang: Javascript + Jquery
+        source: "$.ajax({\n    url: 'https://obs.api.dtn.com/v2/observations/stations',\n    method: 'GET',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    },\n    data: {\n        by: 'stationCodes',\n        stationCodes: 'CPTR3,KNYC'\n    },\n    success: function(data) {\n        console.log(data);\n    }\n});"
+      - lang: Javascript + Xhr
+        source: "const xhr = new XMLHttpRequest();\nxhr.open('GET', 'https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC');\nxhr.setRequestHeader('Authorization', 'Bearer YOUR_ACCESS_TOKEN');\n\nxhr.onload = function() {\n    if (xhr.status === 200) {\n        console.log(JSON.parse(xhr.responseText));\n    }\n};\n\nxhr.send();"
+      - lang: Node + Native
+        source: "const https = require('https');\n\nconst options = {\n    hostname: 'obs.api.dtn.com',\n    path: '/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC',\n    method: 'GET',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    }\n};\n\nconst req = https.request(options, (res) => {\n    let data = '';\n    res.on('data', (chunk) => { data += chunk; });\n    res.on('end', () => { console.log(JSON.parse(data)); });\n});\n\nreq.end();"
+      - lang: Node + Request
+        source: "const request = require('request');\n\nconst options = {\n    url: 'https://obs.api.dtn.com/v2/observations/stations',\n    qs: {\n        by: 'stationCodes',\n        stationCodes: 'CPTR3,KNYC'\n    },\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    }\n};\n\nrequest.get(options, (error, response, body) => {\n    if (!error && response.statusCode === 200) {\n        console.log(JSON.parse(body));\n    }\n});"
+      - lang: Objc + Nsurlsession
+        source: "NSURL *url = [NSURL URLWithString:@\"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\"];\nNSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];\n[request setHTTPMethod:@\"GET\"];\n[request setValue:@\"Bearer YOUR_ACCESS_TOKEN\" forHTTPHeaderField:@\"Authorization\"];\n\nNSURLSession *session = [NSURLSession sharedSession];\nNSURLSessionDataTask *task = [session dataTaskWithRequest:request\n    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\n        if (!error) {\n            NSLog(@\"%@\", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);\n        }\n    }];\n[task resume];"
+      - lang: Ocaml + Cohttp
+        source: "open Lwt\nopen Cohttp\nopen Cohttp_lwt_unix\n\nlet uri = Uri.of_string \"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\" in\nlet headers = Header.init ()\n  |> fun h -> Header.add h \"Authorization\" \"Bearer YOUR_ACCESS_TOKEN\" in\n\nClient.get ~headers uri >>= fun (resp, body) ->\n  body |> Cohttp_lwt.Body.to_string >|= fun body ->\n  print_endline body"
+      - lang: Php + Curl
+        source: "<?php\n$curl = curl_init();\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => \"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\",\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_HTTPHEADER => [\n        \"Authorization: Bearer YOUR_ACCESS_TOKEN\"\n    ],\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;\n?>"
+      - lang: Php + Http1
+        source: '<?php
+
+          require_once ''HTTP/Request.php'';
+
+
+          $request = new HTTP_Request(''https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC'');
+
+          $request->setMethod(HTTP_REQUEST_METHOD_GET);
+
+          $request->addHeader(''Authorization'', ''Bearer YOUR_ACCESS_TOKEN'');
+
+
+          $request->sendRequest();
+
+          echo $request->getResponseBody();
+
+          ?>'
+      - lang: Php + Http2
+        source: '<?php
+
+          require_once ''HTTP/Request2.php'';
+
+
+          $request = new HTTP_Request2(''https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC'');
+
+          $request->setMethod(HTTP_Request2::METHOD_GET);
+
+          $request->setHeader(''Authorization'', ''Bearer YOUR_ACCESS_TOKEN'');
+
+
+          $response = $request->send();
+
+          echo $response->getBody();
+
+          ?>'
+      - lang: Python + Python3
+        source: "import urllib.request\nimport json\n\nurl = 'https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC'\n\nreq = urllib.request.Request(url)\nreq.add_header('Authorization', 'Bearer YOUR_ACCESS_TOKEN')\n\nwith urllib.request.urlopen(req) as response:\n    data = json.loads(response.read().decode())\n    print(data)"
+      - lang: Python + Requests
+        source: "import requests\n\nurl = 'https://obs.api.dtn.com/v2/observations/stations'\n\nheaders = {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n}\n\nparams = {\n    'by': 'stationCodes',\n    'stationCodes': 'CPTR3,KNYC'\n}\n\nresponse = requests.get(url, headers=headers, params=params)\nprint(response.json())"
+      - lang: Ruby + Native
+        source: "require 'net/http'\nrequire 'json'\n\nuri = URI('https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC')\n\nrequest = Net::HTTP::Get.new(uri)\nrequest['Authorization'] = 'Bearer YOUR_ACCESS_TOKEN'\n\nresponse = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|\n    http.request(request)\nend\n\nputs JSON.parse(response.body)"
+      - lang: Shell + Curl
+        source: "curl -X GET \"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" "
+      - lang: Shell + Httpie
+        source: "http GET \"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\" \\\n  \"Authorization: Bearer YOUR_ACCESS_TOKEN\" "
+      - lang: Shell + Wget
+        source: "wget --header=\"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  \"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\" \\\n  -O -"
+      - lang: Swift + Nsurlsession
+        source: "let url = URL(string: \"https://obs.api.dtn.com/v2/observations/stations?by=stationCodes&stationCodes=CPTR3,KNYC\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer YOUR_ACCESS_TOKEN\", forHTTPHeaderField: \"Authorization\")\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n    if let data = data {\n        print(String(data: data, encoding: .utf8) ?? \"\")\n    }\n}\ntask.resume()"
+    servers:
+    - url: https://obs.api.dtn.com
+  /v2/observations/parameters:
+    get:
+      tags:
+      - API Endpoints
+      summary: Parameters
+      description: "Use this endpoint to retrieve a complete list of supported observation parameters, including their descriptions, units, and availability across networks. This is your authoritative source of truth for which parameters can be queried from `/observations` and `/stations`.\n\n### Purpose\n\nEach parameter represents a specific type of meteorological or environmental observation — such as temperature, precipitation, humidity, radiation, or wind. Parameters define what data can be retrieved for a given station or time range.\n\n### Access Scopes\n\nYour account scope determines which parameters you can query:\n\n| Feature | Core Scope | Plus Scope |\n|---------|------------|------------|\n| **Available Parameters** | Limited to parameters marked with \"Y\" in the Core column | Access to all parameters (Core and Non-Core) |\n| **Total Parameters** | ~40 core parameters | 150+ parameters including specialized measurements |\n| **Use Cases** | General weather monitoring, basic applications | Professional applications, specialized industries (agriculture, road weather, marine) |\n\n> **Note:** Parameters not available in your scope will be ignored in `/observations` requests without returning an error.\n\n### Getting Full Parameter Details\n\n**For complete, up-to-date parameter information, call the API endpoint directly:**\n\n```\nGET https://obs.api.dtn.com/v2/observations/parameters\n```\n\nThe API response includes detailed descriptions, units, gap-filling support, and scope availability for each parameter. The table below provides a quick reference, but the API endpoint is the authoritative source.\n\n**Example API Request:**\n```\nGET https://obs.api.dtn.com/v2/observations/parameters?names=airTemp,precipAcc60Min,windSpeed\n```\n\n### Parameter Catalog\n\nThe table below groups related parameters together for easy discovery. Each base parameter may have multiple time-aggregated or variant forms listed in the \"Related Parameters\" column.\n\n**Column Definitions:**\n\n- **Base Parameter:** The primary parameter name (instantaneous or default measurement).\n- **Description:** Brief description of what the parameter measures\n- **Metric Unit:** Unit when `units=si-std` (default)\n- **Imperial Unit:** Unit when `units=us-std`\n- **Related Parameters:** Time-aggregated or variant parameters (full names for API requests)\n- **Gapfillable:** Indicates if the parameter supports gap-filling with model data\n  - `Y` = Supports gap-filling with `interval=1h`\n  - `Y*` = Supports gap-filling only with `interval=24h` (daily aggregations)\n- **Measurement Type:** Indicates how the data was obtained or derived\n  - `SRC` = Source (Direct): Raw measurements directly from sensors or instruments\n  - `AGG` = Aggregation: Data derived from statistical operations on source measurements (e.g., hourly averages, daily maximums)\n  - `CAL` = Calculated (Derived): Values computed using formulas or algorithms from other measurements (e.g., heat index, wind chill)\n  - `INTP` = Interpolation (15-minute interval aggregated using hourly values)\n  - Combined types (e.g., `SRC/AGG`, `SRC/CAL`, `SRC/INTP`) indicate the parameter can be obtained through multiple methods\n- **Core:** `Y` indicates the parameter is available to Core Scope accounts\n\n**Understanding Measurement Types:**\n\n- **SRC** Source (Direct): Raw measurements directly from sensors or instruments\n- **AGG** Aggregation: Data derived from statistical operations on source measurements (e.g., hourly averages, daily maximums)\n- **CAL** Calculated (Derived): Values computed using formulas or algorithms from other measurements (e.g., heat index, wind chill)\n- **INTP** Interpolation (15-minute interval aggregated using hourly values)\n- Combined types (e.g., `SRC/AGG`, `SRC/CAL`) indicate the parameter can be obtained through multiple methods\n\n**Gap-Filling Requirements:**\n- Requires gap-filling scope enabled on your account\n- Available from January 1, 2013 onwards\n- See the `/observations` endpoint documentation for details\n\n---\n\n### Temperature Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|---------------|-------------------|-------------|------|------|\n| airTemp | Air temperature 2m above surface | C | F | airTemp<br>airTemp15Min<br>airTempMax1Hour<br>airTempMax6Hour<br>airTempMax12Hour<br>airTempMax24Hour<br>airTempMin1Hour<br>airTempMin6Hour<br>airTempMin12Hour<br>airTempMin24Hour<br>airTempAvg24Hour<br>airTempAvg<br>airTempMax<br>airTempMin | Y<br>Y<br>Y<br>-<br>-<br>Y&#42;<br>Y<br>-<br>-<br>Y&#42;<br>Y&#42;<br>-<br>-<br>-<br> |SRC<br>INTP<br>SRC/AGG<br>SRC<br>SRC<br>SRC/AGG<br>SRC/AGG<br>SRC<br>SRC<br>SRC/AGG<br>SRC/AGG<br>SRC<br>SRC<br>SRC| Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>-<br>-<br>-<br> |\n| airTemp5cm | Temperature at 5cm height | C | F | airTemp5cm<br>airTemp5cm15Min<br>airTemp5cmMax1Hour<br>airTemp5cmMax12Hour<br>airTemp5cmMax24Hour<br>airTemp5cmMin1Hour<br>airTemp5cmMin12Hour<br>airTemp5cmMin24Hour<br>airTemp5cmAvg24Hour<br>airTempMax5cm<br>airTempMin5cm | Y<br>Y<br>Y<br>Y<br>-<br>Y&#42;<br>Y<br>-<br>Y&#42;<br>Y&#42;<br>-<br>-<br> |SRC<br>INTP<br>SRC/AGG<br>SRC<br>SRC/AGG<br>SRC/AGG<br>SRC<br>SRC/AGG<br>SRC/AGG<br>SRC<br>SRC| Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>-<br>-<br> |\n| dewPoint | Dew point temperature 2m above surface | C | F | dewPoint<br>dewPoint15Min<br>dewPointMax<br>dewPointMin | Y<br>Y<br>-<br>-<br> |SRC/AGG<br>INTP<br>SRC<br>SRC| Y<br>Y<br>-<br>-<br> |\n| feelsLikeTemp | Human perceived temperature | C | F | feelsLikeTemp<br>feelsLikeTemp15Min<br>feelsLikeTempAvg24Hour<br>feelsLikeTempMax1Hour<br>feelsLikeTempMax24Hour<br>feelsLikeTempMin1Hour<br>feelsLikeTempMin24Hour | Y<br>Y<br>Y&#42;<br>Y<br>Y&#42;<br>Y<br>Y&#42; |SRC/CAL<br>INTP<br>SRC/AGG<br>AGG<br>SRC/AGG<br>AGG<br>SRC/AGG| Y<br>Y<br>-<br>-<br>-<br>-<br>- |\n| heatIndex | Apparent temperature (temp + humidity) | C | F | heatIndex<br>heatIndexAvg24Hour<br>heatIndexMax1Hour<br>heatIndexMax24Hour<br>heatIndexMin1Hour<br>heatIndexMin24Hour | Y<br>Y&#42;<br>Y<br>Y&#42;<br>Y<br>Y&#42; |SRC/CAL<br>SRC/AGG<br>AGG<br>SRC/AGG<br>AGG<br>SRC/AGG| -<br>-<br>-<br>-<br>-<br>- |\n| windChill | Perceived temperature (temp + wind) | C | F | windChill<br>windChillAvg24Hour<br>windChillMax1Hour<br>windChillMax24Hour<br>windChillMin1Hour<br>windChillMin24Hour | Y<br>Y&#42;<br>Y<br>Y&#42;<br>Y<br>Y&#42; |SRC/CAL<br>SRC/AGG<br>AGG<br>SRC/AGG<br>AGG<br>SRC/AGG| -<br>-<br>-<br>-<br>-<br>- |\n| wetBulb | Water-soaked thermometer temperature | C | F | wetBulb | - | SRC/CAL | - |\n| wbgt | Wet Bulb Globe Temperature (heat stress) | C | F | wbgt | Y |SRC/CAL| - |\n| freezingTemp | Water freezing threshold temperature | C | F | freezingTemp<br>freezingTemp2<br>freezingTemp3<br>freezingTemp4<br>freezingTemp5 | -<br>-<br>-<br>-<br>- | SRC<br>SRC<br>SRC<br>SRC<br>SRC | -<br>-<br>-<br>-<br>- |\n\n### Precipitation Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|----------------|-------------|-------------|---------------|-------------------|-------------|------|\n| precipAcc | Liquid precipitation (rain) | mm | in | precipAcc10Min<br>precipAcc15Min<br>precipAcc60Min<br>precipAcc3Hour<br>precipAcc6Hour<br>precipAcc12Hour<br>precipAcc24Hour | -<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y&#42;|SRC<br>SRC/INTP<br>SRC/AGG<br>SRC<br>SRC<br>SRC<br>SRC/AGG | Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>Y | \n| precipDuration | Duration of precipitation event | minutes | minutes | precipDuration | - | SRC | - |\n| precipPresence | Indicates if precipitation is present | dimensionless | dimensionless | precipPresence | - | SRC | - |\n| precipRate | Precipitation rate/intensity | mm/hr | in/hr | precipRate | - |  SRC |- |\n| precipType | Type of precipitation | dimensionless | dimensionless | precipType | - | SRC |- |\n| precipStartTime | Precipitation event start time | n/a | n/a | precipStartTime | - |  SRC |- |\n| precipEndTime | Precipitation event end time | n/a | n/a | precipEndTime | - |  SRC |- |\n| precipIntensity | Rate of precipitation falling | n/a | n/a | precipIntensity | - |  SRC |- |\n| snowDepth | Accumulated snow thickness | mm | in | snowDepth | - |  SRC |- |\n| freshSnowDepth | Newly added snow | mm | in | freshSnowDepth | Y |  SRC |- |\n| adjacentSnowDepth | Undisturbed snow depth | mm | in | adjacentSnowDepth | - |  SRC |- |\n\n### Wind Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|----------------|-------------|-------------|---------------|-------------------|-------------|------|\n| windSpeed | Wind speed 10m above surface | m/s | mph | windSpeed<br>windSpeed15Min<br>windSpeedMax60Min<br>windSpeedMax24Hour<br>windSpeedAvg24Hour | Y<br>Y<br>Y<br>Y&#42;<br>Y&#42; |SRC<br>INTP<br>SRC/AGG<br>SRC/AGG<br>SRC/AGG| Y<br>Y<br><br>Y<br>Y |\n| windSpeed2m | Wind speed 2m above surface | m/s | mph | windSpeed2m<br>windSpeed2m15Min<br>windSpeed2mMax60Min | Y<br>Y<br>Y | SRC<br>INTP<br>SRC/AGG|Y<br>- |\n| windDirection | Wind direction (10m height) | degrees | degrees | windDirection<br>windDirection15Min<br>windDirectionAvg24Hour | Y<br>Y<br>Y&#42; | SRC<br>INTP<br>SRC/AGG |Y<br>Y<br>Y |\n| windDirection2m | Wind direction (2m height) | degrees | degrees | windDirection2m | - |SRC| Y |\n| windGust | Wind gust speed 10m above surface | m/s | mph | windGust<br>windGust15Min<br>windGust60Min<br>windGust3Hour<br>windGust6Hour<br>windGustMax24Hour<br>windGustDirectionMax | Y<br>Y<br>Y<br>Y<br>Y<br>Y&#42;<br>-<br> |SRC<br>INTP<br>SRC/AGG<br>SRC<br>SRC<br>SRC/AGG<br>SRC| Y<br>Y<br>Y<br>Y<br>Y<br>Y<br>-<br> |\n| windGust2m | Wind gust speed 2m above surface | m/s | mph | windGust2m | Y | SRC |Y |\n\n### Pressure Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|----------------|-------------|-------------|---------------|-------------------|-------------|------|\n| stationPressure | Air pressure at station elevation | hPa | mb | stationPressure<br>stationPressure15Min | Y<br>Y | SRC/CAL<br>INTP| Y<br>Y |\n| mslPressure | Air pressure at mean sea level | hPa | mb | mslPressure | Y | SRC/CAL |- |\n| altimeter | Pressure for aircraft calibration | hPa | mb | altimeter | - | SRC |- |\n| pressureChange3Hour | Pressure change over 3 hours | hPa | mb | pressureChange3Hour<br>pressureChange6Hour<br>pressureChange12Hour<br>pressureChange24Hour | -<br>-<br>-<br>- |SRC<br>SRC<br>SRC<br>SRC |-<br>-<br>-<br>- |\n| pressureTendency | The character and amount of atmospheric pressure change during a specified period of time | dimentionless | dimentionless | pressureTendency | - | SRC/CAL| - |\n| pressureTendencyInCode | Pressure tendency (coded) | dimentionless | dimentionless | pressureTendencyInCode | - | SRC| - |\n\n### Humidity & Moisture Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|----------------|-------------|-------------|---------------|-------------------|-------------|------|\n| relativeHumidity | Ratio of actual to max water vapor | % | % | relativeHumidity<br>relativeHUmidity15Min | Y<br>Y | SRC/CAL<br>INTP |Y<br>Y |\n| soilMoisture | Soil moisture level | % | % | soilMoisture | - | SRC |- |\n| leafWetness | Surface moisture on crop | index | index | leafWetness | - |SRC |- |\n| evapotranspiration | Water transfer to atmosphere | mm | in | evapotranspiration | Y | SRC |- |\n| fuelMoisture | Water in vegetation (fire weather) | % | % | fuelMoisture | - | SRC |- |\n\n### Radiation & Solar Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|----------------|-------------|-------------|---------------|-------------------|-------------|------|\n| shortWaveRadiation | Instantaneous solar radiation (GHI) | W/m² | W/m² | shortWaveRadiation<br>shortWaveRadiation15Min | Y<br>Y | SRC<br>INTP |Y<br>Y |\n| globalRadiation | Solar radiation | j/cm² | j/cm² | globalRadiation10Min<br>globalRadiation15Min<br>globalRadiation60Min<br>globalRadiation24Hour | -<br>-<br>Y<br>Y&#42; | SRC<br>INTP<br>SRC/AGG<br>SRC/AGG|-<br>Y<br>Y<br>Y |\n| sunshine | Duration of sunshine | min | min | sunshine10Min<br>sunshine15Min<br>sunshine60Min<br>sunshine24Hour | -<br>Y<br>Y<br>Y&#42; |SRC<br>INTP<br>SRC/AGG<br>SRC/AGG |Y<br>Y<br>Y<br>Y |\n| sunrise | UTC time of sunrise | UTC | UTC | sunrise | -|SRC/CAL | Y |\n| sunset | UTC time of sunset | UTC | UTC | sunset | -|SRC/CAL| Y |\n\n### Visibility & Cloud Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|-------------|---------------|-------------------|-------------|------|\n| visibility | Horizontal visibility | km | mi | visibility<br>visibility15Min | Y<br>Y |SRC<br>INTP| Y<br>Y |\n| cloudCover | Sky covered by cloud | % | % | cloudCover<br>cloudCover15Min | Y<br>Y |SRC<br>INTP |Y<br>Y |\n| cloudBase | Cloud base altitude | m | ft | cloudBase | Y | SRC|- |\n| metarSky | METAR cloud code (aviation) | dimensionless | dimensionless | metarSky | - | SRC|- |\n\n### Road Weather (RWIS) Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|-------------|---------------|-------------------|-------------|------|\n| surfaceTemp | Road/pavement surface temperature | C | F | surfaceTemp<br>surfaceTemp2<br>surfaceTemp3<br>surfaceTemp4<br>surfaceTemp5<br>surfaceTemp6<br>surfaceTemp7<br>surfaceTemp8<br>surfaceTemp9<br>surfaceTemp10<br>surfaceTemp11<br>surfaceTemp12<br>surfaceTemp13<br>surfaceTemp14<br>surfaceTemp15<br>surfaceTemp16<br>surfaceTemp17<br>surfaceTemp18<br>surfaceTemp19<br>surfaceTemp20<br>surfaceTemp21<br>surfaceTemp22<br>surfaceTemp23<br>surfaceTemp24 | -<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- | SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC |-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- |\n| surfaceCondition | Road/bridge surface state | dimensionless | dimensionless | surfaceCondition<br>surfaceCondition1 | - <br> -| SRC<br>SRC | - <br> - |\n| surfaceConductivity | Road surface electrical conductivity | mhos/cm | mhos/cm | surfaceConductivity<br>surfaceConductivity2<br>surfaceConductivity3<br>surfaceConductivity4<br>surfaceConductivity5<br>surfaceConductivity6<br>surfaceConductivity7<br>surfaceConductivity8<br>surfaceConductivity9<br>surfaceConductivity10<br>surfaceConductivity11<br>surfaceConductivity12 | -<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- |SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC |-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- |\n| bridgeTemp | Bridge surface temperature | C | F | bridgeTemp<br>bridgeTemp2<br>bridgeTemp3<br>bridgeTemp4<br>bridgeTemp5<br>bridgeTemp6<br>bridgeTemp7<br>bridgeTemp8<br>bridgeTemp9<br>bridgeTemp10 | -<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- |SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC |-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- |\n| bridgeConductivity | Bridge surface conductivity | mhos/cm | mhos/cm | bridgeConductivity<br>bridgeConductivity2<br>bridgeConductivity3<br>bridgeConductivity4<br>bridgeConductivity5<br>bridgeConductivity6 | -<br>-<br>-<br>-<br>-<br>- | SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC |-<br>-<br>-<br>-<br>-<br>-  |\n| cycleTemp | Cycle surface temperature | C | F | cycleTemp<br>cycleTemp2<br>cycleTemp3<br>cycleTemp4<br>cycleTemp5<br>cycleTemp6 | -<br>-<br>-<br>-<br>-<br>- | SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC | -<br>-<br>-<br>-<br>-<br>- |\n| cycleConductivity | Cycle surface conductivity | mhos/cm | mhos/cm | cycleConductivity<br>cycleConductivity2<br>cycleConductivity3<br>cycleConductivity4<br>cycleConductivity5<br>cycleConductivity6 | -<br>-<br>-<br>-<br>-<br>- | SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC | -<br>-<br>-<br>-<br>-<br>- |\n| friction | Road/tire grip | mu | mu | friction | - | SRC | - |\n| icePercent | Ice proportion in surface moisture | % | % | icePercent | - | SRC | - |\n| iceThickness | Solid ice depth | mm | in | iceThickness | - | SRC | - |\n| iceOrWaterDepth | Ice or standing water depth | mm | in | iceOrWaterDepth | - | SRC |- |\n| waterThickness | Water film depth on surface | mm | in | waterThickness | - | SRC |- |\n| waterLevel | Water level or accumulated depth | mm | in | waterLevel | - | SRC |- |\n| chemicalPercent | Chemical concentration on road | % | % | chemicalPercent | - | SRC | - |\n| chemicalFactor | De-icing chemical effectiveness | n/a | n/a | chemicalFactor | - | SRC | - |\n\n### Soil & Subsurface Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|---------------|---------------|-------------------|-------------|------|\n| soilTemp | Soil temperature at depth | C | F | soilTemp100cm | - | SRC | - |\n| subsurfaceTemp | Temperature below surface | C | F | subsurfaceTemp<br>subsurfaceTemp2<br>subsurfaceTemp3<br>subsurfaceTemp4<br>subsurfaceTemp5<br>subsurfaceTemp6<br>subsurfaceTemp7<br>subsurfaceTemp8<br>subsurfaceTemp9<br>subsurfaceTemp10<br>subsurfaceTemp11<br>subsurfaceTemp12<br>subsurfaceTemp13<br>subsurfaceTemp14<br>subsurfaceTemp15<br>subsurfaceTemp5cm<br>subsurfaceTemp10cm<br>subsurfaceTemp20cm<br>subsurfaceTemp50cm<br>subsurfaceTemp100cm<br>subsurfaceTemp150cm | -<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- | SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC<br>SRC | -<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>- |\n\n### Marine Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|---------------|---------------|-------------------|-------------|------|\n| seaSurfaceTemp | Seawater temperature at surface | C | F | seaSurfaceTemp | - | SRC |- |\n| seaWaterTemp | Water temperature near ocean surface | C | F | seaWaterTemp | - | SRC | - |\n| seaWaterSalinity | Salt concentration in sea water | g/kg | ppt | seaWaterSalinity | - | SRC | - |\n| significantWaveHeight | Mean height of highest waves | m | ft | significantWaveHeight | - | SRC |- |\n| waveDirection | Direction of ocean/sea waves | degrees | degrees | waveDirection | - | SRC | - |\n| wavePeakPeriod | Period of most energetic waves | sec | sec | wavePeakPeriod | - | SRC | - |\n| eastwardCurrent | Eastward sea current speed | m/s | mph | eastwardCurrent | - | SRC | - |\n| northwardCurrent | Northward sea current speed | m/s | mph | northwardCurrent | - | SRC | - |\n\n### Weather Condition Codes\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|-------------|---------------|-------------------|-------------|------|\n| weatherCode | DTN-specific weather code | dimensionless | dimensionless | weatherCode | Y | CAL | Y |\n| wmoWeatherCode | WMO weather code (table 4677) | dimensionless | dimensionless | wmoWeatherCode<br>wmoWeatherCode15Min | Y<br>Y | SRC/CAL<br>INTP| Y<br>Y |\n| wmoWeatherCode4561 | WMO recent phenomenon (table 4561) | dimensionless | dimensionless | wmoWeatherCode4561 | - | SRC | Y |\n| metarWx | METAR weather description | dimensionless | dimensionless | metarWx | - | SRC | - |\n\n### Degree Days & Specialized Parameters\n\n| Base Parameter | Description | Metric Unit | Imperial Unit | Related Parameters | Gapfillable | Measurement Type | Core |\n|----------------|-------------|-------------|-------------|---------------|-------------------|-------------|------|\n| heatingDegreeUS24Hour | Heating demand (base 65°F) | C | F | heatingDegreeUS24Hour | - | SRC | - |\n| coolingDegreeUS24Hour | Cooling demand (base 65°F) | C | F | coolingDegreeUS24Hour | - | CAL | - |\n| gradtagzahl24Hour | German heating degree day (+2°C) | C | F | gradtagzahl24Hour | - | CAL | - |\n| gradtagzahlBasic24Hour | German heating degree day (base 20°C) | C | F | gradtagzahlBasic24Hour | - | CAL | - |\n\n---\n\n### Code Value Reference Tables\n\nSeveral parameters return coded values rather than numeric measurements. The tables below provide comprehensive lookup references for interpreting these codes.\n\n**Parameters with Code Values:**\n- `metarSky` - METAR/TAF aviation weather abbreviations\n- `pressureTendencyInCode` - Atmospheric pressure change characteristics\n- `surfaceCondition` - Road and pavement surface states (RWIS)\n- `weatherCode` - DTN proprietary weather condition codes with icons\n- `wmoWeatherCode` - WMO present weather observations (Table 4677)\n- `wmoWeatherCode4561` - WMO past weather conditions (Table 020004)\n\n---\n\n<details>\n<summary><strong>metarSky</strong> - METAR/TAF Aviation Weather Abbreviations</summary>\n\nCommon METAR (Meteorological Aerodrome Report) and TAF (Terminal Aerodrome Forecast) abbreviations for sky conditions and weather phenomena used in aviation.\n\n| Code | Category | Description |\n|------|----------|-------------|\n| **SKC** | Sky Condition | Sky clear |\n| **CLR** | Sky Condition | Clear (automated stations) |\n| **FEW** | Sky Condition | Few clouds (1/8 to 2/8 coverage) |\n| **SCT** | Sky Condition | Scattered (3/8 to 4/8 coverage) |\n| **BKN** | Sky Condition | Broken (5/8 to 7/8 coverage) |\n| **OVC** | Sky Condition | Overcast (8/8 coverage) |\n| **VV** | Sky Condition | Vertical visibility (obscured sky) |\n| **CB** | Cloud Type | Cumulonimbus |\n| **TCU** | Cloud Type | Towering cumulus |\n| **ACC** | Cloud Type | Altocumulus castellanus |\n| **ACSL** | Cloud Type | Altocumulus standing lenticular |\n| **CCSL** | Cloud Type | Cirrocumulus standing lenticular |\n| **SCSL** | Cloud Type | Stratocumulus standing lenticular |\n| **-** | Descriptor | Light intensity |\n| **+** | Descriptor | Heavy intensity |\n| **VC** | Descriptor | In the vicinity |\n| **MI** | Descriptor | Shallow |\n| **BC** | Descriptor | Patches |\n| **PR** | Descriptor | Partial |\n| **DR** | Descriptor | Low drifting |\n| **BL** | Descriptor | Blowing |\n| **SH** | Descriptor | Shower(s) |\n| **TS** | Descriptor | Thunderstorm |\n| **FZ** | Descriptor | Freezing |\n| **DZ** | Precipitation | Drizzle |\n| **RA** | Precipitation | Rain |\n| **SN** | Precipitation | Snow |\n| **SG** | Precipitation | Snow grains |\n| **IC** | Precipitation | Ice crystals |\n| **PL** | Precipitation | Ice pellets |\n| **GR** | Precipitation | Hail |\n| **GS** | Precipitation | Small hail/snow pellets |\n| **UP** | Precipitation | Unknown precipitation |\n| **BR** | Obscuration | Mist |\n| **FG** | Obscuration | Fog |\n| **FU** | Obscuration | Smoke |\n| **VA** | Obscuration | Volcanic ash |\n| **DU** | Obscuration | Widespread dust |\n| **SA** | Obscuration | Sand |\n| **HZ** | Obscuration | Haze |\n| **PY&#42;* | Obscuration | Spray |\n| **SQ** | Other | Squalls |\n| **PO** | Other | Dust/sand whirls |\n| **DS** | Other | Duststorm |\n| **SS** | Other | Sandstorm |\n| **FC** | Other | Funnel cloud |\n\n</details>\n\n<details>\n<summary><strong>pressureTendencyInCode</strong> - Atmospheric Pressure Tendency</summary>\n\nWMO code table for element 010063 describing the characteristic of atmospheric pressure change over the past 3 hours.\n\n| Code | Description |\n|------|-------------|\n| 0 | Increasing, then decreasing; pressure same or higher than 3 hours ago |\n| 1 | Increasing, then steady; or increasing, then increasing more slowly |\n| 2 | Increasing (steadily or unsteadily) |\n| 3 | Decreasing or steady, then increasing; or increasing, then increasing more rapidly |\n| 4 | Steady; atmospheric pressure the same as 3 hours ago |\n| 5 | Decreasing, then increasing; pressure same or lower than 3 hours ago |\n| 6 | Decreasing, then steady; or decreasing, then decreasing more slowly |\n| 7 | Decreasing (steadily or unsteadily) |\n| 8 | Steady or increasing, then decreasing; or decreasing, then decreasing more rapidly |\n\n</details>\n\n<details>\n<summary><strong>surfaceCondition</strong> - Road Surface Conditions</summary>\n\nRoadMaster codes for road and pavement surface states from Road Weather Information Systems (RWIS).\n\n| Code | Description |\n|------|-------------|\n| 0 | Short road surface sensor not in operation |\n| 100 | Dry - road surface dry, no ice or snow |\n| 101 | Wet - liquid water on road surface, no ice, no deicing chemical |\n| 106 | Frosty - frost on the road surface |\n| 108 | Icy - ice on road surface, not formed as frost, no snow |\n| 111 | Snowy - snow on the road surface |\n| 121 | Wet and chemical - liquid water containing deicing chemical, no ice |\n| 123 | Moist and chemical - road surface moist with de-icing chemical, no ice, no snow |\n| 124 | Moist - moisture in road surface, but only a little, no ice, no deicing chemical |\n\n</details>\n\n<details>\n<summary><strong>weatherCode</strong> - DTN Weather Condition Codes</summary>\n\nDTN proprietary weather codes with corresponding icon filenames. Icons available at: `https://static-assets.dtn.com/icons/weather-conditions/v1/{filename}`\n\n**Note:** For codes 1-4, append `_night` suffix for nighttime icons (e.g., `clear_skies_night.svg`).\n\n| Code | Description | Icon Filenames |\n|------|-------------|----------------|\n| 1 | Clear skies | clear_skies.svg, clear_skies_night.svg |\n| 2 | Fair | fair.svg, fair_night.svg |\n| 3 | Partly cloudy | partly_cloudy.svg, partly_cloudy_night.svg |\n| 4 | Mostly cloudy | mostly_cloudy.svg, mostly_cloudy_night.svg |\n| 5 | Cloudy | cloudy.svg |\n| 6 | Mist | mist.svg |\n| 7 | Fog | fog.svg |\n| 8 | Drizzle | drizzle.svg |\n| 9 | Rain | rain.svg |\n| 10 | Heavy rain | heavy_rain.svg |\n| 11 | Freezing drizzle | freezing_drizzle.svg |\n| 12 | Freezing rain | freezing_rain.svg |\n| 13 | Freezing heavy rain | freezing_heavy_rain.svg |\n| 14 | Rain and snow | rain_and_snow.svg |\n| 15 | Heavy rain and snow | heavy_rain_and_snow.svg |\n| 16 | Snow | snow.svg |\n| 17 | Heavy snow | heavy_snow.svg |\n| 18 | Blizzard | blizzard.svg |\n| 19 | Ice pellets | ice_pellets.svg |\n| 20 | Rain showers | rain_showers.svg |\n| 21 | Heavy rain showers | heavy_rain_showers.svg |\n| 22 | Freezing rain showers | freezing_rain_showers.svg |\n| 23 | Heavy freezing rain showers | heavy_freezing_rain_showers.svg |\n| 24 | Rain and snow showers | rain_and_snow_showers.svg |\n| 25 | Heavy rain and snow showers | heavy_rain_and_snow_showers.svg |\n| 26 | Snow showers | snow_showers.svg |\n| 27 | Heavy snow showers | heavy_snow_showers.svg |\n| 28 | Hail showers | hail_showers.svg |\n| 29 | Heavy hail showers | heavy_hail_showers.svg |\n| 30 | Thunderstorms | thunderstorms.svg |\n| 31 | Severe thunderstorms | heavy_thunderstorms.svg |\n| 32 | Windy | windy.svg |\n\n</details>\n\n<details>\n<summary><strong>wmoWeatherCode</strong> - WMO Present Weather Observations</summary>\n\nWorld Meteorological Organization present weather codes (Table 4677) reported from manned weather stations.\n\n**Codes 00-19: No precipitation, fog, or thunderstorm at time of observation**\n\n| Code | Description |\n|------|-------------|\n| 00 | Cloud development not observed or not observable |\n| 01 | Clouds generally dissolving or becoming less developed |\n| 02 | State of sky on the whole unchanged |\n| 03 | Clouds generally forming or developing |\n| 04 | Visibility reduced by smoke |\n| 05 | Haze |\n| 06 | Widespread dust in suspension in the air |\n| 07 | Dust or sand raised by wind at or near the station |\n| 08 | Well developed dust whirl(s) or sand whirl(s) |\n| 09 | Duststorm or sandstorm within sight |\n| 10 | Mist |\n| 11 | Patches of shallow fog or ice fog |\n| 12 | More or less continuous shallow fog or ice fog |\n| 13 | Lightning visible, no thunder heard |\n| 14 | Precipitation within sight, not reaching the ground |\n| 15 | Precipitation within sight, reaching ground, distant (>5 km) |\n| 16 | Precipitation within sight, reaching ground, near but not at station |\n| 17 | Thunderstorm, but no precipitation at time of observation |\n| 18 | Squalls at or within sight |\n| 19 | Funnel cloud(s) (tornado or waterspout) |\n\n**Codes 20-29: Precipitation, fog, or thunderstorm during preceding hour but not at time of observation**\n\n| Code | Description |\n|------|-------------|\n| 20 | Drizzle (not freezing) or snow grains |\n| 21 | Rain (not freezing) |\n| 22 | Snow |\n| 23 | Rain and snow or ice pellets |\n| 24 | Freezing drizzle or freezing rain |\n| 25 | Shower(s) of rain |\n| 26 | Shower(s) of snow, or of rain and snow |\n| 27 | Shower(s) of hail or rain and hail |\n| 28 | Fog or ice fog |\n| 29 | Thunderstorm (with or without precipitation) |\n\n**Codes 30-39: Duststorm, sandstorm, drifting or blowing snow**\n\n| Code | Description |\n|------|-------------|\n| 30 | Slight/moderate duststorm or sandstorm - decreased during preceding hour |\n| 31 | Slight/moderate duststorm or sandstorm - no appreciable change |\n| 32 | Slight/moderate duststorm or sandstorm - begun or increased |\n| 33 | Severe duststorm or sandstorm - decreased during preceding hour |\n| 34 | Severe duststorm or sandstorm - no appreciable change |\n| 35 | Severe duststorm or sandstorm - begun or increased |\n| 36 | Slight/moderate drifting snow, generally low (below eye level) |\n| 37 | Heavy drifting snow, generally low |\n| 38 | Slight/moderate blowing snow, generally high (above eye level) |\n| 39 | Heavy blowing snow, generally high |\n\n**Codes 40-49: Fog or ice fog at time of observation**\n\n| Code | Description |\n|------|-------------|\n| 40 | Fog at distance, not at station during preceding hour |\n| 41 | Fog in patches |\n| 42 | Fog, sky visible, has become thinner |\n| 43 | Fog, sky invisible, has become thinner |\n| 44 | Fog, sky visible, no appreciable change |\n| 45 | Fog, sky invisible, no appreciable change |\n| 46 | Fog, sky visible, has begun or become thicker |\n| 47 | Fog, sky invisible, has begun or become thicker |\n| 48 | Fog, depositing rime, sky visible |\n| 49 | Fog, depositing rime, sky invisible |\n\n**Codes 50-59: Drizzle**\n\n| Code | Description |\n|------|-------------|\n| 50 | Drizzle, not freezing, intermittent, slight |\n| 51 | Drizzle, not freezing, continuous, slight |\n| 52 | Drizzle, not freezing, intermittent, moderate |\n| 53 | Drizzle, not freezing, continuous, moderate |\n| 54 | Drizzle, not freezing, intermittent, heavy |\n| 55 | Drizzle, not freezing, continuous, heavy |\n| 56 | Drizzle, freezing, slight |\n| 57 | Drizzle, freezing, moderate or heavy |\n| 58 | Drizzle and rain, slight |\n| 59 | Drizzle and rain, moderate or heavy |\n\n**Codes 60-69: Rain**\n\n| Code | Description |\n|------|-------------|\n| 60 | Rain, not freezing, intermittent, slight |\n| 61 | Rain, not freezing, continuous, slight |\n| 62 | Rain, not freezing, intermittent, moderate |\n| 63 | Rain, not freezing, continuous, moderate |\n| 64 | Rain, not freezing, intermittent, heavy |\n| 65 | Rain, not freezing, continuous, heavy |\n| 66 | Rain, freezing, slight |\n| 67 | Rain, freezing, moderate or heavy |\n| 68 | Rain or drizzle and snow, slight |\n| 69 | Rain or drizzle and snow, moderate or heavy |\n\n**Codes 70-79: Solid precipitation not in showers**\n\n| Code | Description |\n|------|-------------|\n| 70 | Intermittent fall of snowflakes, slight |\n| 71 | Continuous fall of snowflakes, slight |\n| 72 | Intermittent fall of snowflakes, moderate |\n| 73 | Continuous fall of snowflakes, moderate |\n| 74 | Intermittent fall of snowflakes, heavy |\n| 75 | Continuous fall of snowflakes, heavy |\n| 76 | Diamond dust (with or without fog) |\n| 77 | Snow grains (with or without fog) |\n| 78 | Isolated star-like snow crystals (with or without fog) |\n| 79 | Ice pellets |\n\n**Codes 80-99: Showery precipitation or precipitation with thunderstorm**\n\n| Code | Description |\n|------|-------------|\n| 80 | Rain shower(s), slight |\n| 81 | Rain shower(s), moderate or heavy |\n| 82 | Rain shower(s), violent |\n| 83 | Shower(s) of rain and snow mixed, slight |\n| 84 | Shower(s) of rain and snow mixed, moderate or heavy |\n| 85 | Snow shower(s), slight |\n| 86 | Snow shower(s), moderate or heavy |\n| 87 | Shower(s) of snow pellets or small hail, slight |\n| 88 | Shower(s) of snow pellets or small hail, moderate or heavy |\n| 89 | Shower(s) of hail, not with thunder, slight |\n| 90 | Shower(s) of hail, not with thunder, moderate or heavy |\n| 91 | Slight rain, thunderstorm during preceding hour |\n| 92 | Moderate or heavy rain, thunderstorm during preceding hour |\n| 93 | Slight snow/rain and snow/hail, thunderstorm during preceding hour |\n| 94 | Moderate or heavy snow/rain and snow/hail, thunderstorm during preceding hour |\n| 95 | Thunderstorm, slight or moderate, with rain/snow at time of observation |\n| 96 | Thunderstorm, slight or moderate, with hail at time of observation |\n| 97 | Thunderstorm, heavy, with rain/snow at time of observation |\n| 98 | Thunderstorm combined with duststorm or sandstorm |\n| 99 | Thunderstorm, heavy, with hail at time of observation |\n\n</details>\n\n<details>\n<summary><strong>wmoWeatherCode4561</strong> - WMO Past Weather Conditions</summary>\n\nWorld Meteorological Organization past weather codes (Table 020004). Past weather is defined as weather occurring in the past 6 hours (at 00, 06, 12, 18 UTC) or past 3 hours (at 03, 09, 15, 21 UTC).\n\n| Code | Description |\n|------|-------------|\n| 0 | Cloud covering half or less of the sky throughout the period |\n| 1 | Cloud covering more than half the sky during part of the period and half or less for the rest |\n| 2 | Cloud covering more than half the sky throughout the period |\n| 3 | Sandstorm, duststorm or blowing snow |\n| 4 | Fog or ice fog or thick haze |\n| 5 | Drizzle |\n| 6 | Rain |\n| 7 | Snow, or rain and snow mixed |\n| 8 | Shower(s) |\n| 9 | Thunderstorm(s) with or without precipitation |\n\n</details>\n\n---\n\n### Notes\n\n- **Related Parameters** column shows all time-aggregated or variant forms of the base parameter\n- Parameters without related variants are shown with a dash (-)\n- For RWIS and subsurface parameters, sensor variants (2-6 or 2-15) represent multiple sensors at different locations\n- For coded parameters, refer to the Code Value Reference Tables above for interpretation\n- Call the `/parameters` API endpoint for complete, detailed descriptions of each parameter"
+      operationId: get_parameters_v2_observations_parameters_get
+      parameters:
+      - description: Comma-separated list of parameter names to include in the response, eg. `airTemp,precipAcc60Min,windSpeed`
+        required: false
+        schema:
+          title: Names
+          type: string
+          description: Comma-separated list of parameter names to include in the response, eg. `airTemp,precipAcc60Min,windSpeed`
+        name: names
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Get Parameters V2 Observations Parameters Get
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParametersListResp'
+              examples:
+                Parameter Endpoint Example:
+                  $ref: '#/components/examples/Parameter_Endpoint_Example'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '504':
+          description: Gateway Timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayTimeoutError'
+      security:
+      - clientCredentials: []
+      x-codeSamples:
+      - lang: C + Libcurl
+        source: "#include <stdio.h>\n#include <curl/curl.h>\n\nint main(void) {\n    CURL *curl;\n    CURLcode res;\n    \n    curl = curl_easy_init();\n    if(curl) {\n        struct curl_slist *headers = NULL;\n        headers = curl_slist_append(headers, \"Authorization: Bearer YOUR_ACCESS_TOKEN\");\n        \n        curl_easy_setopt(curl, CURLOPT_URL, \n            \"https://obs.api.dtn.com/v2/observations/parameters\");\n        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);\n        \n        res = curl_easy_perform(curl);\n        \n        curl_slist_free_all(headers);\n        curl_easy_cleanup(curl);\n    }\n    return 0;\n}"
+      - lang: Csharp + Restsharp
+        source: "using RestSharp;\nusing System;\n\nclass Program\n{\n    static void Main()\n    {\n        var client = new RestClient(\"https://obs.api.dtn.com\");\n        var request = new RestRequest(\"/v2/observations/parameters\", Method.Get);\n        \n        request.AddHeader(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\");\n        \n        var response = client.Execute(request);\n        Console.WriteLine(response.Content);\n    }\n}"
+      - lang: Go + Native
+        source: "package main\n\nimport (\n    \"fmt\"\n    \"io\"\n    \"net/http\"\n)\n\nfunc main() {\n    url := \"https://obs.api.dtn.com/v2/observations/parameters\"\n    \n    req, _ := http.NewRequest(\"GET\", url, nil)\n    req.Header.Add(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n    \n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n    \n    body, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(body))\n}"
+      - lang: Java + Okhttp
+        source: "import okhttp3.OkHttpClient;\nimport okhttp3.Request;\nimport okhttp3.Response;\n\npublic class ParametersExample {\n    public static void main(String[] args) throws Exception {\n        OkHttpClient client = new OkHttpClient();\n        \n        String url = \"https://obs.api.dtn.com/v2/observations/parameters\";\n        \n        Request request = new Request.Builder()\n            .url(url)\n            .addHeader(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n            .build();\n        \n        try (Response response = client.newCall(request).execute()) {\n            System.out.println(response.body().string());\n        }\n    }\n}"
+      - lang: Java + Unirest
+        source: "import kong.unirest.Unirest;\nimport kong.unirest.HttpResponse;\n\npublic class ParametersExample {\n    public static void main(String[] args) {\n        HttpResponse<String> response = Unirest.get(\"https://obs.api.dtn.com/v2/observations/parameters\")\n            .header(\"Authorization\", \"Bearer YOUR_ACCESS_TOKEN\")\n            .asString();\n        \n        System.out.println(response.getBody());\n    }\n}"
+      - lang: Javascript + Jquery
+        source: "$.ajax({\n    url: 'https://obs.api.dtn.com/v2/observations/parameters',\n    method: 'GET',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    },\n    success: function(data) {\n        console.log(data);\n    }\n});"
+      - lang: Javascript + Xhr
+        source: "const xhr = new XMLHttpRequest();\nxhr.open('GET', 'https://obs.api.dtn.com/v2/observations/parameters');\nxhr.setRequestHeader('Authorization', 'Bearer YOUR_ACCESS_TOKEN');\n\nxhr.onload = function() {\n    if (xhr.status === 200) {\n        console.log(JSON.parse(xhr.responseText));\n    }\n};\n\nxhr.send();"
+      - lang: Node + Native
+        source: "const https = require('https');\n\nconst options = {\n    hostname: 'obs.api.dtn.com',\n    path: '/v2/observations/parameters',\n    method: 'GET',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    }\n};\n\nconst req = https.request(options, (res) => {\n    let data = '';\n    res.on('data', (chunk) => { data += chunk; });\n    res.on('end', () => { console.log(JSON.parse(data)); });\n});\n\nreq.end();"
+      - lang: Node + Request
+        source: "const request = require('request');\n\nconst options = {\n    url: 'https://obs.api.dtn.com/v2/observations/parameters',\n    headers: {\n        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n    }\n};\n\nrequest.get(options, (error, response, body) => {\n    if (!error && response.statusCode === 200) {\n        console.log(JSON.parse(body));\n    }\n});"
+      - lang: Objc + Nsurlsession
+        source: "NSURL *url = [NSURL URLWithString:@\"https://obs.api.dtn.com/v2/observations/parameters\"];\nNSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];\n[request setHTTPMethod:@\"GET\"];\n[request setValue:@\"Bearer YOUR_ACCESS_TOKEN\" forHTTPHeaderField:@\"Authorization\"];\n\nNSURLSession *session = [NSURLSession sharedSession];\nNSURLSessionDataTask *task = [session dataTaskWithRequest:request\n    completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\n        if (!error) {\n            NSLog(@\"%@\", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);\n        }\n    }];\n[task resume];"
+      - lang: Ocaml + Cohttp
+        source: "open Lwt\nopen Cohttp\nopen Cohttp_lwt_unix\n\nlet uri = Uri.of_string \"https://obs.api.dtn.com/v2/observations/parameters\" in\nlet headers = Header.init ()\n  |> fun h -> Header.add h \"Authorization\" \"Bearer YOUR_ACCESS_TOKEN\" in\n\nClient.get ~headers uri >>= fun (resp, body) ->\n  body |> Cohttp_lwt.Body.to_string >|= fun body ->\n  print_endline body"
+      - lang: Php + Curl
+        source: "<?php\n$curl = curl_init();\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => \"https://obs.api.dtn.com/v2/observations/parameters\",\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_HTTPHEADER => [\n        \"Authorization: Bearer YOUR_ACCESS_TOKEN\"\n    ],\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;\n?>"
+      - lang: Php + Http1
+        source: '<?php
+
+          require_once ''HTTP/Request.php'';
+
+
+          $request = new HTTP_Request(''https://obs.api.dtn.com/v2/observations/parameters'');
+
+          $request->setMethod(HTTP_REQUEST_METHOD_GET);
+
+          $request->addHeader(''Authorization'', ''Bearer YOUR_ACCESS_TOKEN'');
+
+
+          $request->sendRequest();
+
+          echo $request->getResponseBody();
+
+          ?>'
+      - lang: Php + Http2
+        source: '<?php
+
+          require_once ''HTTP/Request2.php'';
+
+
+          $request = new HTTP_Request2(''https://obs.api.dtn.com/v2/observations/parameters'');
+
+          $request->setMethod(HTTP_Request2::METHOD_GET);
+
+          $request->setHeader(''Authorization'', ''Bearer YOUR_ACCESS_TOKEN'');
+
+
+          $response = $request->send();
+
+          echo $response->getBody();
+
+          ?>'
+      - lang: Python + Python3
+        source: "import urllib.request\nimport json\n\nurl = 'https://obs.api.dtn.com/v2/observations/parameters'\n\nreq = urllib.request.Request(url)\nreq.add_header('Authorization', 'Bearer YOUR_ACCESS_TOKEN')\n\nwith urllib.request.urlopen(req) as response:\n    data = json.loads(response.read().decode())\n    print(data)"
+      - lang: Python + Requests
+        source: "import requests\n\nurl = 'https://obs.api.dtn.com/v2/observations/parameters'\n\nheaders = {\n    'Authorization': 'Bearer YOUR_ACCESS_TOKEN'\n}\n\nresponse = requests.get(url, headers=headers)\nprint(response.json())"
+      - lang: Ruby + Native
+        source: "require 'net/http'\nrequire 'json'\n\nuri = URI('https://obs.api.dtn.com/v2/observations/parameters')\n\nrequest = Net::HTTP::Get.new(uri)\nrequest['Authorization'] = 'Bearer YOUR_ACCESS_TOKEN'\n\nresponse = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|\n    http.request(request)\nend\n\nputs JSON.parse(response.body)"
+      - lang: Shell + Curl
+        source: "curl -X GET \"https://obs.api.dtn.com/v2/observations/parameters\" \\\n  -H \"Authorization: Bearer YOUR_ACCESS_TOKEN\" "
+      - lang: Shell + Httpie
+        source: "http GET \"https://obs.api.dtn.com/v2/observations/parameters\" \\\n  \"Authorization: Bearer YOUR_ACCESS_TOKEN\" "
+      - lang: Shell + Wget
+        source: "wget --header=\"Authorization: Bearer YOUR_ACCESS_TOKEN\" \\\n  \"https://obs.api.dtn.com/v2/observations/parameters\" \\\n  -O -"
+      - lang: Swift + Nsurlsession
+        source: "let url = URL(string: \"https://obs.api.dtn.com/v2/observations/parameters\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer YOUR_ACCESS_TOKEN\", forHTTPHeaderField: \"Authorization\")\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n    if let data = data {\n        print(String(data: data, encoding: .utf8) ?? \"\")\n    }\n}\ntask.resume()"
+    servers:
+    - url: https://obs.api.dtn.com
+components:
+  schemas:
+    StrikesDefault:
+      title: Strikes
+      description: Success
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          default: Feature
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - Point
+              default: Point
+            coordinates:
+              coordinates: null
+              type: array
+              items:
+                type: number
+              minItems: 2
+              maxItems: 2
+              example:
+              - -78.1907424927
+              - 31.2004070282
+              description: Strike coordinates (lon, lat)
+        properties:
+          type: object
+          example:
+            timestamp: '2024-10-01T06:42:46.263Z'
+            errorEllipseBearing: 95.7
+            errorEllipseSemiMajor: 3600
+            errorEllipseSemiMinor: 400
+            lightningType: cloudToCloud
+            cloudToCloudHeight: 1
+            peakCurrent: 8
+            sensorCount: 5
+    StrikeValidationError:
+      title: Validation Error Parameters Endpoint parameters
+      type: string
+      example: <user_sub> sent invalid parameter values. <error>
+    ArchiveCounts:
+      title: ArchiveCounts
+      required:
+      - yearMonth
+      type: object
+      properties:
+        yearMonth:
+          title: Yearmonth
+          type: integer
+    ObservationsProperties:
+      title: Properties
+      required:
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/Observation'
+    StnDataRespModel:
+      title: StnDataRespModel
+      required:
+      - url
+      - type
+      - features
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+        type:
+          title: Type
+          type: string
+        features:
+          title: Features
+          type: array
+          items:
+            $ref: '#/components/schemas/StationsFeature'
+      example:
+        url: https://obs.api.dtn.com/v2/observations/stations?by=boundingBox&minLat=51&maxLat=51.5&minLon=0&maxLon=0.5&obsTypes=SYNOP
+        type: FeatureCollection
+        features:
+        - stationCode: DNL35
+          type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - 0.4595
+            - 51.0772
+          properties:
+            tags:
+              wmo: '99126'
+              mgID: '99126'
+              name: Goudhurst
+            parameters:
+            - airTemp
+            - airTempMax12Hour
+            - airTempMin12Hour
+            - dewPoint
+            - precipAcc12Hour
+            - precipAcc24Hour
+            - precipAcc60Min
+            - precipAcc6Hour
+            - relativeHumidity
+            - sunrise
+            - sunset
+            - wmoWeatherCode
+            elevation: 85
+            isArchived: true
+            lastObsTimestamp: '2024-03-22T16:00:00Z'
+            obsTypes:
+            - SYNOP
+        - stationCode: K6C7N
+          type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - 0.45
+            - 51.283
+          properties:
+            tags:
+              wmo: '99008'
+              mgID: '99008'
+              name: East malling
+            parameters:
+            - airTemp
+            - airTempMax12Hour
+            - airTempMin12Hour
+            - dewPoint
+            - globalRadiation24Hour
+            - globalRadiation60Min
+            - mslPressure
+            - precipAcc12Hour
+            - precipAcc24Hour
+            - precipAcc60Min
+            - precipAcc6Hour
+            - relativeHumidity
+            - stationPressure
+            - sunrise
+            - sunset
+            - sunshine60Min
+            - windDirection
+            - windGust
+            - windSpeed
+            - wmoWeatherCode
+            elevation: 50
+            isArchived: true
+            lastObsTimestamp: '2024-03-22T16:00:00Z'
+            obsTypes:
+            - SYNOP
+    ObservationProperties:
+      title: ObservationProperties
+      required:
+      - obsType
+      - isDerived
+      - qc
+      type: object
+      properties:
+        obsType:
+          title: Obstype
+          type: string
+        isDerived:
+          title: Isderived
+          type: boolean
+        qc:
+          title: Qc
+          type: string
+    UnauthorizedError:
+      title: UnauthorizedError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the authorization failure
+      example:
+        detail: JWT is expired
+    StationsProperties:
+      title: Properties
+      required:
+      - parameters
+      - elevation
+      - isArchived
+      - lastObsTimestamp
+      - obsTypes
+      type: object
+      properties:
+        tags:
+          title: Tags
+          type: object
+        parameters:
+          title: Parameters
+          type: array
+          items:
+            type: string
+        elevation:
+          title: Elevation
+          type: number
+        isArchived:
+          title: Isarchived
+          type: boolean
+        lastObsTimestamp:
+          title: Lastobstimestamp
+          type: string
+        obsTypes:
+          title: Obstypes
+          type: array
+          items:
+            type: string
+        archiveCounts:
+          $ref: '#/components/schemas/ArchiveParameter'
+    ArchiveParameter:
+      title: ArchiveParameter
+      required:
+      - parameter
+      type: object
+      properties:
+        parameter:
+          $ref: '#/components/schemas/ArchiveCounts'
+    GatewayTimeoutError:
+      title: GatewayTimeoutError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the timeout
+      example:
+        detail: stream timeout
+    ObservationsGeometry:
+      title: Geometry
+      required:
+      - type
+      - coordinates
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        coordinates:
+          title: Coordinates
+          type: array
+          items:
+            type: number
+    StationsGeometry:
+      title: Geometry
+      required:
+      - type
+      - coordinates
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        coordinates:
+          title: Coordinates
+          type: array
+          items:
+            type: number
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          oneOf:
+          - type: string
+            description: Simple validation error message
+          - type: array
+            description: Detailed validation errors
+            items:
+              $ref: '#/components/schemas/ValidationError'
+      examples:
+        missing_field:
+          summary: Missing required field
+          value:
+            detail: 'Validation error. Message: stationCode field is required.'
+        time_range_exceeded:
+          summary: Time range validation
+          value:
+            detail: 'Validation error. Message: Maximum hours for time range query is 45 days. You''ve provided: startTime = 2025-09-01 00:00:00, endTime = 2025-11-30 00:00:00.'
+        invalid_format:
+          summary: Invalid field format
+          value:
+            detail:
+            - loc:
+              - query
+              - endTime
+              msg: invalid datetime format
+              type: value_error.datetime
+    StationsFeature:
+      title: Feature
+      required:
+      - stationCode
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        stationCode:
+          title: Stationcode
+          type: string
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/StationsGeometry'
+        properties:
+          $ref: '#/components/schemas/StationsProperties'
+    Observation:
+      title: Observation
+      required:
+      - parameter
+      - parameterProperties
+      type: object
+      properties:
+        parameter:
+          title: Parameter
+          type: number
+        parameterProperties:
+          $ref: '#/components/schemas/ObservationProperties'
+    ObservationsFeature:
+      title: Feature
+      required:
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/ObservationsGeometry'
+        properties:
+          $ref: '#/components/schemas/ObservationsProperties'
+    ParametersListResp:
+      title: ParametersListResp
+      required:
+      - name
+      - unit
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+          title: Name
+        unit:
+          type: string
+          title: Unit
+        imperial_unit:
+          type: string
+          title: Imperialunit
+        type:
+          type: string
+          title: Type
+        precision:
+          type: integer
+          title: Precision
+        description:
+          type: string
+          title: Description
+        notes:
+          type: string
+          title: Notes
+        requiredScope:
+          type: string
+          title: Requiredscope
+    ObsDataRespModel:
+      title: ObsDataRespModel
+      required:
+      - url
+      - type
+      - features
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+        type:
+          type: string
+        features:
+          title: Features
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationsFeature'
+  responses:
+    StrikeValidationError:
+      description: Validation Error for Strike Endpoint Parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StrikeValidationError'
+    GetStrikesDefault:
+      description: Lightning Strikes
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StrikesDefault'
+  examples:
+    Observations_with_showTags_false:
+      summary: Response without station tags (showTags=false or omitted)
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&showTags=false
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              windSpeed: 2.06
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              windSpeed: 1.54
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              windSpeed: 1.54
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              windSpeed: 1.54
+    Parameter_Endpoint_Example:
+      summary: Example of Response for Parameter Endpoint
+      value:
+      - name: airTemp
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Instantaneous air temperature 2m above the surface.
+        notes: Exact height of measurement is 2m for networks which conform to WMO standards (Metar and Synop). This cannot be guaranteed for all sources but deviations in air temperatures at most surface measurement heights will be trivial.
+        requiredScope: read:one-observations-public, weather.observations.core:read
+      - name: surfaceTemp
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: RWIS stations often have multiple sensors, where a station has more than 1 these are labelled as surfaceTemp2 to surfaceTemp6. surfaceTemp is not exclusive to networkType RWIS, other networkTypes may have this parameter.
+        requiredScope: read:one-observations-public
+      - name: windSpeed
+        unit: m/s
+        imperial_unit: mph
+        type: float
+        precision: 2
+        description: Wind speed 10m above the surface averaged over 10 minutes.
+        notes: Exact height of measurement is 10m for networks which conform to WMO standards (METAR and SYNOP).
+        requiredScope: read:one-observations-public, weather.observations.core:read
+      - name: bridgeTemp7
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the bridge surface, usually used for winter road maintenance.
+        notes: null
+        requiredScope: ''
+      - name: bridgeTemp8
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the bridge surface, usually used for winter road maintenance.
+        notes: null
+        requiredScope: ''
+      - name: bridgeTemp9
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the bridge surface, usually used for winter road maintenance.
+        notes: null
+        requiredScope: ''
+      - name: bridgeTemp10
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the bridge surface, usually used for winter road maintenance.
+        notes: null
+        requiredScope: ''
+      - name: feelsLikeTempAvg24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Average feels like temperature over the 24 hours before the valid time.
+        notes: Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: feelsLikeTempMax1Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Maximum feels like temperature over the 1 hour before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: feelsLikeTempMax24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Maximum feels like temperature over the 24 hours before the valid time.
+        notes: Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: feelsLikeTempMin1Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Minimum feels like temperature over the 1 hour before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: feelsLikeTempMin24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Minimum feels like temperature over the 24 hours before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: freezingTemp2
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: A parameter that indicates the threshold air temperature at or below which water freezes. Typically used to detect freeze events that can affect agriculture, road safety, infrastructure, and ecosystems.
+        notes: null
+        requiredScope: ''
+      - name: freezingTemp3
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: A parameter that indicates the threshold air temperature at or below which water freezes. Typically used to detect freeze events that can affect agriculture, road safety, infrastructure, and ecosystems.
+        notes: null
+        requiredScope: ''
+      - name: freezingTemp4
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: A parameter that indicates the threshold air temperature at or below which water freezes. Typically used to detect freeze events that can affect agriculture, road safety, infrastructure, and ecosystems.
+        notes: null
+        requiredScope: ''
+      - name: freezingTemp5
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: A parameter that indicates the threshold air temperature at or below which water freezes. Typically used to detect freeze events that can affect agriculture, road safety, infrastructure, and ecosystems.
+        notes: null
+        requiredScope: ''
+      - name: heatIndexAvg24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Average heat index over the 24 hours before the valid time.
+        notes: Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: heatIndexMax1Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Maximum heat index over the 1 hour before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: heatIndexMax24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Maximum heat index over the 24 hours before the valid time.
+        notes: Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: heatIndexMin1Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Minimum heat index over the 1 hour before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: heatIndexMin24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Minimum heat index over the 24 hours before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: precipDuration
+        unit: minutes
+        imperial_unit: minutes
+        type: float
+        precision: 0
+        description: Total length of time during which measurable precipitation is expected or has occurred.
+        notes: null
+        requiredScope: ''
+      - name: precipPresence
+        unit: boolean
+        imperial_unit: boolean
+        type: boolean
+        precision: 0
+        description: Indicates whether precipitation is present.
+        notes: null
+        requiredScope: ''
+      - name: pressureChange6Hour
+        unit: hPA
+        imperial_unit: mb
+        type: float
+        precision: 0
+        description: The change in air pressure over a 6-hour period.
+        notes: null
+        requiredScope: ''
+      - name: pressureChange12Hour
+        unit: hPA
+        imperial_unit: mb
+        type: float
+        precision: 0
+        description: The change in air pressure over a 12-hour period.
+        notes: null
+        requiredScope: ''
+      - name: pressureChange24Hour
+        unit: hPA
+        imperial_unit: mb
+        type: float
+        precision: 0
+        description: The change in air pressure over a 24-hour period.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp3
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp4
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp6
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp7
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp8
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp9
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp11
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp12
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp13
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: subsurfaceTemp14
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: The temperature measured below the surface, typically in soil, rock, or other underground materials.
+        notes: null
+        requiredScope: ''
+      - name: surfaceConductivity7
+        unit: mhos/cm
+        imperial_unit: mhos/cm
+        type: float
+        precision: 2
+        description: An RWIS parameter. Indicates the ability of the road surface to conduct electrical current, which can be useful for assessing the presence of moisture, salts, or other substances that affect road conditions.
+        notes: null
+        requiredScope: ''
+      - name: surfaceConductivity8
+        unit: mhos/cm
+        imperial_unit: mhos/cm
+        type: float
+        precision: 2
+        description: An RWIS parameter. Indicates the ability of the road surface to conduct electrical current, which can be useful for assessing the presence of moisture, salts, or other substances that affect road conditions.
+        notes: null
+        requiredScope: ''
+      - name: surfaceConductivity9
+        unit: mhos/cm
+        imperial_unit: mhos/cm
+        type: float
+        precision: 2
+        description: An RWIS parameter. Indicates the ability of the road surface to conduct electrical current, which can be useful for assessing the presence of moisture, salts, or other substances that affect road conditions.
+        notes: null
+        requiredScope: ''
+      - name: surfaceConductivity10
+        unit: mhos/cm
+        imperial_unit: mhos/cm
+        type: float
+        precision: 2
+        description: An RWIS parameter. Indicates the ability of the road surface to conduct electrical current, which can be useful for assessing the presence of moisture, salts, or other substances that affect road conditions.
+        notes: null
+        requiredScope: ''
+      - name: surfaceConductivity11
+        unit: mhos/cm
+        imperial_unit: mhos/cm
+        type: float
+        precision: 2
+        description: An RWIS parameter. Indicates the ability of the road surface to conduct electrical current, which can be useful for assessing the presence of moisture, salts, or other substances that affect road conditions.
+        notes: null
+        requiredScope: ''
+      - name: surfaceConductivity12
+        unit: mhos/cm
+        imperial_unit: mhos/cm
+        type: float
+        precision: 2
+        description: An RWIS parameter. Indicates the ability of the road surface to conduct electrical current, which can be useful for assessing the presence of moisture, salts, or other substances that affect road conditions.
+        notes: null
+        requiredScope: ''
+      - name: surfaceTemp7
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp8
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp9
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp11
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp12
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp13
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp14
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp16
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp17
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp18
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp19
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp21
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp22
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp23
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: surfaceTemp24
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 1
+        description: Temperature of the road (pavement) surface, usually used for winter road maintenance.
+        notes: ''
+        requiredScope: ''
+      - name: windChillAvg24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 2
+        description: Average wind chill over the 24 hours before the valid time.
+        notes: Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: windChillMax1Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 2
+        description: Maximum wind chill over the 1 hour before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: windChillMax24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 2
+        description: Maximum wind chill over the 24 hours before the valid time.
+        notes: Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: windChillMin1Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 2
+        description: Minimum wind chill over the 1 hour before the valid time.
+        notes: null
+        requiredScope: ''
+      - name: windChillMin24Hour
+        unit: Celsius
+        imperial_unit: F
+        type: float
+        precision: 2
+        description: Minimum wind chill over the 24 hours before the valid time.
+        notes: Represents the lowest apparent temperature felt by exposed skin due to the combined effects of air temperature and wind speed during the 24-hour period. Can be reported at source or aggregated by our API over any daily period by specifying interval=24h in observations endpoint.
+        requiredScope: ''
+      - name: windSpeed2mMax60Min
+        unit: m/s
+        imperial_unit: mph
+        type: float
+        precision: 2
+        description: Maximum wind speed at 2m above the surface over the 60 minutes before the valid timestamp.
+        notes: This height is an approximation for data sources where we know or it is reasonable to assume that winds will be measured closer to 2m than 10m. As a general rule 10m wind speeds will be 30% higher than 2m.
+        requiredScope: ''
+    Observations_Endpoint_Plus_Scope:
+      summary: Response for the accounts with Plus Scope
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 2.06
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              wbgt: 2.4
+              wbgtProperties:
+                obsType: SYNOP
+                isDerived: true
+                qc: pass
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              wbgt: 2.2
+              wbgtProperties:
+                obsType: METAR
+                isDerived: true
+                qc: pass
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              wbgt: 2.2
+              wbgtProperties:
+                obsType: METAR
+                isDerived: true
+                qc: pass
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              wbgt: 2.4
+              wbgtProperties:
+                obsType: SYNOP
+                isDerived: true
+                qc: pass
+    Observations_with_showTags_true:
+      summary: Response with station tags included (showTags=true)
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&showTags=true
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            tags:
+              name: London Weather Station
+              mgID: LDN001
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              windSpeed: 2.06
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              windSpeed: 1.54
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              windSpeed: 1.54
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              windSpeed: 1.54
+    Observations_Endpoint_Core_Scope:
+      summary: Response for the accounts with Core Scope
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 2.06
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Lightning WebSocket, you need to use the following audience: https://lightning.api.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "
+x-refined-from:
+- dtn-lightning-websocket-openapi.json
+- dtn-observation-api-openapi.json

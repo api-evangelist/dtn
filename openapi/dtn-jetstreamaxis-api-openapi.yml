@@ -1,0 +1,768 @@
+openapi: 3.2.0
+info:
+  title: DTN Aviation Enhanced Flight Hazards (EFH) Jet Stream Axis API
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  version: 1.10.3
+servers:
+- url: https://aviation.api.dtn.com
+security:
+- clientCredentials: []
+tags:
+- name: JetStreamAxis
+  description: On demand JetStreamAxis via API
+paths:
+  /v1/jetStreamAxis/:
+    get:
+      tags:
+      - JetStreamAxis
+      summary: Get active JetStreamAxis data
+      description: Get all available JetStreamAxis data, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.
+      responses:
+        '200':
+          $ref: '#/components/responses/JetStreamAxisSuccess'
+        '400':
+          $ref: '#/components/responses/JetStreamAxisBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/QueryMinSpeedKts'
+      - $ref: '#/components/parameters/QueryMaxSpeedKts'
+      - $ref: '#/components/parameters/QueryMinAltitudeFt'
+      - $ref: '#/components/parameters/QueryMaxAltitudeFt'
+      - $ref: '#/components/parameters/QueryBbox'
+      - $ref: '#/components/parameters/QueryPolygon'
+      - $ref: '#/components/parameters/QueryCircle'
+      - $ref: '#/components/parameters/QueryCorridor'
+      - $ref: '#/components/parameters/QueryGeometry'
+      - $ref: '#/components/parameters/QueryConsolidate'
+      - $ref: '#/components/parameters/QuerySrid'
+      - $ref: '#/components/parameters/QueryDistanceUnits'
+      - $ref: '#/components/parameters/JetStreamAxisQueryIsValidAt'
+      - $ref: '#/components/parameters/JetStreamAxisQueryFromDateTime'
+      - $ref: '#/components/parameters/JetStreamAxisQueryUntilDateTime'
+      security:
+      - clientCredentials: []
+components:
+  schemas:
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    GeoJsonObject:
+      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
+
+        '
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          - FeatureCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - GeometryCollection
+        bbox:
+          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
+
+            '
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      discriminator:
+        propertyName: type
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    JetStreamAxisFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/JetStreamAxisItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    JetStreamAxisFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/JetStreamAxisFeature'
+    JetStreamAxisItem:
+      required:
+      - altitude
+      - speed
+      - validDateTime
+      - expirationDateTime
+      - insertedDateTime
+      - modelDateTime
+      properties:
+        altitude:
+          type: number
+        speed:
+          type: number
+        validDateTime:
+          type: string
+          format: date-time
+        expirationDateTime:
+          type: string
+          format: date-time
+        insertedDateTime:
+          type: string
+          format: date-time
+        modelDateTime:
+          type: string
+          format: date-time
+  parameters:
+    QueryMaxAltitudeFt:
+      name: maxAltitudeFt
+      description: Maximum altitude in feet.  Limits to objects whose `altitude` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in feet.
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 60000
+    JetStreamAxisQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    JetStreamAxisQueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    JetStreamAxisQueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryMinSpeedKts:
+      name: minSpeedKts
+      description: Minimum speed in knots.  Limits to objects whose `speed` value is greater than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots.
+      in: query
+      required: false
+      schema:
+        type: integer
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryMinAltitudeFt:
+      name: minAltitudeFt
+      description: Minimum altitude in feet.  Limits to objects whose `altitude` is greater than or equal to this.  Must set value in feet even if output `unitSystem` would not give response in feet.
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 60000
+    QueryConsolidate:
+      name: consolidate
+      description: Boolean indicator for merging GeoJSON Polygons objects into collective MultiPolygon objects.  If true, areal objects sharing the same defining attributes (e.g., vertical velocity & top for thunderstorms or EDR for turbulence) are combined together into single MultiPolygon to minimize the number of distinct objects.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryMaxSpeedKts:
+      name: maxSpeedKts
+      description: Maximum speed in knots.  Limits to objects whose `speed` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots.
+      in: query
+      required: false
+      schema:
+        type: integer
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    JetStreamAxisSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JetStreamAxisFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/JetStreamAxisSuccessResponse'
+    JetStreamAxisBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/JetStreamAxisBadRequestResponse'
+  examples:
+    JetStreamAxisBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/jetStreamAxis?fromDateTime=2025-06-12T20:13:41.196Z&untilDateTime=2025-06-12T14:13:41.196Z&intersection=true
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/jetStreamAxis:requestId:4e17c9de-8a4a-4ec8-945f-757cf2936d66
+        errors:
+        - message: A 'from' datetime must be before an 'until' timestamp
+          parameter: fromDateTime
+          value: '2025-06-12T20:13:41.196Z'
+        meta:
+          name: v1.jetStreamAxis?fromDateTime=2025-06-12T20:13:41.196Z&untilDateTime=2025-06-12T14:13:41.196Z&intersection=true
+          uuid: c4c2958e-fa32-482d-886c-257f7261fd1e
+          request_id: 4e17c9de-8a4a-4ec8-945f-757cf2936d66
+          start_timestamp: 1749737621222
+          end_timestamp: 1749737621611
+          execution_time: 389
+    JetStreamAxisSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/jetStreamAxis?fromDateTime=2025-06-12T04:02:40.789Z&untilDateTime=2025-06-12T10:02:40.789Z&bbox=-180,-60,-120,-27&consolidate=true
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: MultiLineString
+            coordinates:
+            - - - -131.98503582648652
+                - -58.815403645818705
+              - - -131.86648201706655
+                - -58.86660482884056
+              - - -131.74811122850835
+                - -58.917622066207514
+              - - -131.62992472532449
+                - -58.96845175960719
+              - - -131.51192377202727
+                - -59.01909031072725
+              - - -131.3941096331293
+                - -59.069534121255266
+              - - -131.2764835731428
+                - -59.119779592878906
+              - - -131.15904685658023
+                - -59.169823127285795
+              - - -131.04180074795397
+                - -59.21966112616357
+              - - -130.92474651177648
+                - -59.26928999119987
+              - - -130.80788541256015
+                - -59.31870612408231
+              - - -130.6912187148174
+                - -59.36790592649851
+              - - -130.57474768306062
+                - -59.41688580013613
+              - - -130.4584735818022
+                - -59.465642146682775
+              - - -130.3423976755546
+                - -59.5141713678261
+              - - -130.22652122883022
+                - -59.56246986525372
+              - - -130.11084550614137
+                - -59.610534040653285
+              - - -129.9953717720006
+                - -59.658360295712384
+              - - -129.8801012909202
+                - -59.705945032118684
+              - - -129.76503532741265
+                - -59.753284651559824
+              - - -129.65017514599037
+                - -59.800375555723406
+              - - -129.5355220111657
+                - -59.847214146297084
+              - - -129.4210771874511
+                - -59.89379682496848
+              - - -129.30684193935892
+                - -59.94011999342522
+              - - -129.1928175314016
+                - -59.98618005335496
+              - - -129.15847018941528
+                - -60
+          properties:
+            ogcFeatureId: 6660391
+            validDateTime: '2025-06-12T06:00:00.000Z'
+            expirationDateTime: '2025-06-12T08:00:00.000Z'
+            insertedDateTime: '2025-06-11T12:00:00.000Z'
+            modelDateTime: '2025-06-11T12:00:00.000Z'
+            altitude: 29000
+            speed: 100
+            unitSystem: default
+        - type: Feature
+          geometry:
+            type: MultiLineString
+            coordinates:
+            - - - -159.49943263335064
+                - -29.201454251416653
+              - - -159.4760736122052
+                - -29.195188837701178
+              - - -159.4527172805104
+                - -29.18891341801418
+              - - -159.42936363915967
+                - -29.182628000987854
+              - - -159.4060126890467
+                - -29.176332595254372
+              - - -159.38266443106502
+                - -29.17002720944595
+              - - -159.35931886610834
+                - -29.163711852194766
+              - - -159.33597599507027
+                - -29.15738653213301
+              - - -159.31263581884437
+                - -29.151051257892878
+              - - -159.28929833832424
+                - -29.144706038106555
+              - - -159.26596355440353
+                - -29.138350881406243
+              - - -159.24263146797577
+                - -29.13198579642412
+              - - -159.21930207993464
+                - -29.125610791792397
+              - - -159.19597539117373
+                - -29.11922587614324
+              - - -159.1726514025867
+                - -29.11283105810886
+              - - -159.1493301150671
+                - -29.10642634632144
+              - - -159.12601152950853
+                - -29.100011749413177
+              - - -159.10269564680468
+                - -29.093587276016265
+              - - -159.07938246784897
+                - -29.087152934762877
+              - - -159.05607199353526
+                - -29.080708734285217
+              - - -159.032764224757
+                - -29.074254683215486
+              - - -159.0094591624078
+                - -29.067790790185864
+              - - -158.98615680738132
+                - -29.061317063828533
+              - - -158.96285716057113
+                - -29.054833512775698
+              - - -158.93956022287094
+                - -29.04834014565955
+              - - -158.91626599517426
+                - -29.041836971112293
+              - - -158.8929744783746
+                - -29.035323997766078
+              - - -158.8696856733658
+                - -29.028801234253137
+              - - -158.84639958104134
+                - -29.02226868920564
+              - - -158.82311620229487
+                - -29.015726371255795
+              - - -158.79983553801995
+                - -29.00917428903577
+              - - -158.77655758911018
+                - -29.00261245117776
+              - - -158.7532823564592
+                - -28.996040866313987
+              - - -158.73000984096066
+                - -28.989459543076602
+              - - -158.70674004350806
+                - -28.98286849009783
+              - - -158.68347296499516
+                - -28.976267716009843
+              - - -158.66020860631548
+                - -28.96965722944483
+              - - -158.63694696836257
+                - -28.963037039034994
+              - - -158.61368805203014
+                - -28.956407153412517
+              - - -158.59043185821176
+                - -28.949767581209606
+              - - -158.56717838780108
+                - -28.943118331058436
+              - - -158.54392764169165
+                - -28.936459411591198
+              - - -158.52067962077706
+                - -28.929790831440098
+              - - -158.497434325951
+                - -28.923112599237317
+              - - -158.474191758107
+                - -28.916424723615037
+              - - -158.45095191813874
+                - -28.90972721320548
+              - - -158.42771480693978
+                - -28.903020076640804
+              - - -158.40448042540373
+                - -28.896303322553212
+              - - -158.38124877442425
+                - -28.889576959574903
+              - - -158.35801985489488
+                - -28.882840996338057
+              - - -158.33479366770928
+                - -28.876095441474877
+              - - -158.31157021376103
+                - -28.86934030361755
+              - - -158.28834949394374
+                - -28.86257559139827
+              - - -158.26513150915108
+                - -28.85580131344921
+              - - -158.24191626027653
+                - -28.849017478402583
+              - - -158.2187037482138
+                - -28.84222409489057
+              - - -158.1954939738565
+                - -28.83542117154537
+              - - -158.17228693809815
+                - -28.82860871699917
+              - - -158.14908264183248
+                - -28.821786739884153
+              - - -158.12588108595304
+                - -28.814955248832536
+              - - -158.1026822713534
+                - -28.808114252476475
+              - - -158.07948619892719
+                - -28.80126375944818
+              - - -158.05629286956807
+                - -28.794403778379852
+              - - -158.03310228416964
+                - -28.787534317903663
+              - - -158.0099144436254
+                - -28.780655386651823
+              - - -157.9867293488292
+                - -28.773766993256512
+              - - -157.96354700067437
+                - -28.76686914634992
+              - - -157.94036740005467
+                - -28.75996185456424
+              - - -157.91719054786364
+                - -28.75304512653166
+              - - -157.89401644499492
+                - -28.74611897088439
+              - - -157.87084509234222
+                - -28.739183396254596
+              - - -157.847676490799
+                - -28.732238411274487
+              - - -157.82451064125897
+                - -28.72528402457625
+              - - -157.8013475446156
+                - -28.718320244792064
+              - - -157.77818720176265
+                - -28.71134708055415
+              - - -157.75502961359365
+                - -28.704364540494666
+              - - -157.7318747810023
+                - -28.69737263324582
+              - - -157.70872270488198
+                - -28.690371367439795
+              - - -157.68557338612666
+                - -28.683360751708808
+              - - -157.66242682562958
+                - -28.676340794685004
+              - - -157.63928302428462
+                - -28.669311505000632
+              - - -157.61614198298523
+                - -28.662272891287824
+              - - -157.59300370262508
+                - -28.65522496217882
+              - - -157.56986818409774
+                - -28.648167726305775
+              - - -157.54673542829693
+                - -28.641101192300916
+              - - -157.52360543611613
+                - -28.634025368796404
+              - - -157.50047820844904
+                - -28.626940264424448
+              - - -157.47735374618915
+                - -28.61984588781722
+              - - -157.45423205023016
+                - -28.61274224760694
+              - - -157.43111312146573
+                - -28.60562935242577
+              - - -157.40799696078935
+                - -28.59850721090592
+              - - -157.38488356909468
+                - -28.59137583167958
+              - - -157.36177294727534
+                - -28.584235223378936
+              - - -157.33866509622493
+                - -28.57708539463618
+              - - -157.31556001683705
+                - -28.56992635408351
+              - - -157.29245771000535
+                - -28.562758110353105
+              - - -157.26935817662337
+                - -28.555580672077166
+              - - -157.24626141758475
+                - -28.54839404788788
+              - - -157.22316743378315
+                - -28.54119824641744
+              - - -157.20007622611212
+                - -28.53399327629804
+              - - -157.17698779546524
+                - -28.526779146161868
+              - - -157.1539021427362
+                - -28.51955586464112
+              - - -157.1308192688185
+                - -28.51232344036797
+              - - -157.10773917460594
+                - -28.50508188197464
+              - - -157.08466186099193
+                - -28.497831198093298
+              - - -157.06158732887013
+                - -28.49057139735614
+              - - -157.03851557913424
+                - -28.483302488395363
+              - - -157.01544661267775
+                - -28.47602447984315
+              - - -156.99238043039432
+                - -28.4687373803317
+              - - -156.9693170331776
+                - -28.461441198493198
+              - - -156.94625642192113
+                - -28.45413594295984
+              - - -156.92319859751856
+                - -28.446821622363817
+              - - -156.9001435608635
+                - -28.439498245337315
+              - - -156.87709131284953
+                - -28.432165820512534
+              - - -156.85404185437028
+                - -28.42482435652166
+              - - -156.83099518631934
+                - -28.417473861996893
+              - - -156.80795130959035
+                - -28.41011434557041
+              - - -156.78491022507686
+                - -28.402745815874404
+              - - -156.7618719336726
+                - -28.395368281541078
+              - - -156.73883643627104
+                - -28.38798175120261
+              - - -156.71580373376585
+                - -28.380586233491204
+              - - -156.69277382705064
+                - -28.37318173703905
+              - - -156.66974671701905
+                - -28.365768270478327
+              - - -156.64672240456468
+                - -28.35834584244125
+              - - -156.623700890581
+                - -28.350914461559974
+              - - -156.60068217596182
+                - -28.343474136466728
+          properties:
+            ogcFeatureId: 6660288
+            validDateTime: '2025-06-12T06:00:00.000Z'
+            expirationDateTime: '2025-06-12T08:00:00.000Z'
+            insertedDateTime: '2025-06-11T12:00:00.000Z'
+            modelDateTime: '2025-06-11T12:00:00.000Z'
+            altitude: 42000
+            speed: 90
+            unitSystem: default
+        meta:
+          name: v1.jetStreamAxis?fromDateTime=2025-06-12T04:02:40.789Z&untilDateTime=2025-06-12T10:02:40.789Z&bbox=-180,-60,-120,-27&consolidate=true
+          uuid: f3834e21-73ca-4463-9b34-d0c8e093eaf1
+          request_id: 7383cd62-6570-4091-96e8-0b04ac6e2956
+          start_timestamp: 1749679360856
+          end_timestamp: 1749679362015
+          execution_time: 1159
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Enhanced Flight Hazards API, you need to use the following audience: https://aviation.api.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

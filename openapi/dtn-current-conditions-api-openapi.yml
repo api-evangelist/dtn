@@ -1,0 +1,162 @@
+openapi: 3.2.0
+info:
+  title: DTN Weather Conditions Current Conditions API
+  description: DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated weather data. Supports geospatial queries, time-based filtering, and multi-station requests. Authentication uses OAuth2 Client Credentials; access tokens are obtained from auth.weather.mg/oauth/token and used as Bearer tokens.
+  version: 2.0.0
+  contact:
+    name: DTN Weather API Support
+    url: https://devportal.dtn.com/
+  license:
+    name: DTN Subscription Agreement
+    url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
+servers:
+- url: https://weather.api.dtn.com/conditions
+  description: DTN Weather Conditions API
+- url: https://point-forecast.weather.mg
+  description: DTN Point Forecast API
+- url: https://point-observation.weather.mg
+  description: DTN Point Observation API
+- url: https://precipitation-forecast.weather.mg
+  description: DTN Radar Precipitation Forecast API
+security:
+- oauth2: []
+tags:
+- name: Current Conditions
+  description: Current weather observations and conditions
+paths:
+  /v2/current:
+    get:
+      operationId: getCurrentConditions
+      summary: Get current weather conditions
+      description: Returns current weather conditions for a specified location using latitude/longitude or a weather station identifier. Supports unit selection (US customary or SI).
+      tags:
+      - Current Conditions
+      parameters:
+      - name: locatedAt
+        in: query
+        required: true
+        description: 'Location specification. Format: latitude,longitude (e.g., 40.7128,-74.0060) or meteoGroupStationId (e.g., KMSP for Minneapolis-St. Paul)'
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: Comma-separated list of weather fields to return
+        schema:
+          type: string
+          example: airTemperatureInCelsius,relativeHumidityInPercent,windSpeedInMeterPerSecond,weatherSymbol
+      - name: units
+        in: query
+        description: Unit system for returned values
+        schema:
+          type: string
+          enum:
+          - US
+          - SI
+          default: SI
+      responses:
+        '200':
+          description: Current weather conditions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentConditionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+    CurrentConditionsResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+          enum:
+          - US
+          - SI
+        location:
+          $ref: '#/components/schemas/Location'
+        observations:
+          $ref: '#/components/schemas/WeatherObservation'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    WeatherObservation:
+      type: object
+      properties:
+        observedAt:
+          type: string
+          format: date-time
+        airTemperatureInCelsius:
+          type: number
+        feelsLikeTemperatureInCelsius:
+          type: number
+        dewPointInCelsius:
+          type: number
+        relativeHumidityInPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+        windSpeedInMeterPerSecond:
+          type: number
+          minimum: 0
+        windDirectionInDegree:
+          type: number
+          minimum: 0
+          maximum: 360
+        windGustInMeterPerSecond:
+          type: number
+        visibilityInMeter:
+          type: number
+        pressureInHectopascal:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        weatherSymbol:
+          type: integer
+          description: WMO weather symbol code
+        cloudCoverInPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+  responses:
+    Unauthorized:
+      description: Missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 Client Credentials for DTN Weather APIs
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.weather.mg/oauth/token
+          scopes:
+            weather:read: Access weather data

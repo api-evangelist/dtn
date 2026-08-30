@@ -1,0 +1,480 @@
+openapi: 3.2.0
+info:
+  version: 1.0.0
+  title: DTN Farm Intelligence Land Geospatial API
+  description: 'The Farm Intelligence API provides programmatic access to DTN''s agricultural data — producer records,
+
+    land metadata, crop history, and related datasets. It is organized into three surfaces plus shared utilities:
+
+
+    - **Producer API** — Producer discovery, details, and relationship data
+
+    - **Land API** — Land search, metadata, crop history, soil, and geospatial data
+
+    - **Linked Data API** — Segments, portfolios, and batch operations
+
+    - **Shared Utilities** — Crop codes, geographic areas (unmetered)
+
+
+    ## Authentication
+
+
+    All endpoints require OAuth 2.0 client credentials authentication. Obtain a token from the DTN DAIS gateway
+
+    with your client_id, client_secret, and the Farm Intelligence audience.
+
+
+    ## Credit Metering
+
+
+    Endpoints are classified as:
+
+    - **Metered (1 credit per record)** — Producer and Land data endpoints
+
+    - **Unmetered (discovery class)** — Search, codes, geographic areas
+
+
+    Response headers include credit usage information:
+
+    - `X-Credit-Cost` — Credits consumed by this request
+
+    - `X-Credits-Remaining` — Remaining balance
+
+    - `X-Credit-Pool-Reset` — Contract reset date'
+  contact:
+    name: DTN Agriculture Intelligence Team
+    email: agintel@dtn.com
+  x-logo:
+    url: https://www.dtn.com/wp-content/uploads/2019/03/dtn-logo-tag.png
+    altText: DTN
+servers:
+- description: Development
+  url: https://api-farm-intelligence.dev.ag.zones.dtn.com
+- description: Staging
+  url: https://api-farm-intelligence.stg.ag.zones.dtn.com
+- description: Production
+  url: https://api-farm-intelligence.prd.ag.zones.dtn.com
+security:
+- clientCredentials: []
+tags:
+- name: Land Geospatial
+paths:
+  /api/v1/geospatial/land/{landId}:
+    get:
+      operationId: getGeospatialLand
+      summary: Get GeoJSON polygon for a land parcel
+      description: 'Retrieve the GeoJSON FeatureCollection representing the boundary polygon(s) for a
+
+        land parcel. Properties include land metadata such as acreage, FIPS code, and
+
+        crop/name status flags.
+
+
+        **Billing:** Unmetered (discovery class).
+
+        '
+      tags:
+      - Land Geospatial
+      parameters:
+      - in: path
+        name: landId
+        required: true
+        schema:
+          type: integer
+          example: 3456789
+        description: Unique land parcel identifier.
+      responses:
+        '200':
+          description: GeoJSON FeatureCollection with the land boundary.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - FeatureCollection
+                    example: FeatureCollection
+                  features:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - Feature
+                          example: Feature
+                        geometry:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - Polygon
+                              - MultiPolygon
+                              example: MultiPolygon
+                            coordinates:
+                              type: array
+                              description: GeoJSON coordinate array (structure depends on geometry type).
+                        properties:
+                          type: object
+                          properties:
+                            landId:
+                              type: integer
+                              example: 3456789
+                            zipCode:
+                              type:
+                              - string
+                              - 'null'
+                              example: '50316'
+                            fipsCode:
+                              type:
+                              - string
+                              - 'null'
+                              example: '19153'
+                            mtrs:
+                              type:
+                              - string
+                              - 'null'
+                              example: 4-080N-024W-14
+                            acres:
+                              type: number
+                              format: float
+                              example: 152.4
+                            lat:
+                              type: number
+                              format: float
+                              example: 41.732
+                            lon:
+                              type: number
+                              format: float
+                              example: -93.458
+                            nameStatus:
+                              type:
+                              - string
+                              - 'null'
+                              description: Name attribution status for this land.
+                              example: confirmed
+                            cropStatus:
+                              type:
+                              - string
+                              - 'null'
+                              description: Crop data availability status.
+                              example: current
+              example:
+                type: FeatureCollection
+                features:
+                - type: Feature
+                  geometry:
+                    type: MultiPolygon
+                    coordinates:
+                    - - - - -93.46
+                          - 41.73
+                        - - -93.455
+                          - 41.73
+                        - - -93.455
+                          - 41.735
+                        - - -93.46
+                          - 41.735
+                        - - -93.46
+                          - 41.73
+                  properties:
+                    landId: 3456789
+                    zipCode: '50316'
+                    fipsCode: '19153'
+                    mtrs: 4-080N-024W-14
+                    acres: 152.4
+                    lat: 41.732
+                    lon: -93.458
+                    nameStatus: confirmed
+                    cropStatus: current
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: bad-request
+                title: Invalid Request
+                status: 400
+                detail: Validation failed.
+                instance: urn:dtn:farm-intel-external-api:/api/v1/geospatial/land/abc:requestId:abc123
+                errors:
+                - message: Path parameter landId must be a valid integer.
+                  parameter: landId
+        '401':
+          description: Missing or invalid authentication token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: unauthorized
+                title: Error while authenticating the user
+                status: 401
+                detail: Bearer Token is malformed.
+                instance: urn:dtn:farm-intel-external-api:requestId:example-id
+  /api/v1/geospatial/producers/{partyId}:
+    get:
+      operationId: getGeospatialProducer
+      summary: Get GeoJSON polygons for a producer's lands
+      description: 'Retrieve a GeoJSON FeatureCollection containing boundary polygons for all land
+
+        parcels linked to a producer. Properties include the land-party relationship details
+
+        such as role, crop type, and acreage.
+
+
+        **Billing:** Unmetered (discovery class).
+
+        '
+      tags:
+      - Land Geospatial
+      parameters:
+      - in: path
+        name: partyId
+        required: true
+        schema:
+          type: integer
+          example: 5091294
+        description: Unique producer identifier.
+      responses:
+        '200':
+          description: GeoJSON FeatureCollection with all land boundaries for the producer.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - FeatureCollection
+                    example: FeatureCollection
+                  features:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                          - Feature
+                          example: Feature
+                        geometry:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - Polygon
+                              - MultiPolygon
+                              example: Polygon
+                            coordinates:
+                              type: array
+                              description: GeoJSON coordinate array.
+                        properties:
+                          type: object
+                          properties:
+                            landId:
+                              type: integer
+                              example: 3456789
+                            partyId:
+                              type: integer
+                              example: 5091294
+                            zipCode:
+                              type:
+                              - string
+                              - 'null'
+                              example: '50316'
+                            primary:
+                              type: boolean
+                              description: Whether this is the primary land-party association.
+                              example: true
+                            producerCode:
+                              type:
+                              - string
+                              - 'null'
+                              description: Producer role code.
+                              example: O
+                            acres:
+                              type: number
+                              format: float
+                              example: 152.4
+                            crop:
+                              type:
+                              - string
+                              - 'null'
+                              description: Most recent crop planted on this land.
+                              example: Corn
+                            fipsCode:
+                              type:
+                              - string
+                              - 'null'
+                              example: '19153'
+                            county:
+                              type:
+                              - string
+                              - 'null'
+                              example: Polk
+                            lat:
+                              type: number
+                              format: float
+                              example: 41.732
+                            lon:
+                              type: number
+                              format: float
+                              example: -93.458
+              example:
+                type: FeatureCollection
+                features:
+                - type: Feature
+                  geometry:
+                    type: Polygon
+                    coordinates:
+                    - - - -93.46
+                        - 41.73
+                      - - -93.455
+                        - 41.73
+                      - - -93.455
+                        - 41.735
+                      - - -93.46
+                        - 41.735
+                      - - -93.46
+                        - 41.73
+                  properties:
+                    landId: 3456789
+                    partyId: 5091294
+                    zipCode: '50316'
+                    primary: true
+                    producerCode: O
+                    acres: 152.4
+                    crop: Corn
+                    fipsCode: '19153'
+                    county: Polk
+                    lat: 41.732
+                    lon: -93.458
+                - type: Feature
+                  geometry:
+                    type: Polygon
+                    coordinates:
+                    - - - -93.475
+                        - 41.712
+                      - - -93.468
+                        - 41.712
+                      - - -93.468
+                        - 41.718
+                      - - -93.475
+                        - 41.718
+                      - - -93.475
+                        - 41.712
+                  properties:
+                    landId: 3456790
+                    partyId: 5091294
+                    zipCode: '50316'
+                    primary: true
+                    producerCode: O
+                    acres: 80
+                    crop: Soybeans
+                    fipsCode: '19153'
+                    county: Polk
+                    lat: 41.715
+                    lon: -93.47
+        '400':
+          description: Invalid request parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: bad-request
+                title: Invalid Request
+                status: 400
+                detail: Validation failed.
+                instance: urn:dtn:farm-intel-external-api:/api/v1/geospatial/producers/abc:requestId:abc123
+                errors:
+                - message: Path parameter partyId must be a valid integer.
+                  parameter: partyId
+        '401':
+          description: Missing or invalid authentication token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: unauthorized
+                title: Error while authenticating the user
+                status: 401
+                detail: Bearer Token is malformed.
+                instance: urn:dtn:farm-intel-external-api:requestId:example-id
+components:
+  schemas:
+    Error:
+      type: object
+      description: RFC 7807 Problem Detail error response.
+      properties:
+        type:
+          type: string
+          description: Error type identifier.
+          example: bad-request
+        title:
+          type: string
+          description: Human-readable error title.
+          example: Invalid Request
+        status:
+          type: integer
+          description: HTTP status code.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable error description.
+          example: Validation failed.
+        instance:
+          type: string
+          description: URI identifying the specific request that failed (includes request ID for tracing).
+          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
+        errors:
+          type: array
+          description: Detailed validation errors (present for 400 responses).
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Description of what's wrong.
+                example: Required query parameter lat is invalid or missing.
+              parameter:
+                type: string
+                description: The parameter that failed validation.
+                example: lat
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the Farm Intel API, you need to use the following audience: https://api-farm-intelligence.dev.ag.zones.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "
+x-tagGroups:
+- name: Producer API
+  tags:
+  - Producer Search
+  - Producer Details
+  - Producer Relationships
+- name: Land API
+  tags:
+  - Land Search
+  - Land Details
+  - Land Crop
+  - Land Geospatial
+- name: Linked Data API
+  tags:
+  - Segments
+  - Portfolios
+- name: Shared Utilities
+  tags:
+  - Codes
+  - Geographic Areas

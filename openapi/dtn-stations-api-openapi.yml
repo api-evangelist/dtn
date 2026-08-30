@@ -1,0 +1,104 @@
+openapi: 3.2.0
+info:
+  title: DTN Weather Conditions Stations API
+  description: DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated weather data. Supports geospatial queries, time-based filtering, and multi-station requests. Authentication uses OAuth2 Client Credentials; access tokens are obtained from auth.weather.mg/oauth/token and used as Bearer tokens.
+  version: 2.0.0
+  contact:
+    name: DTN Weather API Support
+    url: https://devportal.dtn.com/
+  license:
+    name: DTN Subscription Agreement
+    url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
+servers:
+- url: https://weather.api.dtn.com/conditions
+  description: DTN Weather Conditions API
+- url: https://point-forecast.weather.mg
+  description: DTN Point Forecast API
+- url: https://point-observation.weather.mg
+  description: DTN Point Observation API
+- url: https://precipitation-forecast.weather.mg
+  description: DTN Radar Precipitation Forecast API
+security:
+- oauth2: []
+tags:
+- name: Stations
+  description: Weather station metadata
+paths:
+  /stations:
+    get:
+      operationId: listStations
+      summary: List weather stations
+      description: Returns metadata for weather stations in the DTN network. Supports filtering by geographic bounding box or radius from a point.
+      tags:
+      - Stations
+      parameters:
+      - name: locatedWithin
+        in: query
+        description: Geographic bounding box (minLon,minLat,maxLon,maxLat)
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+          maximum: 500
+      responses:
+        '200':
+          description: List of weather stations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StationList'
+components:
+  schemas:
+    StationList:
+      type: object
+      properties:
+        total:
+          type: integer
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+    Station:
+      type: object
+      properties:
+        stationId:
+          type: string
+          description: Station identifier (e.g., KMSP, WMO 72658)
+        stationName:
+          type: string
+        country:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        stationType:
+          type: string
+          enum:
+          - SYNOP
+          - METAR
+          - BUOY
+          - SHIP
+          - AGRICULTURAL
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 Client Credentials for DTN Weather APIs
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.weather.mg/oauth/token
+          scopes:
+            weather:read: Access weather data

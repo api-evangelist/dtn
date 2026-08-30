@@ -1,0 +1,156 @@
+openapi: 3.2.0
+info:
+  title: DTN Weather Conditions Observations API
+  description: DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated weather data. Supports geospatial queries, time-based filtering, and multi-station requests. Authentication uses OAuth2 Client Credentials; access tokens are obtained from auth.weather.mg/oauth/token and used as Bearer tokens.
+  version: 2.0.0
+  contact:
+    name: DTN Weather API Support
+    url: https://devportal.dtn.com/
+  license:
+    name: DTN Subscription Agreement
+    url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
+servers:
+- url: https://weather.api.dtn.com/conditions
+  description: DTN Weather Conditions API
+- url: https://point-forecast.weather.mg
+  description: DTN Point Forecast API
+- url: https://point-observation.weather.mg
+  description: DTN Point Observation API
+- url: https://precipitation-forecast.weather.mg
+  description: DTN Radar Precipitation Forecast API
+security:
+- oauth2: []
+tags:
+- name: Observations
+  description: Historical weather observation data
+paths:
+  /observations:
+    get:
+      operationId: getObservations
+      summary: Get weather observations (historical)
+      description: Returns weather observations from weather stations. Supports up to 30 years of historical data. Multiple stations can be queried in a single request.
+      tags:
+      - Observations
+      servers:
+      - url: https://point-observation.weather.mg
+      parameters:
+      - name: locatedAt
+        in: query
+        required: true
+        description: Latitude,longitude or station ID. Multiple locations pipe-separated.
+        schema:
+          type: string
+      - name: observedPeriod
+        in: query
+        required: true
+        description: 'Historical date/time range. Format: startISO8601/endISO8601'
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: Comma-separated observation fields
+        schema:
+          type: string
+          example: airTemperatureInCelsius,precipitationAmountInMillimeter,relativeHumidityInPercent
+      - name: units
+        in: query
+        schema:
+          type: string
+          enum:
+          - US
+          - SI
+          default: SI
+      - name: limit
+        in: query
+        description: Maximum number of observations to return
+        schema:
+          type: integer
+          default: 1000
+          maximum: 10000
+      responses:
+        '200':
+          description: Weather observations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationsResponse'
+components:
+  schemas:
+    WeatherObservation:
+      type: object
+      properties:
+        observedAt:
+          type: string
+          format: date-time
+        airTemperatureInCelsius:
+          type: number
+        feelsLikeTemperatureInCelsius:
+          type: number
+        dewPointInCelsius:
+          type: number
+        relativeHumidityInPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+        windSpeedInMeterPerSecond:
+          type: number
+          minimum: 0
+        windDirectionInDegree:
+          type: number
+          minimum: 0
+          maximum: 360
+        windGustInMeterPerSecond:
+          type: number
+        visibilityInMeter:
+          type: number
+        pressureInHectopascal:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        weatherSymbol:
+          type: integer
+          description: WMO weather symbol code
+        cloudCoverInPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+    TimedObservation:
+      allOf:
+      - $ref: '#/components/schemas/WeatherObservation'
+    ObservationsResponse:
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            type: object
+            properties:
+              stationId:
+                type: string
+              location:
+                $ref: '#/components/schemas/Location'
+              observations:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimedObservation'
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 Client Credentials for DTN Weather APIs
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.weather.mg/oauth/token
+          scopes:
+            weather:read: Access weather data

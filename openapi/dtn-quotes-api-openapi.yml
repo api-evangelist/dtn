@@ -1,0 +1,1762 @@
+openapi: 3.2.0
+info:
+  title: PXWeb Market Data Quotes API
+  description: "ProphetX Web services, in short __PXWeb__, provides the facility to access real time quotes and historical market information \nfrom a JSON and REST based web service.\n\nPXWeb end points are divided into four categories: Quotes, History, Information, and Option Series.  Requests in the quotes category\nare for getting the most recent prices on a symbol.  History is for requesting prices from specific time periods in the past and supports \ndaily, minute, and tick history.  Information contains a request for searching for symbols based on text strings and a request for \nquerying the market hours of a symbol.  The option series category contains on request for getting quotes on many futures options\nbased on an option root and an expiration."
+  version: 1.0.2
+servers:
+- description: Production (PROD)
+  url: https://pxweb.dtn.com
+- description: Customer Acceptance Testing (CAT)
+  url: https://pxwebcat.dtn.com
+- description: QA Testing (PRE)
+  url: https://prx-ws-pre.dtn.com
+- description: Development (DEV)
+  url: https://prx-app1-dev.dtn.com
+tags:
+- name: Quotes
+paths:
+  /market_data/quotes:
+    get:
+      tags:
+      - Quotes
+      summary: Get latest information for symbols
+      description: "Get the latest prices and other information for a list of symbols or symbol patterns.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+      operationId: getQuoteSnap
+      parameters:
+      - $ref: '#/components/parameters/symbolParam'
+      - $ref: '#/components/parameters/symbolLimitParam'
+      - $ref: '#/components/parameters/fieldGroupParam'
+      - $ref: '#/components/parameters/fieldsParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      - $ref: '#/components/parameters/marketParam'
+      responses:
+        '200':
+          description: The overall request was successful.  Individual symbols and patterns will each have their own status codes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quote'
+        5XX:
+          description: An internal server error has occurred.  Sending the error response to support will help with troubleshooting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /market_data/quotes/greeks:
+    get:
+      tags:
+      - Quotes
+      summary: Get futures options greek values
+      description: "Get the latest prices and price sensitivity values known as greeks for futures options.  The response for a futures option will always include a greeks object containing: delta, gamma, theta, vega, underlyingPrice, interestRate, and impliedVolatility.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+      operationId: getOptionGreeks
+      parameters:
+      - $ref: '#/components/parameters/symbolLimitParam'
+      - $ref: '#/components/parameters/fieldGroupParam'
+      - $ref: '#/components/parameters/fieldsParam'
+      - $ref: '#/components/parameters/basisParam'
+      - $ref: '#/components/parameters/optionSymbolParam'
+      - $ref: '#/components/parameters/pageTokenParam'
+      responses:
+        '200':
+          description: The overall request was successful.  Individual symbols and patterns will each have their own status codes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quote'
+        5XX:
+          description: An internal server error has occurred.  Sending the error response to support will help with troubleshooting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /market_data/quotes/equity-scans:
+    get:
+      tags:
+      - Quotes
+      summary: Get equity scans
+      description: "Equity scan information from the three US stock exchanges, NYSE, NYSE-AMEX or the NASDAQ selected by activity categories.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+      operationId: getMarketScans
+      parameters:
+      - $ref: '#/components/parameters/reportParam'
+      - $ref: '#/components/parameters/scanMarketParam'
+      - $ref: '#/components/parameters/fieldGroupParam'
+      - $ref: '#/components/parameters/fieldsParam'
+      - $ref: '#/components/parameters/limitParam'
+      responses:
+        '200':
+          description: The overall request was successful.  Individual symbols and patterns will each have their own status codes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Quote'
+        5XX:
+          description: An internal server error has occurred.  Sending the error response to support will help with troubleshooting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Meta:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        count:
+          type: number
+          description: Number of symbols returned by request
+        dataSrc:
+          type: string
+          description: A value used by DTN support for troublshooting any issues
+        duration:
+          type: string
+          description: The duration of time DTN servers spent processing the request.  Does not include internet transit time.
+        userId:
+          type: string
+          description: The user that made the request.
+        operation:
+          type: string
+          description: The name of the operation called
+        pageToken:
+          type: string
+          description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
+    Greeks:
+      type: object
+      description: An object to hold futures options price sensitivity values known as greeks.  Only returned by /quotes/greeks
+      properties:
+        delta:
+          description: Price sensitivity of an option to the price of the underlying.
+          format: double
+          type: number
+        gamma:
+          description: Price sensitivity of an option to changes in the price of the underlying.
+          format: double
+          type: number
+        theta:
+          description: Price sensitivity of an option to the time to expiration.
+          format: double
+          type: number
+        vega:
+          description: Price sensitivity of an option to changes in volatility.
+          format: double
+          type: number
+        underlyingPrice:
+          description: Price of an option's underlying.
+          $ref: '#/components/schemas/Price'
+        interestRate:
+          description: Interest rate used in option calculations.
+          format: double
+          type: number
+        impliedVolatility:
+          description: Implied volatility used in option calculations.
+          format: double
+          type: number
+    MarketDepthQuote:
+      properties:
+        size:
+          format: int64
+          type: integer
+        value:
+          $ref: '#/components/schemas/Price'
+      type: object
+    Price:
+      type: string
+      description: Prices are represented as strings to prevent float rounding problems
+      examples:
+      - '123.25'
+    Symbol:
+      required:
+      - status
+      - marketName
+      - tickerSymbol
+      - vendor
+      type: object
+      properties:
+        status:
+          type: number
+          description: Indicate if this symbol/pattern was successfully queried.  OK=0, 1=Not Found, 2=Not perm
+        marketName:
+          type: string
+          description: Market symbol belongs too.
+          examples:
+          - CBOT
+        requestedSymbol:
+          type: string
+          description: The symbol or pattern requested.
+          examples:
+          - '@C`##'
+        tickerSymbol:
+          type: string
+          description: "The official current ticker symbol.  This might be different than the requested symbol if  the requested symbol was a search pattern or alias. \n"
+          examples:
+          - '@CU18'
+        vendor:
+          type: string
+          description: Vendor for symbol.
+          examples:
+          - DTN
+      description: Symbol identifier and request status.
+    Quote:
+      properties:
+        accruedInterest:
+          description: The interest that has accumulated since the principal investment
+          format: double
+          type: number
+          x-dtn-fid-number: 357
+        actualSymbol:
+          description: The actual traded symbol behind an alias symbol
+          type: string
+          x-dtn-fid-number: 194
+        annualized7DayYield:
+          description: The annualized value from a Money Market fund over the last seven days
+          format: double
+          type: number
+          x-dtn-fid-number: 359
+        anualDividendRate:
+          description: An indicator of per-share or aggregate dividends paid to stockholders over the course of one year
+          format: double
+          type: number
+          x-dtn-fid-number: 147
+        apiGravity:
+          format: double
+          type: number
+          x-dtn-fid-number: 616
+        area:
+          description: Area
+          type: string
+          x-dtn-fid-number: 3575
+        ask:
+          description: Current Best Ask Price
+          type: string
+          x-dtn-fid-number: 10
+        askDateTime:
+          description: Date and Time of last Ask
+          format: date-time
+          type: string
+          x-dtn-fid-number: 33
+        askSize:
+          description: Number of shares or contracts being offered at the asking price
+          format: int64
+          type: integer
+          x-dtn-fid-number: 13
+        assets:
+          description: The total current assets held by a company
+          format: double
+          type: number
+          x-dtn-fid-number: 242
+        avMatrty:
+          description: The weighted average of the time until all maturities on mortgages in a mortgage-backed security
+          format: double
+          type: number
+          x-dtn-fid-number: 244
+        averageLifeDays:
+          description: Weighted average life in days
+          format: int32
+          type: integer
+          x-dtn-fid-number: 364
+        averageVolume:
+          description: The number of shares traded per day, averaged over some time period, usually 4 weeks
+          format: int64
+          type: integer
+          x-dtn-fid-number: 127
+        basis:
+          description: Basis
+          format: double
+          type: number
+          x-dtn-fid-number: 3576
+        basisFix:
+          description: Basis Fix
+          type: string
+          x-dtn-fid-number: 3577
+        basisSymbol:
+          description: The underlying future contract the basis is calculated or quoted from
+          type: string
+          x-dtn-fid-number: 30887
+        bateDateTime:
+          description: Date and Time of last Bid Ask Trade or Exception
+          format: date-time
+          type: string
+          x-dtn-fid-number: 35
+        bates:
+          type: string
+          x-dtn-fid-number: 617
+        beginningNAV:
+          description: Previous month-end net asset value
+          format: double
+          type: number
+          x-dtn-fid-number: 358
+        beta:
+          description: Beta - the sensitivity of the instrument based on index returns.
+          format: double
+          type: number
+          x-dtn-fid-number: 249
+        bid:
+          description: Current Best Bid Price
+          type: string
+          x-dtn-fid-number: 9
+        bidDateTime:
+          description: Date and Time of last Bid
+          format: date-time
+          type: string
+          x-dtn-fid-number: 32
+        bidSize:
+          description: Number of shares or contracts being offered at the bid price
+          format: int64
+          type: integer
+          x-dtn-fid-number: 12
+        branded:
+          description: B = Branded, U = Unbranded, anything else is undefined
+          type: string
+          x-dtn-fid-number: 16038
+        calendarCode:
+          type: string
+          x-dtn-fid-number: 618
+        callPutFlag:
+          description: Indicates whether option is a call or a put - empty=Not an option, C=Call, P=Put
+          type: string
+          x-dtn-fid-number: 70
+        callRoot:
+          description: Option Root for calls
+          type: string
+          x-dtn-fid-number: 270
+        calldate:
+          description: The date on which a bond may be redeemed before maturity
+          format: date
+          type: string
+          x-dtn-fid-number: 365
+        cash:
+          description: Cash on hand and demand deposits
+          format: double
+          type: number
+          x-dtn-fid-number: 198
+        cashPerShare:
+          description: Cash per shares outstanding ratio
+          format: double
+          type: number
+          x-dtn-fid-number: 199
+        category:
+          description: Category
+          type: string
+          x-dtn-fid-number: 3504
+        change:
+          description: Change in price between previous day's CLOSE price and today's LAST price
+          type: string
+          x-dtn-fid-number: 26
+        city:
+          description: Name of nearest City or Place for reporting location
+          type: string
+          x-dtn-fid-number: 386
+        close:
+          description: Close Price
+          type: string
+          x-dtn-fid-number: 14
+        closeStock:
+          description: Closing Metal Stock
+          format: int32
+          type: integer
+          x-dtn-fid-number: 267
+        commodity:
+          description: The Root Symbol of the Underlying commodity, or the Name of the underlying commodity.
+          type: string
+          x-dtn-fid-number: 313
+        commodityGrade:
+          type: string
+          x-dtn-fid-number: 619
+        commonConversionFactor:
+          format: double
+          type: number
+          x-dtn-fid-number: 620
+        commonConversionFunction:
+          type: string
+          x-dtn-fid-number: 621
+        commonConversionTargetUnitofMeasure:
+          type: string
+          x-dtn-fid-number: 622
+        contractDate:
+          description: Date the contract is due.
+          format: date
+          type: string
+          x-dtn-fid-number: 193
+        contractHigh:
+          description: Contract High
+          type: string
+          x-dtn-fid-number: 236
+        contractHighDate:
+          description: Date on which the contract was the highest
+          format: date
+          type: string
+          x-dtn-fid-number: 354
+        contractLow:
+          description: Contract Low
+          type: string
+          x-dtn-fid-number: 237
+        contractLowDate:
+          description: Date on which the contract was the lowest
+          format: date
+          type: string
+          x-dtn-fid-number: 355
+        contractType:
+          type: string
+          x-dtn-fid-number: 623
+        contrib:
+          description: Contributor Name or Code for latest trade/bid/ask
+          type: string
+          x-dtn-fid-number: 56
+        country:
+          description: Two or Three character Country Code
+          type: string
+          x-dtn-fid-number: 384
+        couponRate:
+          description: The interest rate assigned to a bond when it is issued.
+          format: double
+          type: number
+          x-dtn-fid-number: 51
+        cropDataType:
+          description: Crop data type
+          type: string
+          x-dtn-fid-number: 3500
+        cumVolume:
+          description: Cumulative Volume since mkt open
+          format: int64
+          type: integer
+          x-dtn-fid-number: 19
+        currency:
+          description: Currency
+          type: string
+          x-dtn-fid-number: 30570
+        currencyCode:
+          description: Represents the International Standard Foreign Currency ISO 4217 code in which the transaction was executed
+          type: string
+          x-dtn-fid-number: 124
+        currentYield:
+          description: The yield of the bond at the current moment
+          format: double
+          type: number
+          x-dtn-fid-number: 288
+        curveCode:
+          type: string
+          x-dtn-fid-number: 654
+        curveName:
+          type: string
+          x-dtn-fid-number: 655
+        dateRange:
+          description: Date Range
+          type: string
+          x-dtn-fid-number: 3579
+        daysToExpiration:
+          description: Number of days until expiration
+          format: int32
+          type: integer
+          x-dtn-fid-number: 61
+        deliveryDate:
+          description: The last date that users will complete delivery
+          format: date
+          type: string
+          x-dtn-fid-number: 3523
+        deliveryMethod:
+          type: string
+          x-dtn-fid-number: 624
+        deliveryRegion:
+          type: string
+          x-dtn-fid-number: 625
+        deliveryRegionBasis:
+          type: string
+          x-dtn-fid-number: 626
+        deliveryType:
+          description: DTN grain bid delivery timeframe (spot or new crop)
+          type: string
+          x-dtn-fid-number: 30568
+        density:
+          format: double
+          type: number
+          x-dtn-fid-number: 627
+        derivativeMaturityFrequency:
+          type: string
+          x-dtn-fid-number: 628
+        derivativePosition:
+          format: int32
+          type: integer
+          x-dtn-fid-number: 629
+        description:
+          description: Issue Description
+          type: string
+          x-dtn-fid-number: 79
+        dilutedEPS:
+          description: A performance metric used to gauge the quality of a company's earnings per share if all convertible securities were exercised (Trailing 12 months worth)
+          format: double
+          type: number
+          x-dtn-fid-number: 161
+        dilutedEPS3YrGrowthRate:
+          description: Diluted EPS 3 Year Growth Rate
+          format: double
+          type: number
+          x-dtn-fid-number: 165
+        dilutedEPS5YrGrowthRate:
+          description: Diluted EPS 5 Year Growth Rate
+          format: double
+          type: number
+          x-dtn-fid-number: 166
+        dispatchCode:
+          description: Platt's 2 character Dispatch Category Code
+          type: string
+          x-dtn-fid-number: 268
+        divExDate:
+          description: Date on which ex-dividend will trade
+          format: date
+          type: string
+          x-dtn-fid-number: 48
+        dividend:
+          description: Latest dividend amount
+          format: double
+          type: number
+          x-dtn-fid-number: 46
+        earliestLayday:
+          format: int32
+          type: integer
+          x-dtn-fid-number: 630
+        effectiveDate:
+          description: Effective Date of the current reported price.
+          format: date
+          type: string
+          x-dtn-fid-number: 16036
+        effectiveTime:
+          description: Effective Time of the current reported price.
+          format: int32
+          type: integer
+          x-dtn-fid-number: 16049
+        elevation:
+          description: Elevation in Feet
+          format: int32
+          type: integer
+          x-dtn-fid-number: 391
+        elevatorCity:
+          description: The city the elevator is in
+          type: string
+          x-dtn-fid-number: 30882
+        elevatorCounty:
+          description: The county the elevator is in
+          type: string
+          x-dtn-fid-number: 30881
+        elevatorDistance:
+          description: The distance from the elevator to Halifax, NS
+          format: int32
+          type: integer
+          x-dtn-fid-number: 30886
+        elevatorId:
+          description: Unique identifier for a grain elevator location
+          format: int32
+          type: integer
+          x-dtn-fid-number: 30878
+        elevatorLatitude:
+          description: The floating point latitude for the elevator's location
+          format: double
+          type: number
+          x-dtn-fid-number: 30884
+        elevatorLongitude:
+          description: The floating point longitude for the elevator's location
+          format: double
+          type: number
+          x-dtn-fid-number: 30885
+        elevatorName:
+          description: The name of the elevator
+          type: string
+          x-dtn-fid-number: 30879
+        elevatorState:
+          description: The state the elevator is in (can also be a Canadian Province or Territory)
+          type: string
+          x-dtn-fid-number: 30880
+        elevatorZip:
+          description: The zip code the elevator is located in
+          type: string
+          x-dtn-fid-number: 30883
+        estLongTermReturn:
+          description: Estimated return over the life of the portfolio, calculated according to formulas proposed by the Securities and Exchange Commission (SEC)
+          format: double
+          type: number
+          x-dtn-fid-number: 289
+        evaluationDate:
+          description: Evaluation Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3553
+        evaluationPrice:
+          description: Evaluation Price
+          type: string
+          x-dtn-fid-number: 3552
+        evaluationTime:
+          description: Evaluation Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3554
+        exchMidPrice:
+          description: Mid price from the exchange
+          type: string
+          x-dtn-fid-number: 3525
+        exchMidPriceDate:
+          description: Mid price date from the exchange
+          format: date
+          type: string
+          x-dtn-fid-number: 3526
+        exchMidPriceTime:
+          description: Mid price time from the exchange
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3527
+        exchangeName:
+          type: string
+          x-dtn-fid-number: 631
+        exchangePartner:
+          description: Exchange Partner
+          type: string
+          x-dtn-fid-number: 16041
+        exercisePrice:
+          description: Option Exercise Strike Price
+          format: double
+          type: number
+          x-dtn-fid-number: 170
+        expirationDate:
+          description: Date instrument expires
+          format: date
+          type: string
+          x-dtn-fid-number: 171
+        extendedLast:
+          description: Extended Last
+          type: string
+          x-dtn-fid-number: 367
+        figi:
+          description: Financial Instrument Global Identifier
+          type: string
+          x-dtn-fid-number: 49
+        fipsCode:
+          description: The Federal Information Processing Standard Code for the county
+          format: int32
+          type: integer
+          x-dtn-fid-number: 30888
+        first:
+          description: Price of First Trade of the Trading Day
+          type: string
+          x-dtn-fid-number: 76
+        firstActivity:
+          description: Date of first activity
+          format: date
+          type: string
+          x-dtn-fid-number: 3517
+        firstDeliveryDate:
+          description: The first date that users will complete delivery
+          format: date
+          type: string
+          x-dtn-fid-number: 3524
+        firstHoldingDate:
+          description: The date when the exchange will begin accepting position dates, where applicable, for deliverable contracts
+          format: date
+          type: string
+          x-dtn-fid-number: 3587
+        firstNoticeDate:
+          description: The first date that users will get notified that they have been assigned a delivery
+          format: date
+          type: string
+          x-dtn-fid-number: 3581
+        firstPositionDate:
+          description: The first date on which the exchange will accept intents and run assignments for deliverable contracts
+          format: date
+          type: string
+          x-dtn-fid-number: 3585
+        firstTradeDate:
+          description: The date on which the contract will start trading
+          format: date
+          type: string
+          x-dtn-fid-number: 3583
+        fiscalYearEnd:
+          description: The completion of a one-year, or 12-month, accounting period
+          format: date
+          type: string
+          x-dtn-fid-number: 163
+        flashPoint:
+          format: double
+          type: number
+          x-dtn-fid-number: 632
+        floorAsk:
+          description: Floor ask price
+          type: string
+          x-dtn-fid-number: 3531
+        floorAskDate:
+          description: Floor ask date
+          format: date
+          type: string
+          x-dtn-fid-number: 3532
+        floorAskTime:
+          description: Floor ask time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3533
+        floorBid:
+          description: Floor bid price
+          type: string
+          x-dtn-fid-number: 3528
+        floorBidDate:
+          description: Floor bid date
+          format: date
+          type: string
+          x-dtn-fid-number: 3529
+        floorBidTime:
+          description: Floor bid time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3530
+        footnotes:
+          description: Footnote codes associated with a Mutual or MoneyMarket fund
+          type: string
+          x-dtn-fid-number: 277
+        fraction:
+          description: Fraction that integer prices are stored with
+          format: int32
+          type: integer
+          x-dtn-fid-number: 177
+        freezePoint:
+          format: double
+          type: number
+          x-dtn-fid-number: 633
+        fundCode:
+          description: Subcategory of a Mutual or MoneyMarket fund
+          type: string
+          x-dtn-fid-number: 276
+        gasVolumeWgtdAvg:
+          description: Gas volume weighted average
+          type: string
+          x-dtn-fid-number: 3513
+        greeks:
+          $ref: '#/components/schemas/Greeks'
+        gross7DayYield:
+          description: The yield on an investment before the deduction of taxes and expenses
+          format: double
+          type: number
+          x-dtn-fid-number: 360
+        grossNetIndicator:
+          description: Gross, Net, Spot anything else is undefined
+          type: string
+          x-dtn-fid-number: 16045
+        heatRate:
+          description: Heat rate
+          format: double
+          type: number
+          x-dtn-fid-number: 3515
+        high:
+          description: High Price
+          type: string
+          x-dtn-fid-number: 4
+        inactive:
+          description: Inactive
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3509
+        incoterm:
+          description: International Commercial Terms code
+          type: string
+          x-dtn-fid-number: 3573
+        indicativeOpen:
+          description: Most recent pre-market indicative trade price
+          type: string
+          x-dtn-fid-number: 395
+        inputType:
+          description: For grainbid data, this is the data input type into the DTN grainbid system. 1=Basis, 2=Cash.  For cash input, basis may be estimated.
+          format: int32
+          type: integer
+          x-dtn-fid-number: 30572
+        kinematicViscosity:
+          format: double
+          type: number
+          x-dtn-fid-number: 634
+        last:
+          description: Last Price
+          type: string
+          x-dtn-fid-number: 1
+        lastADate:
+          description: Last reported annual date
+          format: date
+          type: string
+          x-dtn-fid-number: 143
+        lastBidAsk:
+          description: Most recent Last Bid or Ask
+          type: string
+          x-dtn-fid-number: 37
+        lastHoldingDate:
+          description: The date when the exchange will no longer require position dates, where applicable, for deliverable contracts
+          format: date
+          type: string
+          x-dtn-fid-number: 3588
+        lastMove:
+          description: This is the change value since the last update (not the change since the previous day's close)
+          format: double
+          type: number
+          x-dtn-fid-number: 16046
+        lastMoveDate:
+          description: The date that the price last changed.
+          format: date
+          type: string
+          x-dtn-fid-number: 16047
+        lastMoveTime:
+          description: The time that the price last changed.
+          format: int32
+          type: integer
+          x-dtn-fid-number: 16048
+        lastNoticeDate:
+          description: The last date that users will get notified that they have been assigned a delivery
+          format: date
+          type: string
+          x-dtn-fid-number: 3582
+        lastPositionDate:
+          description: The last date on which the exchange will accept intents and run assignments for deliverable contracts
+          format: date
+          type: string
+          x-dtn-fid-number: 3586
+        lastQDate:
+          description: Last reported quarterly date
+          format: date
+          type: string
+          x-dtn-fid-number: 144
+        lastSplitDate:
+          description: The date on which the last stock split occurred
+          format: date
+          type: string
+          x-dtn-fid-number: 167
+        lastSplitFactor:
+          description: 'The dividing factor when stocks are split. Ex: 0.5 = 2 shares for every current share.'
+          format: double
+          type: number
+          x-dtn-fid-number: 168
+        lastTradeDate:
+          description: The date on which the contract will cease trading
+          format: date
+          type: string
+          x-dtn-fid-number: 3584
+        lastVolume:
+          description: Last (incremental) Volume
+          format: int64
+          type: integer
+          x-dtn-fid-number: 11
+        latest:
+          description: Latest known price. Most recent of Last Bid Ask Open Close Previous
+          type: string
+          x-dtn-fid-number: 60
+        latest12MoEPS:
+          description: Latest 12 month earnings per share
+          format: double
+          type: number
+          x-dtn-fid-number: 162
+        latestDate:
+          format: date-time
+          type: string
+          x-dtn-fid-number: 635
+        latestDivDeclaredDate:
+          description: Date on which the most recent dividend was declared
+          format: date
+          type: string
+          x-dtn-fid-number: 148
+        latestDivPayDate:
+          description: Day on which dividend is paid
+          format: date
+          type: string
+          x-dtn-fid-number: 150
+        latestDivRecordDate:
+          description: The date established by an issuer of a security for the purpose of determining the holders who are entitled to receive a dividend or distribution
+          format: date
+          type: string
+          x-dtn-fid-number: 149
+        latestLayday:
+          format: int32
+          type: integer
+          x-dtn-fid-number: 636
+        latitude:
+          description: Latitude in Degrees
+          format: double
+          type: number
+          x-dtn-fid-number: 389
+        lbaChange:
+          description: Most recent Last Bid or Ask change from Previous
+          type: string
+          x-dtn-fid-number: 42
+        liabilities:
+          description: The total current liabilities held by a company (in millions)
+          format: double
+          type: number
+          x-dtn-fid-number: 131
+        loadType:
+          type: string
+          x-dtn-fid-number: 637
+        location:
+          description: Location code
+          type: string
+          x-dtn-fid-number: 3501
+        longTermCapitalGains:
+          description: The long term gains for a fund
+          format: double
+          type: number
+          x-dtn-fid-number: 282
+        longTermDebt:
+          description: Monies owed for a period exceeding one year (in millions)
+          format: double
+          type: number
+          x-dtn-fid-number: 137
+        longitude:
+          description: Longitude in Degrees
+          format: double
+          type: number
+          x-dtn-fid-number: 390
+        low:
+          description: Low Price
+          type: string
+          x-dtn-fid-number: 5
+        ltrade:
+          description: Last trade
+          type: string
+          x-dtn-fid-number: 3565
+        market:
+          description: Exchange the data is coming from
+          format: int32
+          type: integer
+          x-dtn-fid-number: 31
+        marketCap:
+          description: The total value of the tradable shares of a publicly traded company
+          format: double
+          type: number
+          x-dtn-fid-number: 129
+        marketDepth:
+          $ref: '#/components/schemas/MarketDepth'
+        marketPrice:
+          description: The price that a Closed End Mutual Fund is traded on for the exchange for which it is listed
+          format: double
+          type: number
+          x-dtn-fid-number: 280
+        maturityDate:
+          description: The date on which a bond matures.
+          format: date
+          type: string
+          x-dtn-fid-number: 50
+        medianTrade:
+          description: Median trade
+          type: string
+          x-dtn-fid-number: 3512
+        midpoint:
+          description: Midpoint price
+          type: string
+          x-dtn-fid-number: 3505
+        midpointChange:
+          description: Midpoint change
+          type: string
+          x-dtn-fid-number: 3507
+        minTimeStep:
+          description: Minimum Time Granularity of time series updates in seconds. 0==Continuous
+          format: int32
+          type: integer
+          x-dtn-fid-number: 392
+        month:
+          description: Short description used for futures to indicate month and year of the contract
+          type: string
+          x-dtn-fid-number: 81
+        monthlyVolume:
+          description: Monthly Volume
+          format: int64
+          type: integer
+          x-dtn-fid-number: 120
+        moveIn:
+          description: Metal Movement In
+          format: int32
+          type: integer
+          x-dtn-fid-number: 264
+        moveOut:
+          description: Metal Movement Out
+          format: int32
+          type: integer
+          x-dtn-fid-number: 265
+        movement:
+          description: Metal Movement Net
+          format: int32
+          type: integer
+          x-dtn-fid-number: 266
+        naicsCode:
+          description: North American Industry Classification System Code
+          format: int64
+          type: integer
+          x-dtn-fid-number: 92
+        notionalContract:
+          type: string
+          x-dtn-fid-number: 638
+        numOptMths:
+          description: Number of options months
+          format: int32
+          type: integer
+          x-dtn-fid-number: 272
+        officialAskDate:
+          description: Official Ask Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3538
+        officialAskPrice:
+          description: Official Ask Price
+          type: string
+          x-dtn-fid-number: 3537
+        officialAskTime:
+          description: Official Ask Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3539
+        officialBidDate:
+          description: Official Bid Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3535
+        officialBidPrice:
+          description: Official Bid Price
+          type: string
+          x-dtn-fid-number: 3534
+        officialBidTime:
+          description: Official Bid Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3536
+        officialEvaluationDate:
+          description: Official Evaluation Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3547
+        officialEvaluationPrice:
+          description: Official Evaluation Price
+          type: string
+          x-dtn-fid-number: 3546
+        officialEvaluationTime:
+          description: Official Evaluation Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3548
+        open:
+          description: Open Price
+          type: string
+          x-dtn-fid-number: 6
+        openInterest:
+          description: The total number of options and/or futures contracts that are not closed or delivered on a particular day
+          format: int64
+          type: integer
+          x-dtn-fid-number: 20
+        openStock:
+          description: Opening Metal Stock
+          format: int32
+          type: integer
+          x-dtn-fid-number: 263
+        optPrcMult:
+          description: Option Price Multiplier
+          format: double
+          type: number
+          x-dtn-fid-number: 273
+        pdayMidpoint:
+          description: Previous day midpoint price
+          type: string
+          x-dtn-fid-number: 3506
+        percentChange:
+          description: Change of Last from Previous in percentage terms
+          format: double
+          type: number
+        percentHeldInstitution:
+          description: Percentage of outstanding common shares being held by institutional investors, such as pension plans
+          format: double
+          type: number
+          x-dtn-fid-number: 128
+        place:
+          description: Description of Location or Place
+          type: string
+          x-dtn-fid-number: 387
+        pmtTerms:
+          description: Payment terms
+          type: string
+          x-dtn-fid-number: 16035
+        postalCode:
+          description: Postal Code associated with Location
+          type: string
+          x-dtn-fid-number: 383
+        pourPoint:
+          format: double
+          type: number
+          x-dtn-fid-number: 639
+        powerVolumeWgtdAvg:
+          description: Power volume weighted average
+          type: string
+          x-dtn-fid-number: 3514
+        premium:
+          description: Option premium.  Only returned by options/series
+          type: string
+        prevSplitDate:
+          description: The date on which the stock previously split
+          format: date
+          type: string
+          x-dtn-fid-number: 169
+        prevSplitFactor:
+          description: The previous dividing factor when a stock was split
+          format: double
+          type: number
+          x-dtn-fid-number: 180
+        previous:
+          description: Previous Settlement Price
+          type: string
+          x-dtn-fid-number: 17
+        priceToEarningsRatio:
+          description: Price to Earnings Ratio - A valuation ratio of a company's current share price compared to its per-share earnings
+          format: double
+          type: number
+          x-dtn-fid-number: 102
+        priceType:
+          type: string
+          x-dtn-fid-number: 640
+        productName:
+          description: Name of the product
+          type: string
+          x-dtn-fid-number: 16042
+        productSupplier:
+          description: Abbreviation of the supplier of the product
+          type: string
+          x-dtn-fid-number: 16037
+        publicationFrequencyCode:
+          type: string
+          x-dtn-fid-number: 641
+        putRoot:
+          description: Option Root for Puts
+          type: string
+          x-dtn-fid-number: 271
+        quotationStyle:
+          type: string
+          x-dtn-fid-number: 642
+        quoteDelay:
+          description: Minimum number of minutes quote is delayed at the vendor (0 = No delay)
+          format: int32
+          type: integer
+          x-dtn-fid-number: 247
+        quotedBasis:
+          description: Quote Basis
+          format: double
+          type: number
+          x-dtn-fid-number: 30581
+        quotedCurrency:
+          description: Quoted Currency
+          type: string
+          x-dtn-fid-number: 30577
+        quotedPrice:
+          description: Quoted Price
+          format: double
+          type: number
+          x-dtn-fid-number: 30574
+        quotedUnit:
+          description: 'For grain prices these are numeric codes: 66=Bushel, 67=Hundred weight, 76=Long ton, 77=Metric ton, 83=Short ton'
+          format: int32
+          type: integer
+          x-dtn-fid-number: 30576
+        rackCity:
+          description: Full name of the city in which the rack is located
+          type: string
+          x-dtn-fid-number: 16043
+        rackId:
+          description: Rack Identifier
+          format: int64
+          type: integer
+          x-dtn-fid-number: 3589
+        rackState:
+          description: State abbreviation for where the rack is located
+          type: string
+          x-dtn-fid-number: 16044
+        recent:
+          description: Most recent price from trade or settlement.
+          type: string
+          x-dtn-fid-number: 192
+        region:
+          description: Region Code for a region within a Country (such as a state, province or territory)
+          type: string
+          x-dtn-fid-number: 385
+        reportDate:
+          description: Date of last report
+          format: date
+          type: string
+          x-dtn-fid-number: 196
+        reportTime:
+          description: Time of last report
+          format: int32
+          type: integer
+          x-dtn-fid-number: 197
+        returnOfCapital:
+          description: Payments back to "capital owners" (shareholders, partners, unitholders) that exceed the growth (net income/taxable income) of a business
+          format: double
+          type: number
+          x-dtn-fid-number: 284
+        ron:
+          format: double
+          type: number
+          x-dtn-fid-number: 643
+        root:
+          description: Symbol Root
+          type: string
+          x-dtn-fid-number: 248
+        settleDate:
+          description: The market date of the settlement price held in the SETTLE price field
+          format: date
+          type: string
+          x-dtn-fid-number: 86
+        settleDateTime:
+          description: Date and Time of last Settlement Price
+          format: date-time
+          type: string
+          x-dtn-fid-number: 990
+        settlePrice:
+          description: The most recent Settlement Price. See SETTLE DATE for the date this price represents
+          type: string
+          x-dtn-fid-number: 164
+        settlementChange:
+          description: Change from the settle price prior to the Settle Date compared to the current Settlement Price
+          type: string
+          x-dtn-fid-number: 394
+        settlementType:
+          type: string
+          x-dtn-fid-number: 644
+        shipToId:
+          description: The Ship-To Identifier
+          type: string
+          x-dtn-fid-number: 652
+        shippingTerms:
+          type: string
+          x-dtn-fid-number: 645
+        shortInterest:
+          description: Market-sentiment indicator that displays the total number of shares of a particular stock that have been sold short by investors but have not yet been covered or closed out
+          format: int64
+          type: integer
+          x-dtn-fid-number: 126
+        shortTermCapitalGains:
+          description: The short term gains for a fund
+          format: double
+          type: number
+          x-dtn-fid-number: 281
+        shrOutstnd:
+          description: Number of shares outstanding
+          format: int64
+          type: integer
+          x-dtn-fid-number: 239
+        sicCode:
+          description: Standard Industrial Classification Code
+          format: int64
+          type: integer
+          x-dtn-fid-number: 91
+        sicMajorClass:
+          description: Standard Industrial Classification code - Three digit number corresponding to a general industry
+          format: int32
+          type: integer
+          x-dtn-fid-number: 125
+        soldToId:
+          description: The Sold-To Identifier
+          type: string
+          x-dtn-fid-number: 653
+        standardLotSize:
+          format: double
+          type: number
+          x-dtn-fid-number: 646
+        standardLotUnits:
+          type: string
+          x-dtn-fid-number: 647
+        stationId:
+          description: Reporting Station ID or Site ID
+          type: string
+          x-dtn-fid-number: 388
+        stockCancelledWarrants:
+          description: Stock cancelled warrants
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3557
+        stockOnWarrants:
+          description: Stock on warrants
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3556
+        stockSplitDivFactor:
+          description: Stock Split or Dividend Factor
+          format: double
+          type: number
+          x-dtn-fid-number: 286
+        strikeLevel:
+          description: Indicates option strike price relative to underlying price.  Only returned by options/series
+          enum:
+          - AtTheMoney
+          - InTheMoney
+          - OutOfTheMoney
+          type: string
+        subsidized7DayYield:
+          description: The yield based on net income and includes contractual expense reimbursements
+          format: double
+          type: number
+          x-dtn-fid-number: 361
+        sulfur:
+          format: double
+          type: number
+          x-dtn-fid-number: 648
+        summaryName:
+          description: For summary symbols, this is the name of the summary statistic
+          type: string
+          x-dtn-fid-number: 615
+        swapFixedLegSymbol:
+          type: string
+          x-dtn-fid-number: 649
+        swapFloatingLegSymbol:
+          type: string
+          x-dtn-fid-number: 650
+        symbol:
+          $ref: '#/components/schemas/Symbol'
+        terminalLocation:
+          description: Abbreviation of the city in which the rack is located
+          type: string
+          x-dtn-fid-number: 16039
+        terminalOwner:
+          description: Rack owner
+          type: string
+          x-dtn-fid-number: 16040
+        thirtyDayYield:
+          description: Calculated by dividing the net investment income per share for the 30 days ended on the date of calculation by the offering price per share on that date
+          format: double
+          type: number
+          x-dtn-fid-number: 362
+        thirtyDayYieldDate:
+          description: Thirty day yield date
+          format: date
+          type: string
+          x-dtn-fid-number: 363
+        tickSize:
+          description: The minimum price movement of a trading instrument
+          type: string
+          x-dtn-fid-number: 89
+        totalCashDistribution:
+          description: The amount of capital that is returned to the investor or business owner when a business is liquidated
+          format: double
+          type: number
+          x-dtn-fid-number: 285
+        totalContractCumulativeVolume:
+          description: The total of all cumulative volume values for all contracts of the same root
+          format: int64
+          type: integer
+          x-dtn-fid-number: 3566
+        totalContractOpenInterest:
+          description: The total of all open interest values for all contracts of the same root
+          format: int64
+          type: integer
+          x-dtn-fid-number: 3568
+        totalContractOpenInterest2:
+          description: The total of all open interest values for all contracts of the same root
+          format: int64
+          type: integer
+          x-dtn-fid-number: 3570
+        totalContractVolume:
+          description: The total of all volume values for all contracts of the same root
+          format: int64
+          type: integer
+          x-dtn-fid-number: 3567
+        totalContractVolume2:
+          description: The total of all volume values for all contracts of the same root
+          format: int64
+          type: integer
+          x-dtn-fid-number: 3569
+        tradeCount:
+          description: The actual number of trades
+          format: int64
+          type: integer
+          x-dtn-fid-number: 23
+        tradeDate:
+          description: Date of last trade
+          format: date
+          type: string
+          x-dtn-fid-number: 22
+        tradeDateTime:
+          description: Date and Time of last Trade
+          format: date-time
+          type: string
+          x-dtn-fid-number: 34
+        tradeTime:
+          description: Time of last trade
+          format: int32
+          type: integer
+          x-dtn-fid-number: 21
+        unallocatedDistributions:
+          description: Costs that cannot be directly related to a specific cost area
+          format: double
+          type: number
+          x-dtn-fid-number: 283
+        underMarket:
+          description: Market ID of the underlying security or commodity
+          format: int32
+          type: integer
+          x-dtn-fid-number: 73
+        underlying:
+          description: Symbol name of the underlying security or commodity
+          type: string
+          x-dtn-fid-number: 72
+        underlyingContract:
+          description: Underlying contract symbol
+          type: string
+          x-dtn-fid-number: 3508
+        unit:
+          description: 'For grain prices these are numeric codes: 66=Bushel, 67=Hundred weight, 76=Long ton, 77=Metric ton, 83=Short ton'
+          format: int32
+          type: integer
+          x-dtn-fid-number: 30569
+        unitOfMeasure:
+          description: Unit of Measure, Physical measure of traded item
+          type: string
+          x-dtn-fid-number: 136
+        unofficialAskDate:
+          description: UnOfficial Ask Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3544
+        unofficialAskPrice:
+          description: Unofficial Ask Price
+          type: string
+          x-dtn-fid-number: 3543
+        unofficialAskTime:
+          description: UnOfficial Ask Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3545
+        unofficialBidDate:
+          description: UnOfficial Bid Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3541
+        unofficialBidPrice:
+          description: Unofficial Bid Price
+          type: string
+          x-dtn-fid-number: 3540
+        unofficialBidTime:
+          description: UnOfficial Bid Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3542
+        unofficialEvaluationDate:
+          description: Unofficial Evaluation Date
+          format: date
+          type: string
+          x-dtn-fid-number: 3550
+        unofficialEvaluationPrice:
+          description: Unofficial Evaluation Price
+          type: string
+          x-dtn-fid-number: 3549
+        unofficialEvaluationTime:
+          description: Unofficial Evaluation Time
+          format: int32
+          type: integer
+          x-dtn-fid-number: 3551
+        upc11830:
+          description: Uniform Practice Code restricted securities
+          format: int32
+          type: integer
+          x-dtn-fid-number: 181
+        updateType:
+          type: string
+          x-dtn-fid-number: 651
+        usdaregionCode:
+          description: USDA Region Code
+          type: string
+          x-dtn-fid-number: 3510
+        usdaregionName:
+          description: USDA Region Name
+          type: string
+          x-dtn-fid-number: 3511
+        venSymbol:
+          description: The name that the Vendor sends down for this instrument. If this field doesn't exist or have a value, then we are not translating the vendor symbol, and the Symbol field contains the name.
+          type: string
+          x-dtn-fid-number: 85
+        volatility:
+          description: A measure for variation of price of a financial instrument over time
+          format: double
+          type: number
+          x-dtn-fid-number: 63
+        volume:
+          description: Yesterdays total Volume
+          format: int64
+          type: integer
+          x-dtn-fid-number: 18
+        vwap:
+          description: Volume Weighted Average Price
+          format: double
+          type: number
+          x-dtn-fid-number: 88
+        week52High:
+          description: 52 Week high price
+          type: string
+          x-dtn-fid-number: 27
+        week52HighDate:
+          description: Date of 52 week high
+          format: date
+          type: string
+          x-dtn-fid-number: 29
+        week52Low:
+          description: 52 Week Low Price
+          type: string
+          x-dtn-fid-number: 28
+        week52LowDate:
+          description: Date of 52 week low
+          format: date
+          type: string
+          x-dtn-fid-number: 30
+        weeklyVolume:
+          description: Weekly Volume
+          format: int64
+          type: integer
+          x-dtn-fid-number: 119
+        weightDesignation:
+          description: Weight Designation
+          type: string
+          x-dtn-fid-number: 3580
+        wrapPrice:
+          description: Wrap Price
+          format: double
+          type: number
+          x-dtn-fid-number: 287
+        yearEndClose:
+          description: Closing price at the end of the year
+          format: double
+          type: number
+          x-dtn-fid-number: 142
+        yearlyVolume:
+          description: Yearly Volume
+          format: int64
+          type: integer
+          x-dtn-fid-number: 121
+        yield:
+          description: Dividend per share or Effective interest rate expressed in percent
+          format: double
+          type: number
+          x-dtn-fid-number: 45
+        ytdHighDate:
+          description: Date high price for the year occurred
+          format: date
+          type: string
+          x-dtn-fid-number: 139
+        ytdHighPrice:
+          description: High price from beginning of year to today's date
+          format: double
+          type: number
+          x-dtn-fid-number: 138
+        ytdLowDate:
+          description: Date low price for the year occurred
+          format: date
+          type: string
+          x-dtn-fid-number: 141
+        ytdLowPrice:
+          description: Low price from beginning of year to today's date
+          format: double
+          type: number
+          x-dtn-fid-number: 140
+      required:
+      - symbol
+      type: object
+    MarketDepth:
+      description: If available for the symbol, market depth is returned as two arrays.  One for bids, and the other for asks.  Bids are sorted from highest price to lowest, and asks are sroted lowest price to highest.
+      properties:
+        askLevels:
+          items:
+            $ref: '#/components/schemas/MarketDepthQuote'
+          type: array
+        bidLevels:
+          items:
+            $ref: '#/components/schemas/MarketDepthQuote'
+          type: array
+      type: object
+    Error:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            type:
+              type: string
+              description: A more detailed or finer grained type declaration. In some cases could be a 'class' to assist with automated Exception throwing.
+            eventId:
+              type: string
+              description: A UUID that represents this unique request.  This can be used to help troubleshoot errors.
+            dateTime:
+              type: string
+              format: date-time
+              description: Repeat of optional dateTime from the messages section.
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.  These can vary and have a general definition of the potential problem.  Some potential values are ERROR, NotFound, InvalidParameters, NotAuthorized.
+                examples:
+                - NotAuthorized
+              id:
+                type: string
+                description: An identifier for the error.  This can represent a unique identifier for the error that occurred, but in many cases a unique number does not exist and it might simply be a 500.  Some API's will make better use of this value and it will be used to help track down particular problems.
+                examples:
+                - '401'
+              status:
+                type: integer
+                format: int32
+                description: Deprecated - this represents the HTTP Status code, but should not be used or relied upon.  Future version will remove this.
+                examples:
+                - 401
+              message:
+                type: string
+                description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
+                examples:
+                - Unauthorized access to service.
+  parameters:
+    limitParam:
+      name: limit
+      in: query
+      description: The maximum number of symbols to return.
+      schema:
+        type: integer
+        default: 200
+        maximum: 4998
+    fieldsParam:
+      name: fields
+      in: query
+      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
+
+        '
+      required: false
+      schema:
+        type: string
+    symbolParam:
+      name: symbol
+      in: query
+      description: 'A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)
+
+        '
+      required: true
+      examples:
+        corn:
+          summary: CBOT Corn Front Month Alias
+          value: '@C@1'
+        oil:
+          summary: NYMEX Crude Oil Front Month Alias
+          value: QCL@1
+        msft:
+          summary: Microsoft stock
+          value: MSFT
+        countyAverage:
+          summary: CORN/YELLOW, County Average Spot Cash Price, Pipestone, MN
+          value: CORN$.MN.F27117
+      schema:
+        type: string
+    basisParam:
+      name: basis
+      in: query
+      description: A price FID to be used as the basis of the calculation, where typical values are "recent" and "settlementPrice". Default value is recent.
+      required: false
+      schema:
+        type: string
+        default: recent
+    scanMarketParam:
+      name: market
+      in: query
+      description: The market code which can be NYSE, NYSEAMERICAN, NASDAQ, or ALL.
+      required: false
+      schema:
+        type: string
+        default: ALL
+        enum:
+        - NYSE
+        - NYSEAMERICAN
+        - NASDAQ
+        - ALL
+    symbolLimitParam:
+      name: symbolLimit
+      in: query
+      description: The number of symbols to return in one request up to a maximum of 4000.
+      schema:
+        type: integer
+        default: 600
+        maximum: 4000
+    pageTokenParam:
+      name: pageToken
+      in: query
+      description: "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+      schema:
+        type: string
+    marketParam:
+      name: market
+      in: query
+      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
+
+        '
+      schema:
+        type: string
+    optionSymbolParam:
+      name: symbol
+      in: query
+      description: 'A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)
+
+        '
+      required: true
+      examples:
+        corn:
+          summary: CBOT Corn Options
+          value: '@C`##<CP>{0-9}'
+        oil:
+          summary: NYMEX Crude Oil Options
+          value: QCL`##<CP>{0-9}
+      schema:
+        type: string
+    reportParam:
+      name: report
+      in: query
+      description: Desired report code, which can be Gainers(G), Percent Gainers(PG), Losers(L), Percent Losers(PL), Active(A), Volatile(V), 52 Week High(52H), 52 Week Low(52L).  Anything else defaults to A.
+      schema:
+        type: string
+        default: A
+        enum:
+        - G
+        - PG
+        - L
+        - PL
+        - A
+        - V
+        - 52H
+        - 52L
+    fieldGroupParam:
+      name: fieldGroup
+      in: query
+      description: "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+      required: false
+      schema:
+        type: string
+        enum:
+        - price
+        - grains
+        - racks
+        - complete
+        default: complete
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Market Data, you need to use the following audience: https://pxweb.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

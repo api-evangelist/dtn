@@ -1,0 +1,316 @@
+openapi: 3.2.0
+info:
+  title: Storm Risk Analytics Predictions API
+  description: "\n# Introduction  \n<p>The DTN Storm Risk Analytics API delivers AI/ML electricity customers out and weather risk predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using eight (8) years of electricity customers out data, providing hourly predictions out to seven (7) days in the future, updated four (4) times per day.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Risk Analytics API, please contact your DTN account representative.</p>\n\n# Predictions  \n<p>The DTN Storm Risk Analytics API provides hourly new electricity customers out (number of meters) or weather risk index (0 – low risk to 10 – extreme risk) predictions for every FIPS (county equivalent) in the continental United States and southern Canada for the next seven (7) days, updated four (4) times per day, typically around 01, 07, 13, and 19 UTC.</p>   <p>For queries, counties can be specified individually by FIPS code or grouped together by passing a predefined region, state, or state abbreviation, GeoJSON polygon, or a list of FIPS codes. The timeframe for prediction queries can be specified via ISO 8601. </p> <p>The DTN Storm Risk Analytics API is also capable of providing predictions in GeoJSON format for use in GIS and mapping software applications.</p> <p>There is no access to historic predictions currently.</p>\n\n# Prediction Parameters\n<p>Here we will introduce how to configure prediction queries for your specific use case.</p> <p>If you need additional information about counties (FIPS), you can use the informational API calls for assistance.</p> <p>The prediction calls are broken down into three (3) separate paths: <b>/predictions</b>, <b>/predictions/geo-summary</b>, and <b>/predictions/polygon</b>.</p>\n\n| Path | Type | Description |\n| --------- | ------- | ----------------------------------- |\n| /predictions | GET | Get predictions for FIP(s) or region by date range |\n| /predictions/geo-summary | GET | Get summary of predictions and GeoJson for FIP(s) or region by date range |   \n| /predictions/polygon | PUT | Get predictions for counties contained within passed in GeoJson polygon |\n\n<p>The parameters these calls accept are broken down into 2 types: <b>position</b> and <b>prediction</b>.</p>\n\n<details>\n<summary>Positional Parameters</summary>\n\n  These parameters are used to specify where, positionally, your predictions should be made for. **You will only need to use one type of position parameter per call.**\n\n\n| Parameter | Description |\n| ----------------------------------- | ----------------------------------- |\n| fipsList                 | A single FIPS or comma seperated list of FIPS. |\n| regionName                   | A named region, state name, or state abbreviation. |\n| lat              | The latitude of a point, the county containing this point will be used for the prediction. (**must be used along with lon**) |\n| lon               | The longitude of a point, the county containing this point will be used for the prediction. (**must be used along with lat**) |\n| GeoJson (**body**)              | A GeoJson polygon or multi-polygon in the body of a PUT request. (**Can only be used with /predictions/polygon**)|\n\n</details>\n<details>\n<summary>Prediction Parameters</summary>\n\n| Parameter | Required | Description |\n| -------------------------- | --------- | ----------------------------------- |\n| startTime | Yes | ISO 8601 time of the first prediction. |\n| endTime | Yes | ISO 8601 time of the last prediction |\n| timezoneId | No | A timezone ID, used if you want the predictions to be auto adjusted to a timezone. Predictions default to UTC if not provided.|\n| predictionType | No | Can be either **customers-out** or **risk-index**. Defaults to **customers-out** |\n\n</details>\n\n# Informational Queries\n<p>This API contains a few helper functions built into this API to assist you in building your prediction queries.</p>\n\n## /regions\n<p>A \"named region\" is a predefined region consisting of many FIPS code grouped together for convenience. When queried, this call will return a list of all currently available named regions.</p> <p>Your response will look like this for example:</p>\n\n```json  \n[\n  \"CONUS\",\n  \"MIDWEST\",\n  \"US_SW\"\n]\n```\n<p>Using CONUS for as your <b>regionName</b> in your prediction query would then return predictions for all counties in the continental United States</p>\n\n## /fips/regions/{region}\n<p>This is for obtaining the list of counties contained within a named region</p> <p>Asking for <b>/region/CONUS</b> for example will return a JSON list containing an object for each county in CONUS.</p> <p>If we narrow the response to a single county, the JSON returned will look like this:</p>\n\n```json  \n[\n  {\n    \"fedId\": \"27053\",\n    \"fedName\": \"Hennepin\",\n    \"fedParentId\": \"27\",\n    \"fedParentName\": \"Minnesota\",\n    \"fedParentAbbreviation\": \"MN\",\n    \"substationCount\": 50,\n    \"population\": 1267416,\n    \"totalArea\": 607\n  }\n]\n```   \n## /fips/states/{state}\n<p>The exact same functionality as the previous call exists here, except instead of passing in a named region you can pass in a state name or state abbreviation.</p> <p>The response will look exactly like the previous call.</p>"
+  version: 1.0.1
+servers:
+- url: https://sra.dtn.com/v1
+security:
+- clientCredentials: []
+tags:
+- name: Predictions
+paths:
+  /predictions:
+    get:
+      tags:
+      - Predictions
+      summary: Get predictions for FIP(s) or region by date range
+      description: Get predictions for FIP(s) or region by date range. startTime and endTime as well as one positional definition (like lat and lon or regionName).
+      operationId: getPredictions
+      parameters:
+      - $ref: '#/components/parameters/startTime'
+      - $ref: '#/components/parameters/endTime'
+      - $ref: '#/components/parameters/fipsList'
+      - $ref: '#/components/parameters/predictionType'
+      - $ref: '#/components/parameters/lat'
+      - $ref: '#/components/parameters/lon'
+      - $ref: '#/components/parameters/regionName'
+      - $ref: '#/components/parameters/timezoneId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/prediction'
+  /predictions/geo-summary:
+    get:
+      tags:
+      - Predictions
+      summary: Get summary of predictions and GeoJson for FIP(s) or region by date range
+      description: Get summary of predictions and GeoJson for FIP(s) or region by date range. startTime and endTime as well as one positional definition (like lat and lon or regionName).
+      operationId: getGeoSummary
+      parameters:
+      - $ref: '#/components/parameters/startTime'
+      - $ref: '#/components/parameters/endTime'
+      - $ref: '#/components/parameters/fipsList'
+      - $ref: '#/components/parameters/predictionType'
+      - $ref: '#/components/parameters/lat'
+      - $ref: '#/components/parameters/lon'
+      - $ref: '#/components/parameters/regionName'
+      - $ref: '#/components/parameters/timezoneId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/featureCollection'
+  /predictions/polygon:
+    put:
+      tags:
+      - Predictions
+      summary: Get predictions for counties contained within passed in GeoJson polygon
+      description: Get predictions for counties contained within passed in GeoJson polygon. startTime and endTime parameters and valid GeoJson in the request body are required.
+      operationId: getPolygonPrediction
+      requestBody:
+        description: GeoJson Polygon
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/polygon'
+      parameters:
+      - $ref: '#/components/parameters/startTime'
+      - $ref: '#/components/parameters/endTime'
+      - $ref: '#/components/parameters/predictionType'
+      - $ref: '#/components/parameters/timezoneId'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/prediction'
+components:
+  schemas:
+    polygon:
+      type: object
+      properties:
+        type:
+          type: string
+          example: MultiPolygon
+        coordinates:
+          type: array
+          items:
+            type: number
+          example:
+          - - - - -94.1728
+                - 45.56023
+              - - -93.27777
+                - 44.7677
+              - - -93.0931
+                - 44.9496
+              - - -94.1728
+                - 45.56023
+    prediction:
+      type: object
+      properties:
+        fips:
+          $ref: '#/components/schemas/fips'
+        gfsDateTime:
+          type: string
+          example: 2023-05-30T18:00
+          description: Date time of the GFS run these predictions were calculated with.
+        predictionType:
+          type: string
+          example: risk-index
+          description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+        weightingAlgorithm:
+          type: string
+          example: substation
+          description: Prediction weight algorithm used filter prediction values.
+        weight:
+          type: number
+          example: 50
+          description: Calculated weight used for predction filtering. If weightingAlgorithm is substation then this value is the number of substations contained within predictive area. For example - if 50 substations in county and this value is 25, then the predictions are 50% of their full value.
+        predictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/hourlyPrediction'
+    featureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
+    hourlyPrediction:
+      type: object
+      properties:
+        predictionDateTime:
+          type: string
+          example: 2023-05-30T19:00
+          description: Date time of this single hourly prediction
+        prediction:
+          type: number
+          example: 7
+          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
+        base:
+          type: number
+          example: 4
+          description: Baseline predicted value for this hourly prediction, changes based on predictionType defined.
+    featureProperties:
+      type: object
+      properties:
+        fedParentName:
+          type: string
+          example: Minnesota
+          description: Name of parent state.
+        fedParentAbbreviation:
+          type: string
+          example: MN
+          description: Abbreviated name of parent state.
+        prediction:
+          type: number
+          example: 7
+          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
+        fedId:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        fedName:
+          type: string
+          example: Hennepin
+          description: Name of county.
+    fips:
+      type: object
+      properties:
+        fedId:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        fedName:
+          type: string
+          example: Hennepin
+          description: Name of county.
+        fedParentId:
+          type: string
+          example: '27'
+          description: FIPS code for parent state.
+        fedParentName:
+          type: string
+          example: Minnesota
+          description: Name of parent state.
+        fedParentAbbreviation:
+          type: string
+          example: MN
+          description: Abbreviated name of parent state.
+        substationCount:
+          type: number
+          example: 50
+          description: Total number of known substations in county.
+        population:
+          type: number
+          example: 1267416
+          description: Population of county. Can be 0 if data unknown.
+        totalArea:
+          type: number
+          example: 607
+          description: Area of county in square miles.
+    feature:
+      type: object
+      properties:
+        type:
+          type: string
+          example: Feature
+        properties:
+          $ref: '#/components/schemas/featureProperties'
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              example: MultiPolygon
+        id:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        coordinates:
+          type: array
+          items:
+            type: number
+          example: []
+  parameters:
+    lat:
+      name: lat
+      description: Latitude of point which is used to get predictions for county that contains it.
+      example: 44.9866
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    lon:
+      name: lon
+      description: Longitude of point which is used to get predictions for county that contains it.
+      example: -93.258
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    startTime:
+      name: startTime
+      description: ISO 8601, start time of predictions.
+      example: '2023-05-30T08:30:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    regionName:
+      name: regionName
+      description: Can be a predefined, named region, a state abbreviation or full state name.
+      example: CONUS
+      in: query
+      required: false
+      schema:
+        type: string
+    fipsList:
+      name: fipsList
+      description: A single or comma seperated list of FIPS to get predictions for.
+      example: 27137,27089
+      in: query
+      required: false
+      schema:
+        type: string
+    predictionType:
+      name: predictionType
+      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+      example: risk-index
+      in: query
+      required: false
+      schema:
+        type: string
+    timezoneId:
+      name: timezoneId
+      description: IANA timezone string to auto adjust prediction timestamps.
+      example: America/Chicago
+      in: query
+      required: false
+      schema:
+        type: string
+    endTime:
+      name: endTime
+      description: ISO 8601, end time of predictions.
+      example: '2023-06-01T08:00:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Storm Risk Analytics API, you need to use the following audience: https://sra.dtn.com/v1\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

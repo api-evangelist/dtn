@@ -1,0 +1,351 @@
+openapi: 3.2.0
+info:
+  title: Pavement Conditions Directions API
+  version: 2.0.2
+  description: "The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination. DTN supplies road data on segments across North America and Europe, allowing users to request data for a geographic area or specific roadway within the database.\n\n**What's New in v2.0.2:**\n- Route Generation \n  \n  — A new `GET /v2/directions` endpoint generates route geometry via the Mapbox Directions API.\n\n- Query Pavement Conditions Along a Route or Route-Based Filtering (RB Filter)\n\n  - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - When `startPoint` and `endPoint` are supplied to the `v2/logistics` or `v2/pavement/conditions` endpoints, a route is automatically generated internally via the Mapbox API.\n  - Pagination is determined by the number of route `segments` when RB Filter is active.\n  - Each paginated response includes a `statistics` object summarizing covered, uncovered, and total segment counts.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n- Added pavementValidEndTime in returned data\n\n**Authentication**: This API uses Bearer token authentication. When obtaining your access token, use the following audience values:\n- **Production**: `https://pavement-condition.prd.wx.zones.dtn.com`\n- **Staging**: `https://pavement-condition.stg.wx.zones.dtn.com`"
+  contact:
+    name: Ben Hershey
+    url: https://pavement-condition.prd.wx.zones.dtn.com
+    email: ben.hershey@dtn.com
+servers:
+- url: https://pavement-condition.prd.wx.zones.dtn.com/v2
+  description: Production server
+- url: https://pavement-condition.stg.wx.zones.dtn.com/v2
+  description: Staging server
+tags:
+- name: Directions
+  description: Cacheable route geometry endpoints (Mapbox Directions API)
+paths:
+  /directions:
+    get:
+      tags:
+      - Directions
+      summary: Get Route Directions
+      description: "Returns cacheable route geometry from the Mapbox Directions API as a GeoJSON FeatureCollection.\nThis endpoint decouples route geometry from weather/pavement data, enabling independent caching\nof the route so the frontend can lock in a stable geometry for navigation (similar to Waze/Google Maps).\n\nThe `geojson` field in the response is directly compatible with the POST `/v2/pavement/conditions`\nand POST `/v2/logistics` endpoints — it can be passed as the `route` body without transformation.\n\n**Timing behavior:**\n- When `departAt` is provided: each feature includes `arrivalTimeUTC` (departAt + route duration)\n- When `arriveAt` is provided: each feature includes `departureTimeUTC` (arriveAt - route duration)\n- When neither is provided: current server time is used as `departAt` and `arrivalTimeUTC` is computed\n\n**Alternative routes:**\n- When `alternatives=true`: returns 1–3 routes sorted by ascending duration\n- When `alternatives=false` or omitted: returns exactly 1 route\n\n**Sample Requests:**\n\n1. **Basic route with departure time:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n2. **Route with arrival time:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n3. **Multiple alternative routes:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&alternatives=true\n   ```\n\n4. **Default timing (uses current server time as departure):**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420\n   ```\n"
+      operationId: getDirections
+      parameters:
+      - name: startPoint
+        in: query
+        description: 'Starting point coordinates for the route.
+
+          Format: `longitude,latitude`
+
+          '
+        required: true
+        schema:
+          type: string
+        example: -93.3905,45.1310
+      - name: endPoint
+        in: query
+        description: 'Ending point coordinates for the route.
+
+          Format: `longitude,latitude`
+
+          '
+        required: true
+        schema:
+          type: string
+        example: -93.2695,45.1420
+      - name: departAt
+        in: query
+        description: 'Departure time for the route. Mutually exclusive with `arriveAt`.
+
+          When provided, `arrivalTimeUTC` is calculated as `departAt + route duration`.
+
+          Format: ISO 8601 UTC with "Z" suffix (e.g., 2026-03-13T15:00:00Z)
+
+          '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        example: '2026-03-13T15:00:00Z'
+      - name: arriveAt
+        in: query
+        description: 'Desired arrival time at the destination. Mutually exclusive with `departAt`.
+
+          When provided, `departureTimeUTC` is calculated as `arriveAt - route duration`.
+
+          Format: ISO 8601 UTC with "Z" suffix (e.g., 2026-03-13T16:00:00Z)
+
+          '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        example: '2026-03-13T16:00:00Z'
+      - name: alternatives
+        in: query
+        description: 'When "true", returns up to 3 alternative routes sorted by ascending duration.
+
+          When "false" or omitted, returns exactly 1 route.
+
+          '
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          default: 'false'
+        example: 'true'
+      responses:
+        '200':
+          description: Successful response with GeoJSON FeatureCollection containing route geometry and timing metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectionsResponse'
+              examples:
+                departAtResponse:
+                  summary: Response with departAt (shows arrivalTimeUTC)
+                  value:
+                    geojson:
+                      type: FeatureCollection
+                      features:
+                      - type: Feature
+                        geometry:
+                          type: LineString
+                          coordinates:
+                          - - -93.3905
+                            - 45.131
+                          - - -93.37
+                            - 45.135
+                          - - -93.2695
+                            - 45.142
+                        properties:
+                          duration: 1800
+                          distance: 15000
+                          arrivalTimeUTC: '2026-03-13T15:30:00.000Z'
+                          departureTimeUTC: null
+                    properties:
+                      arrivalTimeUTC: '2026-03-13T15:30:00.000Z'
+                arriveAtResponse:
+                  summary: Response with arriveAt (shows departureTimeUTC)
+                  value:
+                    geojson:
+                      type: FeatureCollection
+                      features:
+                      - type: Feature
+                        geometry:
+                          type: LineString
+                          coordinates:
+                          - - -93.3905
+                            - 45.131
+                          - - -93.37
+                            - 45.135
+                          - - -93.2695
+                            - 45.142
+                        properties:
+                          duration: 1800
+                          distance: 15000
+                          arrivalTimeUTC: null
+                          departureTimeUTC: '2026-03-13T15:30:00.000Z'
+                    properties:
+                      departureTimeUTC: '2026-03-13T15:30:00.000Z'
+                alternativesResponse:
+                  summary: Response with alternatives=true (multiple routes)
+                  value:
+                    geojson:
+                      type: FeatureCollection
+                      features:
+                      - type: Feature
+                        geometry:
+                          type: LineString
+                          coordinates:
+                          - - -93.3905
+                            - 45.131
+                          - - -93.37
+                            - 45.135
+                          - - -93.2695
+                            - 45.142
+                        properties:
+                          duration: 1800
+                          distance: 15000
+                          arrivalTimeUTC: '2026-03-13T15:30:00.000Z'
+                          departureTimeUTC: null
+                      - type: Feature
+                        geometry:
+                          type: LineString
+                          coordinates:
+                          - - -93.3905
+                            - 45.131
+                          - - -93.32
+                            - 45.15
+                          - - -93.2695
+                            - 45.142
+                        properties:
+                          duration: 2100
+                          distance: 17500
+                          arrivalTimeUTC: '2026-03-13T15:35:00.000Z'
+                          departureTimeUTC: null
+                    properties:
+                      arrivalTimeUTC: '2026-03-13T15:30:00.000Z'
+        '400':
+          description: Bad Request - Invalid or missing parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                missingStartPoint:
+                  value:
+                    error: startPoint is required
+                invalidFormat:
+                  value:
+                    error: startPoint must be in format 'longitude,latitude' (e.g., -93.3905,45.1310)
+                mutuallyExclusive:
+                  value:
+                    error: Cannot use both departAt and arriveAt
+                invalidAlternatives:
+                  value:
+                    error: alternatives must be 'true' or 'false'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          description: No routes found between the specified waypoints
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: No routes found between the specified waypoints
+        '500':
+          description: Internal Server Error - Mapbox token not configured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Mapbox access token not configured
+        '502':
+          description: Bad Gateway - Mapbox API failure or unreachable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Failed to get routes from Mapbox
+      security:
+      - clientCredentials: []
+components:
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    DirectionsResponse:
+      type: object
+      properties:
+        geojson:
+          type: object
+          description: GeoJSON FeatureCollection containing route geometries. Directly compatible as the `route` body for POST /v2/pavement/conditions and POST /v2/logistics.
+          properties:
+            type:
+              type: string
+              enum:
+              - FeatureCollection
+            features:
+              type: array
+              minItems: 1
+              maxItems: 3
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - Feature
+                  geometry:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - LineString
+                      coordinates:
+                        type: array
+                        minItems: 2
+                        description: Array of [longitude, latitude] coordinate pairs
+                        items:
+                          type: array
+                          minItems: 2
+                          items:
+                            type: number
+                  properties:
+                    type: object
+                    properties:
+                      duration:
+                        type: number
+                        description: Route duration in seconds
+                      distance:
+                        type: number
+                        description: Route distance in meters
+                      arrivalTimeUTC:
+                        type:
+                        - string
+                        - 'null'
+                        format: date-time
+                        description: Calculated arrival time (departAt + duration). Null when arriveAt is used.
+                      departureTimeUTC:
+                        type:
+                        - string
+                        - 'null'
+                        format: date-time
+                        description: Calculated departure time (arriveAt - duration). Null when departAt is used.
+        properties:
+          type: object
+          description: Top-level timing summary based on the first route.
+          properties:
+            arrivalTimeUTC:
+              type: string
+              format: date-time
+              description: Arrival time from the first route. Present when departAt is used or no time param provided.
+            departureTimeUTC:
+              type: string
+              format: date-time
+              description: Departure time from the first route. Present when arriveAt is used.
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Pavement Conditions API, you need to use the following audience: https://pavement-condition.prd.wx.zones.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

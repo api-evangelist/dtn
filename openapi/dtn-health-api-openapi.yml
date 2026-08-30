@@ -1,0 +1,408 @@
+openapi: 3.2.0
+info:
+  title: Dtn Health API
+  version: '1.0'
+  description: 'Operations tagged Health across 6 of this provider''s published API definitions: dtn-developer-portal-api-openapi.json, dtn-digital-commerce-orders-openapi.json, dtn-energy-digital-commerce-integrations-api-openapi.json, dtn-lightning-api-openapi.json, dtn-pavement-conditions-api-openapi.json, dtn-websocket-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: http://localhost:3000
+- url: ' https://ext-svc-orders-2a698b99-digitalcommerce-uat.onlinefuelslabs.io'
+- url: https://digitalcommerce-integrations.dtn.com
+  description: Production API URL
+- url: https://lightning.api.dtn.com
+- url: https://pavement-condition.prd.wx.zones.dtn.com/v2
+  description: Production server
+- url: https://pavement-condition.stg.wx.zones.dtn.com/v2
+  description: Staging server
+- url: https://aviation.api.dtn.com
+tags:
+- name: Health
+  description: Utility endpoints used by K8s
+paths:
+  /health-check:
+    summary: Health Check
+    description: The health check endpoint provides information about the health of a web service. If each of the components required by the service are healthy, then the service is considered healthy and will return a 200 OK response. If any of the components needed by the service are unhealthy, then a 503 Service Unavailable response will be provided.
+    get:
+      tags:
+      - Health
+      summary: Health Check
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckReport'
+        '503':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: healthCheck
+      description: ''
+      security:
+      - clientCredentials: []
+    servers:
+    - url: http://localhost:3000
+  /liveness:
+    summary: Kubernetes will use this endpoint to monitor service's health.
+    description: 'Kubernetes will use this endpoint to monitor service''s health. In case it fails for a while, K8s will automatically try to restart the Pod. This endpoint should only monitor the main service process and should not return an error for temporary shortages. Dependencies will be monitored using `readiness` endpoint. For more information: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-http-request'
+    get:
+      tags:
+      - Health
+      summary: Kubernetes will use this endpoint to monitor service's health.
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckReport'
+        '503':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: liveness
+      security:
+      - clientCredentials: []
+    servers:
+    - url: http://localhost:3000
+  /readiness:
+    summary: Kubernetes will use this endpoint to monitor service's readiness.
+    description: 'Kubernetes will use this endpoint to monitor if the service is responsive. In case it fails, K8s will stop routing the traffic until the service is responsive again. This endpoint should monitor all the underlying dependencies (databases, other API calls etc.) For more information: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-readiness-probes'
+    get:
+      tags:
+      - Health
+      summary: Kubernetes will use this endpoint to monitor service's readiness.
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckReport'
+        '503':
+          $ref: '#/components/responses/ErrorResponse'
+      operationId: readiness
+      security:
+      - clientCredentials: []
+    servers:
+    - url: http://localhost:3000
+  /health:
+    x-swagger-router-controller: health
+    get:
+      description: Returns Health Status to the caller
+      operationId: health
+      responses:
+        '200':
+          description: Success
+          schema:
+            required:
+            - version
+            - status
+            properties:
+              version:
+                type: string
+              status:
+                type: string
+        default:
+          description: Error
+          schema:
+            required:
+            - message
+            properties:
+              message:
+                type: string
+      tags:
+      - Health
+    summary: Health Check
+    description: The health check endpoint provides information about the health of a web service. If each of the components required by the service are healthy, then the service is considered healthy and will return a 200 OK response. If any of the components needed by the service are unhealthy, then a 503 Service Unavailable response will be provided.
+    servers:
+    - url: ' https://ext-svc-orders-2a698b99-digitalcommerce-uat.onlinefuelslabs.io'
+  /v1/health-check:
+    summary: Health Check
+    description: 'The health check endpoint provides information about the health of a web service.
+
+      If each of the components required by the service are healthy, then the service is considered healthy and will return a 200 OK response.
+
+      If any of the components needed by the service are unhealthy, then a 503 Service Unavailable response will be provided.'
+    get:
+      summary: Get Health Check Report
+      tags:
+      - Health
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckReport'
+        '503':
+          $ref: '#/components/responses/ErrorResponse'
+      description: ''
+    servers:
+    - url: https://lightning.api.dtn.com
+  /v1/health-check/:
+    get:
+      tags:
+      - Health
+      summary: Health Check
+      description: The health check endpoint provides information about the health of a web service. If each of the components required by the service are healthy, then the service is considered healthy and will return a 200 OK response. If any of the components needed by the service are unhealthy, then a 503 Service Unavailable response will be provided.
+      responses:
+        '200':
+          $ref: '#/components/responses/HealthCheckReport_3'
+        '503':
+          $ref: '#/components/responses/HealthInternalError'
+      security:
+      - clientCredentials: []
+    servers:
+    - url: https://aviation.api.dtn.com
+components:
+  schemas:
+    Error:
+      title: Root Type for Error
+      description: Error
+      required:
+      - code
+      - description
+      - status
+      type: object
+      properties:
+        status:
+          enum:
+          - error
+          type: string
+        code:
+          enum:
+          - invalid-id
+          - internal-error
+          - invalid-token
+          - missing-scope
+          type: string
+        description:
+          type: string
+      example:
+        status: error
+        code: invalid-token
+        description: The token has expired.
+    HealthCheck:
+      title: HealthCheckResponse
+      description: Health Check Response
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        info:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        env:
+          type: string
+      example:
+        status: up
+        version: unknown
+        info: Service is healthy
+        timestamp: '2021-04-19T22:10:53Z'
+        env: unknown
+    HealthCheck_2:
+      title: HealthCheckResponse
+      description: Health Check Response.
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        info:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        env:
+          type: string
+      example:
+        status: up
+        version: unknown
+        info: Service is healthy
+        timestamp: '2021-04-19T22:10:53Z'
+        env: unknown
+    HealthCheck_3:
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        info:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        env:
+          type: string
+    Error_2:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    HealthCheck_4:
+      title: HealthCheck
+      description: Health Check
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        info:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        env:
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Error_3:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+  responses:
+    ErrorResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            Error:
+              value:
+                status: error
+                code: invalid-token
+                description: bad token
+      description: info about error
+    HealthCheckReport:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HealthCheck'
+          examples:
+            Success:
+              value:
+                status: up
+                version: v2
+                info: Service is healthy.
+                timestamp: 2018-02-10T09:30Z
+                env: unknown
+      description: Health Check report
+    InternalServerErrorResponse:
+      description: Internal Server Error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error_2'
+    HealthCheckReport_2:
+      description: Health Check report
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HealthCheck_3'
+    HealthCheckReport_3:
+      description: Health Check report
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HealthCheck_4'
+          example:
+            status: up
+            version: v2
+            info: Service is healthy.
+            timestamp: 2018-02-10T09:30Z
+            env: production
+            meta:
+              name: v1.health-check
+              request_id: a5c651d2-9155-4e15-b5c8-90d7d4be1a4f
+              start_timestamp: 1713991179403
+              end_timestamp: 1713991179404
+              execution_time: 1
+    HealthInternalError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error_3'
+          example:
+            type: internal-server-error
+            title: Internal Server Error
+            status: 500
+            detail: something went wrong with this request. Please contact the administrator
+            instance: urn:dtn:aviation-api:/v1/health-check:requestId:cc3c6cf1-6fd4-43c8-8ec7-bf60eac34d87
+            meta:
+              name: v1.health-check
+              uuid: f0d77c62-cccb-468e-9e80-0ed1d6f921c4
+              request_id: cc3c6cf1-6fd4-43c8-8ec7-bf60eac34d87
+              start_timestamp: 1714684480017
+              end_timestamp: 1714684480026
+              execution_time: 9
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Developer Portal API, you need to use the following audience: https://dev-portal.prd.coreservices.zones.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "
+x-refined-from:
+- dtn-developer-portal-api-openapi.json
+- dtn-digital-commerce-orders-openapi.json
+- dtn-energy-digital-commerce-integrations-api-openapi.json
+- dtn-lightning-api-openapi.json
+- dtn-pavement-conditions-api-openapi.json
+- dtn-websocket-api-openapi.json

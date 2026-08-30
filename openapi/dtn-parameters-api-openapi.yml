@@ -1,0 +1,359 @@
+openapi: 3.2.0
+info:
+  title: Dtn Parameters API
+  x-refined-note:
+  - x-logo differs across the merged source definitions and was not carried
+  version: '1.0'
+  description: 'Operations tagged Parameters across 9 of this provider''s published API definitions: dtn-climatology-api-openapi.json, dtn-lightning-api-openapi.json, dtn-marine-weather-api-openapi.json, dtn-pavement-conditions-api-openapi.json, dtn-precipitation-api-openapi.json, dtn-probabilistic-api-openapi.json, dtn-renewables-api-openapi.json, dtn-soil-api-openapi.json, dtn-weather-conditions-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://climatology.api.dtn.com
+- url: https://lightning.api.dtn.com
+- url: https://weather.api.dtn.com
+- url: https://pavement-condition.prd.wx.zones.dtn.com/v2
+  description: Production server
+- url: https://pavement-condition.stg.wx.zones.dtn.com/v2
+  description: Staging server
+- url: https://precipitation.api.dtn.com
+- url: https://probabilistic.api.dtn.com
+- url: https://renewables.api.dtn.com
+- url: https://soil.api.dtn.com
+tags:
+- name: Parameters
+  description: 'This API offers climatological data for any numerical month and day, including leap day (February 29).
+
+    It’s possible to aggregate certain parameters over multiple days. To request an aggregation, just substitute the desired parameter name and specify an `interval` greater than 1 day (see `Endpoints` section for details).  For example, if air temperature maximum average (`airTempMaxAvg`) has corresponding parameters `airTempMaxAvgMax`, `airTempMaxAvgAvg`, request parameter `airTempMaxAvgAvg` with `interval=2` in the query string to obtain the 2 day average daily maximum air temperature average.
+
+    Expand the table below to view available environmental parameters and each one''s description and unit of measurement. The API returns all parameters by default unless specific parameters are requested.
+
+    The table that follow identify which parameters have corresponding aggregation parameter names.   <details> <summary>Click to expand...</summary>
+
+
+    | Parameter                | Default | Description | Metric units | Imperial units | Aggregation Parameters |
+
+    |--------------------------|---------|-------------|--------------|----------------|------------------------|
+
+    | airTempAvg               | Yes     | Average daily air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempAvgAvg|
+
+    | airTempStdDev            | Yes     | Standard deviation of daily average air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempStdDevAvg|
+
+    | airTempMaxAvg            | Yes     | Average daily maximum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMaxAvgMax, airTempMaxAvgAvg|
+
+    | airTempMaxStdDev         | Yes     | Standard deviation of daily maximum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMaxStdDevAvg|
+
+    | airTempMinAvg            | Yes     | Average daily minimum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMinAvgMin, airTempMinAvgAvg|
+
+    | airTempMinStdDev         | Yes     | Standard deviation of daily minimum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMinStdDevAvg|
+
+    | dewPointAvg              | Yes     | Average daily dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |dewPointAvgAvg|
+
+    | dewPointStdDev           | Yes     | Standard deviation of daily average dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |dewPointStdDevAvg|
+
+    | potentialEvapotranspirationAmountAvg    | Yes     | Average daily reference evapotranspiration (amount of water that would transpire and evaporate from a hypothetical reference crop when ample water is available). | millimeter | inch |potentialEvapotranspirationAmountAvgSum|
+
+    | longWaveRadiationAvg     | Yes     | Average daily downwelling longWave radiation flux (energy emitted from non-solar radiation sources). | watt per square meter | watt per square meter |longWaveRadiationAvgMax, longWaveRadiationAvgMin, longWaveRadiationAvgAvg|
+
+    | longWaveRadiationStdDev  | Yes     | Standard deviation of daily downwelling longWave radiation flux. | watt per square meter | watt per square meter |longWaveRadiationStdDevAvg|
+
+    | precipAmountAvg          | Yes     | Average daily accumulated liquid-equivalent precipitation. | millimeter | inch |precipAmountAvgAvg, precipAmountAvgSum|
+
+    | shortWaveRadiationAvg    | Yes     | Average daily downwelling shortWave radiation flux (high-energy solar radiation that reaches Earth’s surface). | watt per square meter | watt per square meter |shortWaveRadiationAvgMax, shortWaveRadiationAvgMin, shortWaveRadiationAvgAvg|
+
+    | shortWaveRadiationStdDev | Yes     | Standard deviation of daily downwelling shortWave radiation flux. | watt per square meter | watt per square meter |shortWaveRadiationStdDevAvg|
+
+    | sunshineDurationAvg      | Yes     | Average daily duration of sunshine based on cloud cover and downwelling shortWave radiation. | minute | minute |sunshineDurationAvgAvg, sunshineDurationAvgSum|
+
+    | surfacePressureAvg       | Yes     | Average daily surface barometric pressure. | hectopascal | millibar |surfacePressureAvgAvg|
+
+    | surfacePressureStdDev    | Yes     | Standard deviation of daily surface barometric pressure. | hectopascal | millibar |surfacePressureStdDevAvg|
+
+    | windSpeedAvg             | Yes     | Average daily wind speed at 10 meters above ground level. | meter per second | mile per hour |windSpeedAvgAvg|
+
+    | windSpeedStdDev          | Yes     | Standard deviation of daily wind speed at 10 meters above ground level. | meter per second | mile per hour |windSpeedStdDevAvg|
+
+    </details>'
+paths:
+  /:
+    get:
+      tags:
+      - Parameters
+    servers:
+    - url: https://climatology.api.dtn.com
+  /v1/parameters:
+    summary: Used to retrieve the parameters' corresponding unit and data type.
+    description: This endpoint offers information related to the attribute or parameter of a lightning strike.
+    get:
+      tags:
+      - Parameters
+      summary: Get Parameters
+      description: "The `parameters` endpoint shows the properties of each parameter of a lightning strike.\n#### NOTES:\n  - Define the parameter `names` to filter fields you wish to include in the response.\n  - Leave parameter `names` blank to include all parameters of a lightning strike."
+      security:
+      - clientCredentials: []
+      parameters:
+      - name: names
+        in: query
+        schema:
+          type: string
+        description: Comma-separated included parameter names.
+        required: false
+      responses:
+        '200':
+          $ref: '#/components/responses/GetParameter'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          description: Internal server error.
+    servers:
+    - url: https://lightning.api.dtn.com
+  /parameters:
+    get:
+      tags:
+      - Parameters
+      summary: Get Parameters
+      description: 'Retrieves parameter details for v2 API. If the `name` query parameter is empty, it returns all parameters.
+
+        **v2 includes pagination parameters**: total, limit, page, nextOffset
+
+
+        | Variable Name | Description | Imperial Unit | Metric Unit |
+
+        | ------------- | ----------- | ------------- | ----------- |
+
+        | total | Total number of records available inside the BBox | N/A | N/A |
+
+        | limit | Maximum number of records per page | N/A | N/A |
+
+        | page | Current page number | N/A | N/A |
+
+        | nextOffset | Offset for the next page of results | N/A | N/A |
+
+        | id | Database table primary key ID | N/A | N/A |
+
+        | segmentId | Road segment identifier (string) | N/A | N/A |
+
+        | lat | Latitude for center point of road segment | Degrees | Degrees |
+
+        | lon | Longitude for center point of road segment | Degrees | Degrees |
+
+        | timestamp | Date/time for when the output variables are valid (UTC) - Use this for assigning time to the output | N/A | N/A |
+
+        | pavementCreationTime | Date/time when the pavement model was run (UTC) | N/A | N/A |
+
+        | pavementValidTime | Date/time for when the output variables are valid (UTC) | N/A | N/A |
+
+        | pavementValidEndTime | Date/time for when the pavement forecast validity period ends (UTC) | N/A | N/A |
+
+        | airTemp | Air temperature | Fahrenheit | Celsius |
+
+        | visibility | Visibility distance | mi | km |
+
+        | windDirection | Wind direction relative to true North (range from 0 to 360) | Degrees | Degrees |
+
+        | windGust | Wind gust speed | mi/hr | km/hr |
+
+        | windSpeed | Wind speed | mi/hr | km/hr |
+
+        | iceRate | Ice precipitation rate | in/hr | mm/hr |
+
+        | liquidRate | Liquid precipitation rate | in/hr | mm/hr |
+
+        | snowRate | Snow precipitation rate | in/hr | mm/hr |
+
+        | mobilityIndex | Mobility of vehicles compared to expected traffic patterns (100% mobility means traffic movement is expected to be unaffected by the conditions) - Same as in MDSS | Percent | Percent |
+
+        | pavementTemperature | Temperature of the road surface | Fahrenheit | Celsius |
+
+        | blowingSnowAlertLevel | Level of blowing snow intensity (2 - Lowest, 5 - Highest) | N/A | N/A |
+
+        | compactedSnowDepth | Depth of compacted snow on the road | in | mm |
+
+        | frostDepth | Depth of frost on the road | in | mm |
+
+        | iceDepth | Depth of ice on the road | in | mm |
+
+        | liquidDepth | Depth of liquid on the road | in | mm |
+
+        | snowDepth | Depth of snow on the road | in | mm |
+
+        | unbondedIceDepth | Depth of ice on the road that is not bonded to the road surface | in | mm |
+
+        | pavementCondition | Classification of the road condition. Possible conditions are dry, slush, chemical_wet, damp, wet, frost, ice, snow, compacted_snow - Same as in MDSS | N/A | N/A |
+
+        | crashRiskIndex | Crash risk factor compared to average conditions (ex: 2.0 means the risk of crash is two times the average) | N/A | N/A |
+
+        | crashRiskUncertainty | One standard deviation on the crash risk factor (statistical error) | N/A | N/A |
+
+        | geometry | Array of coordinate pairs representing the road geometry | N/A | N/A |
+
+        | osmClass | OpenStreetMap road classification (e.g., motorway, trunk, primary) | N/A | N/A |
+
+        | roadName | Name of the road or highway | N/A | N/A |
+
+        | createdAt | Record creation timestamp | N/A | N/A |
+
+        | updatedAt | Record last update timestamp | N/A | N/A |
+
+        '
+      operationId: getParametersV2
+      parameters:
+      - name: name
+        in: query
+        description: Name of the parameter to retrieve
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response - returns parameter details including pagination parameters.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parameter'
+              examples:
+                parameters:
+                  value:
+                  - name: total
+                    unit: N/A
+                    imperial_unit: N/A
+                    type: integer
+                    precision: N/A
+                    description: Total number of records available inside the BBox
+                    notes: ''
+                  - name: pavementTemperature
+                    unit: Fahrenheit
+                    imperial_unit: Celsius
+                    type: float
+                    precision: 14
+                    description: Temperature of the road surface
+                    notes: ''
+        '204':
+          description: No matching parameter found.
+          content:
+            application/json: {}
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+      security:
+      - clientCredentials: []
+    servers:
+    - url: https://pavement-condition.prd.wx.zones.dtn.com/v2
+      description: Production server
+    - url: https://pavement-condition.stg.wx.zones.dtn.com/v2
+      description: Staging server
+components:
+  responses:
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    GetParameter:
+      description: Parameter List
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Parameters'
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Parameters:
+      title: Parameters
+      description: Success
+      type: array
+      items:
+        type: object
+        required:
+        - name
+        - unit
+        - type
+        properties:
+          name:
+            type: string
+            description: Name of Parameter.
+          unit:
+            type: string
+            description: Unit used by Parameter.
+          type:
+            type: string
+            description: Data Type used by Parameter.
+    ValidationError:
+      title: Validation Error
+      type: array
+      items:
+        type: object
+        required:
+        - msg
+        - param
+        - location
+        properties:
+          value:
+            type: string
+          msg:
+            type: string
+          param:
+            type: string
+          location:
+            type: string
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+    Parameter:
+      type: object
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        imperial_unit:
+          type: string
+        type:
+          type: string
+        precision:
+          oneOf:
+          - type: number
+          - type: string
+        description:
+          type: string
+        notes:
+          type: string
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Climatology API, you need to use the following audience: https://climatology.api.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "
+x-refined-from:
+- dtn-climatology-api-openapi.json
+- dtn-lightning-api-openapi.json
+- dtn-marine-weather-api-openapi.json
+- dtn-pavement-conditions-api-openapi.json
+- dtn-precipitation-api-openapi.json
+- dtn-probabilistic-api-openapi.json
+- dtn-renewables-api-openapi.json
+- dtn-soil-api-openapi.json
+- dtn-weather-conditions-api-openapi.json

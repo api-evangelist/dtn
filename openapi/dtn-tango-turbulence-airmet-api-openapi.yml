@@ -1,0 +1,840 @@
+openapi: 3.2.0
+info:
+  title: Dtn Tango (Turbulence) AIRMET API
+  version: '1.0'
+  description: 'Operations tagged Tango (Turbulence) AIRMET across 2 of this provider''s published API definitions: dtn-sigmets-airmets-openapi.json, dtn-websocket-api-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://aviation.api.dtn.com
+security:
+- clientCredentials: []
+tags:
+- name: Tango (Turbulence) AIRMET
+  description: On demand Tango (Turbulence) AIRMETs via API
+paths:
+  /v1/tangoAirmets/:
+    get:
+      tags:
+      - Tango (Turbulence) AIRMET
+      summary: Get active Tango (Turbulence) AIRMETs
+      description: Get all available Tango (Turbulence) AIRMETs, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.
+      responses:
+        '200':
+          $ref: '#/components/responses/TangoAirmetSuccess'
+        '400':
+          $ref: '#/components/responses/TangoAirmetBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/QueryAirmetUnitSystem'
+      - $ref: '#/components/parameters/QueryBbox'
+      - $ref: '#/components/parameters/QueryPolygon'
+      - $ref: '#/components/parameters/QueryCircle'
+      - $ref: '#/components/parameters/QueryCorridor'
+      - $ref: '#/components/parameters/QueryGeometry'
+      - $ref: '#/components/parameters/QueryIntersection'
+      - $ref: '#/components/parameters/QuerySrid'
+      - $ref: '#/components/parameters/QueryDistanceUnits'
+      - $ref: '#/components/parameters/QueryIsValidAt'
+      - $ref: '#/components/parameters/QueryFromDateTime'
+      - $ref: '#/components/parameters/QueryUntilDateTime'
+      - $ref: '#/components/parameters/QueryInsertedAfter'
+      - $ref: '#/components/parameters/QueryInsertedThrough'
+      - $ref: '#/components/parameters/QuerySeverities'
+      security:
+      - clientCredentials: []
+    servers:
+    - url: https://aviation.api.dtn.com
+components:
+  schemas:
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    GeoJsonObject:
+      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
+
+        '
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          - FeatureCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - GeometryCollection
+        bbox:
+          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
+
+            '
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      discriminator:
+        propertyName: type
+    TangoAirmetFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/TangoAirmetFeature'
+    TangoAirmetItem:
+      type: object
+      required:
+      - validDateTime
+      - expirationDateTime
+      - insertedDateTime
+      - severity
+      - messageTxt
+      - topLevel
+      - bottomLevel
+      properties:
+        validDateTime:
+          type: string
+          format: date-time
+        expirationDateTime:
+          type: string
+          format: date-time
+        insertedDateTime:
+          type: string
+          format: date-time
+        severity:
+          type: string
+        messageTxt:
+          type: string
+        topLevel:
+          type:
+          - number
+          - 'null'
+        bottomLevel:
+          type:
+          - number
+          - 'null'
+    TangoAirmetFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/TangoAirmetItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    TangoAirmetItem_2:
+      type: object
+      required:
+      - validDateTime
+      - expirationDateTime
+      - severity
+      - messageTxt
+      - topLevel
+      - bottomLevel
+      properties:
+        validDateTime:
+          type: string
+          format: date-time
+        expirationDateTime:
+          type: string
+          format: date-time
+        severity:
+          type: string
+        messageTxt:
+          type: string
+        topLevel:
+          type:
+          - number
+          - 'null'
+        bottomLevel:
+          type:
+          - number
+          - 'null'
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    TangoAirmetSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TangoAirmetFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/TangoAirmetSuccessResponse'
+    TangoAirmetBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/TangoAirmetBadRequestResponse'
+  examples:
+    TangoAirmetBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/tangoAirmets/?limit=5&polygon=-210,40,-100,40,-90,50,-110,50
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/tangoAirmets/:requestId:b86763bd-8409-4188-95e3-0034aa903e11
+        errors:
+        - message: X dimension value outside bounds for SRID, e.g., longitude <-180 or >180 for default SRID 4326
+          parameter: polygon
+          value: -210,40,-100,40,-90,50,-110,50
+        meta:
+          name: v1.tangoAirmets.?limit=5&polygon=-210,40,-100,40,-90,50,-110,50
+          uuid: 4b6876bb-e948-4f37-8d3e-da7e8bfaf467
+          request_id: b86763bd-8409-4188-95e3-0034aa903e11
+          start_timestamp: 1722009867583
+          end_timestamp: 1722009867599
+          execution_time: 16
+    TangoAirmetSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/tangoAirmets/?limit=5&corridor=-104.67,39.86,-94.71,39.30,-73.87,40.78,30
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -82.2795
+                - 43.1138
+              - - -82.6764
+                - 42.207
+              - - -82.1493
+                - 41.6384
+              - - -80.2167
+                - 41.1667
+              - - -78.9873
+                - 40.6165
+              - - -78.8339
+                - 39.8161
+              - - -79.4473
+                - 38.7542
+              - - -81.9522
+                - 37.7774
+              - - -82.0167
+                - 38.75
+              - - -84.6687
+                - 39.0463
+              - - -85.195
+                - 40.9783
+              - - -82.2795
+                - 43.1138
+          properties:
+            severity: MODERATE
+            messageTxt: AIRMET TURB...PA OH LE WV MD  \nFROM 20ESE ECK TO 30E DXO TO 20NW CLE TO 20N EWC TO 20NNW JST TO  \n30S JST TO 20ESE EKN TO 40W BKW TO HNN TO CVG TO FWA TO 20ESE ECK  \nMOD TURB BTN FL280 AND FL420. CONDS CONTG BYD 21Z THRU 03Z.  \n.  \n
+            validDateTime: '2024-07-26T14:45:00.000Z'
+            expirationDateTime: '2024-07-26T21:00:00.000Z'
+            insertedDateTime: '2024-07-26T14:41:35.362Z'
+            topLevel: 42000
+            bottomLevel: 28000
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -69.2528
+                - 47.4988
+              - - -67.3392
+                - 47.1496
+              - - -67.5962
+                - 45.8065
+              - - -66.1286
+                - 44.9368
+              - - -68.1562
+                - 44.3259
+              - - -71.005
+                - 42.3642
+              - - -72.0318
+                - 41.5234
+              - - -73.4537
+                - 40.8675
+              - - -74.5333
+                - 40.5667
+              - - -76.0082
+                - 41.1912
+              - - -75.7516
+                - 42.0581
+              - - -73.9582
+                - 45.1794
+              - - -72.0983
+                - 44.9641
+              - - -70.9742
+                - 45.6174
+              - - -69.2528
+                - 47.4988
+          properties:
+            severity: MODERATE
+            messageTxt: AIRMET TURB...ME NH VT MA RI CT NY NJ PA AND CSTL WTRS  \nFROM 70NW PQI TO 40NE PQI TO 20SSE HUL TO 30SSW YSJ TO 40SE BGR  \nTO BOS TO 30WSW PVD TO 20NE JFK TO 30S SAX TO 40NNW ETX TO 20W  \nHNK TO 40ENE MSS TO 50NNE MPV TO 70SSE YQB TO 70NW PQI  \nMOD TURB BLW 070. CONDS ENDG 15-18Z.  \n.  \n
+            validDateTime: '2024-07-26T14:45:00.000Z'
+            expirationDateTime: '2024-07-26T21:00:00.000Z'
+            topLevel: 7000
+            bottomLevel: 0
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -82.2795
+                - 43.1138
+              - - -85.195
+                - 40.9783
+              - - -84.6687
+                - 39.0463
+              - - -82.0167
+                - 38.75
+              - - -81.9522
+                - 37.7774
+              - - -84.5024
+                - 36.7262
+              - - -94.1167
+                - 36.25
+              - - -95.2
+                - 37.15
+              - - -95.9575
+                - 37.3958
+              - - -95.7632
+                - 37.3331
+              - - -94.2992
+                - 39.1621
+              - - -92.5447
+                - 40.0936
+              - - -90.842
+                - 40.5505
+              - - -88.5694
+                - 41.382
+              - - -86.725
+                - 42.266
+              - - -84.3571
+                - 42.7645
+              - - -82.2795
+                - 43.1138
+          properties:
+            severity: MODERATE
+            messageTxt: AIRMET TURB...KS IA MO LM MI LH IL IN KY  \nFROM 20ESE ECK TO FWA TO CVG TO HNN TO 40W BKW TO 30SW LOZ TO  \nRZC TO OSW TO 40WNW OSW TO 30WNW OSW TO 20ESE MCI TO IRK TO  \n40NNE UIN TO 20WSW JOT TO 30WSW PMM TO 30WSW FNT TO 20ESE ECK  \nMOD TURB BTN FL280 AND FL420. CONDS CONTG BYD 21Z THRU 03Z.  \n.  \n
+            validDateTime: '2024-07-26T14:45:00.000Z'
+            expirationDateTime: '2024-07-26T21:00:00.000Z'
+            insertedDateTime: '2024-07-26T14:41:35.514Z'
+            topLevel: 42000
+            bottomLevel: 28000
+        meta:
+          name: v1.tangoAirmets.?limit=5&corridor=-104.67,39.86,-94.71,39.30,-73.87,40.78,30
+          uuid: d6d78723-2dd6-4425-8625-eb94b6c7f10e
+          request_id: 426269a5-14ff-4421-9f51-2de2e8235d87
+          start_timestamp: 1722009232857
+          end_timestamp: 1722009234977
+          execution_time: 2120
+    TangoAirmetSuccessResponse_2:
+      value:
+        url: https://aviation.api.dtn.com/v1/tangoAirmets/?limit=5&corridor=-104.67,39.86,-94.71,39.30,-73.87,40.78,30
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -82.2795
+                - 43.1138
+              - - -82.6764
+                - 42.207
+              - - -82.1493
+                - 41.6384
+              - - -80.2167
+                - 41.1667
+              - - -78.9873
+                - 40.6165
+              - - -78.8339
+                - 39.8161
+              - - -79.4473
+                - 38.7542
+              - - -81.9522
+                - 37.7774
+              - - -82.0167
+                - 38.75
+              - - -84.6687
+                - 39.0463
+              - - -85.195
+                - 40.9783
+              - - -82.2795
+                - 43.1138
+          properties:
+            severity: MODERATE
+            messageTxt: AIRMET TURB...PA OH LE WV MD  \nFROM 20ESE ECK TO 30E DXO TO 20NW CLE TO 20N EWC TO 20NNW JST TO  \n30S JST TO 20ESE EKN TO 40W BKW TO HNN TO CVG TO FWA TO 20ESE ECK  \nMOD TURB BTN FL280 AND FL420. CONDS CONTG BYD 21Z THRU 03Z.  \n.  \n
+            validDateTime: '2024-07-26T14:45:00.000Z'
+            expirationDateTime: '2024-07-26T21:00:00.000Z'
+            topLevel: 42000
+            bottomLevel: 28000
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -69.2528
+                - 47.4988
+              - - -67.3392
+                - 47.1496
+              - - -67.5962
+                - 45.8065
+              - - -66.1286
+                - 44.9368
+              - - -68.1562
+                - 44.3259
+              - - -71.005
+                - 42.3642
+              - - -72.0318
+                - 41.5234
+              - - -73.4537
+                - 40.8675
+              - - -74.5333
+                - 40.5667
+              - - -76.0082
+                - 41.1912
+              - - -75.7516
+                - 42.0581
+              - - -73.9582
+                - 45.1794
+              - - -72.0983
+                - 44.9641
+              - - -70.9742
+                - 45.6174
+              - - -69.2528
+                - 47.4988
+          properties:
+            severity: MODERATE
+            messageTxt: AIRMET TURB...ME NH VT MA RI CT NY NJ PA AND CSTL WTRS  \nFROM 70NW PQI TO 40NE PQI TO 20SSE HUL TO 30SSW YSJ TO 40SE BGR  \nTO BOS TO 30WSW PVD TO 20NE JFK TO 30S SAX TO 40NNW ETX TO 20W  \nHNK TO 40ENE MSS TO 50NNE MPV TO 70SSE YQB TO 70NW PQI  \nMOD TURB BLW 070. CONDS ENDG 15-18Z.  \n.  \n
+            validDateTime: '2024-07-26T14:45:00.000Z'
+            expirationDateTime: '2024-07-26T21:00:00.000Z'
+            topLevel: 7000
+            bottomLevel: 0
+        - type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -82.2795
+                - 43.1138
+              - - -85.195
+                - 40.9783
+              - - -84.6687
+                - 39.0463
+              - - -82.0167
+                - 38.75
+              - - -81.9522
+                - 37.7774
+              - - -84.5024
+                - 36.7262
+              - - -94.1167
+                - 36.25
+              - - -95.2
+                - 37.15
+              - - -95.9575
+                - 37.3958
+              - - -95.7632
+                - 37.3331
+              - - -94.2992
+                - 39.1621
+              - - -92.5447
+                - 40.0936
+              - - -90.842
+                - 40.5505
+              - - -88.5694
+                - 41.382
+              - - -86.725
+                - 42.266
+              - - -84.3571
+                - 42.7645
+              - - -82.2795
+                - 43.1138
+          properties:
+            severity: MODERATE
+            messageTxt: AIRMET TURB...KS IA MO LM MI LH IL IN KY  \nFROM 20ESE ECK TO FWA TO CVG TO HNN TO 40W BKW TO 30SW LOZ TO  \nRZC TO OSW TO 40WNW OSW TO 30WNW OSW TO 20ESE MCI TO IRK TO  \n40NNE UIN TO 20WSW JOT TO 30WSW PMM TO 30WSW FNT TO 20ESE ECK  \nMOD TURB BTN FL280 AND FL420. CONDS CONTG BYD 21Z THRU 03Z.  \n.  \n
+            validDateTime: '2024-07-26T14:45:00.000Z'
+            expirationDateTime: '2024-07-26T21:00:00.000Z'
+            topLevel: 42000
+            bottomLevel: 28000
+        meta:
+          name: v1.tangoAirmets.?limit=5&corridor=-104.67,39.86,-94.71,39.30,-73.87,40.78,30
+          uuid: d6d78723-2dd6-4425-8625-eb94b6c7f10e
+          request_id: 426269a5-14ff-4421-9f51-2de2e8235d87
+          start_timestamp: 1722009232857
+          end_timestamp: 1722009234977
+          execution_time: 2120
+  parameters:
+    QueryAirmetUnitSystem:
+      name: unitSystem
+      description: 'Identifier for units system used for numerical output values in AIRMET data.  Must be either `default` or `metric`.  Default is `default`.  Field units depending on unit system:<br>                * `topLevel`: default=`ft`, metric=`m`<br>                * `bottomLevel`: default=`ft`, metric=`m`'
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: string
+        enum:
+        - default
+        - metric
+        default: default
+    QueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  Allowed values relative to the current time vary depending on the data type.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryIntersection:
+      name: intersection
+      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QuerySeverities:
+      name: severities
+      description: Comma-separated list of severity values.  Must include only allowed values, which include empty string.  Limits to objects whose `severity` value matches one of specified parameter values.
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - LIGHT
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          - ''
+    QueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  Allowed values relative to the current time vary depending on the data type.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    QuerySigmetUnitSystem:
+      name: unitSystem
+      description: "Identifer for units system used for numerical output values.  Must be either `default` or `metric`.  Default is `default`.\n                * `topLevel`: default=`ft`, metric=`m`\n                * `bottomLevel`: default=`ft`, metric=`m`"
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: string
+        enum:
+        - default
+        - metric
+        default: default
+    QueryLimit_2:
+      name: limit
+      description: Provide no more than this many items in the response set.  Default = 1000
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryIsValidAt_2:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose validDateTime is not earlier than the specified value and whose expirationDateTime is later than that specified value.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryBbox_2:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` corridinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryCircle_2:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` corridinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryUntilDateTime_2:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose validDateTime is earlier than the specified value, i.e., only objects that began before this time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryPolygon_2:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` corridinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryOffset_2:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.  Default = 0
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryFromDateTime_2:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose expirationDateTime is later than that specified value, i.e., only objects not ended by this time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QuerySrid_2:
+      name: srid
+      description: SRID identifer for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryCorridor_2:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` corridinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the corridates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.
+      in: query
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN SIGMETs/AIRMETs API, you need to use the following audience: https://aviation.api.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "
+x-refined-from:
+- dtn-sigmets-airmets-openapi.json
+- dtn-websocket-api-openapi.json

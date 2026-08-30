@@ -1,0 +1,1007 @@
+openapi: 3.2.0
+info:
+  title: DTN Aviation Enhanced Flight Hazards (EFH) Space Weather API
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  version: 1.10.3
+servers:
+- url: https://aviation.api.dtn.com
+security:
+- clientCredentials: []
+tags:
+- name: Space Weather
+  description: Space Weather Prediction Center (SWPC) NOAA Scales data via API
+paths:
+  /v1/swpc-noaa-scales/data:
+    get:
+      tags:
+      - Space Weather
+      summary: Get parsed SWPC data
+      description: Get recent SWPC NOAA Scales data, potentially filtered by various query parameters
+      responses:
+        '200':
+          $ref: '#/components/responses/SwpcNoaaScalesDataSuccess'
+        '400':
+          $ref: '#/components/responses/SwpcNoaaScalesDataBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/QuerySwpcNoaaScalesEventCodes'
+      - $ref: '#/components/parameters/QuerySwpcNoaaScalesPeriodLabels'
+      - $ref: '#/components/parameters/SwpcNoaaScalesQueryInsertedAfter'
+      - $ref: '#/components/parameters/SwpcNoaaScalesQueryInsertedThrough'
+      security:
+      - clientCredentials: []
+  /v1/swpc-noaa-scales/raw:
+    get:
+      tags:
+      - Space Weather
+      summary: Get raw SWPC data
+      description: Get recent SWPC NOAA Scales data in raw format, potentially filtered by various query parameters
+      responses:
+        '200':
+          $ref: '#/components/responses/SwpcNoaaScalesRawSuccess'
+        '400':
+          $ref: '#/components/responses/SwpcNoaaScalesRawBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters:
+      - $ref: '#/components/parameters/QueryOffset'
+      - $ref: '#/components/parameters/QueryLimit'
+      - $ref: '#/components/parameters/SwpcNoaaScalesQueryInsertedAfter'
+      - $ref: '#/components/parameters/SwpcNoaaScalesQueryInsertedThrough'
+      security:
+      - clientCredentials: []
+  /v1/swpc-noaa-scales/explanation:
+    get:
+      tags:
+      - Space Weather
+      summary: Get SWPC reference information
+      description: Get SWPC NOAA Scales reference information for interpreting data values
+      responses:
+        '200':
+          $ref: '#/components/responses/SwpcNoaaScalesExplanationSuccess'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+      parameters: []
+      security:
+      - clientCredentials: []
+components:
+  schemas:
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    SwpcNoaaScalesExplanationItem:
+      type: object
+      properties:
+        eventName:
+          type: string
+        scale:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              category:
+                type: object
+                additionalProperties:
+                  type: string
+              descriptor:
+                type: string
+              hex:
+                type: string
+              colorName:
+                type: string
+              physicalMeasure:
+                type:
+                - string
+                - 'null'
+              averageFrequency:
+                type:
+                - string
+                - 'null'
+              r:
+                type: integer
+              g:
+                type: integer
+              b:
+                type: integer
+    SwpcNoaaScalesExplanation:
+      type: object
+      properties:
+        eventCode:
+          type: object
+          properties:
+            G:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+            S:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+            R:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+    SwpcNoaaScalesRawItem:
+      type: object
+      properties:
+        id:
+          type: string
+        insertedTimestamp:
+          type: string
+          format: date-time
+        raw:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              G:
+                type: object
+                properties:
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+              R:
+                type: object
+                properties:
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+                  MajorProb:
+                    type:
+                    - string
+                    - 'null'
+                  MinorProb:
+                    type:
+                    - string
+                    - 'null'
+              S:
+                type: object
+                properties:
+                  Prob:
+                    type:
+                    - string
+                    - 'null'
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+              DateStamp:
+                type: string
+              TimeStamp:
+                type: string
+    SwpcNoaaScalesDataItem:
+      type: object
+      properties:
+        datum:
+          type: string
+        descriptor:
+          type:
+          - string
+          - 'null'
+        valueType:
+          type: string
+        valueDescription:
+          type: string
+        eventName:
+          type: string
+        eventCode:
+          type: string
+        periodDescription:
+          type: string
+        periodLabel:
+          type: string
+        id:
+          type: string
+        insertedTimestamp:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    SwpcNoaaScalesData:
+      type: object
+      properties:
+        url:
+          type: string
+        swpcNoaaScalesData:
+          type: array
+          items:
+            $ref: '#/components/schemas/SwpcNoaaScalesDataItem'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    SwpcNoaaScalesRaw:
+      type: object
+      properties:
+        url:
+          type: string
+        swpcNoaaScalesRaw:
+          type: array
+          items:
+            $ref: '#/components/schemas/SwpcNoaaScalesRawItem'
+        meta:
+          $ref: '#/components/schemas/Meta'
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    SwpcNoaaScalesExplanationSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesExplanation'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesExplanationSuccessResponse'
+    SwpcNoaaScalesRawSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesRaw'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesRawSuccessResponse'
+    SwpcNoaaScalesRawBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/SwpcNoaaScalesRawBadRequestResponse'
+    SwpcNoaaScalesDataBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/SwpcNoaaScalesDataBadRequestResponse'
+    SwpcNoaaScalesDataSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesData'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesDataSuccessResponse'
+  examples:
+    SwpcNoaaScalesRawSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw
+        swpcNoaaScalesRaw:
+        - id: '3619'
+          insertedTimestamp: '2025-12-03T00:32:58.163Z'
+          raw:
+            '0':
+              G:
+                Text: none
+                Scale: '0'
+              R:
+                Text: none
+                Scale: '0'
+                MajorProb: null
+                MinorProb: null
+              S:
+                Prob: null
+                Text: none
+                Scale: '0'
+              DateStamp: '2025-12-03'
+              TimeStamp: 00:32:00
+            '1':
+              G:
+                Text: moderate
+                Scale: '2'
+              R:
+                Text: null
+                Scale: null
+                MajorProb: '30'
+                MinorProb: '75'
+              S:
+                Prob: '15'
+                Text: null
+                Scale: null
+              DateStamp: '2025-12-03'
+              TimeStamp: 00:32:00
+            '2':
+              G:
+                Text: moderate
+                Scale: '2'
+              R:
+                Text: null
+                Scale: null
+                MajorProb: '30'
+                MinorProb: '75'
+              S:
+                Prob: '15'
+                Text: null
+                Scale: null
+              DateStamp: '2025-12-04'
+              TimeStamp: 00:00:00
+            '3':
+              G:
+                Text: none
+                Scale: '0'
+              R:
+                Text: null
+                Scale: null
+                MajorProb: '30'
+                MinorProb: '75'
+              S:
+                Prob: '15'
+                Text: null
+                Scale: null
+              DateStamp: '2025-12-05'
+              TimeStamp: 00:00:00
+            '-1':
+              G:
+                Text: none
+                Scale: '0'
+              R:
+                Text: none
+                Scale: '0'
+                MajorProb: null
+                MinorProb: null
+              S:
+                Prob: null
+                Text: none
+                Scale: '0'
+              DateStamp: '2025-12-02'
+              TimeStamp: 00:32:00
+        meta:
+          name: v1.swpc-noaa-scales.raw
+          uuid: 5a713c77-e356-406e-af59-2b82c94a45ff
+          request_id: d4c53ffe-cf28-4529-8cce-ca3c3c83b05f
+          start_timestamp: 1764722204817
+          end_timestamp: 1764722205589
+          execution_time: 772
+    SwpcNoaaScalesDataSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data
+        swpcNoaaScalesData:
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Latest Observed
+          periodLabel: '0'
+          id: '65125'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Solar Radiation Storm severity
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Latest Observed
+          periodLabel: '0'
+          id: '65126'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Radio Blackout severity
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Latest Observed
+          periodLabel: '0'
+          id: '65127'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '2'
+          descriptor: Moderate
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65128'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '15'
+          descriptor: null
+          valueType: Prob
+          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65129'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '75'
+          descriptor: null
+          valueType: MinorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65130'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '30'
+          descriptor: null
+          valueType: MajorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65131'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '2'
+          descriptor: Moderate
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65132'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '15'
+          descriptor: null
+          valueType: Prob
+          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65133'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '75'
+          descriptor: null
+          valueType: MinorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65134'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '30'
+          descriptor: null
+          valueType: MajorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65135'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65136'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '15'
+          descriptor: null
+          valueType: Prob
+          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65137'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '75'
+          descriptor: null
+          valueType: MinorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65138'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '30'
+          descriptor: null
+          valueType: MajorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65139'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: 24-Hour Observed Maximum
+          periodLabel: '-1'
+          id: '65140'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-02T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Solar Radiation Storm severity
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: 24-Hour Observed Maximum
+          periodLabel: '-1'
+          id: '65141'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-02T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Radio Blackout severity
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: 24-Hour Observed Maximum
+          periodLabel: '-1'
+          id: '65142'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-02T00:32:00.000Z'
+        meta:
+          name: v1.swpc-noaa-scales.data
+          uuid: a21b5bcf-abf9-4857-bbf3-ffb60ce76593
+          request_id: 9dc8ae3b-f38e-4c06-b3fe-3de944e53a37
+          start_timestamp: 1764722202064
+          end_timestamp: 1764722205461
+          execution_time: 3397
+    SwpcNoaaScalesDataBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data?swpcNoaaScalesEventCodes=B
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/swpc-noaa-scales/data:requestId:aeddadf8-e16b-43a0-b577-2cd4212d9f3e
+        errors:
+        - message: '`swpcNoaaScalesEventCodes` may include only ''G'' (for Geomagnetic Storms), ''S'' (for Solar Radiation Storms), or ''R'' (for Radio Blackouts)'
+          parameter: swpcNoaaScalesEventCodes
+          value: B
+        meta:
+          name: v1.swpc-noaa-scales.data?swpcNoaaScalesEventCodes=B
+          uuid: 8f8f48a3-03a2-42d1-b434-dbc9d201cac4
+          request_id: aeddadf8-e16b-43a0-b577-2cd4212d9f3e
+          start_timestamp: 1764800252845
+          end_timestamp: 1764800253143
+          execution_time: 298
+    SwpcNoaaScalesExplanationSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/explanation
+        swpcNoaaScalesExplanation:
+          eventCode:
+            G:
+              eventName: Geomagnetic Storms
+              scale:
+                '0':
+                  category:
+                    All: No G-Scale Geomagnetic Storming
+                  descriptor: None
+                  hex: '#92d14f'
+                  colorName: Atlantis
+                  physicalMeasure: null
+                  averageFrequency: null
+                  r: 146
+                  g: 209
+                  b: 79
+                '1':
+                  category:
+                    Power systems: Weak power grid fluctuations can occur.
+                    Spacecraft operations: Minor impact on satellite operations possible.
+                    Other systems: Migratory animals are affected at this and higher levels; aurora is commonly visible at high latitudes (northern Michigan and Maine).
+                  descriptor: Minor
+                  hex: '#f5ea14'
+                  colorName: Lemon
+                  physicalMeasure: Kp = 5
+                  averageFrequency: 1700 per cycle (900 days per cycle)
+                  r: 245
+                  g: 234
+                  b: 20
+                '2':
+                  category:
+                    Power systems: High-latitude power systems may experience voltage alarms, long-duration storms may cause transformer damage.
+                    Spacecraft operations: Corrective actions to orientation may be required by ground control; possible changes in drag affect orbit predictions.
+                    Other systems: HF radio propagation can fade at higher latitudes, and aurora has been seen as low as New York and Idaho (typically 55&deg; geomagnetic lat.).
+                  descriptor: Moderate
+                  hex: '#ffc800'
+                  colorName: Tangerine Yellow
+                  physicalMeasure: Kp = 6
+                  averageFrequency: 600 per cycle (360 days per cycle)
+                  r: 255
+                  g: 200
+                  b: 0
+                '3':
+                  category:
+                    Power systems: Voltage corrections may be required, false alarms triggered on some protection devices.
+                    Spacecraft operations: Surface charging may occur on satellite components, drag may increase on low-Earth-orbit satellites, and corrections may be needed for orientation problems.
+                    Other systems: Intermittent satellite navigation and low-frequency radio navigation problems may occur, HF radio may be intermittent, and aurora has been seen as low as Illinois and Oregon (typically 50&deg; geomagnetic lat.).
+                  descriptor: Strong
+                  hex: '#ff9500'
+                  colorName: Dark Orange
+                  physicalMeasure: Kp = 7
+                  averageFrequency: 200 per cycle (130 days per cycle)
+                  r: 255
+                  g: 149
+                  b: 0
+                '4':
+                  category:
+                    Power systems: Possible widespread voltage control problems and some protective systems will mistakenly trip out key assets from the grid.
+                    Spacecraft operations: May experience surface charging and tracking problems, corrections may be needed for orientation problems.
+                    Other systems: Induced pipeline currents affect preventive measures, HF radio propagation sporadic, satellite navigation degraded for hours, low-frequency radio navigation disrupted, and aurora has been seen as low as Alabama and northern California (typically 45&deg; geomagnetic lat.).
+                  descriptor: Severe
+                  hex: '#ff0000'
+                  colorName: Red
+                  physicalMeasure: Kp = 8, including a 9-
+                  averageFrequency: 100 per cycle (60 days per cycle)
+                  r: 255
+                  g: 0
+                  b: 0
+                '5':
+                  category:
+                    Power systems: Widespread voltage control problems and protective system problems can occur, some grid systems may experience complete collapse or blackouts. Transformers may experience damage.
+                    Spacecraft operations: May experience extensive surface charging, problems with orientation, uplink/downlink and tracking satellites.
+                    Other systems: Pipeline currents can reach hundreds of amps, HF (high frequency) radio propagation may be impossible in many areas for one to two days, satellite navigation may be degraded for days, low-frequency radio navigation can be out for hours, and aurora has been seen as low as Florida and southern Texas (typically 40&deg; geomagnetic lat.).
+                  descriptor: Extreme
+                  hex: '#c70000'
+                  colorName: Free Speech Red
+                  physicalMeasure: Kp = 9
+                  averageFrequency: 4 per cycle (4 days per cycle)
+                  r: 199
+                  g: 0
+                  b: 0
+            S:
+              eventName: Solar Radiation Storms
+              scale:
+                '0':
+                  category:
+                    All: No S-Scale Solar Radiation Storming
+                  descriptor: None
+                  hex: '#92d14f'
+                  colorName: Atlantis
+                  physicalMeasure: null
+                  averageFrequency: null
+                  r: 146
+                  g: 209
+                  b: 79
+                '1':
+                  category:
+                    Biological: None.
+                    Satellite operations: None.
+                    Other systems: Minor impacts on HF radio in the polar regions.
+                  descriptor: Minor
+                  hex: '#f5ea14'
+                  colorName: Lemon
+                  physicalMeasure: 10 flux level of >= 10 MeV particles
+                  averageFrequency: 50 per cycle
+                  r: 245
+                  g: 234
+                  b: 20
+                '2':
+                  category:
+                    Biological: Passengers and crew in high-flying aircraft at high latitudes may be exposed to elevated radiation risk.
+                    Satellite operations: Infrequent single-event upsets possible.
+                    Other systems: Small effects on HF propagation through the polar regions and navigation at polar cap locations possibly affected.
+                  descriptor: Moderate
+                  hex: '#ffc800'
+                  colorName: Tangerine Yellow
+                  physicalMeasure: 10^2 flux level of >= 10 MeV particles
+                  averageFrequency: 25 per cycle
+                  r: 255
+                  g: 200
+                  b: 0
+                '3':
+                  category:
+                    Biological: Radiation hazard avoidance recommended for astronauts on EVA; passengers and crew in high-flying aircraft at high latitudes may be exposed to radiation risk.
+                    Satellite operations: Single-event upsets, noise in imaging systems, and slight reduction of efficiency in solar panel are likely.
+                    Other systems: Degraded HF radio propagation through the polar regions and navigation position errors likely.
+                  descriptor: Strong
+                  hex: '#ff9500'
+                  colorName: Dark Orange
+                  physicalMeasure: 10^3 flux level of >= 10 MeV particles
+                  averageFrequency: 10 per cycle
+                  r: 255
+                  g: 149
+                  b: 0
+                '4':
+                  category:
+                    Biological: Unavoidable radiation hazard to astronauts on EVA; passengers and crew in high-flying aircraft at high latitudes may be exposed to radiation risk.
+                    Satellite operations: May experience memory device problems and noise on imaging systems; star-tracker problems may cause orientation problems, and solar panel efficiency can be degraded.
+                    Other systems: Blackout of HF radio communications through the polar regions and increased navigation errors over several days are likely.
+                  descriptor: Severe
+                  hex: '#ff0000'
+                  colorName: Red
+                  physicalMeasure: 10^4 flux level of >= 10 MeV particles
+                  averageFrequency: 3 per cycle
+                  r: 255
+                  g: 0
+                  b: 0
+                '5':
+                  category:
+                    Biological: Unavoidable high radiation hazard to astronauts on EVA (extra-vehicular activity); passengers and crew in high-flying aircraft at high latitudes may be exposed to radiation risk.
+                    Satellite operations: Satellites may be rendered useless, memory impacts can cause loss of control, may cause serious noise in image data, star-trackers may be unable to locate sources; permanent damage to solar panels possible.
+                    Other systems: Complete blackout of HF (high frequency) communications possible through the polar regions, and position errors make navigation operations extremely difficult.
+                  descriptor: Extreme
+                  hex: '#c70000'
+                  colorName: Free Speech Red
+                  physicalMeasure: 10^5 flux level of >= 10 MeV particles
+                  averageFrequency: Fewer than 1 per cycle
+                  r: 199
+                  g: 0
+                  b: 0
+            R:
+              eventName: Radio Blackouts
+              scale:
+                '0':
+                  category:
+                    All: No R-Scale Radio Blackouts
+                  descriptor: None
+                  hex: '#92d14f'
+                  colorName: Atlantis
+                  physicalMeasure: null
+                  averageFrequency: null
+                  r: 146
+                  g: 209
+                  b: 79
+                '1':
+                  category:
+                    HF Radio: Weak or minor degradation of HF radio communication on sunlit side, occasional loss of radio contact.
+                    Navigation: Low-frequency navigation signals degraded for brief intervals.
+                  descriptor: Minor
+                  hex: '#f5ea14'
+                  colorName: Lemon
+                  physicalMeasure: M1 (10^-5)
+                  averageFrequency: 2000 per cycle (950 days per cycle)
+                  r: 245
+                  g: 234
+                  b: 20
+                '2':
+                  category:
+                    HF Radio: Limited blackout of HF radio communication on sunlit side, loss of radio contact for tens of minutes.
+                    Navigation: Degradation of low-frequency navigation signals for tens of minutes.
+                  descriptor: Moderate
+                  hex: '#ffc800'
+                  colorName: Tangerine Yellow
+                  physicalMeasure: M5 (5 x 10^-5)
+                  averageFrequency: 350 per cycle (300 days per cycle)
+                  r: 255
+                  g: 200
+                  b: 0
+                '3':
+                  category:
+                    HF Radio: Wide area blackout of HF radio communication, loss of radio contact for about an hour on sunlit side of Earth.
+                    Navigation: Low-frequency navigation signals degraded for about an hour.
+                  descriptor: Strong
+                  hex: '#ff9500'
+                  colorName: Dark Orange
+                  physicalMeasure: X1 (10^-4)
+                  averageFrequency: 175 per cycle (140 days per cycle)
+                  r: 255
+                  g: 149
+                  b: 0
+                '4':
+                  category:
+                    HF Radio: HF radio communication blackout on most of the sunlit side of Earth for one to two hours. HF radio contact lost during this time.
+                    Navigation: Outages of low-frequency navigation signals cause increased error in positioning for one to two hours. Minor disruptions of satellite navigation possible on the sunlit side of Earth.
+                  descriptor: Severe
+                  hex: '#ff0000'
+                  colorName: Red
+                  physicalMeasure: X10 (10^-3)
+                  averageFrequency: 8 per cycle (8 days per cycle)
+                  r: 255
+                  g: 0
+                  b: 0
+                '5':
+                  category:
+                    HF Radio: Complete HF (high frequency) radio blackout on the entire sunlit side of the Earth lasting for a number of hours. This results in no HF radio contact with mariners and en route aviators in this sector.
+                    Navigation: Low-frequency navigation signals used by maritime and general aviation systems experience outages on the sunlit side of the Earth for many hours, causing loss in positioning. Increased satellite navigation errors in positioning for several hours on the sunlit side of Earth, which may spread into the night side.
+                  descriptor: Extreme
+                  hex: '#c70000'
+                  colorName: Free Speech Red
+                  physicalMeasure: X20 (2 x 10^-3)
+                  averageFrequency: Fewer than 1 per cycle
+                  r: 199
+                  g: 0
+                  b: 0
+        meta:
+          name: v1.swpc-noaa-scales.explanation
+          uuid: e84cf520-e8ca-4523-ae85-92365ce4a997
+          request_id: e0b907af-d733-4d8c-8ebd-3cab84fd688e
+          start_timestamp: 1764701508134
+          end_timestamp: 1764701511262
+          execution_time: 3128
+    SwpcNoaaScalesRawBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/swpc-noaa-scales/raw:requestId:5300551c-712b-4a52-bd33-ab895ea11292
+        errors:
+        - message: Timestamp (UTC) must be within constraints set by data type and type of timestamp (outside SwpcNoaaScales insertedAfter allowed timeframe spanning 2025-12-02T22:19:47.365Z to 2025-12-03T22:20:23.365Z)
+          parameter: insertedAfter
+          value: '2025-07-10 10:00:00'
+        - message: Timestamp (UTC) must be within constraints set by data type and type of timestamp (outside SwpcNoaaScales insertedThrough allowed timeframe spanning 2025-12-02T22:19:47.367Z to 2025-12-03T22:20:23.367Z)
+          parameter: insertedThrough
+          value: '2025-07-10 11:00:00'
+        meta:
+          name: v1.swpc-noaa-scales.raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
+          uuid: ba5bfa53-3b50-4c44-93ca-b187dd8a8ef2
+          request_id: 5300551c-712b-4a52-bd33-ab895ea11292
+          start_timestamp: 1764800386883
+          end_timestamp: 1764800387383
+          execution_time: 500
+  parameters:
+    SwpcNoaaScalesQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    SwpcNoaaScalesQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QuerySwpcNoaaScalesPeriodLabels:
+      name: swpcNoaaScalesPeriodLabels
+      description: ''
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '-1'
+    QuerySwpcNoaaScalesEventCodes:
+      name: swpcNoaaScalesEventCodes
+      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - G
+          - R
+          - S
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the DTN Enhanced Flight Hazards API, you need to use the following audience: https://aviation.api.dtn.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

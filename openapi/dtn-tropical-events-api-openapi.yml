@@ -1,0 +1,275 @@
+openapi: 3.2.0
+info:
+  description: RadarScope Radar Data API
+  version: 3.0.0
+  title: RadarScope Radar Data Tropical Events API
+servers:
+- url: https://radarscope-feeds.wdtinc.com
+schemes:
+- https
+tags:
+- name: Tropical Events
+  description: Tropical Events
+paths:
+  /feeds/v3/tropical:
+    get:
+      tags:
+      - Tropical Events
+      summary: 'List all current tropical events '
+      description: 'List all current tropical events '
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_list'
+  /feeds/v3/tropical/archive/{year}/{month}/{day}:
+    get:
+      tags:
+      - Tropical Events
+      summary: List all historic tropical events for given date
+      description: List all historic tropical events for given date
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/components/parameters/year'
+      - $ref: '#/components/parameters/month'
+      - $ref: '#/components/parameters/day'
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_list'
+  /feeds/v3/tropical/archive/{year}/{month}/{day}/{hour}/{minute}:
+    get:
+      tags:
+      - Tropical Events
+      summary: List all historic tropical events for given timestamp
+      description: List all historic tropical events for given timestamp
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/components/parameters/year'
+      - $ref: '#/components/parameters/month'
+      - $ref: '#/components/parameters/day'
+      - $ref: '#/components/parameters/hour'
+      - $ref: '#/components/parameters/minute'
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_list'
+  /feeds/v3/tropical/warn:
+    get:
+      tags:
+      - Tropical Events
+      summary: 'List all current tropical warning events '
+      description: 'List all current tropical warning events '
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_warning_list'
+  /feeds/v3/tropical/warn/archive/{year}/{month}/{day}:
+    get:
+      tags:
+      - Tropical Events
+      summary: List all historic tropical warning events for given date
+      description: List all historic tropical warning events for given date
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/components/parameters/year'
+      - $ref: '#/components/parameters/month'
+      - $ref: '#/components/parameters/day'
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_warning_list'
+  /feeds/v3/tropical/warn/archive/{year}/{month}/{day}/{hour}/{minute}:
+    get:
+      tags:
+      - Tropical Events
+      summary: List all historic tropical warning events for given timestamp
+      description: List all historic tropical warning events for given timestamp
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/components/parameters/year'
+      - $ref: '#/components/parameters/month'
+      - $ref: '#/components/parameters/day'
+      - $ref: '#/components/parameters/hour'
+      - $ref: '#/components/parameters/minute'
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_warning_list'
+  /feeds/v3/tropical/watch:
+    get:
+      tags:
+      - Tropical Events
+      summary: 'List all current tropical watch events '
+      description: 'List all current tropical watch events '
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_watch_list'
+  /feeds/v3/tropical/watch/archive/{year}/{month}/{day}:
+    get:
+      tags:
+      - Tropical Events
+      summary: List all historic tropical watch events for given date
+      description: List all historic tropical watch events for given date
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/components/parameters/year'
+      - $ref: '#/components/parameters/month'
+      - $ref: '#/components/parameters/day'
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_watch_list'
+  /feeds/v3/tropical/watch/archive/{year}/{month}/{day}/{hour}/{minute}:
+    get:
+      tags:
+      - Tropical Events
+      summary: List all historic tropical watch events for given timestamp
+      description: List all historic tropical watch events for given timestamp
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/components/parameters/year'
+      - $ref: '#/components/parameters/month'
+      - $ref: '#/components/parameters/day'
+      - $ref: '#/components/parameters/hour'
+      - $ref: '#/components/parameters/minute'
+      responses:
+        '200':
+          $ref: '#/components/responses/tropical_watch_list'
+  /feeds/v3/tropical/{path}:
+    get:
+      tags:
+      - Tropical Events
+      summary: Get raw text for a given tropical event
+      description: Get raw text for a given tropical event
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/components/parameters/path'
+      responses:
+        '200':
+          description: Tropical Event Text
+          content:
+            text/plain:
+              example: "\n029 \nWTUS82 KMLB 271503\nTCVMLB\n\nURGENT - IMMEDIATE BROADCAST REQUESTED\nNine Local Watch/Warning Statement/Advisory Number 4\nNational Weather Service Melbourne FL  AL092025\n1103 AM EDT Sat Sep 27 2025\n\nFLZ447-272315-\n/O.NEW.KMLB.TR.A.1009.250927T1503Z-000000T0000Z/\nNorthern Brevard Barrier Islands-\n1103 AM EDT Sat Sep 27 2025\n\n...TROPICAL STORM WATCH IN EFFECT...\n\nA Tropical Storm Watch means tropical storm-force winds are possible \nsomewhere within this area within the next 48 hours\n\n* WIND\n\t- LATEST LOCAL FORECAST: Below tropical storm force wind\n\t\t- Peak Wind Forecast: 20-30 mph with gusts to 45 mph\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for wind 39 \n\t  to 57 mph\n\t\t- PLAN: Plan for hazardous wind of equivalent tropical storm \n\t\t  force.\n\t\t- PREPARE: Efforts to protect property should now be \n\t\t  underway. Prepare for limited wind damage.\n\t\t- ACT: Act now to complete preparations before the wind \n\t\t  becomes hazardous.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Damage to porches, awnings, carports, sheds, and unanchored \n\t\t  mobile homes. Unsecured lightweight objects blown about.\n\t\t- Many large tree limbs broken off. A few trees snapped or \n\t\t  uprooted, but with greater numbers in places where trees \n\t\t  are shallow rooted. Some fences and roadway signs blown \n\t\t  over.\n\t\t- A few roads impassable from debris, particularly within \n\t\t  urban or heavily wooded places. Hazardous driving \n\t\t  conditions on bridges and other elevated roadways.\n\t\t- Scattered power and communications outages.\n\n* STORM SURGE\n\t- LATEST LOCAL FORECAST: Localized storm surge possible\n\t\t- Peak Storm Surge Inundation: The potential for up to 2 feet \n\t\t  above ground somewhere within surge prone areas\n\t\t- Window of concern: Begins Sunday afternoon\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for storm \n\t  surge flooding greater than 1 foot above ground\n\t\t- PLAN: Plan for storm surge flooding greater than 1 foot \n\t\t  above ground.\n\t\t- PREPARE: Complete preparations for storm surge flooding, \n\t\t  especially in low-lying vulnerable areas, before conditions \n\t\t  become unsafe.\n\t\t- ACT: Leave immediately if evacuation orders are given for \n\t\t  your area.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Localized inundation with storm surge flooding mainly along \n\t\t  immediate shorelines and in low-lying spots, or in areas \n\t\t  farther inland near where higher surge waters move ashore.\n\t\t- Sections of near-shore roads and parking lots become \n\t\t  overspread with surge water. Driving conditions dangerous \n\t\t  in places where surge water covers the road.\n\t\t- Moderate beach erosion. Heavy surf also breaching dunes, \n\t\t  mainly in usually vulnerable locations. Strong rip currents.\n\t\t- Minor to locally moderate damage to marinas, docks, \n\t\t  boardwalks, and piers. A few small craft broken away from \n\t\t  moorings.\n\n* FLOODING RAIN\n\t- LATEST LOCAL FORECAST: \n\t\t- Peak Rainfall Amounts: Additional 1-3 inches, with locally \n\t\t  higher amounts\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for \n\t  localized flooding rain\n\t\t- PLAN: Emergency plans should include the potential for \n\t\t  localized flooding from heavy rain.\n\t\t- PREPARE: Consider protective actions if you are in an area \n\t\t  vulnerable to flooding.\n\t\t- ACT: Heed any flood watches and warnings.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Localized rainfall flooding may prompt a few evacuations.\n\t\t- Rivers and tributaries may quickly rise with swifter \n\t\t  currents. Small streams, creeks, canals, and ditches may \n\t\t  become swollen and overflow in spots.\n\t\t- Flood waters can enter a few structures, especially in \n\t\t  usually vulnerable spots. A few places where rapid ponding \n\t\t  of water occurs at underpasses, low-lying spots, and poor \n\t\t  drainage areas. Several storm drains and retention ponds \n\t\t  become near-full and begin to overflow. Some brief road and \n\t\t  bridge closures. \n\n* TORNADO\n\t- LATEST LOCAL FORECAST: \n\t\t- Situation is unfavorable for tornadoes\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Tornadoes not expected\n\t\t- PLAN: Tornadoes are not expected. Showers and thunderstorms \n\t\t  with gusty winds may still occur.\n\t\t- PREPARE: Little to no preparations needed to protect \n\t\t  against tornadoes at this time. Keep informed of the latest \n\t\t  tornado situation.\n\t\t- ACT: Listen for changes in the forecast.\n\n\t- POTENTIAL IMPACTS: Little to None\n\t\t- Little to no potential impacts from tornadoes.\n\n$$"
+  /feeds/v3/tropical/warn/{path}:
+    get:
+      tags:
+      - Tropical Events
+      summary: Get raw text for a given tropical warning
+      description: Get raw text for a given tropical warning
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/components/parameters/path'
+      responses:
+        '200':
+          description: Tropical Warning Text
+          content:
+            text/plain:
+              example: "\n029 \nWTUS82 KMLB 271503\nTCVMLB\n\nURGENT - IMMEDIATE BROADCAST REQUESTED\nNine Local Watch/Warning Statement/Advisory Number 4\nNational Weather Service Melbourne FL  AL092025\n1103 AM EDT Sat Sep 27 2025\n\nFLZ447-272315-\n/O.NEW.KMLB.TR.A.1009.250927T1503Z-000000T0000Z/\nNorthern Brevard Barrier Islands-\n1103 AM EDT Sat Sep 27 2025\n\n...TROPICAL STORM WATCH IN EFFECT...\n\nA Tropical Storm Watch means tropical storm-force winds are possible \nsomewhere within this area within the next 48 hours\n\n* WIND\n\t- LATEST LOCAL FORECAST: Below tropical storm force wind\n\t\t- Peak Wind Forecast: 20-30 mph with gusts to 45 mph\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for wind 39 \n\t  to 57 mph\n\t\t- PLAN: Plan for hazardous wind of equivalent tropical storm \n\t\t  force.\n\t\t- PREPARE: Efforts to protect property should now be \n\t\t  underway. Prepare for limited wind damage.\n\t\t- ACT: Act now to complete preparations before the wind \n\t\t  becomes hazardous.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Damage to porches, awnings, carports, sheds, and unanchored \n\t\t  mobile homes. Unsecured lightweight objects blown about.\n\t\t- Many large tree limbs broken off. A few trees snapped or \n\t\t  uprooted, but with greater numbers in places where trees \n\t\t  are shallow rooted. Some fences and roadway signs blown \n\t\t  over.\n\t\t- A few roads impassable from debris, particularly within \n\t\t  urban or heavily wooded places. Hazardous driving \n\t\t  conditions on bridges and other elevated roadways.\n\t\t- Scattered power and communications outages.\n\n* STORM SURGE\n\t- LATEST LOCAL FORECAST: Localized storm surge possible\n\t\t- Peak Storm Surge Inundation: The potential for up to 2 feet \n\t\t  above ground somewhere within surge prone areas\n\t\t- Window of concern: Begins Sunday afternoon\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for storm \n\t  surge flooding greater than 1 foot above ground\n\t\t- PLAN: Plan for storm surge flooding greater than 1 foot \n\t\t  above ground.\n\t\t- PREPARE: Complete preparations for storm surge flooding, \n\t\t  especially in low-lying vulnerable areas, before conditions \n\t\t  become unsafe.\n\t\t- ACT: Leave immediately if evacuation orders are given for \n\t\t  your area.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Localized inundation with storm surge flooding mainly along \n\t\t  immediate shorelines and in low-lying spots, or in areas \n\t\t  farther inland near where higher surge waters move ashore.\n\t\t- Sections of near-shore roads and parking lots become \n\t\t  overspread with surge water. Driving conditions dangerous \n\t\t  in places where surge water covers the road.\n\t\t- Moderate beach erosion. Heavy surf also breaching dunes, \n\t\t  mainly in usually vulnerable locations. Strong rip currents.\n\t\t- Minor to locally moderate damage to marinas, docks, \n\t\t  boardwalks, and piers. A few small craft broken away from \n\t\t  moorings.\n\n* FLOODING RAIN\n\t- LATEST LOCAL FORECAST: \n\t\t- Peak Rainfall Amounts: Additional 1-3 inches, with locally \n\t\t  higher amounts\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for \n\t  localized flooding rain\n\t\t- PLAN: Emergency plans should include the potential for \n\t\t  localized flooding from heavy rain.\n\t\t- PREPARE: Consider protective actions if you are in an area \n\t\t  vulnerable to flooding.\n\t\t- ACT: Heed any flood watches and warnings.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Localized rainfall flooding may prompt a few evacuations.\n\t\t- Rivers and tributaries may quickly rise with swifter \n\t\t  currents. Small streams, creeks, canals, and ditches may \n\t\t  become swollen and overflow in spots.\n\t\t- Flood waters can enter a few structures, especially in \n\t\t  usually vulnerable spots. A few places where rapid ponding \n\t\t  of water occurs at underpasses, low-lying spots, and poor \n\t\t  drainage areas. Several storm drains and retention ponds \n\t\t  become near-full and begin to overflow. Some brief road and \n\t\t  bridge closures. \n\n* TORNADO\n\t- LATEST LOCAL FORECAST: \n\t\t- Situation is unfavorable for tornadoes\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Tornadoes not expected\n\t\t- PLAN: Tornadoes are not expected. Showers and thunderstorms \n\t\t  with gusty winds may still occur.\n\t\t- PREPARE: Little to no preparations needed to protect \n\t\t  against tornadoes at this time. Keep informed of the latest \n\t\t  tornado situation.\n\t\t- ACT: Listen for changes in the forecast.\n\n\t- POTENTIAL IMPACTS: Little to None\n\t\t- Little to no potential impacts from tornadoes.\n\n$$"
+  /feeds/v3/tropical/watch/{path}:
+    get:
+      tags:
+      - Tropical Events
+      summary: Get raw text for a given tropical watch
+      description: Get raw text for a given tropical watch
+      produces:
+      - text/plain
+      parameters:
+      - $ref: '#/components/parameters/path'
+      responses:
+        '200':
+          description: Tropical Watch Text
+          content:
+            text/plain:
+              example: "\n029 \nWTUS82 KMLB 271503\nTCVMLB\n\nURGENT - IMMEDIATE BROADCAST REQUESTED\nNine Local Watch/Warning Statement/Advisory Number 4\nNational Weather Service Melbourne FL  AL092025\n1103 AM EDT Sat Sep 27 2025\n\nFLZ447-272315-\n/O.NEW.KMLB.TR.A.1009.250927T1503Z-000000T0000Z/\nNorthern Brevard Barrier Islands-\n1103 AM EDT Sat Sep 27 2025\n\n...TROPICAL STORM WATCH IN EFFECT...\n\nA Tropical Storm Watch means tropical storm-force winds are possible \nsomewhere within this area within the next 48 hours\n\n* WIND\n\t- LATEST LOCAL FORECAST: Below tropical storm force wind\n\t\t- Peak Wind Forecast: 20-30 mph with gusts to 45 mph\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for wind 39 \n\t  to 57 mph\n\t\t- PLAN: Plan for hazardous wind of equivalent tropical storm \n\t\t  force.\n\t\t- PREPARE: Efforts to protect property should now be \n\t\t  underway. Prepare for limited wind damage.\n\t\t- ACT: Act now to complete preparations before the wind \n\t\t  becomes hazardous.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Damage to porches, awnings, carports, sheds, and unanchored \n\t\t  mobile homes. Unsecured lightweight objects blown about.\n\t\t- Many large tree limbs broken off. A few trees snapped or \n\t\t  uprooted, but with greater numbers in places where trees \n\t\t  are shallow rooted. Some fences and roadway signs blown \n\t\t  over.\n\t\t- A few roads impassable from debris, particularly within \n\t\t  urban or heavily wooded places. Hazardous driving \n\t\t  conditions on bridges and other elevated roadways.\n\t\t- Scattered power and communications outages.\n\n* STORM SURGE\n\t- LATEST LOCAL FORECAST: Localized storm surge possible\n\t\t- Peak Storm Surge Inundation: The potential for up to 2 feet \n\t\t  above ground somewhere within surge prone areas\n\t\t- Window of concern: Begins Sunday afternoon\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for storm \n\t  surge flooding greater than 1 foot above ground\n\t\t- PLAN: Plan for storm surge flooding greater than 1 foot \n\t\t  above ground.\n\t\t- PREPARE: Complete preparations for storm surge flooding, \n\t\t  especially in low-lying vulnerable areas, before conditions \n\t\t  become unsafe.\n\t\t- ACT: Leave immediately if evacuation orders are given for \n\t\t  your area.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Localized inundation with storm surge flooding mainly along \n\t\t  immediate shorelines and in low-lying spots, or in areas \n\t\t  farther inland near where higher surge waters move ashore.\n\t\t- Sections of near-shore roads and parking lots become \n\t\t  overspread with surge water. Driving conditions dangerous \n\t\t  in places where surge water covers the road.\n\t\t- Moderate beach erosion. Heavy surf also breaching dunes, \n\t\t  mainly in usually vulnerable locations. Strong rip currents.\n\t\t- Minor to locally moderate damage to marinas, docks, \n\t\t  boardwalks, and piers. A few small craft broken away from \n\t\t  moorings.\n\n* FLOODING RAIN\n\t- LATEST LOCAL FORECAST: \n\t\t- Peak Rainfall Amounts: Additional 1-3 inches, with locally \n\t\t  higher amounts\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Potential for \n\t  localized flooding rain\n\t\t- PLAN: Emergency plans should include the potential for \n\t\t  localized flooding from heavy rain.\n\t\t- PREPARE: Consider protective actions if you are in an area \n\t\t  vulnerable to flooding.\n\t\t- ACT: Heed any flood watches and warnings.\n\n\t- POTENTIAL IMPACTS: Limited\n\t\t- Localized rainfall flooding may prompt a few evacuations.\n\t\t- Rivers and tributaries may quickly rise with swifter \n\t\t  currents. Small streams, creeks, canals, and ditches may \n\t\t  become swollen and overflow in spots.\n\t\t- Flood waters can enter a few structures, especially in \n\t\t  usually vulnerable spots. A few places where rapid ponding \n\t\t  of water occurs at underpasses, low-lying spots, and poor \n\t\t  drainage areas. Several storm drains and retention ponds \n\t\t  become near-full and begin to overflow. Some brief road and \n\t\t  bridge closures. \n\n* TORNADO\n\t- LATEST LOCAL FORECAST: \n\t\t- Situation is unfavorable for tornadoes\n\n\t- THREAT TO LIFE AND PROPERTY THAT INCLUDES TYPICAL FORECAST \n\t  UNCERTAINTY IN TRACK, SIZE AND INTENSITY: Tornadoes not expected\n\t\t- PLAN: Tornadoes are not expected. Showers and thunderstorms \n\t\t  with gusty winds may still occur.\n\t\t- PREPARE: Little to no preparations needed to protect \n\t\t  against tornadoes at this time. Keep informed of the latest \n\t\t  tornado situation.\n\t\t- ACT: Listen for changes in the forecast.\n\n\t- POTENTIAL IMPACTS: Little to None\n\t\t- Little to no potential impacts from tornadoes.\n\n$$"
+components:
+  responses:
+    tropical_warning_list:
+      description: Tropical Warning List
+      headers:
+        Content-Type:
+          $ref: '#/components/headers/content-type'
+      content:
+        application/json:
+          example: "{\n\t\"2025.KMLB.TR.A.1009\": [\n\t\t{\n\t\t\t\"u\": \"2025.KMLB.TR.A.1009\",\n\t\t\t\"t\": \"TR.A\",\n\t\t\t\"o\": \"KMLB\",\n\t\t\t\"a\": \"tcv/WTUS82_KMLB_TCVMLB_20250927_1503_16856029.txt\",\n\t\t\t\"b\": 1758985380,\n\t\t\t\"n\": \"Nine\",\n\t\t\t\"status\": \"NEW\",\n\t\t\t\"f\": [\n\t\t\t\t\"FLZ141\",\n\t\t\t\t\"FLZ154\",\n\t\t\t\t\"FLZ159\",\n\t\t\t\t\"FLZ164\",\n\t\t\t\t\"FLZ347\",\n\t\t\t\t\"FLZ447\",\n\t\t\t\t\"FLZ647\",\n\t\t\t\t\"FLZ747\"\n\t\t\t],\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2943,\n\t\t\t\t\t-8109\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8093\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2876,\n\t\t\t\t\t-8070\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2859,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2846,\n\t\t\t\t\t-8051\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2842,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2836,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2826,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2813,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2774,\n\t\t\t\t\t-8037\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2741,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2704,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2697,\n\t\t\t\t\t-8007\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2696,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2694,\n\t\t\t\t\t-8017\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2702,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2709,\n\t\t\t\t\t-8027\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2718,\n\t\t\t\t\t-8034\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2729,\n\t\t\t\t\t-8038\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2744,\n\t\t\t\t\t-8041\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2746,\n\t\t\t\t\t-8044\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2761,\n\t\t\t\t\t-8053\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2775,\n\t\t\t\t\t-8057\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2781,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2786,\n\t\t\t\t\t-8060\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2797,\n\t\t\t\t\t-8063\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2803,\n\t\t\t\t\t-8067\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2807,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2819,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2828,\n\t\t\t\t\t-8075\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2840,\n\t\t\t\t\t-8083\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2847,\n\t\t\t\t\t-8084\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2852,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2862,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2871,\n\t\t\t\t\t-8091\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2874,\n\t\t\t\t\t-8090\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2893,\n\t\t\t\t\t-8096\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2910,\n\t\t\t\t\t-8104\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8107\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2926,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2942,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t]\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"u\": \"2025.KMLB.TR.A.1009\",\n\t\t\t\"t\": \"TR.A\",\n\t\t\t\"o\": \"KMLB\",\n\t\t\t\"a\": \"tcv/WTUS82_KMLB_TCVMLB_20250927_2100_17564117.txt\",\n\t\t\t\"b\": 1759006800,\n\t\t\t\"n\": \"Nine\",\n\t\t\t\"status\": \"CON\",\n\t\t\t\"f\": [\n\t\t\t\t\"FLZ141\",\n\t\t\t\t\"FLZ154\",\n\t\t\t\t\"FLZ159\",\n\t\t\t\t\"FLZ164\",\n\t\t\t\t\"FLZ347\",\n\t\t\t\t\"FLZ447\",\n\t\t\t\t\"FLZ647\",\n\t\t\t\t\"FLZ747\"\n\t\t\t],\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2943,\n\t\t\t\t\t-8109\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8093\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2876,\n\t\t\t\t\t-8070\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2859,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2846,\n\t\t\t\t\t-8051\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2842,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2836,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2826,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2813,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2774,\n\t\t\t\t\t-8037\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2741,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2704,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2697,\n\t\t\t\t\t-8007\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2696,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2694,\n\t\t\t\t\t-8017\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2702,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2709,\n\t\t\t\t\t-8027\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2718,\n\t\t\t\t\t-8034\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2729,\n\t\t\t\t\t-8038\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2744,\n\t\t\t\t\t-8041\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2746,\n\t\t\t\t\t-8044\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2761,\n\t\t\t\t\t-8053\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2775,\n\t\t\t\t\t-8057\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2781,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2786,\n\t\t\t\t\t-8060\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2797,\n\t\t\t\t\t-8063\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2803,\n\t\t\t\t\t-8067\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2807,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2819,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2828,\n\t\t\t\t\t-8075\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2840,\n\t\t\t\t\t-8083\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2847,\n\t\t\t\t\t-8084\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2852,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2862,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2871,\n\t\t\t\t\t-8091\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2874,\n\t\t\t\t\t-8090\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2893,\n\t\t\t\t\t-8096\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2910,\n\t\t\t\t\t-8104\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8107\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2926,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2942,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t]\n\t\t\t]\n\t\t}\n\t]\n}"
+    tropical_list:
+      description: Tropical Event List
+      headers:
+        Content-Type:
+          $ref: '#/components/headers/content-type'
+      content:
+        application/json:
+          example: "{\n\t\"2025.KMLB.TR.A.1009\": [\n\t\t{\n\t\t\t\"u\": \"2025.KMLB.TR.A.1009\",\n\t\t\t\"t\": \"TR.A\",\n\t\t\t\"o\": \"KMLB\",\n\t\t\t\"a\": \"tcv/WTUS82_KMLB_TCVMLB_20250927_1503_16856029.txt\",\n\t\t\t\"b\": 1758985380,\n\t\t\t\"n\": \"Nine\",\n\t\t\t\"status\": \"NEW\",\n\t\t\t\"f\": [\n\t\t\t\t\"FLZ141\",\n\t\t\t\t\"FLZ154\",\n\t\t\t\t\"FLZ159\",\n\t\t\t\t\"FLZ164\",\n\t\t\t\t\"FLZ347\",\n\t\t\t\t\"FLZ447\",\n\t\t\t\t\"FLZ647\",\n\t\t\t\t\"FLZ747\"\n\t\t\t],\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2943,\n\t\t\t\t\t-8109\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8093\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2876,\n\t\t\t\t\t-8070\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2859,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2846,\n\t\t\t\t\t-8051\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2842,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2836,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2826,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2813,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2774,\n\t\t\t\t\t-8037\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2741,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2704,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2697,\n\t\t\t\t\t-8007\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2696,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2694,\n\t\t\t\t\t-8017\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2702,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2709,\n\t\t\t\t\t-8027\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2718,\n\t\t\t\t\t-8034\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2729,\n\t\t\t\t\t-8038\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2744,\n\t\t\t\t\t-8041\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2746,\n\t\t\t\t\t-8044\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2761,\n\t\t\t\t\t-8053\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2775,\n\t\t\t\t\t-8057\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2781,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2786,\n\t\t\t\t\t-8060\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2797,\n\t\t\t\t\t-8063\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2803,\n\t\t\t\t\t-8067\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2807,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2819,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2828,\n\t\t\t\t\t-8075\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2840,\n\t\t\t\t\t-8083\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2847,\n\t\t\t\t\t-8084\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2852,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2862,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2871,\n\t\t\t\t\t-8091\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2874,\n\t\t\t\t\t-8090\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2893,\n\t\t\t\t\t-8096\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2910,\n\t\t\t\t\t-8104\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8107\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2926,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2942,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t]\n\t\t\t]\n\t\t}\n\t]\n}"
+    tropical_watch_list:
+      description: Tropical Watch List
+      headers:
+        Content-Type:
+          $ref: '#/components/headers/content-type'
+      content:
+        application/json:
+          example: "{\n\t\"2025.KMLB.TR.A.1009\": [\n\t\t{\n\t\t\t\"u\": \"2025.KMLB.TR.A.1009\",\n\t\t\t\"t\": \"TR.A\",\n\t\t\t\"o\": \"KMLB\",\n\t\t\t\"a\": \"tcv/WTUS82_KMLB_TCVMLB_20250927_1503_16856029.txt\",\n\t\t\t\"b\": 1758985380,\n\t\t\t\"n\": \"Nine\",\n\t\t\t\"status\": \"NEW\",\n\t\t\t\"f\": [\n\t\t\t\t\"FLZ141\",\n\t\t\t\t\"FLZ154\",\n\t\t\t\t\"FLZ159\",\n\t\t\t\t\"FLZ164\",\n\t\t\t\t\"FLZ347\",\n\t\t\t\t\"FLZ447\",\n\t\t\t\t\"FLZ647\",\n\t\t\t\t\"FLZ747\"\n\t\t\t],\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2943,\n\t\t\t\t\t-8109\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8093\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2876,\n\t\t\t\t\t-8070\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2859,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2846,\n\t\t\t\t\t-8051\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2842,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2836,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2826,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2813,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2774,\n\t\t\t\t\t-8037\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2741,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2704,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2697,\n\t\t\t\t\t-8007\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2696,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2694,\n\t\t\t\t\t-8017\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2702,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2709,\n\t\t\t\t\t-8027\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2718,\n\t\t\t\t\t-8034\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2729,\n\t\t\t\t\t-8038\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2744,\n\t\t\t\t\t-8041\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2746,\n\t\t\t\t\t-8044\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2761,\n\t\t\t\t\t-8053\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2775,\n\t\t\t\t\t-8057\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2781,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2786,\n\t\t\t\t\t-8060\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2797,\n\t\t\t\t\t-8063\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2803,\n\t\t\t\t\t-8067\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2807,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2819,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2828,\n\t\t\t\t\t-8075\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2840,\n\t\t\t\t\t-8083\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2847,\n\t\t\t\t\t-8084\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2852,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2862,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2871,\n\t\t\t\t\t-8091\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2874,\n\t\t\t\t\t-8090\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2893,\n\t\t\t\t\t-8096\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2910,\n\t\t\t\t\t-8104\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8107\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2926,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2942,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t]\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"u\": \"2025.KMLB.TR.A.1009\",\n\t\t\t\"t\": \"TR.A\",\n\t\t\t\"o\": \"KMLB\",\n\t\t\t\"a\": \"tcv/WTUS82_KMLB_TCVMLB_20250927_2100_17564117.txt\",\n\t\t\t\"b\": 1759006800,\n\t\t\t\"n\": \"Nine\",\n\t\t\t\"status\": \"CON\",\n\t\t\t\"f\": [\n\t\t\t\t\"FLZ141\",\n\t\t\t\t\"FLZ154\",\n\t\t\t\t\"FLZ159\",\n\t\t\t\t\"FLZ164\",\n\t\t\t\t\"FLZ347\",\n\t\t\t\t\"FLZ447\",\n\t\t\t\t\"FLZ647\",\n\t\t\t\t\"FLZ747\"\n\t\t\t],\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2943,\n\t\t\t\t\t-8109\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8093\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2876,\n\t\t\t\t\t-8070\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2859,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2846,\n\t\t\t\t\t-8051\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2842,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2836,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2826,\n\t\t\t\t\t-8059\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2813,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2774,\n\t\t\t\t\t-8037\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2741,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2704,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2697,\n\t\t\t\t\t-8007\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2696,\n\t\t\t\t\t-8008\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2694,\n\t\t\t\t\t-8017\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2702,\n\t\t\t\t\t-8025\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2709,\n\t\t\t\t\t-8027\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2718,\n\t\t\t\t\t-8034\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2729,\n\t\t\t\t\t-8038\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2744,\n\t\t\t\t\t-8041\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2746,\n\t\t\t\t\t-8044\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2761,\n\t\t\t\t\t-8053\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2775,\n\t\t\t\t\t-8057\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2781,\n\t\t\t\t\t-8056\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2786,\n\t\t\t\t\t-8060\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2797,\n\t\t\t\t\t-8063\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2803,\n\t\t\t\t\t-8067\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2807,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2819,\n\t\t\t\t\t-8072\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2828,\n\t\t\t\t\t-8075\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2840,\n\t\t\t\t\t-8083\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2847,\n\t\t\t\t\t-8084\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2852,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2862,\n\t\t\t\t\t-8087\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2871,\n\t\t\t\t\t-8091\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2874,\n\t\t\t\t\t-8090\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2893,\n\t\t\t\t\t-8096\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2910,\n\t\t\t\t\t-8104\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2912,\n\t\t\t\t\t-8107\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2926,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2942,\n\t\t\t\t\t-8117\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t2944,\n\t\t\t\t\t-8112\n\t\t\t\t]\n\t\t\t]\n\t\t}\n\t]\n}"
+  parameters:
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
+      required: true
+      schema:
+        type: string
+    minute:
+      name: minute
+      in: path
+      description: 2 digit minute, 00-59
+      required: true
+      schema:
+        type: string
+    day:
+      name: day
+      in: path
+      description: 2 digit day, 01-31
+      required: true
+      schema:
+        type: string
+    path:
+      name: path
+      in: path
+      description: pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt
+      required: true
+      schema:
+        type: string
+    year:
+      name: year
+      in: path
+      description: 4 digit year, e.g. 2026
+      required: true
+      schema:
+        type: string
+    hour:
+      name: hour
+      in: path
+      description: 2 digit hour, 00-23
+      required: true
+      schema:
+        type: string
+  headers:
+    content-type:
+      description: MIME-type of returned data
+      schema:
+        type: string
+  securitySchemes:
+    clientCredentials:
+      type: oauth2
+      x-receive-token-in: request-body
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.auth.dtn.com/v1/tokens/authorize
+      description: "# Using DAIS for M2M/API Auth\nYou have been given a Client ID and a Client Secret, which are used to request a DTN Access Token. DTN Access Tokens are required when making calls to each and every DTN API endpoint. The following information provides additional details on these tokens and how they are generated.\n## What is an Access Token and how is it different from an API Key?\nAn API Key is a random string of characters that an API uses to authorize whether or not a calling client has approved access to an endpoint. These keys are a non-standard approach to API authorization and are generally issued on a per-API basis.\n\nAn Access Token is also a string of characters but is a base-64 encoded JavaScript Object Notation Web Token, or JWT. JWTs are a widely accepted standard that use OAuth concepts and approaches. \n\nBoth API Keys and Access Tokens are used in an Authorization Request Header as a Bearer, meaning there is no difference in where you put this string of characters when you make calls to DTN APIs.\n## How to generate an Access Token?\nWhen requested, an Access Token is generated for your specific Client (ID/Secret) and for a specific API. The DTN Auth and Identity Service (DAIS) generates new Access Tokens for your client. The DAIS endpoint is `POST https://api.auth.dtn.com/v1/tokens/authorize`.\n\nThis endpoint takes two Header parameters:\n  * `Content-Type: application/json`\n  * `Accept: application/json`\n\nThis endpoint takes four parameters in the Request Body:\n  * `grant_type`: this should always be client_credentials for generating machine-to-machine tokens.\n  * `client_id`: this is the Client ID or Application ID using the token and is given to you by DTN's Identity Team. This ID will never change for your client/application.\n  * `client_secret`: this is the Client Secret that is associated with the Application ID and is given to you by DTN's Identity Team. This key is subject to rotation for security purposes but always with the client's knowledge.\n  * `audience`: this is the API for which this Access Token will be used. For the RadarScope API, you need to use the following audience: https://radarscope-feeds.wdtinc.com\n\nYou can use this CURL command template as a reference for obtaining an access token:\n  ```\n  curl --location --request POST 'https://api.auth.dtn.com/v1/tokens/authorize' \\\n--header 'Accept: application/json' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\"grant_type\": \"client_credentials\",\n\"client_id\": \"insert your client id here\",\n\"client_secret\": \"insert your client secret here\",\n\"audience\": \"insert your audience here\"\n}' \n  ```\n\n*This document, for demonstration purposes, supplies a client_id and client_secret in all code examples. This client/application is for a fictitious API and cannot be used in practice to gain unauthorized access to any other DTN API.*\nUpon generating a new Access Token, you should receive an HTTP Response from DAIS similar to this:\n  ```\n  {\n    \"data\": {\n          \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw\",\n          \"scope\": \"read:demo create:demo update:demo\",\n          \"expires_in\": 90,\n          \"token_type\": \"Bearer\"\n      },\n      \"meta\": {\n          \"date_time\": \"2022-06-24T19:09:42.963Z\",\n          \"name\": \"v1.tokens.authorize\",\n          \"uuid\": \"ee6f9feb-dcf8-4421-a6fd-efd6beabdaa9\",\n          \"start_timestamp\": 1656097782509,\n          \"end_timestamp\": 1656097782963,\n          \"execution_time\": 454\n      }\n  }\n  ```\nLooking at this Response, you will see:\n  * `access_token`: contains the JWT Access Token string you will use as your Bearer token.\n  * `scope`: contains the scopes that this Access Token gives you permissions to access.\n  * `expires_in`: contains the length of time before this Access Token will expire, in seconds.\n  * `token_type`: verifies that this Access Token should be used as a Bearer token.\n\n## How to use an Access Token after one is generated?\nOnce a new Access Token is obtained, it is used in each call to a DTN API endpoint as a Bearer token in an Authorization Request Header. For example:\n  ```\n  Header: 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpfX21pZW13NGhoTmdvQWQxR3N6ciJ9.eyJodHRwczovL2F1dGguZHRuLmNvbS9jdXN0b21lcklkIjoiMTIzNDU2Nzg5MERlbW8iLCJodHRwczovL2F1dGguZHRuLmNvbS9wcm9kdWN0Q29kZSI6IkRlbW9BcGlQIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcmVxdWVzdGVySXAiOiIxOC4yMTMuMTc0LjI3IiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcnBzIjoiMTAwIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vdGllciI6IkJhc2ljIiwiaHR0cHM6Ly9hdXRoLmR0bi5jb20vcXVvdGEiOiI5OTk5OTkiLCJpc3MiOiJodHRwczovL2lkLmF1dGguZHRuLmNvbS8iLCJzdWIiOiJuZnlPM0tpS1BSOE4wREtSNUNMOGpTOUdGQkNEZXlGTUBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9kZW1vLWFwaS5hdXRoLmR0bi5jb20vIiwiaWF0IjoxNjU2MDk5MDY4LCJleHAiOjE2NTYwOTkxNTgsImF6cCI6Im5meU8zS2lLUFI4TjBES1I1Q0w4alM5R0ZCQ0RleUZNIiwic2NvcGUiOiJyZWFkOmRlbW8gY3JlYXRlOmRlbW8gdXBkYXRlOmRlbW8iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJyZWFkOmRlbW8iLCJjcmVhdGU6ZGVtbyIsInVwZGF0ZTpkZW1vIl19.0VHdyp1w9PPFVI0FPheAwuKZwb5C25rwP-LPMXcSNoRmouvga1DZtNLA67ZzE_sAlc_VpaDRr6daLKr_Alw4347mw9sdjP8wKR27kCZa9JZK5PGQMmXHscATbzBEJYpCPklfyGaajgymqTBGnedcv8F0UvlRzQPsFeRPnVoX7BWOSXpMbyToGiXWkQLBQT7r96KAmLZOPJFZspPtjw-wH2mSL2WNa_nkB4j5vMGhGxlKiNRsKb30TH_WAel2hsxNlcPK3XHCmrMTYsNnu7HNqOTMn2i0__0rvBrhSWEw-_grqQDmWFJuWd7Qhi1q81AaJcdqgoSa_efz93QFclJUNw'\n  ```\n\n## Deconstructing the Access Token\nA DTN Access Token carries information within its JWT Body that is available on every API call. By deconstructing the JWT token, our Access Tokens will resemble:\n  ```\n  {\n    \"https://auth.dtn.com/customerId\": \"1234567890Demo\",\n    \"https://auth.dtn.com/productCode\": \"DemoApiP\",\n    \"https://auth.dtn.com/requesterIp\": \"18.213.174.27\",\n    \"https://auth.dtn.com/rps\": \"100\",\n    \"https://auth.dtn.com/tier\": \"Basic\",\n    \"https://auth.dtn.com/quota\": \"999999\",\n    \"iss\": \"https://id.auth.dtn.com/\",\n    \"sub\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM@clients\",\n    \"aud\": \"https://demo-api.auth.dtn.com/\",\n    \"iat\": 1656099068,\n    \"exp\": 1656099158,\n    \"azp\": \"nfyO3KiKPR8N0DKR5CL8jS9GFBCDeyFM\",\n    \"scope\": \"read:demo create:demo update:demo\",\n    \"gty\": \"client-credentials\",\n    \"permissions\": [\n      \"read:demo\",\n      \"create:demo\",\n      \"update:demo\"\n    ]\n  }\n  ```\n### Description of Claims\n\n  | Claim                              | Type                                        | Description                                                                                                                                                                                                                |\n  | -----------------------------------| --------------------------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n  | `https://auth.dtn.com/customerId`  | String                                      | Custom DTN claim containing the Customer ID found in the DTN Order Management/Salesforce system associated with this token.                                                                                                |\n  | `https://auth.dtn.com/productCode` | String                                      | Custom DTN claim containing the Identity product code associated with this token.                                                                                                                                          |\n  | `https://auth.dtn.com/requesterIp` | String                                      | Custom DTN claim containing the IP address of the requesting client.                                                                                                                                                       |\n  | `https://auth.dtn.com/rps`         | String                                      | Custom DTN claim containing the maximum rate per second this customer is authorized to utilize.                                                                                                                            |\n  | `https://auth.dtn.com/tier`        | String                                      | Custom DTN claim containing the data tier the customer purchased for the requested access.                                                                                                                                 |\n  | `https://auth.dtn.com/quota`       | String                                      | Custom DTN claim containing the maximum yearly quota the customer purchased for calling DTN endpoints for the specific product.                                                                                            |\n  | `iss`                              | String (URI)                                | The Security Token Service (STS) that issues and returns the token. If this value is not from `https://id.auth.dtn.com/`, the token should not be considered trusted.                                                      |\n  | `sub`                              | String (URI)                                | The principle about which the token asserts information (the User ID or Client ID within the Identity Provider). A User ID will start with a prefix of `auth0\\|`, while the Client ID will end with the suffix `@clients`. |\n  | `aud`                              | String \\| Array (Strings) (URI \\| [URI, …]) | Identifies the intended recipient(s) of the token – its audience. The token should be rejected if the audience does not contain values expected by the calling application.                                                |\n  | `iat`                              | Number (Timestamp)                          | “Issued At” indicates when the authentication for this token occurred.                                                                                                                                                     |\n  | `exp`                              | Number (Timestamp)                          | The “expiration time” on or after which the JWT must not be accepted for processing.                                                                                                                                       |\n  | `azp`                              | String                                      | The application/client ID of the client using the token. The application can cat as itself or on behalf of a user.                                                                                                         |\n  | `gty`                              | String (Space-delimited)                    | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n  | `permissions`                      | Array (Strings)                             | The grant type that was used to request the token – not an RFC 7519 registered claim (Auth0-specific).                                                                                                                     |\n\n  "

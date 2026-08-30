@@ -1,0 +1,102 @@
+openapi: 3.2.0
+info:
+  title: DTN Weather Conditions Precipitation API
+  description: DTN Weather Conditions API delivers worldwide forecast, current condition, and historical weather data. The API leverages cloud technology and global forecast models to provide validated, continuously calibrated weather data. Supports geospatial queries, time-based filtering, and multi-station requests. Authentication uses OAuth2 Client Credentials; access tokens are obtained from auth.weather.mg/oauth/token and used as Bearer tokens.
+  version: 2.0.0
+  contact:
+    name: DTN Weather API Support
+    url: https://devportal.dtn.com/
+  license:
+    name: DTN Subscription Agreement
+    url: https://www.dtn.com/subscription-agreement-standard-terms-conditions/
+servers:
+- url: https://weather.api.dtn.com/conditions
+  description: DTN Weather Conditions API
+- url: https://point-forecast.weather.mg
+  description: DTN Point Forecast API
+- url: https://point-observation.weather.mg
+  description: DTN Point Observation API
+- url: https://precipitation-forecast.weather.mg
+  description: DTN Radar Precipitation Forecast API
+security:
+- oauth2: []
+tags:
+- name: Precipitation
+  description: Radar-based precipitation forecasts
+paths:
+  /search:
+    get:
+      operationId: getPrecipitationForecast
+      summary: Get radar precipitation forecast
+      description: Returns short-term precipitation forecast derived from radar data. Useful for agricultural, utility, and renewable energy operational planning.
+      tags:
+      - Precipitation
+      servers:
+      - url: https://precipitation-forecast.weather.mg
+      parameters:
+      - name: locatedAt
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: validPeriod
+        in: query
+        description: Forecast time window. Short-range precipitation forecast (0-6 hours typical)
+        schema:
+          type: string
+      - name: fields
+        in: query
+        schema:
+          type: string
+          default: precipitationAmountInMillimeter,precipitationTypeCode
+      responses:
+        '200':
+          description: Precipitation forecast
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrecipitationForecastResponse'
+components:
+  schemas:
+    PrecipitationForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            type: object
+            properties:
+              validAt:
+                type: string
+                format: date-time
+              precipitationAmountInMillimeter:
+                type: number
+              precipitationTypeCode:
+                type: integer
+                description: 0=none, 1=rain, 2=snow, 3=sleet, 4=freezing rain
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth2 Client Credentials for DTN Weather APIs
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.weather.mg/oauth/token
+          scopes:
+            weather:read: Access weather data
