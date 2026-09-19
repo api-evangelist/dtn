@@ -937,6 +937,8 @@ apis:
   humanURL: https://devportal.dtn.com/catalog/Weather/dtn-weather-conditions-api/documentation
   baseURL: https://weather.api.dtn.com
   tags:
+  - Archives
+  tags_raw:
   - Archive
   properties:
   - type: OpenAPI
@@ -21627,7 +21629,8 @@ apis:
   description: Endpoints for the api/catalog resources
   humanURL: https://api.weather.mg/api-detail-pages/forecast-parameter.html
   baseURL: https://point-forecast.weather.mg
-  tags:
+  tags: []
+  tags_raw:
   - APIs
   properties:
   - type: OpenAPI
