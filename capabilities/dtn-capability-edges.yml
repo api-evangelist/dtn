@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 3
+edge_count: 5
 edges:
 - tag: Pricing
   spec_file: dtn-pricing-api-openapi.yml
@@ -36,6 +36,25 @@ edges:
     and changelogs. That is developer portal / public API lifecycle stewardship, not a domain business
     function. L2 set to Developer Portal Management since the spec explicitly states it backs the portal
     web app, though version/changelog operations also touch Public API Lifecycle Management.
+- tag: Land Geospatial
+  spec_file: dtn-land-geospatial-api-openapi.yml
+  capability_id: BC-3540.20
+  capability_id_l1: BC-3540
+  capability_name: Field and Parcel Management
+  confidence: 0.75
+  evidence: getGeospatialLand Get GeoJSON polygon for a land parcel
+  reason: Returns field/parcel boundary geometry, matching field boundary records at parcel level.
+  recovered_from: vertical-agriculture-food-production-edges.json
+- tag: Land Crop
+  spec_file: dtn-land-crop-api-openapi.yml
+  capability_id: BC-3540.20
+  capability_id_l1: BC-3540
+  capability_name: Field and Parcel Management
+  confidence: 0.72
+  evidence: GET /api/v1/land/{landId}/crop getLandCropHistory Get crop history for a land parcel
+  reason: Provides crop history records keyed to a land parcel, which is field/parcel-level history recording
+    rather than crop operations execution.
+  recovered_from: vertical-agriculture-food-production-edges.json
 - tag: Orders
   spec_file: dtn-orders-api-openapi.yml
   capability_id: BC-3090
