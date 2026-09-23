@@ -9,10 +9,10 @@ info:
 
     A tool that can be used to easily view the layers you have access to using your obtained credentials. It also serves as a simple reference implementation of an interactive map viewer based on the Map Tile API.
 
-    Access the Map Tile API Playground [here](https://map.api.dtn.com/static/html/v2/map.html).
+    Access the Map Tile API Playground here.
 
 
-    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our [V2 Migration Guide](https://map.api.dtn.com/static/html/v2/migration_guide.pdf)'
+    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our V2 Migration Guide'
   version: 2.0.16
   title: DTN Map Tile Geocoder API
 servers:
@@ -28,7 +28,7 @@ paths:
     get:
       tags:
       - Geocoder
-      summary: Returns geographic coordinates of the provided search text.
+      summary: Returns geographic coordinates of the provided search text
       operationId: getGeographicCoordinates
       externalDocs:
         description: Mapbox geocoding response object
@@ -60,7 +60,7 @@ paths:
     get:
       tags:
       - Geocoder
-      summary: Returns descriptive location information for the provided latitude/longitude.
+      summary: Returns descriptive location information for the provided latitude/longitude
       operationId: getGeographicFeature
       externalDocs:
         description: Mapbox geocoding response object
@@ -85,120 +85,44 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
-  responses:
-    unprocessable-entity:
-      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://maps.dtn.com/error-details/invalid-object
-            title: Invalid object in request body
-            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
-            status: 422
-            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
-    geographic-feature:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/geographic-feature'
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    unauthenticated:
-      description: unauthenticated error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/unauthenticated
-            title: unauthorized
-            detail: Bearer token either not provided or unauthorized.
-            status: 401
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
-    geographic-coordinates:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/geographic-coordinates'
   parameters:
-    lat:
+    autocomplete:
       in: query
-      name: lat
-      description: 'Latitude that specifies the location being queried.
+      name: autocomplete
+      description: Specify whether to return autocomplete results (`true`) or not (`false`, default). When autocomplete is enabled, results will be included that start with the requested string, rather than just responses that match it exactly.
+      schema:
+        type: boolean
+        default: false
+    country:
+      in: query
+      name: country
+      description: 'Limit results to one or more countries. Permitted values are ISO 3166 alpha 2 country codes separated by commas. When bbox and country filters are both enabled, the request will utilize only the initial parameter specified.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+        example: us,ca
+    limit:
+      in: query
+      name: limit
+      description: 'Specify the maximum number of results to return. The default is `5` and the maximum supported is `10`. This parameter is only relevant if the autocomplete feature is enabled. When autocomplete is disabled, the API will return a single result.
+
+        '
+      schema:
+        type: number
+        example: 3
+    lng:
+      in: query
+      name: lng
+      description: 'Longitude that specifies the location being queried.
 
         '
       required: true
       schema:
         type: number
-        example: 44.79736
+        example: -93.25637
     locale:
       in: query
       name: locale
@@ -220,43 +144,25 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    search-text:
+    lat:
       in: query
-      name: searchText
-      description: 'The location or place you are trying to look up. This could be an address, a point of interest name, a city name, etc.
+      name: lat
+      description: 'Latitude that specifies the location being queried.
 
         '
       required: true
       schema:
-        type: string
-        example: 11400 Rupp Drive Burnsville MN
-    country:
-      in: query
-      name: country
-      description: 'Limit results to one or more countries. Permitted values are ISO 3166 alpha 2 country codes separated by commas. When bbox and country filters are both enabled, the request will utilize only the initial parameter specified.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-        example: us,ca
-    will-persist:
-      in: query
-      name: willPersist
-      description: Specify whether to request persistent geocodes (`true`) or not (`false`, default). When persist is enabled, you are contractually allowed to temporarily cache or permanently store the response, and the backing geocoder service will charge these types of requests at a higher rate.
-      schema:
-        type: boolean
-        default: false
-    limit:
-      in: query
-      name: limit
-      description: 'Specify the maximum number of results to return. The default is `5` and the maximum supported is `10`. This parameter is only relevant if the autocomplete feature is enabled. When autocomplete is disabled, the API will return a single result.
-
-        '
-      schema:
         type: number
-        example: 3
+        example: 44.79736
+    accept-json:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - application/json
     bbox:
       in: query
       name: bbox
@@ -268,40 +174,20 @@ components:
         items:
           type: number
         example: -93.25637,44.79736,-92.997778,44.959167
-    accept-json:
-      in: header
-      name: Accept
+    search-text:
+      in: query
+      name: searchText
+      description: 'The location or place you are trying to look up. This could be an address, a point of interest name, a city name, etc.
+
+        '
       required: true
-      description: Indicates response media types that are acceptable.
       schema:
         type: string
-        enum:
-        - application/json
-    place_types:
+        example: 11400 Rupp Drive Burnsville MN
+    will-persist:
       in: query
-      name: placeTypes
-      description: 'Filter results to include only a subset (one or more) of the available feature types. Options are `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`. Multiple options can be comma-separated.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-        example: country,region
-    lng:
-      in: query
-      name: lng
-      description: 'Longitude that specifies the location being queried.
-
-        '
-      required: true
-      schema:
-        type: number
-        example: -93.25637
-    autocomplete:
-      in: query
-      name: autocomplete
-      description: Specify whether to return autocomplete results (`true`) or not (`false`, default). When autocomplete is enabled, results will be included that start with the requested string, rather than just responses that match it exactly.
+      name: willPersist
+      description: Specify whether to request persistent geocodes (`true`) or not (`false`, default). When persist is enabled, you are contractually allowed to temporarily cache or permanently store the response, and the backing geocoder service will charge these types of requests at a higher rate.
       schema:
         type: boolean
         default: false
@@ -324,6 +210,17 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    place_types:
+      in: query
+      name: placeTypes
+      description: 'Filter results to include only a subset (one or more) of the available feature types. Options are `country`, `region`, `postcode`, `district`, `place`, `locality`, `neighborhood`, `address`. Multiple options can be comma-separated.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+        example: country,region
     proximity:
       in: query
       name: proximity
@@ -336,27 +233,54 @@ components:
           type: number
         example: -93.25637,44.79736
   schemas:
-    general-error:
+    geographic-feature:
       type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          format: uri
-          description: A URL to a document describing the error condition.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
-          type: number
-          description: HTTP status code
-        instance:
-          type: string
-          format: uri
-          description: URL with the id for the specific error; this will often point to an error log for that specific response.
-      additionalProperties: true
+      description: 'Refer to the Mapbox Geocoding API docs: https://docs.mapbox.com/api/search/geocoding/#geocoding-response-object'
+      example:
+        type: FeatureCollection
+        query:
+        - -93.25637
+        - 44.79736
+        features:
+        - id: address.8208114876077500
+          type: Feature
+          place_type:
+          - address
+          relevance: 1
+          properties:
+            accuracy: rooftop
+            mapbox_id: dXJuOm1ieGFkcjo2NGJkZjUwMS0yMThhLTRiNTEtOWQ5Mi03ZTIyOTIzYzAwMWI=
+          text: Rupp Drive
+          place_name: 11400 Rupp Drive, Burnsville, MN 55337, United States
+          center:
+          - -93.25637
+          - 44.79736
+          geometry:
+            type: Point
+            coordinates:
+            - -93.25637
+            - 44.79736
+          address: '11400'
+          context:
+          - id: neighborhood.278490348
+            text: Heart of the City
+          - id: postcode.188780268
+            text: 55337
+          - id: place.44173548
+            wikidata: Q736586
+            text: Burnsville
+          - id: district.5801708
+            wikidata: Q111694
+            text: Dakota County
+          - id: region.230636
+            short_code: US-MN
+            wikidata: Q1527
+            text: Minnesota
+          - id: country.8940
+            short_code: us
+            wikidata: Q30
+            text: United States
+        attribution: 'NOTICE: © 2023 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained. POI(s) provided by Foursquare.'
     geographic-coordinates:
       type: object
       description: 'Refer to the Mapbox Geocoding API docs: https://docs.mapbox.com/api/search/geocoding/#geocoding-response-object'
@@ -408,68 +332,144 @@ components:
             wikidata: Q30
             text: United States
         attribution: 'NOTICE: © 2023 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained. POI(s) provided by Foursquare.'
-    geographic-feature:
+    general-error:
       type: object
-      description: 'Refer to the Mapbox Geocoding API docs: https://docs.mapbox.com/api/search/geocoding/#geocoding-response-object'
-      example:
-        type: FeatureCollection
-        query:
-        - -93.25637
-        - 44.79736
-        features:
-        - id: address.8208114876077500
-          type: Feature
-          place_type:
-          - address
-          relevance: 1
-          properties:
-            accuracy: rooftop
-            mapbox_id: dXJuOm1ieGFkcjo2NGJkZjUwMS0yMThhLTRiNTEtOWQ5Mi03ZTIyOTIzYzAwMWI=
-          text: Rupp Drive
-          place_name: 11400 Rupp Drive, Burnsville, MN 55337, United States
-          center:
-          - -93.25637
-          - 44.79736
-          geometry:
-            type: Point
-            coordinates:
-            - -93.25637
-            - 44.79736
-          address: '11400'
-          context:
-          - id: neighborhood.278490348
-            text: Heart of the City
-          - id: postcode.188780268
-            text: 55337
-          - id: place.44173548
-            wikidata: Q736586
-            text: Burnsville
-          - id: district.5801708
-            wikidata: Q111694
-            text: Dakota County
-          - id: region.230636
-            short_code: US-MN
-            wikidata: Q1527
-            text: Minnesota
-          - id: country.8940
-            short_code: us
-            wikidata: Q30
-            text: United States
-        attribution: 'NOTICE: © 2023 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained. POI(s) provided by Foursquare.'
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          format: uri
+          description: A URL to a document describing the error condition.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: HTTP status code
+        instance:
+          type: string
+          format: uri
+          description: URL with the id for the specific error; this will often point to an error log for that specific response.
+      additionalProperties: true
+  responses:
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
+    unauthenticated:
+      description: unauthenticated error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/unauthenticated
+            title: unauthorized
+            detail: Bearer token either not provided or unauthorized.
+            status: 401
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
+    geographic-feature:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/geographic-feature'
+    geographic-coordinates:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/geographic-coordinates'
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    unprocessable-entity:
+      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://maps.dtn.com/error-details/invalid-object
+            title: Invalid object in request body
+            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
+            status: 422
+            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
   headers:
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
     content-language:
       description: Describe the language(s) intended for the audience.
       schema:
         type: string
         default: en-US
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

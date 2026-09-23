@@ -4,43 +4,7 @@ info:
   title: DTN Farm Intelligence Portfolios API
   description: 'The Farm Intelligence API provides programmatic access to DTN''s agricultural data — producer records,
 
-    land metadata, crop history, and related datasets. It is organized into three surfaces plus shared utilities:
-
-
-    - **Producer API** — Producer discovery, details, and relationship data
-
-    - **Land API** — Land search, metadata, crop history, soil, and geospatial data
-
-    - **Linked Data API** — Segments, portfolios, and batch operations
-
-    - **Shared Utilities** — Crop codes, geographic areas (unmetered)
-
-
-    ## Authentication
-
-
-    All endpoints require OAuth 2.0 client credentials authentication. Obtain a token from the DTN DAIS gateway
-
-    with your client_id, client_secret, and the Farm Intelligence audience.
-
-
-    ## Credit Metering
-
-
-    Endpoints are classified as:
-
-    - **Metered (1 credit per record)** — Producer and Land data endpoints
-
-    - **Unmetered (discovery class)** — Search, codes, geographic areas
-
-
-    Response headers include credit usage information:
-
-    - `X-Credit-Cost` — Credits consumed by this request
-
-    - `X-Credits-Remaining` — Remaining balance
-
-    - `X-Credit-Pool-Reset` — Contract reset date'
+    land metadata, crop history, and related datasets.'
   contact:
     name: DTN Agriculture Intelligence Team
     email: agintel@dtn.com
@@ -68,9 +32,7 @@ paths:
         Returns portfolio metadata including creator name and producer count.
 
 
-        **Billing:** Unmetered (discovery class).
-
-        '
+        **Billing:** Unmetered (discovery class).'
       tags:
       - Portfolios
       responses:
@@ -124,9 +86,7 @@ paths:
         filters for role, status, contact availability, and geographic location.
 
 
-        **Billing:** Metered — 1 credit per producer returned.
-
-        '
+        **Billing:** Metered — 1 credit per producer returned.'
       tags:
       - Portfolios
       parameters:
@@ -332,6 +292,18 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
+    Pagination:
+      type: object
+      description: Pagination metadata for list responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
     Producer:
       type: object
       description: A producer record representing an agricultural entity (farmer, company, cooperative).
@@ -482,18 +454,6 @@ components:
             '
           example:
           - john@smithfarms.com
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
     Portfolio:
       type: object
       description: A customer-defined portfolio (curated list of producers).

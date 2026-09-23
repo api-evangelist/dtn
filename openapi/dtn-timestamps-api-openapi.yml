@@ -9,10 +9,10 @@ info:
 
     A tool that can be used to easily view the layers you have access to using your obtained credentials. It also serves as a simple reference implementation of an interactive map viewer based on the Map Tile API.
 
-    Access the Map Tile API Playground [here](https://map.api.dtn.com/static/html/v2/map.html).
+    Access the Map Tile API Playground here.
 
 
-    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our [V2 Migration Guide](https://map.api.dtn.com/static/html/v2/migration_guide.pdf)'
+    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our V2 Migration Guide'
   version: 2.0.16
   title: DTN Map Tile Timestamps API
 servers:
@@ -28,7 +28,7 @@ paths:
     get:
       tags:
       - Timestamps
-      summary: Returns list of timestamps of a given layer by id.
+      summary: Returns list of timestamps of a given layer by id
       operationId: getLayerTimestamps
       parameters:
       - $ref: '#/components/parameters/layer-id'
@@ -46,80 +46,16 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
-  responses:
-    unprocessable-entity:
-      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://maps.dtn.com/error-details/invalid-object
-            title: Invalid object in request body
-            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
-            status: 422
-            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
-    timestamp-list:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/timestamp-wrapper'
   parameters:
+    accept-json:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - application/json
     layer-id:
       in: path
       name: layerId
@@ -131,14 +67,16 @@ components:
         type: string
         description: id for the layer from which to receive data.
         example: radar-base-ref-precip-type-na-contours
-    force-off-interval:
+    layer-parameters:
       in: query
-      name: forceOffInterval
-      description: When set to true, this parameter forces the API to return the most recent time frame, even if it falls outside the regular intervals. If set to false or omitted, only data from the regular intervals is returned.
+      name: parameters
+      description: 'Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.
+
+        '
       required: false
       schema:
-        type: boolean
-        default: false
+        type: string
+        example: id-1:value-1;id-2:value-2
     time-range:
       in: query
       name: time
@@ -152,25 +90,28 @@ components:
           type: string
           format: date-time
           example: 2022-04-01T00:00:00Z/2022-04-02T00:00:00Z
-    layer-parameters:
+    force-off-interval:
       in: query
-      name: parameters
-      description: 'Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.
-
-        '
+      name: forceOffInterval
+      description: When set to true, this parameter forces the API to return the most recent time frame, even if it falls outside the regular intervals. If set to false or omitted, only data from the regular intervals is returned.
       required: false
       schema:
-        type: string
-        example: id-1:value-1;id-2:value-2
-    accept-json:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
+        type: boolean
+        default: false
+  headers:
+    content-language:
+      description: Describe the language(s) intended for the audience.
       schema:
         type: string
-        enum:
-        - application/json
+        default: en-US
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
   schemas:
     valid-time:
       type: object
@@ -229,20 +170,79 @@ components:
           valid: '2024-01-01T02:00:00Z'
         - tileSetId: a52ffc09-3db5-4988-a67f-e37a7719e833
           valid: '2024-01-01T03:00:00Z'
-  headers:
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
+  responses:
+    unprocessable-entity:
+      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://maps.dtn.com/error-details/invalid-object
+            title: Invalid object in request body
+            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
+            status: 422
+            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
+    timestamp-list:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/timestamp-wrapper'
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
   securitySchemes:
     clientCredentials:
       type: oauth2

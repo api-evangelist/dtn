@@ -16,19 +16,19 @@ paths:
       tags:
       - Watches
       summary: List current watches from the Storm Prediction Center
-      description: List current watches from the Storm Prediction Center
       produces:
       - application/json
       parameters: []
       responses:
         '200':
           $ref: '#/components/responses/watch_list'
+      operationId: getFeedsV3Watch
+      x-operation-id-source: derived
   /feeds/v3/watch/archive/{year}/{month}/{day}:
     get:
       tags:
       - Watches
       summary: List historical watches for given date
-      description: List historical watches for given date
       produces:
       - application/json
       parameters:
@@ -38,12 +38,13 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/watch_list'
+      operationId: getFeedsV3WatchArchiveByYearByMonthByDay
+      x-operation-id-source: derived
   /feeds/v3/watch/archive/{year}/{month}/{day}/{hour}/{minute}:
     get:
       tags:
       - Watches
       summary: List historical watches for given timestamp
-      description: List historical watches for given timestamp
       produces:
       - application/json
       parameters:
@@ -55,12 +56,13 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/watch_list'
+      operationId: getFeedsV3WatchArchiveByYearByMonthByDayByHourByMinute
+      x-operation-id-source: derived
   /feeds/v3/watch/{path}:
     get:
       tags:
       - Watches
       summary: Get raw text of watch
-      description: Get raw text of watch
       produces:
       - text/plain
       parameters:
@@ -71,22 +73,10 @@ paths:
           content:
             text/plain:
               example: "\n661 \nWWUS30 KWNS 081426\nSAW1  \nSPC AWW 081426\nWW 1 TORNADO AR MO OK 081425Z - 081800Z\nAXIS..55 STATUTE MILES EAST AND WEST OF LINE..\n35NNW GMJ/GROVE OK/ - 35SSE MKO/MUSKOGEE OK/\n..AVIATION COORDS.. 50NM E/W /11ESE OSW - 38NE MLC/\nHAIL SURFACE AND ALOFT..1 INCH. WIND GUSTS..55 KNOTS.\nMAX TOPS TO 350. MEAN STORM MOTION VECTOR 23060.\n\nLAT...LON 37079399 35209416 35209611 37079598\n\nTHIS IS AN APPROXIMATION TO THE WATCH AREA.  FOR A\nCOMPLETE DEPICTION OF THE WATCH SEE WOUS64 KWNS\nFOR WOU1.\n\n\n"
+      operationId: getFeedsV3WatchByPath
+      x-operation-id-source: derived
 components:
   parameters:
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
-      required: true
-      schema:
-        type: string
-    minute:
-      name: minute
-      in: path
-      description: 2 digit minute, 00-59
-      required: true
-      schema:
-        type: string
     day:
       name: day
       in: path
@@ -98,6 +88,20 @@ components:
       name: path
       in: path
       description: pathlike filename identifying text to retrieve, e.g. tcv/WTUS82_KILM_TCVILM_20250704_2132_873.txt
+      required: true
+      schema:
+        type: string
+    minute:
+      name: minute
+      in: path
+      description: 2 digit minute, 00-59
+      required: true
+      schema:
+        type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string
@@ -115,11 +119,6 @@ components:
       required: true
       schema:
         type: string
-  headers:
-    content-type:
-      description: MIME-type of returned data
-      schema:
-        type: string
   responses:
     watch_list:
       description: Watch List
@@ -129,6 +128,11 @@ components:
       content:
         application/json:
           example: "{\n\t\"2026.KWNS.0001\": [\n\t\t{\n\t\t\t\"a\": \"saw/WWUS30_KWNS_SAW1_20260108_1426_57396661.txt\",\n\t\t\t\"c\": \"SAW1\",\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t3707,\n\t\t\t\t\t-9399\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t3520,\n\t\t\t\t\t-9416\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t3520,\n\t\t\t\t\t-9611\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t3707,\n\t\t\t\t\t-9598\n\t\t\t\t]\n\t\t\t],\n\t\t\t\"t\": \"TO.A\",\n\t\t\t\"n\": \"1\",\n\t\t\t\"u\": \"2026.KWNS.0001\",\n\t\t\t\"b\": 1767882300,\n\t\t\t\"e\": 1767895200\n\t\t},\n\t\t{\n\t\t\t\"t\": \"WATCH\",\n\t\t\t\"o\": \"KWNS\",\n\t\t\t\"a\": \"wwp/WWUS40_KWNS_WWP1_20260108_1426_57396640.txt\",\n\t\t\t\"b\": 1767882120,\n\t\t\t\"e\": 1767882120,\n\t\t\t\"i\": {\n\t\t\t\t\"po2t\": \"30%\",\n\t\t\t\t\"pot\": \"10%\",\n\t\t\t\t\"posw\": \"40%\",\n\t\t\t\t\"pow\": \"20%\",\n\t\t\t\t\"posh\": \"20%\",\n\t\t\t\t\"poh2\": \"20%\",\n\t\t\t\t\"po6hw\": \"60%\",\n\t\t\t\t\"mhi\": \"1.0\",\n\t\t\t\t\"mwg\": \"55\",\n\t\t\t\t\"mtf\": \"350\",\n\t\t\t\t\"msmv\": \"23060\",\n\t\t\t\t\"pds\": \"NO\"\n\t\t\t},\n\t\t\t\"n\": \"1\",\n\t\t\t\"u\": \"2026.KWNS.0001\"\n\t\t},\n\t\t{\n\t\t\t\"t\": \"TO.A\",\n\t\t\t\"o\": \"KWNS\",\n\t\t\t\"a\": \"sel/WWUS20_KWNS_SEL1_20260108_1426_57396808.txt\",\n\t\t\t\"b\": 1767882300,\n\t\t\t\"e\": 1767895200,\n\t\t\t\"i\": {\n\t\t\t\t\"po2t\": \"30%\",\n\t\t\t\t\"pot\": \"10%\",\n\t\t\t\t\"posw\": \"40%\",\n\t\t\t\t\"pow\": \"20%\",\n\t\t\t\t\"posh\": \"20%\",\n\t\t\t\t\"poh2\": \"20%\",\n\t\t\t\t\"po6hw\": \"60%\",\n\t\t\t\t\"mhi\": \"1.0\",\n\t\t\t\t\"mwg\": \"55\",\n\t\t\t\t\"mtf\": \"350\",\n\t\t\t\t\"msmv\": \"23060\",\n\t\t\t\t\"pds\": \"NO\"\n\t\t\t},\n\t\t\t\"n\": \"1\",\n\t\t\t\"u\": \"2026.KWNS.0001\",\n\t\t\t\"c\": \"SAW1\",\n\t\t\t\"p\": [\n\t\t\t\t[\n\t\t\t\t\t3707,\n\t\t\t\t\t-9399\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t3520,\n\t\t\t\t\t-9416\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t3520,\n\t\t\t\t\t-9611\n\t\t\t\t],\n\t\t\t\t[\n\t\t\t\t\t3707,\n\t\t\t\t\t-9598\n\t\t\t\t]\n\t\t\t]\n\t\t}\n\t]\n}"
+  headers:
+    content-type:
+      description: MIME-type of returned data
+      schema:
+        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

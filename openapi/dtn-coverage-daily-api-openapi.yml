@@ -15,7 +15,7 @@ paths:
     get:
       tags:
       - Coverage Daily
-      summary: Daily coverage factors for transactional refined product volumes at PADD or United States level.
+      summary: Daily coverage factors for transactional refined product volumes at PADD or…
       operationId: GetDailyCoverages
       parameters:
       - name: apiKey
@@ -120,17 +120,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      required:
-      - code
-      - message
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
     DailyCoverage:
       type: object
       properties:
@@ -153,6 +142,17 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/DailyCoverage'
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

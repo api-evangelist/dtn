@@ -42,7 +42,7 @@ paths:
     get:
       tags:
       - Health
-      summary: Kubernetes will use this endpoint to monitor service's health.
+      summary: Kubernetes will use this endpoint to monitor service's health
       responses:
         '200':
           $ref: '#/components/responses/HealthCheckReport'
@@ -59,7 +59,7 @@ paths:
     get:
       tags:
       - Health
-      summary: Kubernetes will use this endpoint to monitor service's readiness.
+      summary: Kubernetes will use this endpoint to monitor service's readiness
       responses:
         '200':
           $ref: '#/components/responses/HealthCheckReport'
@@ -97,6 +97,8 @@ paths:
                 type: string
       tags:
       - Health
+      summary: Health
+      x-summary-source: derived
     summary: Health Check
     description: The health check endpoint provides information about the health of a web service. If each of the components required by the service are healthy, then the service is considered healthy and will return a 200 OK response. If any of the components needed by the service are unhealthy, then a 503 Service Unavailable response will be provided.
     servers:
@@ -118,6 +120,8 @@ paths:
         '503':
           $ref: '#/components/responses/ErrorResponse'
       description: ''
+      operationId: getV1HealthCheck
+      x-operation-id-source: derived
     servers:
     - url: https://lightning.api.dtn.com
   /v1/health-check/:
@@ -133,6 +137,8 @@ paths:
           $ref: '#/components/responses/HealthInternalError'
       security:
       - clientCredentials: []
+      operationId: getV1HealthCheck
+      x-operation-id-source: derived
     servers:
     - url: https://aviation.api.dtn.com
 components:
@@ -211,6 +217,19 @@ components:
         info: Service is healthy
         timestamp: '2021-04-19T22:10:53Z'
         env: unknown
+    Error_2:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     HealthCheck_3:
       type: object
       properties:
@@ -225,60 +244,6 @@ components:
           format: date-time
         env:
           type: string
-    Error_2:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-    HealthCheck_4:
-      title: HealthCheck
-      description: Health Check
-      required:
-      - status
-      type: object
-      properties:
-        status:
-          type: string
-        version:
-          type: string
-        info:
-          type: string
-        timestamp:
-          format: date-time
-          type: string
-        env:
-          type: string
-        meta:
-          $ref: '#/components/schemas/Meta'
     Error_3:
       title: Error
       description: Error
@@ -315,6 +280,47 @@ components:
             type: object
         meta:
           $ref: '#/components/schemas/Meta'
+    HealthCheck_4:
+      title: HealthCheck
+      description: Health Check
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        info:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        env:
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
   responses:
     ErrorResponse:
       content:
@@ -354,24 +360,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/HealthCheck_3'
-    HealthCheckReport_3:
-      description: Health Check report
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HealthCheck_4'
-          example:
-            status: up
-            version: v2
-            info: Service is healthy.
-            timestamp: 2018-02-10T09:30Z
-            env: production
-            meta:
-              name: v1.health-check
-              request_id: a5c651d2-9155-4e15-b5c8-90d7d4be1a4f
-              start_timestamp: 1713991179403
-              end_timestamp: 1713991179404
-              execution_time: 1
     HealthInternalError:
       description: Internal Server Error
       content:
@@ -391,6 +379,24 @@ components:
               start_timestamp: 1714684480017
               end_timestamp: 1714684480026
               execution_time: 9
+    HealthCheckReport_3:
+      description: Health Check report
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HealthCheck_4'
+          example:
+            status: up
+            version: v2
+            info: Service is healthy.
+            timestamp: 2018-02-10T09:30Z
+            env: production
+            meta:
+              name: v1.health-check
+              request_id: a5c651d2-9155-4e15-b5c8-90d7d4be1a4f
+              start_timestamp: 1713991179403
+              end_timestamp: 1713991179404
+              execution_time: 1
   securitySchemes:
     clientCredentials:
       type: oauth2

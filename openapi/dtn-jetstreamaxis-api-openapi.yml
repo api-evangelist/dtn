@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
-  title: DTN Aviation Enhanced Flight Hazards (EFH) Jet Stream Axis API
-  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  title: DTN Aviation Enhanced Flight Hazards (EFH) Jet Stream Axis…
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data. Each data type has its own endpoint. Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
   version: 1.10.3
 servers:
 - url: https://aviation.api.dtn.com
@@ -16,7 +16,7 @@ paths:
       tags:
       - JetStreamAxis
       summary: Get active JetStreamAxis data
-      description: Get all available JetStreamAxis data, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.
+      description: Get all available JetStreamAxis data, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
       responses:
         '200':
           $ref: '#/components/responses/JetStreamAxisSuccess'
@@ -44,116 +44,48 @@ paths:
       - $ref: '#/components/parameters/JetStreamAxisQueryUntilDateTime'
       security:
       - clientCredentials: []
+      operationId: getV1JetStreamAxis
+      x-operation-id-source: derived
 components:
+  responses:
+    JetStreamAxisSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JetStreamAxisFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/JetStreamAxisSuccessResponse'
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    JetStreamAxisBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/JetStreamAxisBadRequestResponse'
   schemas:
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-    GeoJsonObject:
-      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
-
-        '
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - Feature
-          - FeatureCollection
-          - Point
-          - MultiPoint
-          - LineString
-          - MultiLineString
-          - Polygon
-          - MultiPolygon
-          - GeometryCollection
-        bbox:
-          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
-
-            '
-          type: array
-          items:
-            type: number
-      required:
-      - type
-      discriminator:
-        propertyName: type
-    Geometry:
-      type: object
-      description: GeoJSon geometry
-      discriminator:
-        propertyName: type
-      required:
-      - type
-      externalDocs:
-        url: http://geojson.org/geojson-spec.html#geometry-objects
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          description: the geometry type
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
     JetStreamAxisFeature:
       description: GeoJSon 'Feature' object
       externalDocs:
@@ -214,208 +146,115 @@ components:
         modelDateTime:
           type: string
           format: date-time
-  parameters:
-    QueryMaxAltitudeFt:
-      name: maxAltitudeFt
-      description: Maximum altitude in feet.  Limits to objects whose `altitude` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in feet.
-      in: query
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-        maximum: 60000
-    JetStreamAxisQueryFromDateTime:
-      name: fromDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    JetStreamAxisQueryIsValidAt:
-      name: isValidAt
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    JetStreamAxisQueryUntilDateTime:
-      name: untilDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryMinSpeedKts:
-      name: minSpeedKts
-      description: Minimum speed in knots.  Limits to objects whose `speed` value is greater than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots.
-      in: query
-      required: false
-      schema:
-        type: integer
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryMinAltitudeFt:
-      name: minAltitudeFt
-      description: Minimum altitude in feet.  Limits to objects whose `altitude` is greater than or equal to this.  Must set value in feet even if output `unitSystem` would not give response in feet.
-      in: query
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-        maximum: 60000
-    QueryConsolidate:
-      name: consolidate
-      description: Boolean indicator for merging GeoJSON Polygons objects into collective MultiPolygon objects.  If true, areal objects sharing the same defining attributes (e.g., vertical velocity & top for thunderstorms or EDR for turbulence) are combined together into single MultiPolygon to minimize the number of distinct objects.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryMaxSpeedKts:
-      name: maxSpeedKts
-      description: Maximum speed in knots.  Limits to objects whose `speed` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots.
-      in: query
-      required: false
-      schema:
-        type: integer
-    QueryGeometry:
-      name: geometry
-      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: true
-    QuerySrid:
-      name: srid
-      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
-      in: query
-      required: false
-      explode: false
-      schema:
-        type: integer
-        enum:
-        - 4326
-        - 3857
-        default: 4326
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryDistanceUnits:
-      name: distanceUnits
-      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
-      in: query
-      required: false
-      schema:
-        type: string
-        enum:
-        - nm
-        - km
-        - m
-        - sm
-        default: nm
-  responses:
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    JetStreamAxisSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/JetStreamAxisFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/JetStreamAxisSuccessResponse'
-    JetStreamAxisBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/JetStreamAxisBadRequestResponse'
-  examples:
-    JetStreamAxisBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/jetStreamAxis?fromDateTime=2025-06-12T20:13:41.196Z&untilDateTime=2025-06-12T14:13:41.196Z&intersection=true
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/jetStreamAxis:requestId:4e17c9de-8a4a-4ec8-945f-757cf2936d66
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
         errors:
-        - message: A 'from' datetime must be before an 'until' timestamp
-          parameter: fromDateTime
-          value: '2025-06-12T20:13:41.196Z'
+          type: array
+          items:
+            type: object
         meta:
-          name: v1.jetStreamAxis?fromDateTime=2025-06-12T20:13:41.196Z&untilDateTime=2025-06-12T14:13:41.196Z&intersection=true
-          uuid: c4c2958e-fa32-482d-886c-257f7261fd1e
-          request_id: 4e17c9de-8a4a-4ec8-945f-757cf2936d66
-          start_timestamp: 1749737621222
-          end_timestamp: 1749737621611
-          execution_time: 389
+          $ref: '#/components/schemas/Meta'
+    GeoJsonObject:
+      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
+
+        '
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          - FeatureCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - GeometryCollection
+        bbox:
+          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
+
+            '
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      discriminator:
+        propertyName: type
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+  examples:
     JetStreamAxisSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/jetStreamAxis?fromDateTime=2025-06-12T04:02:40.789Z&untilDateTime=2025-06-12T10:02:40.789Z&bbox=-180,-60,-120,-27&consolidate=true
@@ -758,6 +597,169 @@ components:
           start_timestamp: 1749679360856
           end_timestamp: 1749679362015
           execution_time: 1159
+    JetStreamAxisBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/jetStreamAxis?fromDateTime=2025-06-12T20:13:41.196Z&untilDateTime=2025-06-12T14:13:41.196Z&intersection=true
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/jetStreamAxis:requestId:4e17c9de-8a4a-4ec8-945f-757cf2936d66
+        errors:
+        - message: A 'from' datetime must be before an 'until' timestamp
+          parameter: fromDateTime
+          value: '2025-06-12T20:13:41.196Z'
+        meta:
+          name: v1.jetStreamAxis?fromDateTime=2025-06-12T20:13:41.196Z&untilDateTime=2025-06-12T14:13:41.196Z&intersection=true
+          uuid: c4c2958e-fa32-482d-886c-257f7261fd1e
+          request_id: 4e17c9de-8a4a-4ec8-945f-757cf2936d66
+          start_timestamp: 1749737621222
+          end_timestamp: 1749737621611
+          execution_time: 389
+  parameters:
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QueryConsolidate:
+      name: consolidate
+      description: Boolean indicator for merging GeoJSON Polygons objects into collective MultiPolygon objects.  If true, areal objects sharing the same defining attributes (e.g., vertical velocity & top for thunderstorms or EDR for turbulence) are combined together into single MultiPolygon to minimize the number of distinct objects.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryMinSpeedKts:
+      name: minSpeedKts
+      description: Minimum speed in knots.  Limits to objects whose `speed` value is greater than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots.
+      in: query
+      required: false
+      schema:
+        type: integer
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    JetStreamAxisQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    JetStreamAxisQueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    JetStreamAxisQueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 12 hours in past and no later than 20 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryMaxSpeedKts:
+      name: maxSpeedKts
+      description: Maximum speed in knots.  Limits to objects whose `speed` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in knots.
+      in: query
+      required: false
+      schema:
+        type: integer
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryMaxAltitudeFt:
+      name: maxAltitudeFt
+      description: Maximum altitude in feet.  Limits to objects whose `altitude` value is less than or equal to this.  Must set value in knots even if output `unitSystem` would not give response in feet.
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 60000
+    QueryMinAltitudeFt:
+      name: minAltitudeFt
+      description: Minimum altitude in feet.  Limits to objects whose `altitude` is greater than or equal to this.  Must set value in feet even if output `unitSystem` would not give response in feet.
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 60000
   securitySchemes:
     clientCredentials:
       type: oauth2

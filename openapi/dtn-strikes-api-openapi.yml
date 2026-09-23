@@ -7,9 +7,7 @@ info:
     The DTN Lightning API provides you access to worldwide near real-time and historical lightning data.
 
 
-    Download the Lightning API Postman collection [here](https://dtn.box.com/s/nfq1iyy9o34t3v5v1jnjfq5veo0neirr).
-
-    '
+    Download the Lightning API Postman collection here.'
 servers:
 - url: https://lightning.api.dtn.com
 tags:
@@ -22,7 +20,25 @@ paths:
       tags:
       - Strikes
       summary: Get Lightning Strikes
-      description: "This endpoint allows users to retrieve all lightning strikes that match the set criteria.\n#### NOTES:\n  - Space: Observations can be searched geographically by:\n    - `radius` required parameters: `lat`, `lon` and `radius`\n    - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`\n  - Time: To search within a time window:\n    - For time range, provide `startTime` and `endTime`. All should be in `ISO` format. Maximum time range is 2 weeks.\n    - If only `startTime` or `endTime` is provided, the missing one will be calculated by the maximum time range allowable.\n    - If neither `startTime` and `endTime` are provided, the most recent strikes from the last maximum time range will be fetched.\n  - Filter: Providing `parameters` enables you to filter which parameters will be included in the response."
+      description: 'This endpoint allows users to retrieve all lightning strikes that match the set criteria.
+
+        #### NOTES:
+
+        - Space: Observations can be searched geographically by:
+
+        - `radius` required parameters: `lat`, `lon` and `radius`
+
+        - `boundingBox` required parameters: `minLat`, `minLon`, `maxLat` and `maxLon`
+
+        - Time: To search within a time window:
+
+        - For time range, provide `startTime` and `endTime`. All should be in `ISO` format. Maximum time range is 2 weeks.
+
+        - If only `startTime` or `endTime` is provided, the missing one will be calculated by the maximum time range allowable.
+
+        - If neither `startTime` and `endTime` are provided, the most recent strikes from the last maximum time range will be fetched.
+
+        - Filter: Providing `parameters` enables you to filter which parameters will be included in the response.'
       security:
       - clientCredentials: []
       parameters:
@@ -97,6 +113,8 @@ paths:
           $ref: '#/components/responses/ValidationError'
         '500':
           description: Internal server error.
+      operationId: getV1Strikes
+      x-operation-id-source: derived
 components:
   schemas:
     StrikesDefault:
@@ -186,18 +204,18 @@ components:
           location:
             type: string
   responses:
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
     GetStrikesDefault:
       description: Lightning Strikes
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/StrikesDefault'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
   securitySchemes:
     clientCredentials:
       type: oauth2

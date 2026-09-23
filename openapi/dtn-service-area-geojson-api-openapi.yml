@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Storm Impact Analytics Service Area Geojson API
-  description: "# Introduction  \n<p>The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.</p>"
+  description: '# Introduction
+
+
+    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
   version: 1.0.0
 servers:
 - url: https://sia.dtn.com
@@ -12,7 +15,7 @@ tags:
 paths:
   /v1/service-area-geojson:
     get:
-      summary: Get the geoJson of the entire service area.
+      summary: Get the geoJson of the entire service area
       description: Returns a feature collection containing the geoJson of the entire service region.
       operationId: getServiceAreaGeoJson
       parameters:
@@ -29,29 +32,6 @@ paths:
       - Service Area Geojson
 components:
   schemas:
-    featureProperties:
-      type: object
-      properties:
-        name:
-          type: string
-          example: CENTRAL
-          description: Name of a specific feature.
-        description:
-          type: string
-          example: Zone
-          description: Description of the geographic level.
-        prediction:
-          type: number
-          example: 293
-          description: Best predicted value for this hourly prediction.
-        prediction_high:
-          type: number
-          example: 312
-          description: Upper 20% of the range model applied to this storm type.
-        prediction_low:
-          type: number
-          example: 216
-          description: Lower 80% of the range model applied to this storm type.
     featureCollection:
       type: object
       properties:
@@ -91,6 +71,29 @@ components:
                   - -37.741
                 - - 145.107
                   - -37.738
+    featureProperties:
+      type: object
+      properties:
+        name:
+          type: string
+          example: CENTRAL
+          description: Name of a specific feature.
+        description:
+          type: string
+          example: Zone
+          description: Description of the geographic level.
+        prediction:
+          type: number
+          example: 293
+          description: Best predicted value for this hourly prediction.
+        prediction_high:
+          type: number
+          example: 312
+          description: Upper 20% of the range model applied to this storm type.
+        prediction_low:
+          type: number
+          example: 216
+          description: Lower 80% of the range model applied to this storm type.
   parameters:
     geolevel:
       name: geolevel

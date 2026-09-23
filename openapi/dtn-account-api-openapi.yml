@@ -4,101 +4,7 @@ info:
   description: '# Energy Event Index (EEI) Customer API
 
 
-    This API provides access to Energy Event Index (EEI) data for individual existing EEI customers. The Energy Event Index is a way to describe the impact of weather on energy/utility infrastructure, as well as wildfire risks.
-
-
-    ## About Energy Event Index (EEI)
-
-    The EEI applies a risk level (the index) to not only a range of weather parameters, but the likelihood in which they will occur, as well as the confidence/likelihood of change. A customer''s EEI scale is applied to their specific requirements and their service areas.
-
-
-    ### EEI Parameters
-
-    The EEI system evaluates multiple weather parameters that can impact energy infrastructure:
-
-    - **Wind Speed & Wind Gust**: Both synoptically-driven and storm-driven winds
-
-    - **Snow**: Accumulation amounts that can affect power lines and equipment
-
-    - **Ice**: Ice accumulation on infrastructure
-
-    - **Lightning**: Electrical storm activity
-
-    - **Flooding**: Water-related impacts to facilities
-
-    - **Wildfire**: Fire risk assessment
-
-    - **Rainfall**: Precipitation impacts (measured in 4-hour periods)
-
-
-    ### Seasonal Considerations
-
-    Most customers have two sets of criteria:
-
-    - **"Leaves On" Season**: Typically spring through fall when foliage can impact power grids
-
-    - **"Leaves Off" Season**: Winter months when trees are bare
-
-
-    These seasonal thresholds account for how regional foliage impacts the power grid at different times of the year.
-
-
-    ## Purpose
-
-    The primary purpose of this API is to:
-
-    1. Retrieve EEI data from the Weather Sentry Online (WSO)
-
-    2. Process and format this data according to customer-specific configurations
-
-    3. Serve the processed EEI information to existing customers through a customer-facing interface
-
-    4. Provide threshold data that reflects seasonal "leaves on/off" criteria
-
-
-    ## Key Features
-
-    - Secure authentication for existing EEI customers
-
-    - Retrieval of up-to-date EEI forecast data
-
-    - Customer-specific threshold configurations
-
-    - Seasonal threshold adjustments (leaves on/off periods)
-
-    - Regional forecast data for customer service territories
-
-
-    ## Target Audience
-
-    This API is designed for use by:
-
-    - Energy and utility companies with EEI subscriptions
-
-    - Emergency management systems requiring weather impact forecasts
-
-    - Internal systems that require EEI data for customer-facing applications
-
-    - Decision-making tools for utility operations and crew deployment
-
-
-    ## Data Flow
-
-    1. The API retrieves raw EEI data from the Weather Sentry Online (WSO)
-
-    2. Data is processed according to customer-specific configurations and seasonal criteria
-
-    3. Customers can access their relevant EEI information through authenticated API calls
-
-    4. Forecast data includes confidence levels and multi-day outlooks
-
-
-    ## Security
-
-    This API implements robust security measures to ensure that only authenticated and authorized customers can access their EEI data.
-
-
-    For detailed information on endpoints, request/response formats, and authentication, please refer to the API documentation below.'
+    This API provides access to Energy Event Index (EEI) data for individual existing EEI customers.'
   version: 1.1.0
 servers:
 - url: https://eei.dtn.com
@@ -281,7 +187,9 @@ paths:
     get:
       operationId: getEeiSchedule
       summary: Retrieve EEI Forecast Schedule for an Account
-      description: "This endpoint retrieves the Energy Event Index (EEI) forecast schedule for a specific account. \nIt provides information about the scheduled publication times for EEI forecasts.\n"
+      description: 'This endpoint retrieves the Energy Event Index (EEI) forecast schedule for a specific account.
+
+        It provides information about the scheduled publication times for EEI forecasts.'
       responses:
         '200':
           description: Successful retrieval of EEI forecast schedule

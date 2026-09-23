@@ -82,6 +82,8 @@ paths:
                 type: string
       tags:
       - Order
+      summary: Update order
+      x-summary-source: derived
 components:
   securitySchemes:
     clientCredentials:

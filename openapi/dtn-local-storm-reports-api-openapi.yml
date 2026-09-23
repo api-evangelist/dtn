@@ -16,18 +16,18 @@ paths:
       tags:
       - Local Storm Reports
       summary: Get list of current Local Storm Reports
-      description: Get list of current Local Storm Reports
       produces:
       - application/json
       responses:
         '200':
           $ref: '#components/responses/local_storm_report_list'
+      operationId: getFeedsV3Lsr
+      x-operation-id-source: derived
   /feeds/v3/lsr/{id}:
     get:
       tags:
       - Local Storm Reports
       summary: Get the raw text of a Local Storm Report
-      description: Get the raw text of a Local Storm Report
       produces:
       - text/plain
       parameters:
@@ -43,12 +43,13 @@ paths:
           content:
             text/plain:
               example: "\n449 \nNWUS55 KBYZ 121657\nLSRBYZ\n\nPreliminary Local Storm Report\nNational Weather Service Billings MT\n957 AM MST Mon Jan 12 2026\n\n..TIME...   ...EVENT...      ...CITY LOCATION...     ...LAT.LON...\n..DATE...   ....MAG....      ..COUNTY LOCATION..ST.. ...SOURCE....\n            ..REMARKS..\n\n0815 AM     Non-Tstm Wnd Gst 2 ENE Harlowton         46.45N 109.80W\n01/12/2026  M62 MPH          Wheatland          MT   AWOS             \n\n            AWOS station K1KM 2 ENE Harlowton. \n\n0925 AM     Non-Tstm Wnd Gst 9 NE Hedgesville        46.54N 109.35W\n01/12/2026  M58 MPH          Golden Valley      MT   Mesonet          \n\n             \n\n0935 AM     Non-Tstm Wnd Gst 5 NNE Reed Point        45.77N 109.51W\n01/12/2026  E57 MPH          Stillwater         MT   Mesonet          \n\n            Busteed SW Mesonet. \n\n0845 AM     Non-Tstm Wnd Gst 3 NE Melville           46.13N 109.92W\n01/12/2026  M53 MPH          Sweet Grass        MT   Mesonet          \n\n            Mesonet station MTHLS Harlowton South Us-191 \n            Mp 22.0. \n\n\n&&\n\n$$\n"
+      operationId: getFeedsV3LsrById
+      x-operation-id-source: derived
   /feeds/v3/lsr/archive/{year}/{month}/{day}:
     get:
       tags:
       - Local Storm Reports
       summary: Get historical Local Storm Reports for a given day
-      description: Get historical Local Storm Reports for a given day
       produces:
       - application/json
       parameters:
@@ -58,12 +59,13 @@ paths:
       responses:
         '200':
           $ref: '#components/responses/local_storm_report_list'
+      operationId: getFeedsV3LsrArchiveByYearByMonthByDay
+      x-operation-id-source: derived
   /feeds/v3/lsr/archive/{year}/{month}/{day}/{hour}/{minute}:
     get:
       tags:
       - Local Storm Reports
       summary: Get historical Local Storm Reports for a given timestamp
-      description: Get historical Local Storm Reports for a given timestamp
       produces:
       - application/json
       parameters:
@@ -75,12 +77,14 @@ paths:
       responses:
         '200':
           $ref: '#components/responses/local_storm_report_list'
+      operationId: getFeedsV3LsrArchiveByYearByMonthByDayByHourByMinute
+      x-operation-id-source: derived
 components:
   parameters:
-    month:
-      name: month
+    day:
+      name: day
       in: path
-      description: 2 digit month, 01-12
+      description: 2 digit day, 01-31
       required: true
       schema:
         type: string
@@ -91,10 +95,10 @@ components:
       required: true
       schema:
         type: string
-    day:
-      name: day
+    month:
+      name: month
       in: path
-      description: 2 digit day, 01-31
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string

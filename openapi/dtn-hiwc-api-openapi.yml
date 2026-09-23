@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: DTN Aviation Enhanced Flight Hazards (EFH) Hiwc API
-  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data. Each data type has its own endpoint. Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
   version: 1.10.3
 servers:
 - url: https://aviation.api.dtn.com
@@ -16,7 +16,7 @@ paths:
       tags:
       - Hiwc
       summary: Get active Hiwc
-      description: Get all available Hiwc, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.
+      description: Get all available Hiwc, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
       responses:
         '200':
           $ref: '#/components/responses/HiwcSuccess'
@@ -46,29 +46,81 @@ paths:
       - $ref: '#/components/parameters/QueryAllowPartialModelRun'
       security:
       - clientCredentials: []
+      operationId: getV1Hiwc
+      x-operation-id-source: derived
 components:
   schemas:
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
+    HiwcFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/HiwcItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    HiwcFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/HiwcFeature'
+    Error:
+      title: Error
+      description: Error
       required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
+      - type
+      - title
+      - status
+      - detail
+      - meta
       type: object
       properties:
-        name:
+        url:
           type: string
-        request_id:
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
           type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
     HiwcItem:
       type: object
       required:
@@ -126,41 +178,27 @@ components:
       - type
       discriminator:
         propertyName: type
-    HiwcFeatureCollection:
-      description: GeoJSon 'FeatureCollection' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - features
-        properties:
-          features:
-            type: array
-            items:
-              $ref: '#/components/schemas/HiwcFeature'
-    HiwcFeature:
-      description: GeoJSon 'Feature' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.2
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - geometry
-        - properties
-        properties:
-          geometry:
-            allOf:
-            - {}
-            - $ref: '#/components/schemas/Geometry'
-          properties:
-            $ref: '#/components/schemas/HiwcItem'
-          id:
-            oneOf:
-            - type: number
-            - type: string
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
     Geometry:
       type: object
       description: GeoJSon geometry
@@ -181,80 +219,6 @@ components:
           - MultiLineString
           - MultiPolygon
           description: the geometry type
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-  responses:
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    HiwcBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/HiwcBadRequestResponse'
-    HiwcSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/HiwcFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/HiwcSuccessResponse'
   parameters:
     HiwcQueryInsertedAfter:
       name: insertedAfter
@@ -264,14 +228,14 @@ components:
       schema:
         type: string
         pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    HiwcQueryFromDateTime:
-      name: fromDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
       in: query
       required: false
       schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+        type: boolean
+        default: true
     QueryAllowPartialModelRun:
       name: allowPartialModelRun
       description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
@@ -280,6 +244,29 @@ components:
       schema:
         type: boolean
         default: false
+    HiwcQueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    HiwcQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
     QueryLimit:
       name: limit
       description: Provide no more than this many items in the response set.
@@ -290,51 +277,6 @@ components:
         default: 1000
         minimum: 1
         maximum: 10000
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryIntersection:
-      name: intersection
-      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    HiwcQueryModelDateTime:
-      name: modelDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.  For this data type, value must be no earlier than 24 hours in past and no later than 3 hours in past.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
-    HiwcQueryIsValidAt:
-      name: isValidAt
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
     QueryOffset:
       name: offset
       description: Skip over this many into the response set; used for paginated results.
@@ -351,22 +293,6 @@ components:
       schema:
         type: string
         pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    HiwcQueryInsertedThrough:
-      name: insertedThrough
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than current time.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    QueryGeometry:
-      name: geometry
-      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: true
     QuerySrid:
       name: srid
       description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
@@ -379,34 +305,6 @@ components:
         - 4326
         - 3857
         default: 4326
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryEfhHiwcFlightLevel:
-      name: flightLevel
-      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
-      in: query
-      required: true
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - FL300
-          - FL320
-          - FL330
-          - FL340
-          - FL350
-          - FL360
-          - FL370
-          - FL380
-          - FL390
-          - FL400
-          - FL410
     QueryDistanceUnits:
       name: distanceUnits
       description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
@@ -431,7 +329,92 @@ components:
         - 1
         - 3
         default: 1
+    HiwcQueryModelDateTime:
+      name: modelDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.  For this data type, value must be no earlier than 24 hours in past and no later than 3 hours in past.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    HiwcQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryEfhHiwcFlightLevel:
+      name: flightLevel
+      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - FL300
+          - FL320
+          - FL330
+          - FL340
+          - FL350
+          - FL360
+          - FL370
+          - FL380
+          - FL390
+          - FL400
+          - FL410
+    QueryIntersection:
+      name: intersection
+      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
   examples:
+    HiwcBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/hiwc/?flightLevel=fl320&minHiwc=5&isValidAt=2025-04-21T19:07:17.895Z&consolidate=true
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/hiwc/:requestId:5fa72ec6-bda0-48ab-a7e4-5ff52a6ff994
+        errors:
+        - message: '`minHiwc` must be either ''1'' (default) or ''3'''
+          parameter: minHiwc
+          value: '5'
+        meta:
+          name: v1.hiwc.?flightLevel=fl320&minHiwc=5&isValidAt=2025-04-21T19:07:17.895Z&consolidate=true
+          uuid: 85efd4c3-1320-45c1-bf25-933d0b9c2481
+          request_id: 5fa72ec6-bda0-48ab-a7e4-5ff52a6ff994
+          start_timestamp: 1745262438417
+          end_timestamp: 1745262440154
+          execution_time: 1737
     HiwcSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/hiwc/?flightLevel=fl320&isValidAt=2025-04-21T19:26:24.330Z&bbox=-100,25,-95,30&consolidate=true
@@ -486,25 +469,44 @@ components:
           start_timestamp: 1745263585866
           end_timestamp: 1745263597019
           execution_time: 11153
-    HiwcBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/hiwc/?flightLevel=fl320&minHiwc=5&isValidAt=2025-04-21T19:07:17.895Z&consolidate=true
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/hiwc/:requestId:5fa72ec6-bda0-48ab-a7e4-5ff52a6ff994
-        errors:
-        - message: '`minHiwc` must be either ''1'' (default) or ''3'''
-          parameter: minHiwc
-          value: '5'
-        meta:
-          name: v1.hiwc.?flightLevel=fl320&minHiwc=5&isValidAt=2025-04-21T19:07:17.895Z&consolidate=true
-          uuid: 85efd4c3-1320-45c1-bf25-933d0b9c2481
-          request_id: 5fa72ec6-bda0-48ab-a7e4-5ff52a6ff994
-          start_timestamp: 1745262438417
-          end_timestamp: 1745262440154
-          execution_time: 1737
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    HiwcSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HiwcFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/HiwcSuccessResponse'
+    HiwcBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/HiwcBadRequestResponse'
   securitySchemes:
     clientCredentials:
       type: oauth2

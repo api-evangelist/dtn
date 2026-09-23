@@ -9,10 +9,10 @@ info:
 
     A tool that can be used to easily view the layers you have access to using your obtained credentials. It also serves as a simple reference implementation of an interactive map viewer based on the Map Tile API.
 
-    Access the Map Tile API Playground [here](https://map.api.dtn.com/static/html/v2/map.html).
+    Access the Map Tile API Playground here.
 
 
-    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our [V2 Migration Guide](https://map.api.dtn.com/static/html/v2/migration_guide.pdf)'
+    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our V2 Migration Guide'
   version: 2.0.16
   title: DTN Map Tile Catalog API
 servers:
@@ -28,10 +28,8 @@ paths:
     get:
       tags:
       - Catalog
-      summary: Returns the layers and groupings that the provided token is provisioned for.
-      description: 'Full list of layer catalog: [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html)
-
-        '
+      summary: Returns the layers and groupings that the provided token is provisioned for
+      description: 'Full list of layer catalog: DTN Map Tile Layer Catalog'
       operationId: getCatalog
       parameters:
       - $ref: '#/components/parameters/accept-json'
@@ -67,6 +65,77 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
+  parameters:
+    accept-json:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - application/json
+    accept-language:
+      in: header
+      name: Accept-Language
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    locale:
+      in: query
+      name: locale
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        <b>If provided, overrides the Accept-Language header.</b><br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    catalog-id:
+      in: path
+      name: catalogId
+      description: Unique identifier for a catalog
+      required: true
+      schema:
+        type: string
+  headers:
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
   responses:
     catalog:
       description: successful operation
@@ -139,22 +208,6 @@ components:
             status: 404
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
   schemas:
-    group:
-      type: object
-      properties:
-        id:
-          type: string
-          example: contoured-radar
-        label:
-          type: string
-          example: Contoured radar layers
-        parent:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: Reference to a parent group, null indicates root level.
-          example: null
     layer:
       type: object
       properties:
@@ -203,77 +256,22 @@ components:
           format: uri
           description: URL with the id for the specific error; this will often point to an error log for that specific response.
       additionalProperties: true
-  parameters:
-    catalog-id:
-      in: path
-      name: catalogId
-      description: Unique identifier for a catalog
-      required: true
-      schema:
-        type: string
-    locale:
-      in: query
-      name: locale
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        <b>If provided, overrides the Accept-Language header.</b><br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    accept-language:
-      in: header
-      name: Accept-Language
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    accept-json:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
-      schema:
-        type: string
-        enum:
-        - application/json
-  headers:
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
+    group:
+      type: object
+      properties:
+        id:
+          type: string
+          example: contoured-radar
+        label:
+          type: string
+          example: Contoured radar layers
+        parent:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: Reference to a parent group, null indicates root level.
+          example: null
   securitySchemes:
     clientCredentials:
       type: oauth2

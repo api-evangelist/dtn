@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Pavement Conditions Directions API
   version: 2.0.2
-  description: "The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination. DTN supplies road data on segments across North America and Europe, allowing users to request data for a geographic area or specific roadway within the database.\n\n**What's New in v2.0.2:**\n- Route Generation \n  \n  — A new `GET /v2/directions` endpoint generates route geometry via the Mapbox Directions API.\n\n- Query Pavement Conditions Along a Route or Route-Based Filtering (RB Filter)\n\n  - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - When `startPoint` and `endPoint` are supplied to the `v2/logistics` or `v2/pavement/conditions` endpoints, a route is automatically generated internally via the Mapbox API.\n  - Pagination is determined by the number of route `segments` when RB Filter is active.\n  - Each paginated response includes a `statistics` object summarizing covered, uncovered, and total segment counts.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n- Added pavementValidEndTime in returned data\n\n**Authentication**: This API uses Bearer token authentication. When obtaining your access token, use the following audience values:\n- **Production**: `https://pavement-condition.prd.wx.zones.dtn.com`\n- **Staging**: `https://pavement-condition.stg.wx.zones.dtn.com`"
+  description: The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination.
   contact:
     name: Ben Hershey
     url: https://pavement-condition.prd.wx.zones.dtn.com
@@ -21,7 +21,71 @@ paths:
       tags:
       - Directions
       summary: Get Route Directions
-      description: "Returns cacheable route geometry from the Mapbox Directions API as a GeoJSON FeatureCollection.\nThis endpoint decouples route geometry from weather/pavement data, enabling independent caching\nof the route so the frontend can lock in a stable geometry for navigation (similar to Waze/Google Maps).\n\nThe `geojson` field in the response is directly compatible with the POST `/v2/pavement/conditions`\nand POST `/v2/logistics` endpoints — it can be passed as the `route` body without transformation.\n\n**Timing behavior:**\n- When `departAt` is provided: each feature includes `arrivalTimeUTC` (departAt + route duration)\n- When `arriveAt` is provided: each feature includes `departureTimeUTC` (arriveAt - route duration)\n- When neither is provided: current server time is used as `departAt` and `arrivalTimeUTC` is computed\n\n**Alternative routes:**\n- When `alternatives=true`: returns 1–3 routes sorted by ascending duration\n- When `alternatives=false` or omitted: returns exactly 1 route\n\n**Sample Requests:**\n\n1. **Basic route with departure time:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n2. **Route with arrival time:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n3. **Multiple alternative routes:**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&alternatives=true\n   ```\n\n4. **Default timing (uses current server time as departure):**\n   ```\n   GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420\n   ```\n"
+      description: 'Returns cacheable route geometry from the Mapbox Directions API as a GeoJSON FeatureCollection.
+
+        This endpoint decouples route geometry from weather/pavement data, enabling independent caching
+
+        of the route so the frontend can lock in a stable geometry for navigation (similar to Waze/Google Maps).
+
+
+        The `geojson` field in the response is directly compatible with the POST `/v2/pavement/conditions`
+
+        and POST `/v2/logistics` endpoints — it can be passed as the `route` body without transformation.
+
+
+        **Timing behavior:**
+
+        - When `departAt` is provided: each feature includes `arrivalTimeUTC` (departAt + route duration)
+
+        - When `arriveAt` is provided: each feature includes `departureTimeUTC` (arriveAt - route duration)
+
+        - When neither is provided: current server time is used as `departAt` and `arrivalTimeUTC` is computed
+
+
+        **Alternative routes:**
+
+        - When `alternatives=true`: returns 1–3 routes sorted by ascending duration
+
+        - When `alternatives=false` or omitted: returns exactly 1 route
+
+
+        **Sample Requests:**
+
+
+        1. **Basic route with departure time:**
+
+        ```
+
+        GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z
+
+        ```
+
+
+        2. **Route with arrival time:**
+
+        ```
+
+        GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z
+
+        ```
+
+
+        3. **Multiple alternative routes:**
+
+        ```
+
+        GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&alternatives=true
+
+        ```
+
+
+        4. **Default timing (uses current server time as departure):**
+
+        ```
+
+        GET /v2/directions?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420
+
+        ```'
       operationId: getDirections
       parameters:
       - name: startPoint
@@ -243,20 +307,20 @@ paths:
       security:
       - clientCredentials: []
 components:
-  responses:
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     DirectionsResponse:
       type: object
       properties:
@@ -328,19 +392,19 @@ components:
               type: string
               format: date-time
               description: Departure time from the first route. Present when arriveAt is used.
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
+  responses:
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2

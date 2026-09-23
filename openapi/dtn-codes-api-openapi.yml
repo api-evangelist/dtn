@@ -4,43 +4,7 @@ info:
   title: DTN Farm Intelligence Codes API
   description: 'The Farm Intelligence API provides programmatic access to DTN''s agricultural data — producer records,
 
-    land metadata, crop history, and related datasets. It is organized into three surfaces plus shared utilities:
-
-
-    - **Producer API** — Producer discovery, details, and relationship data
-
-    - **Land API** — Land search, metadata, crop history, soil, and geospatial data
-
-    - **Linked Data API** — Segments, portfolios, and batch operations
-
-    - **Shared Utilities** — Crop codes, geographic areas (unmetered)
-
-
-    ## Authentication
-
-
-    All endpoints require OAuth 2.0 client credentials authentication. Obtain a token from the DTN DAIS gateway
-
-    with your client_id, client_secret, and the Farm Intelligence audience.
-
-
-    ## Credit Metering
-
-
-    Endpoints are classified as:
-
-    - **Metered (1 credit per record)** — Producer and Land data endpoints
-
-    - **Unmetered (discovery class)** — Search, codes, geographic areas
-
-
-    Response headers include credit usage information:
-
-    - `X-Credit-Cost` — Credits consumed by this request
-
-    - `X-Credits-Remaining` — Remaining balance
-
-    - `X-Credit-Pool-Reset` — Contract reset date'
+    land metadata, crop history, and related datasets.'
   contact:
     name: DTN Agriculture Intelligence Team
     email: agintel@dtn.com
@@ -68,9 +32,7 @@ paths:
         `cropId` (LCI ID) when filtering other endpoints by crop type.
 
 
-        **Billing:** Unmetered.
-
-        '
+        **Billing:** Unmetered.'
       tags:
       - Codes
       responses:
@@ -114,9 +76,7 @@ paths:
       description: 'Retrieve a single crop code by its LCI ID. Returns the crop name and identifier.
 
 
-        **Billing:** Unmetered.
-
-        '
+        **Billing:** Unmetered.'
       tags:
       - Codes
       parameters:
@@ -173,9 +133,7 @@ paths:
         Shows the quota pool limit, remaining credits, and when the contract period ends.
 
 
-        **Billing:** Unmetered.
-
-        '
+        **Billing:** Unmetered.'
       tags:
       - Codes
       responses:
@@ -232,18 +190,6 @@ paths:
                 detail: Your credit quota expired on 2025-12-31T23:59:59.000Z
 components:
   schemas:
-    Crop:
-      type: object
-      description: A crop code entry from the Land Cover Index.
-      properties:
-        cropId:
-          type: integer
-          description: Unique crop identifier (LCI ID).
-          example: 1
-        cropName:
-          type: string
-          description: Human-readable crop name.
-          example: Field Corn
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -282,6 +228,18 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
+    Crop:
+      type: object
+      description: A crop code entry from the Land Cover Index.
+      properties:
+        cropId:
+          type: integer
+          description: Unique crop identifier (LCI ID).
+          example: 1
+        cropName:
+          type: string
+          description: Human-readable crop name.
+          example: Field Corn
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -48,6 +48,8 @@ paths:
                     - $ref: '#/components/schemas/ApiListGroupedByCat'
         '400':
           $ref: '#/components/responses/http-status-400'
+      operationId: getV1Apis
+      x-operation-id-source: derived
   /v1/apis/{slug}:
     summary: Manage an API
     description: APIs used to manage
@@ -77,6 +79,8 @@ paths:
                 $ref: '#/components/schemas/Api'
         '404':
           $ref: '#/components/responses/http-status-404'
+      operationId: getV1ApisBySlug
+      x-operation-id-source: derived
   /v1/apis/{slug}/spec/{version}:
     summary: An endpoint to serve a JSON file of API spec
     get:
@@ -136,6 +140,8 @@ paths:
                               description: Return a 200 status to indicate that the data was received successfully
         '400':
           $ref: '#/components/responses/http-status-400'
+      operationId: getV1ApisBySlugSpecByVersion
+      x-operation-id-source: derived
   /v1/apis/{slug}/changelog/{version}:
     summary: An endpoint to serve a markdown file of API changelog
     get:
@@ -173,6 +179,8 @@ paths:
               example: "#Changelog \n\n###V1 API v1.0.1 minor major\n\n##1.0.1 - 2015-08-01\n\n####What's Changed\n\n- Add support for array query parameters\n- Added `/v1/api/get-users` endpoint\n- Add ability to set multiple query parameters at once\n- Fix creating urls from invalid strings\n- Provide a component stack as a second argument to onRecoverableError\n- Pass information about server errors to the client.\n- Allow to provide a reason when aborting the HTML stream.\n- Eliminate extraneous text separators in the HTML where possible.\n- Disallow complex children inside <title> elements to match the browser constraints.\n- Fix buffering in some worker environments by explicitly setting highWaterMark to 0.\n- Add support for useId() inside Server Components.\n\n####Fixed\n- Fix creating urls from invalid strings\n- 502 errors when changing the route\n- Map auto scroll navigation\n- Fix hydrating into document causing a blank page on mismatch.\n- Fix false positive hydration errors with Suspense.\n- Fix ignored setState in Safari when adding an iframe.\n"
         '400':
           $ref: '#/components/responses/http-status-400'
+      operationId: getV1ApisBySlugChangelogByVersion
+      x-operation-id-source: derived
   /v1/apis/{slug}/versions/{id}:
     patch:
       tags:
@@ -235,6 +243,8 @@ paths:
           $ref: '#/components/responses/http-status-401'
         '404':
           $ref: '#/components/responses/http-status-404'
+      operationId: patchV1ApisBySlugVersionsById
+      x-operation-id-source: derived
 components:
   schemas:
     ApiVersion:
@@ -312,64 +322,6 @@ components:
         updatedAt: '2022-09-09T13:00:08.888Z'
         api_specs_versions:
           $ref: '#/components/schemas/ApiVersion/example'
-    ApiList:
-      title: APIs
-      type: array
-      items:
-        $ref: '#/components/schemas/Api'
-    ApiListGroupedByCat:
-      title: APIs grouped by category
-      type: array
-      items:
-        type: object
-        properties:
-          category:
-            type: string
-          apis:
-            type: array
-            items:
-              $ref: '#/components/schemas/ApiWoCategory'
-    http-status-400:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of error that was encountered
-          example: bad-request
-        title:
-          type: string
-          description: The title of the error
-          example: Invalid Request
-        status:
-          type: integer
-          description: The HTTP Response Status Code.
-          example: 400
-        detail:
-          type: string
-          description: The message describing the reason for this 400.
-          example: Validation failed.
-        instance:
-          type: string
-          description: An identifier for the request
-          example: urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
-        errors:
-          type: array
-          description: A list of errors further describing the reason for the 400.
-          items:
-            type: object
-            properties:
-              message:
-                type: string
-                description: Error description
-                example: Invalid value
-              parameter:
-                type: string
-                description: The field name where this error was observed
-                example: groupByCat
-              value:
-                type: string
-                description: The value of the field that's causing the error
-                example: 'yes'
     ApiWoCategory:
       title: Schema for an API sans category
       type: object
@@ -434,33 +386,65 @@ components:
           type: string
           description: An identifier for the request
           example: urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
-  responses:
-    http-status-404:
-      description: Not Found -- The resource was not found.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/http-status-error-without-errors-field'
-          examples:
-            ResourceNotFoundError:
-              value:
-                type: not-found
-                title: Not Found
-                status: 404
-                detail: Resource was not found.
-                instance: urn:dtn:dev-portal-api:/resource/name:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
     http-status-400:
-      description: Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/http-status-400'
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of error that was encountered
+          example: bad-request
+        title:
+          type: string
+          description: The title of the error
+          example: Invalid Request
+        status:
+          type: integer
+          description: The HTTP Response Status Code.
+          example: 400
+        detail:
+          type: string
+          description: The message describing the reason for this 400.
+          example: Validation failed.
+        instance:
+          type: string
+          description: An identifier for the request
+          example: urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
+        errors:
+          type: array
+          description: A list of errors further describing the reason for the 400.
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Error description
+                example: Invalid value
+              parameter:
+                type: string
+                description: The field name where this error was observed
+                example: groupByCat
+              value:
+                type: string
+                description: The value of the field that's causing the error
+                example: 'yes'
+    ApiListGroupedByCat:
+      title: APIs grouped by category
+      type: array
+      items:
+        type: object
+        properties:
+          category:
+            type: string
+          apis:
+            type: array
+            items:
+              $ref: '#/components/schemas/ApiWoCategory'
+    ApiList:
+      title: APIs
+      type: array
+      items:
+        $ref: '#/components/schemas/Api'
+  responses:
     http-status-401:
       description: Unauthorized -- Token was missing or invalid.
       headers:
@@ -492,18 +476,44 @@ components:
                 status: 401
                 detail: Token verification failed.
                 instance: urn:/v1/apis/dtn-weather-conditions-api/versions/1:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
-  headers:
-    x-request-id:
-      description: The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.
-      schema:
-        type: string
-        example: f8941c97-9998-4bbf-b8e9-cbc6e85c8818
+    http-status-404:
+      description: Not Found -- The resource was not found.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/http-status-error-without-errors-field'
+          examples:
+            ResourceNotFoundError:
+              value:
+                type: not-found
+                title: Not Found
+                status: 404
+                detail: Resource was not found.
+                instance: urn:dtn:dev-portal-api:/resource/name:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
+    http-status-400:
+      description: Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/http-status-400'
   parameters:
     x-request-id:
       name: X-Request-ID
       in: header
       required: false
       description: A UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+        example: f8941c97-9998-4bbf-b8e9-cbc6e85c8818
+  headers:
+    x-request-id:
+      description: The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.
       schema:
         type: string
         example: f8941c97-9998-4bbf-b8e9-cbc6e85c8818

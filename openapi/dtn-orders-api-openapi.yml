@@ -63,6 +63,8 @@ paths:
                 type: string
       tags:
       - Orders
+      summary: Get orders
+      x-summary-source: derived
     servers:
     - url: ' https://ext-svc-orders-2a698b99-digitalcommerce-uat.onlinefuelslabs.io'
   /orders/forward:
@@ -109,6 +111,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ForwardOrderResponse'
+      summary: Get forward orders
+      x-summary-source: derived
     servers:
     - url: https://digitalcommerce-integrations.dtn.com
       description: Production API URL
@@ -169,35 +173,99 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/Success'
+      summary: Update order
+      x-summary-source: derived
     servers:
     - url: https://digitalcommerce-integrations.dtn.com
       description: Production API URL
 components:
+  responses:
+    OrderResponse:
+      description: A successful response containing details of the orders requested
+      content:
+        application/json:
+          schema:
+            properties:
+              orders:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+              pageInformation:
+                type: object
+                properties:
+                  total:
+                    type: number
+                    example: 10
+                  limit:
+                    type: number
+                    example: 25
+                  page:
+                    type: number
+                    example: 1
+                  pages:
+                    type: number
+                    example: 1
+    ForwardOrderResponse:
+      description: A successful response containing details of the forward orders requested
+      content:
+        application/json:
+          schema:
+            properties:
+              orders:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForwardOrder'
+              pageInformation:
+                type: object
+                properties:
+                  total:
+                    type: number
+                    example: 10
+                  limit:
+                    type: number
+                    example: 25
+                  page:
+                    type: number
+                    example: 1
+                  pages:
+                    type: number
+                    example: 1
+    Success:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                - success
+      description: a successful response
   schemas:
-    LiftingPeriod:
-      type: object
+    Terminal:
       properties:
-        start:
+        splc:
           type: string
-          format: date-time
-          example: '2022-08-11T12:00:00.000Z'
-        end:
+          example: '123456'
+        owner:
           type: string
-          format: date-time
-          example: '2022-08-13T12:00:00.000Z'
-    ProductQuantityUpdate:
-      required:
-      - id
-      - quantityOrdered
-      properties:
-        id:
+          example: '123'
+        name:
           type: string
-          example: D7B
-        price:
-          $ref: '#/components/schemas/Price'
-        quantityOrdered:
-          type: number
-          minimum: 0
+          example: Terminal Name 1
+        tcn:
+          type: string
+          example: T00GA0000
+        plantId:
+          type: string
+          example: M17
+        terminalCustomCode:
+          type: string
+          example: MT2
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     Order:
       properties:
         orderId:
@@ -263,14 +331,87 @@ components:
           type: string
           format: date-time
           example: '2022-08-11T10:31:27.182Z'
-    Price:
-      type: number
-      multipleOf: 0.0001
-      minimum: 0.0001
+    Buyer:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Fuel Buyer
+        customCode:
+          type: string
+          example: '44444'
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+              example: john.smith@fuelbuyer.dtn.com
+            email:
+              type: string
+              example: john.smith@fuelbuyer.dtn.com
+    LiftingPeriod:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+          example: '2022-08-11T12:00:00.000Z'
+        end:
+          type: string
+          format: date-time
+          example: '2022-08-13T12:00:00.000Z'
+    Seller:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Fuel Seller
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+              example: jane.smith@fuelseller.dtn.com
+            email:
+              type: string
+              example: jane.smith@fuelseller.dtn.com
     ProductPriceUpdate:
       required:
       - id
       - price
+      properties:
+        id:
+          type: string
+          example: D7B
+        price:
+          $ref: '#/components/schemas/Price'
+        quantityOrdered:
+          type: number
+          minimum: 0
+    ContractPeriod:
+      type: object
+      properties:
+        liftingPeriod:
+          $ref: '#/components/schemas/LiftingPeriod'
+        basis:
+          type: number
+          example: 0.1
+        margin:
+          type: number
+          example: 0.25
+        costs:
+          type: number
+          example: 0.045
+        quantity:
+          type: number
+          example: 50000
+        marketPrice:
+          type: number
+          example: 6.2581
+    ProductQuantityUpdate:
+      required:
+      - id
+      - quantityOrdered
       properties:
         id:
           type: string
@@ -301,62 +442,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Product'
-    Product:
-      properties:
-        id:
-          type: string
-          example: D7B
-        productCustomCode:
-          type: string
-          example: MP2
-        basePrice:
-          type: number
-          example: 3.696
-        finalPrice:
-          type: number
-          example: 3.646
-        differential:
-          type: number
-          example: -0.05
-        customerAdjustment:
-          type: number
-          example: -0.05
-        contractMonth:
-          type: string
-          example: August `22
-        quote:
-          type: string
-          example: QRB
-        quoteType:
-          type: string
-          example: ask
-        market:
-          type: string
-          example: Philadelphia
-        supplier:
-          type: string
-          example: Citgo
-        name:
-          type: string
-          example: 87 E10
-        quantityOrdered:
-          type: number
-          example: 5000
-    Seller:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Fuel Seller
-        user:
-          type: object
-          properties:
-            username:
-              type: string
-              example: jane.smith@fuelseller.dtn.com
-            email:
-              type: string
-              example: jane.smith@fuelseller.dtn.com
+    Price:
+      type: number
+      multipleOf: 0.0001
+      minimum: 0.0001
     TerminalUpdate:
       required:
       - splc
@@ -453,130 +542,47 @@ components:
           type: string
           format: date-time
           example: '2022-08-11T10:31:27.182Z'
-    ContractPeriod:
-      type: object
+    Product:
       properties:
-        liftingPeriod:
-          $ref: '#/components/schemas/LiftingPeriod'
-        basis:
+        id:
+          type: string
+          example: D7B
+        productCustomCode:
+          type: string
+          example: MP2
+        basePrice:
           type: number
-          example: 0.1
-        margin:
+          example: 3.696
+        finalPrice:
           type: number
-          example: 0.25
-        costs:
+          example: 3.646
+        differential:
           type: number
-          example: 0.045
-        quantity:
+          example: -0.05
+        customerAdjustment:
           type: number
-          example: 50000
-        marketPrice:
-          type: number
-          example: 6.2581
-    Buyer:
-      type: object
-      properties:
+          example: -0.05
+        contractMonth:
+          type: string
+          example: August `22
+        quote:
+          type: string
+          example: QRB
+        quoteType:
+          type: string
+          example: ask
+        market:
+          type: string
+          example: Philadelphia
+        supplier:
+          type: string
+          example: Citgo
         name:
           type: string
-          example: Fuel Buyer
-        customCode:
-          type: string
-          example: '44444'
-        user:
-          type: object
-          properties:
-            username:
-              type: string
-              example: john.smith@fuelbuyer.dtn.com
-            email:
-              type: string
-              example: john.smith@fuelbuyer.dtn.com
-    Terminal:
-      properties:
-        splc:
-          type: string
-          example: '123456'
-        owner:
-          type: string
-          example: '123'
-        name:
-          type: string
-          example: Terminal Name 1
-        tcn:
-          type: string
-          example: T00GA0000
-        plantId:
-          type: string
-          example: M17
-        terminalCustomCode:
-          type: string
-          example: MT2
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-  responses:
-    OrderResponse:
-      description: A successful response containing details of the orders requested
-      content:
-        application/json:
-          schema:
-            properties:
-              orders:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Order'
-              pageInformation:
-                type: object
-                properties:
-                  total:
-                    type: number
-                    example: 10
-                  limit:
-                    type: number
-                    example: 25
-                  page:
-                    type: number
-                    example: 1
-                  pages:
-                    type: number
-                    example: 1
-    ForwardOrderResponse:
-      description: A successful response containing details of the forward orders requested
-      content:
-        application/json:
-          schema:
-            properties:
-              orders:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ForwardOrder'
-              pageInformation:
-                type: object
-                properties:
-                  total:
-                    type: number
-                    example: 10
-                  limit:
-                    type: number
-                    example: 25
-                  page:
-                    type: number
-                    example: 1
-                  pages:
-                    type: number
-                    example: 1
-    Success:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                enum:
-                - success
-      description: a successful response
+          example: 87 E10
+        quantityOrdered:
+          type: number
+          example: 5000
   securitySchemes:
     clientCredentials:
       type: oauth2

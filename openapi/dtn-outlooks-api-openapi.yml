@@ -16,7 +16,6 @@ paths:
       tags:
       - Outlooks
       summary: Get current Outlooks, Day{1-8}
-      description: Get current Outlooks, Day{1-8}
       produces:
       - application/json
       parameters:
@@ -24,12 +23,13 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/outlook_list'
+      operationId: getFeedsV3OutlookDay{convectiveOutlookHorizon}
+      x-operation-id-source: derived
   /feeds/v3/outlook/day{horizon}/archive/{year}/{month}/{day}/{hour}/{minute}:
     get:
       tags:
       - Outlooks
       summary: Get historic Outlooks, Day{1-8}, for a given timestamp
-      description: Get historic Outlooks, Day{1-8}, for a given timestamp
       produces:
       - application/json
       parameters:
@@ -42,24 +42,26 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/outlook_list'
+      operationId: getFeedsV3OutlookDay{horizon}ArchiveByYearByMonthByDayByHourByMinute
+      x-operation-id-source: derived
   /feeds/v3/outlook:
     get:
       tags:
       - Outlooks
       summary: Get current Outlooks, defaulting to Day1
-      description: Get current Outlooks, defaulting to Day1
       produces:
       - application/json
       parameters: []
       responses:
         '200':
           $ref: '#/components/responses/outlook_list'
+      operationId: getFeedsV3Outlook
+      x-operation-id-source: derived
   /feeds/v3/outlook/{convective_outlook_id}:
     get:
       tags:
       - Outlooks
-      summary: 'Get raw text of a specific outlook '
-      description: 'Get raw text of a specific outlook '
+      summary: Get raw text of a specific outlook
       produces:
       - text/plain
       parameters:
@@ -73,12 +75,13 @@ paths:
           content:
             text/plain:
               example: "843 \nFNUS21 KWNS 121650\nFWDDY1\n\nDay 1 Fire Weather Outlook  \nNWS Storm Prediction Center Norman OK\n1050 AM CST Mon Jan 12 2026\n\nValid 121700Z - 131200Z\n\n...Central and Northern High Plains...\nRobust mid-level northwest flow aloft along with enhanced lee\ntroughing across the northern High Plains will continue to favor \nenhanced downslope winds and drying across central MT and eastern\nWY. RH recoveries across central MT were generally below 40%, with\nRH expected to fall into the 20-30% range this afternoon. Current\nsustained west winds of 20-30 mph (locally 30-40 mph in adjacent\nleeward locations) with higher gusts will persist through the\nafternoon. These conditions will align with dry fine fuels to\nenhance wildland fire risk in lower, snow-free elevations. Farther\nsouth across eastern WY, a tapering off of mid-level flow should\npromote slightly reduced surface westerly winds across the area.\nHowever, drier conditions with relative humidity as low as 20%\nacross southeastern WY/far western NE Panhandle and dry fuels will\nyield a period of elevated fire weather concerns through this\nafternoon, with an extension of Elevated highlights into this\nregion.\n\n...Southern Plains...\nA tightening surface pressure gradient associated with a broad\nsurface trough extending southward across the Plains will encourage\ndevelopment of breezy southwest winds across portions of OK/northern\nTX. However, stronger winds of up to 20 mph across southern and\ncentral OK will be displaced eastward of a markedly drier air mass\nacross much of the southern High Plains and northwest TX.\nNonetheless, brief elevated fire weather concerns could emerge\nacross southwest/central OK where breezy winds align with relative\nhumidity below 20%.\n\n..Williams.. 01/12/2026\n\n.PREV DISCUSSION... /ISSUED 0204 AM CST Mon Jan 12 2026/\n\n...Synopsis...\nBroad troughing is forecast to persist over the eastern US with high\npressure building to the West. This will favor continued\nnorthwesterly flow over much of the CONUS. A stronger shortwave\ntrough within the flow aloft will pass over the northern and central\nRockies this afternoon. This, along with a strong surface pressure\ngradient will boost westerly low-level flow across the region,\nsupporting an increase in fire-weather concerns.\n\n...Central and Northern High Plains...\nStrong downslope winds are expected across much of the Rockies and\nadjacent High Plains today as upper-level ridging rapidly builds\nover the West. A shortwave trough embedded within strong\nwest/northwesterly flow will move southeastward overspreading an\nunusually warm and dry airmass for January. West-northwest winds of\n20-30 mph with higher gusts will combine with relative humidity in\nthe 20-30% range and dry fine fuels to facilitate an increased fire\ndanger across lower elevations of central MT and northern WY.\n\nFarther south winds are expected to be somewhat weaker and displaced\nfrom the stronger flow aloft. Still, strong westerly pressure\ngradients and drier surface conditions could promote a few hours of\nlocally elevated fire-weather conditions over portions of CO/WY/NE\nwhere fine fuels are very dry.\n\n...Southern Plains...\nAcross the Southern Plains, dry southwest flow will likely support\ndry and breezy conditions over parts of OK/TX. Afternoon RH values\nwill likely fall below 20%, though winds will be generally light.\nWhile recent rainfall has tempered fuels to some degree, fine fuels\nremain fairly dry and, some localized fire-weather concerns are\npossible.\n\n...Please see www.spc.noaa.gov/fire for graphic product...\n\n$$\n\n"
+      operationId: getFeedsV3OutlookByConvectiveOutlookId
+      x-operation-id-source: derived
   /feeds/v3/outlook/archive/{year}/{month}/{day}/{hour}/{minute}:
     get:
       tags:
       - Outlooks
       summary: Get historic Outlooks, defaulting to Day1, for a given timestamp
-      description: Get historic Outlooks, defaulting to Day1, for a given timestamp
       produces:
       - application/json
       parameters:
@@ -90,22 +93,19 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/outlook_list'
+      operationId: getFeedsV3OutlookArchiveByYearByMonthByDayByHourByMinute
+      x-operation-id-source: derived
 components:
+  responses:
+    outlook_list:
+      description: Outlook List
+      headers:
+        Content-Type:
+          $ref: '#/components/headers/content-type'
+      content:
+        application/json:
+          example: "[\n\t{\n\t\t\"a\": \"2026011216-C\",\n\t\t\"t\": \"CATEGORICAL\",\n\t\t\"o\": \"KWNS\",\n\t\t\"b\": 1768235400,\n\t\t\"e\": 1768305600,\n\t\t\"f\": \"MRGL\",\n\t\t\"p\": [],\n\t\t\"s\": \"D1\"\n\t},\n\t{\n\t\t\"a\": \"202601121650-F\",\n\t\t\"t\": \"FIRE\",\n\t\t\"o\": \"KWNS\",\n\t\t\"b\": 1768237200,\n\t\t\"e\": 1768305600,\n\t\t\"f\": \"ELEV\",\n\t\t\"p\": [\n\t\t\t[\n\t\t\t\t4540,\n\t\t\t\t-10853\n\t\t\t],\n\t\t\t[\n\t\t\t\t4525,\n\t\t\t\t-10934\n\t\t\t],\n\t\t\t[\n\t\t\t\t4563,\n\t\t\t\t-11012\n\t\t\t],\n\t\t\t[\n\t\t\t\t4636,\n\t\t\t\t-10999\n\t\t\t],\n\t\t\t[\n\t\t\t\t4681,\n\t\t\t\t-11002\n\t\t\t],\n\t\t\t[\n\t\t\t\t4731,\n\t\t\t\t-11087\n\t\t\t],\n\t\t\t[\n\t\t\t\t4764,\n\t\t\t\t-11111\n\t\t\t],\n\t\t\t[\n\t\t\t\t4805,\n\t\t\t\t-11046\n\t\t\t],\n\t\t\t[\n\t\t\t\t4806,\n\t\t\t\t-10968\n\t\t\t],\n\t\t\t[\n\t\t\t\t4769,\n\t\t\t\t-10849\n\t\t\t],\n\t\t\t[\n\t\t\t\t4698,\n\t\t\t\t-10738\n\t\t\t],\n\t\t\t[\n\t\t\t\t4658,\n\t\t\t\t-10612\n\t\t\t],\n\t\t\t[\n\t\t\t\t4601,\n\t\t\t\t-10528\n\t\t\t],\n\t\t\t[\n\t\t\t\t4565,\n\t\t\t\t-10460\n\t\t\t],\n\t\t\t[\n\t\t\t\t4544,\n\t\t\t\t-10428\n\t\t\t],\n\t\t\t[\n\t\t\t\t4513,\n\t\t\t\t-10419\n\t\t\t],\n\t\t\t[\n\t\t\t\t4493,\n\t\t\t\t-10452\n\t\t\t],\n\t\t\t[\n\t\t\t\t4452,\n\t\t\t\t-10493\n\t\t\t],\n\t\t\t[\n\t\t\t\t4372,\n\t\t\t\t-10506\n\t\t\t],\n\t\t\t[\n\t\t\t\t4304,\n\t\t\t\t-10426\n\t\t\t],\n\t\t\t[\n\t\t\t\t4189,\n\t\t\t\t-10364\n\t\t\t],\n\t\t\t[\n\t\t\t\t4121,\n\t\t\t\t-10329\n\t\t\t],\n\t\t\t[\n\t\t\t\t4081,\n\t\t\t\t-10374\n\t\t\t],\n\t\t\t[\n\t\t\t\t4082,\n\t\t\t\t-10487\n\t\t\t],\n\t\t\t[\n\t\t\t\t4093,\n\t\t\t\t-10520\n\t\t\t],\n\t\t\t[\n\t\t\t\t4126,\n\t\t\t\t-10544\n\t\t\t],\n\t\t\t[\n\t\t\t\t4167,\n\t\t\t\t-10548\n\t\t\t],\n\t\t\t[\n\t\t\t\t4195,\n\t\t\t\t-10529\n\t\t\t],\n\t\t\t[\n\t\t\t\t4263,\n\t\t\t\t-10564\n\t\t\t],\n\t\t\t[\n\t\t\t\t4286,\n\t\t\t\t-10644\n\t\t\t],\n\t\t\t[\n\t\t\t\t4331,\n\t\t\t\t-10699\n\t\t\t],\n\t\t\t[\n\t\t\t\t4389,\n\t\t\t\t-10678\n\t\t\t],\n\t\t\t[\n\t\t\t\t4452,\n\t\t\t\t-10700\n\t\t\t],\n\t\t\t[\n\t\t\t\t4511,\n\t\t\t\t-10782\n\t\t\t],\n\t\t\t[\n\t\t\t\t4531,\n\t\t\t\t-10808\n\t\t\t],\n\t\t\t[\n\t\t\t\t4540,\n\t\t\t\t-10853\n\t\t\t]\n\t\t],\n\t\t\"s\": \"D1\"\n\t}\n]"
   parameters:
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
-      required: true
-      schema:
-        type: string
-    minute:
-      name: minute
-      in: path
-      description: 2 digit minute, 00-59
-      required: true
-      schema:
-        type: string
     day:
       name: day
       in: path
@@ -120,10 +120,17 @@ components:
       required: true
       schema:
         type: string
-    convective_outlook_id:
-      name: convective_outlook_id
+    minute:
+      name: minute
       in: path
-      description: id of the outlook to be retrieved
+      description: 2 digit minute, 00-59
+      required: true
+      schema:
+        type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string
@@ -141,20 +148,18 @@ components:
       required: true
       schema:
         type: string
+    convective_outlook_id:
+      name: convective_outlook_id
+      in: path
+      description: id of the outlook to be retrieved
+      required: true
+      schema:
+        type: string
   headers:
     content-type:
       description: MIME-type of returned data
       schema:
         type: string
-  responses:
-    outlook_list:
-      description: Outlook List
-      headers:
-        Content-Type:
-          $ref: '#/components/headers/content-type'
-      content:
-        application/json:
-          example: "[\n\t{\n\t\t\"a\": \"2026011216-C\",\n\t\t\"t\": \"CATEGORICAL\",\n\t\t\"o\": \"KWNS\",\n\t\t\"b\": 1768235400,\n\t\t\"e\": 1768305600,\n\t\t\"f\": \"MRGL\",\n\t\t\"p\": [],\n\t\t\"s\": \"D1\"\n\t},\n\t{\n\t\t\"a\": \"202601121650-F\",\n\t\t\"t\": \"FIRE\",\n\t\t\"o\": \"KWNS\",\n\t\t\"b\": 1768237200,\n\t\t\"e\": 1768305600,\n\t\t\"f\": \"ELEV\",\n\t\t\"p\": [\n\t\t\t[\n\t\t\t\t4540,\n\t\t\t\t-10853\n\t\t\t],\n\t\t\t[\n\t\t\t\t4525,\n\t\t\t\t-10934\n\t\t\t],\n\t\t\t[\n\t\t\t\t4563,\n\t\t\t\t-11012\n\t\t\t],\n\t\t\t[\n\t\t\t\t4636,\n\t\t\t\t-10999\n\t\t\t],\n\t\t\t[\n\t\t\t\t4681,\n\t\t\t\t-11002\n\t\t\t],\n\t\t\t[\n\t\t\t\t4731,\n\t\t\t\t-11087\n\t\t\t],\n\t\t\t[\n\t\t\t\t4764,\n\t\t\t\t-11111\n\t\t\t],\n\t\t\t[\n\t\t\t\t4805,\n\t\t\t\t-11046\n\t\t\t],\n\t\t\t[\n\t\t\t\t4806,\n\t\t\t\t-10968\n\t\t\t],\n\t\t\t[\n\t\t\t\t4769,\n\t\t\t\t-10849\n\t\t\t],\n\t\t\t[\n\t\t\t\t4698,\n\t\t\t\t-10738\n\t\t\t],\n\t\t\t[\n\t\t\t\t4658,\n\t\t\t\t-10612\n\t\t\t],\n\t\t\t[\n\t\t\t\t4601,\n\t\t\t\t-10528\n\t\t\t],\n\t\t\t[\n\t\t\t\t4565,\n\t\t\t\t-10460\n\t\t\t],\n\t\t\t[\n\t\t\t\t4544,\n\t\t\t\t-10428\n\t\t\t],\n\t\t\t[\n\t\t\t\t4513,\n\t\t\t\t-10419\n\t\t\t],\n\t\t\t[\n\t\t\t\t4493,\n\t\t\t\t-10452\n\t\t\t],\n\t\t\t[\n\t\t\t\t4452,\n\t\t\t\t-10493\n\t\t\t],\n\t\t\t[\n\t\t\t\t4372,\n\t\t\t\t-10506\n\t\t\t],\n\t\t\t[\n\t\t\t\t4304,\n\t\t\t\t-10426\n\t\t\t],\n\t\t\t[\n\t\t\t\t4189,\n\t\t\t\t-10364\n\t\t\t],\n\t\t\t[\n\t\t\t\t4121,\n\t\t\t\t-10329\n\t\t\t],\n\t\t\t[\n\t\t\t\t4081,\n\t\t\t\t-10374\n\t\t\t],\n\t\t\t[\n\t\t\t\t4082,\n\t\t\t\t-10487\n\t\t\t],\n\t\t\t[\n\t\t\t\t4093,\n\t\t\t\t-10520\n\t\t\t],\n\t\t\t[\n\t\t\t\t4126,\n\t\t\t\t-10544\n\t\t\t],\n\t\t\t[\n\t\t\t\t4167,\n\t\t\t\t-10548\n\t\t\t],\n\t\t\t[\n\t\t\t\t4195,\n\t\t\t\t-10529\n\t\t\t],\n\t\t\t[\n\t\t\t\t4263,\n\t\t\t\t-10564\n\t\t\t],\n\t\t\t[\n\t\t\t\t4286,\n\t\t\t\t-10644\n\t\t\t],\n\t\t\t[\n\t\t\t\t4331,\n\t\t\t\t-10699\n\t\t\t],\n\t\t\t[\n\t\t\t\t4389,\n\t\t\t\t-10678\n\t\t\t],\n\t\t\t[\n\t\t\t\t4452,\n\t\t\t\t-10700\n\t\t\t],\n\t\t\t[\n\t\t\t\t4511,\n\t\t\t\t-10782\n\t\t\t],\n\t\t\t[\n\t\t\t\t4531,\n\t\t\t\t-10808\n\t\t\t],\n\t\t\t[\n\t\t\t\t4540,\n\t\t\t\t-10853\n\t\t\t]\n\t\t],\n\t\t\"s\": \"D1\"\n\t}\n]"
   securitySchemes:
     clientCredentials:
       type: oauth2

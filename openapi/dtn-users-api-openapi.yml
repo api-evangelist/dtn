@@ -48,6 +48,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
+      summary: Setup buyer accounts and users
+      x-summary-source: derived
 components:
   schemas:
     ErrorDetails:
@@ -80,6 +82,17 @@ components:
           type: array
           items:
             type: string
+    SetupBuyerRequestFailedItem:
+      required:
+      - customUserId
+      - reason
+      properties:
+        customUserId:
+          type: string
+        reason:
+          type: string
+          description: Short description of why the buyer user setup failed
+          example: 'No buyer account has been set up for sold to number(s): 12345, 101010'
     SetupBuyerRequest:
       type: object
       description: Request body for setting up buyer accounts and users
@@ -165,17 +178,6 @@ components:
                 enum:
                 - ADMIN
                 - USER
-    SetupBuyerRequestFailedItem:
-      required:
-      - customUserId
-      - reason
-      properties:
-        customUserId:
-          type: string
-        reason:
-          type: string
-          description: Short description of why the buyer user setup failed
-          example: 'No buyer account has been set up for sold to number(s): 12345, 101010'
   responses:
     InternalServerError:
       description: Internal Server Error

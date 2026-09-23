@@ -66,33 +66,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
-    CurrentConditionsResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        units:
-          type: string
-          enum:
-          - US
-          - SI
-        location:
-          $ref: '#/components/schemas/Location'
-        observations:
-          $ref: '#/components/schemas/WeatherObservation'
     Error:
       type: object
       properties:
@@ -138,6 +111,33 @@ components:
           type: number
           minimum: 0
           maximum: 100
+    CurrentConditionsResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+          enum:
+          - US
+          - SI
+        location:
+          $ref: '#/components/schemas/Location'
+        observations:
+          $ref: '#/components/schemas/WeatherObservation'
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
   responses:
     Unauthorized:
       description: Missing or invalid Bearer token

@@ -16,19 +16,19 @@ paths:
       tags:
       - Mesoscale Discussions
       summary: Get list of current Mesoscale Discussions
-      description: Get list of current Mesoscale Discussions
       produces:
       - application/json
       parameters: []
       responses:
         '200':
           $ref: '#components/responses/discussion_list'
+      operationId: getFeedsV3Discussion
+      x-operation-id-source: derived
   /feeds/v3/discussion/{mesoscale_discussion_id}:
     get:
       tags:
       - Mesoscale Discussions
       summary: Get the raw text of a Mesoscale Discussion
-      description: Get the raw text of a Mesoscale Discussion
       produces:
       - text/plain
       parameters:
@@ -42,12 +42,13 @@ paths:
           content:
             application/json:
               example: "\n202 \nACUS11 KWNS 081141\nSWOMCD\nSPC MCD 081141 \nOKZ000-TXZ000-081345-\n\nMesoscale Discussion 0006\nNWS Storm Prediction Center Norman OK\n0541 AM CST Thu Jan 08 2026\n\nAreas affected...Northwest Texas to north-central Oklahoma\n\nConcerning...Severe potential...Watch possible \n\nValid 081141Z - 081345Z\n\nProbability of Watch Issuance...40 percent\n\nSUMMARY...A few strong to marginally severe storms are possible this\nmorning.\n\nDISCUSSION...Thunderstorms coverage has increased across West Texas\nand into Oklahoma this morning as isentropic ascent has strengthened\nwith 1km flow now approaching 50 knots on the TLX VWP. Within this\nzone, MUCAPE around 1000 J/kg and effective shear of 55-60 knots\nwill support some storm organization and stronger cells capable of\nisolated large hail. In addition, 61 to 63F dewpoints have spread\nnorthward across much of Oklahoma which has eroded inhibition across\nthe state with around 500-750 J/kg MLCAPE. Overall, a messy storm\nmode and weak low-level lapse rates should limit the overall threat.\nNonetheless, given the veered low-level wind profile, a brief\ntornado and/or gusty winds cannot be ruled out if a more established\nstorm/mesocyclone can develop.\n\n..Bentley/Mosier.. 01/08/2026\n\n...Please see www.spc.noaa.gov for graphic product...\n\nATTN...WFO...TSA...FWD...OUN...SJT...\n\nLAT...LON   34999604 33609779 33159892 33189943 34199955 34649945\n            35589863 36249770 36869707 36849630 35989581 34999604 \n\nMOST PROBABLE PEAK WIND GUST...UP TO 60 MPH\nMOST PROBABLE PEAK HAIL SIZE...UP TO 1.25 IN\n\n\n"
+      operationId: getFeedsV3DiscussionByMesoscaleDiscussionId
+      x-operation-id-source: derived
   /feeds/v3/discussion/archive/{year}/{month}/{day}:
     get:
       tags:
       - Mesoscale Discussions
       summary: Get historical Mesoscale Discussions for a given day
-      description: Get historical Mesoscale Discussions for a given day
       produces:
       - application/json
       parameters:
@@ -57,12 +58,13 @@ paths:
       responses:
         '200':
           $ref: '#components/responses/discussion_list'
+      operationId: getFeedsV3DiscussionArchiveByYearByMonthByDay
+      x-operation-id-source: derived
   /feeds/v3/discussion/archive/{year}/{month}/{day}/{hour}/{minute}:
     get:
       tags:
       - Mesoscale Discussions
       summary: Get historical Mesoscale Discussions for a given timestamp
-      description: Get historical Mesoscale Discussions for a given timestamp
       produces:
       - application/json
       parameters:
@@ -74,22 +76,10 @@ paths:
       responses:
         '200':
           $ref: '#components/responses/discussion_list'
+      operationId: getFeedsV3DiscussionArchiveByYearByMonthByDayByHourByMinute
+      x-operation-id-source: derived
 components:
   parameters:
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
-      required: true
-      schema:
-        type: string
-    minute:
-      name: minute
-      in: path
-      description: 2 digit minute, 00-59
-      required: true
-      schema:
-        type: string
     day:
       name: day
       in: path
@@ -101,6 +91,20 @@ components:
       name: mesoscale_discussion_id
       in: path
       description: id of the discussion to be retrieved
+      required: true
+      schema:
+        type: string
+    minute:
+      name: minute
+      in: path
+      description: 2 digit minute, 00-59
+      required: true
+      schema:
+        type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string

@@ -1,7 +1,15 @@
 openapi: 3.2.0
 info:
   title: Tropical Cyclone DTN API
-  description: "# Summary\nDTN's Tropical Cyclone API provides geospatial data for active tropical cyclones,\nincluding past tracks, current positions, forecast tracks and error cones,\nforecast wind radii and swaths, and aircraft reconnaissance from DTN and\ngovernment agency sources.\n\n# Responses\n## TropicalResponse\nAll endpoints return data as a \"TropicalResponse\" model.\n\n```json\n{\n\t\"url\": \"/cyclones\", # URL requested\n\t\"cycloneCount\": 1, # Number of cyclones returned in the response\n\t\"data\": [TropicalFeatureCollection] # Array of TropicalFeatureCollection objects\n}\n```\n## TropicalFeatureCollection\nA TropicalFeatureCollection is a [rfc7946](https://datatracker.ietf.org/doc/html/rfc7946) compliant GeoJson Feature Collection. \nData for each active storm will be held in its own Feature Collection. The data is held inside the list of Features.\n```json\n{\n\t\"type\": \"FeatureCollection\",\n\t\"metadata\": {\n\t\t\"stormName\": \"Ryan\", # Name of the storm that this feature collection contains data for\n\t\t\"source\": \"DTN\", # Name of the organization that issued the advisory\n\t\t\"stormNum\": \"20S\",\n\t\t\"stormId\": \"101\", # Unique id of storm\n\t\t\"advisoryDateTime\": \"2020-08-01T00:00:00Z\", # Date and time of the advisory\n\t},\n\t\"features\": [TropicalFeature] # Array of GeoJson Feature objects\n}\n```\n## TropicalFeature\nA TropicalFeature is a [rfc7946](https://datatracker.ietf.org/doc/html/rfc7946) compliant GeoJson Feature. \n\nEach Feature contains a property \"stormElement\" which describes the type of data this feature represents.\n```json\n{\n\t\"type\": \"Feature\",\n\t\"properties\": {\n\t\t\"stormElement\": \"OBSERVED_POSITION\",\n\t\t...\n\t},\n\t\"geometry\": {\n\t\t\"type\": \"Point\",\n\t\t\"coordinates\": [1, 1]\n\t}\n}\n```\n\"stormElement\" is meant to be used as an enum, where the allowed values are:\n- \"ERROR_CONE\"\n\t- This is the probable path of a tropical cyclone’s center over a certain time period. The cone is based on the spread of the forecast models combined with meteorological expertise. It accounts for the uncertainty in the hurricane's future track.\n\t- geometry type Polygon\n- \"CURRENT_POSITION\"\n\t- Current position of the center (or eye) of the tropical cyclone.\n\t- geometry type Point\n- \"FORECAST_POSITION\"\n\t- Indicates the predicted locations of the tropical cyclone’s center at specific future times.\n\t- geometry type Point\n- \"OBSERVED_POSITION\"\n\t- Observed positions of the tropical cyclone including since inception.\n\t- geometry type Point\n- \"FORECAST_RADII\"\n\t- Radius of the wind field around the center of the tropical cyclone.\n\t- geometry type Polygon\n- \"CURRENT_RADII\"\n\t- Radius of the wind field around the center of the tropical cyclone. Current Radii represents the observed wind field at the tropical cyclones current position.\n\t- geometry type Polygon\n- \"FORECAST_TRACK\"\n\t- Predicted path that the tropical cyclone’s  center is expected to follow over a certain period. \n\t- geometry type LineString\n- \"OBSERVED_TRACK\"\n\t- The observed track of the tropical cyclone centers since inception.\n\t- geometry type LineString\n- \"SWATH\"\n\t- Refers to areas affected by the cyclone's winds, showing areas that experienced different wind speeds throughout the tropical cyclone’s future path.\n\t- geometry type Polygon\n- \"RECON_POINT\"\n\t- The current position of the reconnaissance aircraft that is conducting a mission to sample meteorological data from the tropical cyclone.\n\t- geometry type Point\n- \"RECON_TRACK\"\n\t- The observed track of the reconnaissance aircraft that is conducting a mission to sample meteorological data from the tropical cyclone.\n\t- geometry type LineString\n- \"MODEL_POINT\"\n\t- Specific locations along the predicted path of a tropical cyclone, as determined by various forecast models. These points represent the projected positions of the tropical cyclone’s center at different future times. \n\t- geometry type Point\n- \"MODEL_TRACK\"\n\t- The predicted path that a storm's center is expected to follow over a certain time period, as determined by various forecast models.\n\t- geometry type LineString\n- \"ERROR_CONE_BBOX\"\n\t- A rectangular bounding box calculated by the API that includes the extent of the error cone.\n\t- geometry type Polygon\n- \"ESTIMATED_POSITION\"\n\t- The position of an Invest as Identified by the National Hurricane Center (NHC) in the Automated Tropical Cyclone Forecasting System (ATCF). Since Invests do not have well defined centers, the NHC and other agencies provide the best estimate Invest position in its early development stages.\n\t- geometry type Polygon\n\n\n# Data Sources\n## DTN\nNon agency endpoints will return advisory data from DTN.\n## Agency\nAgency endpoints will return data from the following government agencies: \n### NHC\n[https://www.nhc.noaa.gov/](https://www.nhc.noaa.gov/)\n\nThe National Hurricane Center (NHC) is a division of the National Weather Service (NWS) under NOAA. It is responsible for tracking and forecasting tropical cyclones in the Atlantic Basin and eastern Pacific Ocean.\n\n###  JTWC\n[https://www.metoc.navy.mil/jtwc/jtwc.html](https://www.metoc.navy.mil/jtwc/jtwc.html)\n\nThe Joint Typhoon Warning Center (JTWC) is a joint United States Navy, Air Force, and National Oceanic and Atmospheric Administration (NOAA) organization that provides tropical cyclone warnings and advisories for the Western Pacific and Indian Ocean regions.\n\n### CPHC\n[https://www.weather.gov/cphc/](https://www.weather.gov/cphc/)\n\nThe Central Pacific Hurricane Center (CPHC) is a branch of the National Weather Service (NWS) that provides forecasts, warnings, and analyses of tropical cyclones in the Central Pacific Basin.\n\n### BOM\n[http://www.bom.gov.au/](http://www.bom.gov.au/)\n\nThe Bureau of Meteorology (BOM) is Australia's national weather, water, and climate agency. It provides weather forecasts, warnings, and analyses to support decision-making by the community, industry, and government."
+  description: '# Summary
+
+    DTN''s Tropical Cyclone API provides geospatial data for active tropical cyclones,
+
+    including past tracks, current positions, forecast tracks and error cones,
+
+    forecast wind radii and swaths, and aircraft reconnaissance from DTN and
+
+    government agency sources.'
   version: 1.0.6
 servers:
 - url: https://tropical.api.dtn.com
@@ -82,7 +90,34 @@ paths:
       tags:
       - DTN
       summary: Get Radii
-      description: "Returns Array of FeatureCollection Objects, Contain wind radii features. \n\n**Data returned from this endpoint contains data from DTN advisories ONLY**\n\nGeoJSON Properties:\n\n* **stormElement** ***(string)***: Type of storm element (\"FORECAST_RADII\" in this case).\n* **radiiType** ***(string)***: Type of wind radii being provided (e.g., \"34kt\" for 34-knot winds).\n* **forecastHour** ***(integer)***: Forecast hour for which the wind radii are valid.\n* **ne** ***(integer)***: Radius of the wind field in the northeast quadrant (in nautical miles).\n* **se** ***(integer)***: Radius of the wind field in the southeast quadrant (in nautical miles).\n* **sw** ***(integer)***: Radius of the wind field in the southwest quadrant (in nautical miles).\n* **nw** ***(integer)***: Radius of the wind field in the northwest quadrant (in nautical miles).\n* **validDateTime** ***(string)***: Date and time when the forecast is valid in UTC format (YYYY-MM-DDTHH:MM:SSZ).\n* **category** ***(integer)***: Storm category (Saffir-Simpson Hurricane Wind Scale) based on the wind speed.\n* **windSpeedKnots** ***(float)***: Wind speed of the storm in knots."
+      description: 'Returns Array of FeatureCollection Objects, Contain wind radii features.
+
+
+        **Data returned from this endpoint contains data from DTN advisories ONLY**
+
+
+        GeoJSON Properties:
+
+
+        * **stormElement** ***(string)***: Type of storm element ("FORECAST_RADII" in this case).
+
+        * **radiiType** ***(string)***: Type of wind radii being provided (e.g., "34kt" for 34-knot winds).
+
+        * **forecastHour** ***(integer)***: Forecast hour for which the wind radii are valid.
+
+        * **ne** ***(integer)***: Radius of the wind field in the northeast quadrant (in nautical miles).
+
+        * **se** ***(integer)***: Radius of the wind field in the southeast quadrant (in nautical miles).
+
+        * **sw** ***(integer)***: Radius of the wind field in the southwest quadrant (in nautical miles).
+
+        * **nw** ***(integer)***: Radius of the wind field in the northwest quadrant (in nautical miles).
+
+        * **validDateTime** ***(string)***: Date and time when the forecast is valid in UTC format (YYYY-MM-DDTHH:MM:SSZ).
+
+        * **category** ***(integer)***: Storm category (Saffir-Simpson Hurricane Wind Scale) based on the wind speed.
+
+        * **windSpeedKnots** ***(float)***: Wind speed of the storm in knots.'
       operationId: get_radii_v1_cyclone_radii_get
       security:
       - clientCredentials: []
@@ -191,15 +226,6 @@ components:
       - url
       - cycloneCount
       title: TropicalResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     TropicalFeature:
       properties:
         type:
@@ -216,27 +242,24 @@ components:
       required:
       - geometry
       title: TropicalFeature
-    ValidationError:
+    TropicalFeatureCollection:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
         type:
           type: string
-          title: Error Type
+          title: Type
+          default: FeatureCollection
+        features:
+          items:
+            $ref: '#/components/schemas/TropicalFeature'
+          type: array
+          title: Features
+          default: []
+        metadata:
+          $ref: '#/components/schemas/StormMetadata'
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - metadata
+      title: TropicalFeatureCollection
     TropicalGeometry:
       properties:
         type:
@@ -258,6 +281,36 @@ components:
       - type
       - coordinates
       title: TropicalGeometry
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     StormMetadata:
       properties:
         stormName:
@@ -283,24 +336,6 @@ components:
       - stormNum
       - stormId
       title: StormMetadata
-    TropicalFeatureCollection:
-      properties:
-        type:
-          type: string
-          title: Type
-          default: FeatureCollection
-        features:
-          items:
-            $ref: '#/components/schemas/TropicalFeature'
-          type: array
-          title: Features
-          default: []
-        metadata:
-          $ref: '#/components/schemas/StormMetadata'
-      type: object
-      required:
-      - metadata
-      title: TropicalFeatureCollection
   securitySchemes:
     clientCredentials:
       type: oauth2

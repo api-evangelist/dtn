@@ -1,7 +1,9 @@
 openapi: 3.2.0
 info:
   title: PXWeb Market Data Quotes API
-  description: "ProphetX Web services, in short __PXWeb__, provides the facility to access real time quotes and historical market information \nfrom a JSON and REST based web service.\n\nPXWeb end points are divided into four categories: Quotes, History, Information, and Option Series.  Requests in the quotes category\nare for getting the most recent prices on a symbol.  History is for requesting prices from specific time periods in the past and supports \ndaily, minute, and tick history.  Information contains a request for searching for symbols based on text strings and a request for \nquerying the market hours of a symbol.  The option series category contains on request for getting quotes on many futures options\nbased on an option root and an expiration."
+  description: 'ProphetX Web services, in short __PXWeb__, provides the facility to access real time quotes and historical market information
+
+    from a JSON and REST based web service.'
   version: 1.0.2
 servers:
 - description: Production (PROD)
@@ -20,7 +22,10 @@ paths:
       tags:
       - Quotes
       summary: Get latest information for symbols
-      description: "Get the latest prices and other information for a list of symbols or symbol patterns.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+      description: 'Get the latest prices and other information for a list of symbols or symbol patterns.
+
+
+        **Note: The Dev Portal ''Try'' feature does not currently work for the Market Data API. To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection. Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**'
       operationId: getQuoteSnap
       parameters:
       - $ref: '#/components/parameters/symbolParam'
@@ -54,7 +59,10 @@ paths:
       tags:
       - Quotes
       summary: Get futures options greek values
-      description: "Get the latest prices and price sensitivity values known as greeks for futures options.  The response for a futures option will always include a greeks object containing: delta, gamma, theta, vega, underlyingPrice, interestRate, and impliedVolatility.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+      description: 'Get the latest prices and price sensitivity values known as greeks for futures options. The response for a futures option will always include a greeks object containing: delta, gamma, theta, vega, underlyingPrice, interestRate, and impliedVolatility.
+
+
+        **Note: The Dev Portal ''Try'' feature does not currently work for the Market Data API. To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection. Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**'
       operationId: getOptionGreeks
       parameters:
       - $ref: '#/components/parameters/symbolLimitParam'
@@ -88,7 +96,10 @@ paths:
       tags:
       - Quotes
       summary: Get equity scans
-      description: "Equity scan information from the three US stock exchanges, NYSE, NYSE-AMEX or the NASDAQ selected by activity categories.\n\n\n**Note: The Dev Portal 'Try' feature does not currently work for the Market Data API.  To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection.  Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**  \n"
+      description: 'Equity scan information from the three US stock exchanges, NYSE, NYSE-AMEX or the NASDAQ selected by activity categories.
+
+
+        **Note: The Dev Portal ''Try'' feature does not currently work for the Market Data API. To try the API, please see this site: https://pxweb.dtn.com/PXWebDoc/OAS/index.html or use the attached Postman collection. Contact DTN here: https://www.dtn.com/contact-us/ for a trial account.**'
       operationId: getMarketScans
       parameters:
       - $ref: '#/components/parameters/reportParam'
@@ -117,31 +128,135 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  parameters:
+    symbolParam:
+      name: symbol
+      in: query
+      description: 'A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)
+
+        '
+      required: true
+      examples:
+        corn:
+          summary: CBOT Corn Front Month Alias
+          value: '@C@1'
+        oil:
+          summary: NYMEX Crude Oil Front Month Alias
+          value: QCL@1
+        msft:
+          summary: Microsoft stock
+          value: MSFT
+        countyAverage:
+          summary: CORN/YELLOW, County Average Spot Cash Price, Pipestone, MN
+          value: CORN$.MN.F27117
+      schema:
+        type: string
+    limitParam:
+      name: limit
+      in: query
+      description: The maximum number of symbols to return.
+      schema:
+        type: integer
+        default: 200
+        maximum: 4998
+    symbolLimitParam:
+      name: symbolLimit
+      in: query
+      description: The number of symbols to return in one request up to a maximum of 4000.
+      schema:
+        type: integer
+        default: 600
+        maximum: 4000
+    scanMarketParam:
+      name: market
+      in: query
+      description: The market code which can be NYSE, NYSEAMERICAN, NASDAQ, or ALL.
+      required: false
+      schema:
+        type: string
+        default: ALL
+        enum:
+        - NYSE
+        - NYSEAMERICAN
+        - NASDAQ
+        - ALL
+    pageTokenParam:
+      name: pageToken
+      in: query
+      description: "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
+      schema:
+        type: string
+    optionSymbolParam:
+      name: symbol
+      in: query
+      description: 'A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)
+
+        '
+      required: true
+      examples:
+        corn:
+          summary: CBOT Corn Options
+          value: '@C`##<CP>{0-9}'
+        oil:
+          summary: NYMEX Crude Oil Options
+          value: QCL`##<CP>{0-9}
+      schema:
+        type: string
+    marketParam:
+      name: market
+      in: query
+      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
+
+        '
+      schema:
+        type: string
+    fieldGroupParam:
+      name: fieldGroup
+      in: query
+      description: "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+      required: false
+      schema:
+        type: string
+        enum:
+        - price
+        - grains
+        - racks
+        - complete
+        default: complete
+    fieldsParam:
+      name: fields
+      in: query
+      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
+
+        '
+      required: false
+      schema:
+        type: string
+    reportParam:
+      name: report
+      in: query
+      description: Desired report code, which can be Gainers(G), Percent Gainers(PG), Losers(L), Percent Losers(PL), Active(A), Volatile(V), 52 Week High(52H), 52 Week Low(52L).  Anything else defaults to A.
+      schema:
+        type: string
+        default: A
+        enum:
+        - G
+        - PG
+        - L
+        - PL
+        - A
+        - V
+        - 52H
+        - 52L
+    basisParam:
+      name: basis
+      in: query
+      description: A price FID to be used as the basis of the calculation, where typical values are "recent" and "settlementPrice". Default value is recent.
+      required: false
+      schema:
+        type: string
+        default: recent
   schemas:
-    Meta:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        count:
-          type: number
-          description: Number of symbols returned by request
-        dataSrc:
-          type: string
-          description: A value used by DTN support for troublshooting any issues
-        duration:
-          type: string
-          description: The duration of time DTN servers spent processing the request.  Does not include internet transit time.
-        userId:
-          type: string
-          description: The user that made the request.
-        operation:
-          type: string
-          description: The name of the operation called
-        pageToken:
-          type: string
-          description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
     Greeks:
       type: object
       description: An object to hold futures options price sensitivity values known as greeks.  Only returned by /quotes/greeks
@@ -173,19 +288,6 @@ components:
           description: Implied volatility used in option calculations.
           format: double
           type: number
-    MarketDepthQuote:
-      properties:
-        size:
-          format: int64
-          type: integer
-        value:
-          $ref: '#/components/schemas/Price'
-      type: object
-    Price:
-      type: string
-      description: Prices are represented as strings to prevent float rounding problems
-      examples:
-      - '123.25'
     Symbol:
       required:
       - status
@@ -1570,18 +1672,11 @@ components:
       required:
       - symbol
       type: object
-    MarketDepth:
-      description: If available for the symbol, market depth is returned as two arrays.  One for bids, and the other for asks.  Bids are sorted from highest price to lowest, and asks are sroted lowest price to highest.
-      properties:
-        askLevels:
-          items:
-            $ref: '#/components/schemas/MarketDepthQuote'
-          type: array
-        bidLevels:
-          items:
-            $ref: '#/components/schemas/MarketDepthQuote'
-          type: array
-      type: object
+    Price:
+      type: string
+      description: Prices are represented as strings to prevent float rounding problems
+      examples:
+      - '123.25'
     Error:
       type: object
       properties:
@@ -1624,134 +1719,50 @@ components:
                 description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
                 examples:
                 - Unauthorized access to service.
-  parameters:
-    limitParam:
-      name: limit
-      in: query
-      description: The maximum number of symbols to return.
-      schema:
-        type: integer
-        default: 200
-        maximum: 4998
-    fieldsParam:
-      name: fields
-      in: query
-      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
-
-        '
-      required: false
-      schema:
-        type: string
-    symbolParam:
-      name: symbol
-      in: query
-      description: 'A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)
-
-        '
-      required: true
-      examples:
-        corn:
-          summary: CBOT Corn Front Month Alias
-          value: '@C@1'
-        oil:
-          summary: NYMEX Crude Oil Front Month Alias
-          value: QCL@1
-        msft:
-          summary: Microsoft stock
-          value: MSFT
-        countyAverage:
-          summary: CORN/YELLOW, County Average Spot Cash Price, Pipestone, MN
-          value: CORN$.MN.F27117
-      schema:
-        type: string
-    basisParam:
-      name: basis
-      in: query
-      description: A price FID to be used as the basis of the calculation, where typical values are "recent" and "settlementPrice". Default value is recent.
-      required: false
-      schema:
-        type: string
-        default: recent
-    scanMarketParam:
-      name: market
-      in: query
-      description: The market code which can be NYSE, NYSEAMERICAN, NASDAQ, or ALL.
-      required: false
-      schema:
-        type: string
-        default: ALL
-        enum:
-        - NYSE
-        - NYSEAMERICAN
-        - NASDAQ
-        - ALL
-    symbolLimitParam:
-      name: symbolLimit
-      in: query
-      description: The number of symbols to return in one request up to a maximum of 4000.
-      schema:
-        type: integer
-        default: 600
-        maximum: 4000
-    pageTokenParam:
-      name: pageToken
-      in: query
-      description: "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
-      schema:
-        type: string
-    marketParam:
-      name: market
-      in: query
-      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
-
-        '
-      schema:
-        type: string
-    optionSymbolParam:
-      name: symbol
-      in: query
-      description: 'A comma separated list of security symbols, security aliases, or search patterns.   Information about search patterns can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx](https://pxweb.dtn.com/PXWebDoc/pages/SearchPatterns.aspx) Keyword based symbol search can be done with the /market_data/symbol-search endpoint.  Or symbols can be searched for manually here: [https://ws1.dtn.com/PX/Search/](https://ws1.dtn.com/PX/Search/)
-
-        '
-      required: true
-      examples:
-        corn:
-          summary: CBOT Corn Options
-          value: '@C`##<CP>{0-9}'
-        oil:
-          summary: NYMEX Crude Oil Options
-          value: QCL`##<CP>{0-9}
-      schema:
-        type: string
-    reportParam:
-      name: report
-      in: query
-      description: Desired report code, which can be Gainers(G), Percent Gainers(PG), Losers(L), Percent Losers(PL), Active(A), Volatile(V), 52 Week High(52H), 52 Week Low(52L).  Anything else defaults to A.
-      schema:
-        type: string
-        default: A
-        enum:
-        - G
-        - PG
-        - L
-        - PL
-        - A
-        - V
-        - 52H
-        - 52L
-    fieldGroupParam:
-      name: fieldGroup
-      in: query
-      description: "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
-      required: false
-      schema:
-        type: string
-        enum:
-        - price
-        - grains
-        - racks
-        - complete
-        default: complete
+    MarketDepthQuote:
+      properties:
+        size:
+          format: int64
+          type: integer
+        value:
+          $ref: '#/components/schemas/Price'
+      type: object
+    MarketDepth:
+      description: If available for the symbol, market depth is returned as two arrays.  One for bids, and the other for asks.  Bids are sorted from highest price to lowest, and asks are sroted lowest price to highest.
+      properties:
+        askLevels:
+          items:
+            $ref: '#/components/schemas/MarketDepthQuote'
+          type: array
+        bidLevels:
+          items:
+            $ref: '#/components/schemas/MarketDepthQuote'
+          type: array
+      type: object
+    Meta:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        count:
+          type: number
+          description: Number of symbols returned by request
+        dataSrc:
+          type: string
+          description: A value used by DTN support for troublshooting any issues
+        duration:
+          type: string
+          description: The duration of time DTN servers spent processing the request.  Does not include internet transit time.
+        userId:
+          type: string
+          description: The user that made the request.
+        operation:
+          type: string
+          description: The name of the operation called
+        pageToken:
+          type: string
+          description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
   securitySchemes:
     clientCredentials:
       type: oauth2

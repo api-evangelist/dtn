@@ -16,19 +16,19 @@ paths:
       tags:
       - Excessive Rainfall Outlook
       summary: List current Excessive Rainfall Outlooks, defaulting to Day1
-      description: List current Excessive Rainfall Outlooks, defaulting to Day1
       produces:
       - application/json
       parameters: []
       responses:
         '200':
           $ref: '#/components/responses/excessive_rainfall_outlook_list'
+      operationId: getFeedsV3Ero
+      x-operation-id-source: derived
   /feeds/v3/ero/day{ero_horizon}:
     get:
       tags:
       - Excessive Rainfall Outlook
       summary: Get current Excessive Rainfall Outlook for given time horizon
-      description: Get current Excessive Rainfall Outlook for given time horizon
       produces:
       - application/json
       parameters:
@@ -36,12 +36,13 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/excessive_rainfall_outlook_list'
+      operationId: getFeedsV3EroDay{eroHorizon}
+      x-operation-id-source: derived
   /feeds/v3/ero/{ero_id}:
     get:
       tags:
       - Excessive Rainfall Outlook
       summary: Get raw text of Excessive Rainfall Outlook
-      description: Get raw text of Excessive Rainfall Outlook
       produces:
       - text/plain
       parameters:
@@ -52,11 +53,13 @@ paths:
           content:
             text/plain:
               example: "\n508 \nFOUS30 KWBC 052011 CCA\nQPFERD\n\nExcessive Rainfall Discussion...CORRECTED\nNWS Weather Prediction Center College Park MD\n311 PM EST Mon Jan 5 2026\n\nDay 1\nValid 16Z Mon Jan 05 2026 - 12Z Tue Jan 06 2026\n\n...THERE IS A MARGINAL RISK OF EXCESSIVE RAINFALL ALONG THE CENTRAL\nTO NORTHERN CALIFORNIA COAST AND NORTHERN CALIFORNIA...\n\n...16Z update...\n\nThe forecast reasoning in the previous discussion remains valid and\nonly minor adjustments were made to the existing Marginal Risk\nacross north-central California. The primary shortwave embedded\nwithin the longwave trough in the eastern Pacific was centered near\n128W and will advance closer to the north-central California coast\nbetween Point Arena and San Francisco Bay through 00Z. After 00Z,\nthe closed mid-level low will elongate and weaken as it moves\nsouthward offshore of the coast. There is good model agreement in\nthis forecast and the corresponding low level wind field becoming\nlargely parallel to the central California coast overnight while\nweakening.\n\nThe main concern for heavy rain related impacts will be prior to\n03Z Tuesday where isolated hourly rainfall of 0.50 to 0.75 inches\nprimarily focused along the Coastal Ranges toward the San Francisco\nBay region later today with isolated hourly totals near 1 inch\npossible. East of the Coastal Ranges, peak hourly rainfall up to\n~0.50 inches is expected. Additional peak rainfall through 12Z\nTuesday will be in the 2-4 inch range\n\nOtto\n\n...previous discussion follows...\n\n\nUpper disturbance off the California coast will meander to the\nsoutheast closer to the coastal plain, eventually pinching off the\nmean trough centered to the north and closing off into an ULL as it\nmigrates down near the latitude of the Bay area. Proximity of the\ndisturbance and prevailing flow will send a modest IVT pulse\n(300-400 kg/ms) crashing into the northern CA coastal plain with\nsome minor protrusion of the IVT signature inland with a secondary\nQPF maxima forecast around the Trinity Mountains over into Shasta\nNational Forest domain. Hi-res deterministic output is pretty\nconsistent with the axis of heaviest precip focused from the King\nRange down towards Santa Rosa, north of the Bay area with the\nlatest HREF EAS probs for 1\" running between 60-90% for much of\nthat location with another prob max focused near Mount Shasta.\n\nThe main threat for this setup is easily over any urbanized zones\nand remnant burn scars across northern CA leading to mainly a\nlower-end flash flood concern in the grand scheme of the setup. IVT\nsignature is one that historically yields more isolated flash flood\nthreats with the primary focus typically aimed at that coastal\nurban centered from the Bay area up towards Eureka, and over the\nnorthern valley locations like Redding. This is where the MRGL\nrisk was maintained during the forecast as the trend for the\nsouthern edge of any heavy rain prospects south of San Jose has all\nbut disappeared on guidance. It's still something we'll monitor\nfor any last minute trends back, but guidance favors mainly the\narea north of the Bay at this time. Total QPF for the impacted\nareas will be between 1.5-3\" with a max between 4-5\" for the\ncoastal ranges north of the Bay area, and over the Shasta National\nForest.\n\nKleebauer\n\n\nDay 2\nValid 12Z Tue Jan 06 2026 - 12Z Wed Jan 07 2026\n\nThe probability of rainfall exceeding flash flood guidance is \nless than 5 percent.\n\nFracasso\n\n\nDay 3\nValid 12Z Wed Jan 07 2026 - 12Z Thu Jan 08 2026\n\nThe probability of rainfall exceeding flash flood guidance is \nless than 5 percent.\n\nFracasso\n\n\nDay 1 threat area: https://www.wpc.ncep.noaa.gov/qpf/94epoints.txt\nDay 2 threat area: https://www.wpc.ncep.noaa.gov/qpf/98epoints.txt\nDay 3 threat area: https://www.wpc.ncep.noaa.gov/qpf/99epoints.txt\n\n"
+      operationId: getFeedsV3EroByEroId
+      x-operation-id-source: derived
   /feeds/v3/ero/day{ero_horizon}/{year}/{month}/{day}/{hour}/{minute}:
     get:
       tags:
       - Excessive Rainfall Outlook
-      summary: List historic Excessive Rainfall Outlooks for given time horizon on given date and time
+      summary: List historic Excessive Rainfall Outlooks for given time horizon on given date…
       description: List historic Excessive Rainfall Outlooks for given time horizon on given date and time
       produces:
       - application/json
@@ -70,26 +73,14 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/excessive_rainfall_outlook_list'
+      operationId: getFeedsV3EroDay{eroHorizon}ByYearByMonthByDayByHourByMinute
+      x-operation-id-source: derived
 components:
   parameters:
-    ero_horizon:
-      name: ero_horizon
+    day:
+      name: day
       in: path
-      description: horizon in days, from 1 to 5 inclusive
-      required: true
-      schema:
-        type: string
-    ero_id:
-      name: ero_id
-      in: path
-      description: identifier of outlook to retrieve
-      required: true
-      schema:
-        type: string
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
+      description: 2 digit day, 01-31
       required: true
       schema:
         type: string
@@ -100,10 +91,17 @@ components:
       required: true
       schema:
         type: string
-    day:
-      name: day
+    ero_horizon:
+      name: ero_horizon
       in: path
-      description: 2 digit day, 01-31
+      description: horizon in days, from 1 to 5 inclusive
+      required: true
+      schema:
+        type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string
@@ -121,9 +119,11 @@ components:
       required: true
       schema:
         type: string
-  headers:
-    content-type:
-      description: MIME-type of returned data
+    ero_id:
+      name: ero_id
+      in: path
+      description: identifier of outlook to retrieve
+      required: true
       schema:
         type: string
   responses:
@@ -135,6 +135,11 @@ components:
       content:
         application/json:
           example: "[\n\t{\n\t\t\"t\": \"RAIN\",\n\t\t\"o\": \"KWNH\",\n\t\t\"s\": \"D1\",\n\t\t\"f\": \"MRGL\",\n\t\t\"b\": 1767628800,\n\t\t\"e\": 1767700800,\n\t\t\"p\": [\n\t\t\t[\n\t\t\t\t3688,\n\t\t\t\t-12232\n\t\t\t],\n\t\t\t[\n\t\t\t\t3710,\n\t\t\t\t-12261\n\t\t\t],\n\t\t\t[\n\t\t\t\t3772,\n\t\t\t\t-12271\n\t\t\t],\n\t\t\t[\n\t\t\t\t3788,\n\t\t\t\t-12315\n\t\t\t],\n\t\t\t[\n\t\t\t\t3836,\n\t\t\t\t-12328\n\t\t\t],\n\t\t\t[\n\t\t\t\t3885,\n\t\t\t\t-12388\n\t\t\t],\n\t\t\t[\n\t\t\t\t3941,\n\t\t\t\t-12404\n\t\t\t],\n\t\t\t[\n\t\t\t\t3964,\n\t\t\t\t-12399\n\t\t\t],\n\t\t\t[\n\t\t\t\t4027,\n\t\t\t\t-12458\n\t\t\t],\n\t\t\t[\n\t\t\t\t4044,\n\t\t\t\t-12433\n\t\t\t],\n\t\t\t[\n\t\t\t\t4068,\n\t\t\t\t-12316\n\t\t\t],\n\t\t\t[\n\t\t\t\t4078,\n\t\t\t\t-12307\n\t\t\t],\n\t\t\t[\n\t\t\t\t4114,\n\t\t\t\t-12222\n\t\t\t],\n\t\t\t[\n\t\t\t\t4104,\n\t\t\t\t-12201\n\t\t\t],\n\t\t\t[\n\t\t\t\t4067,\n\t\t\t\t-12179\n\t\t\t],\n\t\t\t[\n\t\t\t\t4002,\n\t\t\t\t-12162\n\t\t\t],\n\t\t\t[\n\t\t\t\t3976,\n\t\t\t\t-12126\n\t\t\t],\n\t\t\t[\n\t\t\t\t3955,\n\t\t\t\t-12115\n\t\t\t],\n\t\t\t[\n\t\t\t\t3949,\n\t\t\t\t-12155\n\t\t\t],\n\t\t\t[\n\t\t\t\t3913,\n\t\t\t\t-12186\n\t\t\t],\n\t\t\t[\n\t\t\t\t3871,\n\t\t\t\t-12193\n\t\t\t],\n\t\t\t[\n\t\t\t\t3841,\n\t\t\t\t-12185\n\t\t\t],\n\t\t\t[\n\t\t\t\t3746,\n\t\t\t\t-12207\n\t\t\t],\n\t\t\t[\n\t\t\t\t3715,\n\t\t\t\t-12204\n\t\t\t],\n\t\t\t[\n\t\t\t\t3700,\n\t\t\t\t-12212\n\t\t\t],\n\t\t\t[\n\t\t\t\t3688,\n\t\t\t\t-12232\n\t\t\t]\n\t\t],\n\t\t\"a\": \"202601052011-Q\"\n\t}\n]"
+  headers:
+    content-type:
+      description: MIME-type of returned data
+      schema:
+        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

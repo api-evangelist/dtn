@@ -42,6 +42,8 @@ paths:
               202601080245.nid
 
               '
+      operationId: getSinglesiteBySiteIdByYearByMonthByDayByProductCodeDirlistTxt
+      x-operation-id-source: derived
   /singlesite/{site_id}/{year}/{month}/{day}/{product_code}/{nids_filename}:
     get:
       tags:
@@ -57,12 +59,21 @@ paths:
       - $ref: '#/components/parameters/day'
       - $ref: '#/components/parameters/product_code'
       - $ref: '#/components/parameters/nids_filename'
+      operationId: getSinglesiteBySiteIdByYearByMonthByDayByProductCodeByNidsFilename
+      x-operation-id-source: derived
 components:
   parameters:
-    site_id:
-      name: site_id
+    day:
+      name: day
       in: path
-      description: The radar site's ID.
+      description: 2 digit day, 01-31
+      required: true
+      schema:
+        type: string
+    product_code:
+      name: product_code
+      in: path
+      description: Product Code, e.g. WDTR1.
       required: true
       schema:
         type: string
@@ -80,24 +91,17 @@ components:
       required: true
       schema:
         type: string
-    day:
-      name: day
-      in: path
-      description: 2 digit day, 01-31
-      required: true
-      schema:
-        type: string
-    product_code:
-      name: product_code
-      in: path
-      description: Product Code, e.g. WDTR1.
-      required: true
-      schema:
-        type: string
     year:
       name: year
       in: path
       description: 4 digit year, e.g. 2026
+      required: true
+      schema:
+        type: string
+    site_id:
+      name: site_id
+      in: path
+      description: The radar site's ID.
       required: true
       schema:
         type: string

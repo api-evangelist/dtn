@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Vessel Insight Subscription Customer Vessel Subscription API
-  description: "# Introduction\n\nDTN Vessel Insights Subscription API can be used by customers to self-manage vessel subscription for [DTN Vessel Insights API](https://documenter.getpostman.com/view/19830375/UVypyx2G). For questions, contact DTN customer service: [customerservice@dtn.com](mailto:customerservice@dtn.com).\n\n# Getting started\n\nMake sure that a valid token (as seen in the Auth section) is used to call the API. See below for a valid query body. You can use the [Auth0](https://shipping-cs.eu.auth0.com/oauth/token) endpoint to authenticate and get a JWT token. \n\nSubscribing a vessel to Vessel Insights API is done by sending a corresponding IMO and MMSI number to the Vessel Insight Subscription API. It is also possible to bulk subscribe vessels to Vessel Insights API using the Vessel Insight Subscription API.\n\nThe Vessel Insights API will start collecting data from the moment a vessel has been subscribed. The first set of calculations for Vessel Insights API will trigger at 0 UTC after the subscription. From here onwards, new data is added to Vessel Insights API once every day at every 0 UTC. This data covers the ships timeline from ‘0 UTC – 48 hours’ to ‘0 UTC – 24 hours’.\n\nDepending on when a customer calls the Vessel Insights API, data for last 24 to 48 hours will not be available in Vessel Insights API. Therefore, please be aware that subscribing a vessel will not immediately result in data being available in Vessel Insights API for this vessel.\n\n# Troubleshooting\n## Resource conflict\nThis error message indicates that the vessel you are trying to subscribe to Vessel Insights API is already subscribed by you or another customer with a different MMSI number than the one you provided in the subscription request. So when you tried to subscribe the same vessel (IMO) with a different MMSI number, our system noticed a conflict and gave this “Resource conflict” error. At this moment, you cannot resolve this error yourself. Please notify this to our customer service at [customerservice@dtn.com](mailto:customerservice@dtn.com) and we will fix this for you."
+  description: '# Introduction
+
+
+    DTN Vessel Insights Subscription API can be used by customers to self-manage vessel subscription for DTN Vessel Insights API.'
   termsOfService: https://www.dtn.com/subscription-agreement-standard-terms-conditions
   contact:
     name: DTN
@@ -17,7 +20,7 @@ paths:
     get:
       tags:
       - CustomerVesselSubscription
-      summary: Gets the list of vessel subscriptions.
+      summary: Gets the list of vessel subscriptions
       responses:
         '200':
           description: Success
@@ -35,10 +38,12 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       security:
       - clientCredentials: []
+      operationId: getV1Subscriptions
+      x-operation-id-source: derived
     post:
       tags:
       - CustomerVesselSubscription
-      summary: Add bulk vessel subscriptions.
+      summary: Add bulk vessel subscriptions
       requestBody:
         description: List of vessel subscriptions.
         content:
@@ -64,11 +69,13 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       security:
       - clientCredentials: []
+      operationId: postV1Subscriptions
+      x-operation-id-source: derived
   /v1/subscriptions/{imo}:
     delete:
       tags:
       - CustomerVesselSubscription
-      summary: Delete vessel subscription.
+      summary: Delete vessel subscription
       parameters:
       - name: imo
         in: path
@@ -87,8 +94,41 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
       security:
       - clientCredentials: []
+      operationId: deleteV1SubscriptionsByImo
+      x-operation-id-source: derived
 components:
   schemas:
+    VesselSubscriptionResponse:
+      type: object
+      properties:
+        imo:
+          type:
+          - string
+          - 'null'
+          description: The vessel's IMO number.
+        mmsi:
+          type: integer
+          description: The vessel's MMSI number.
+          format: int32
+        dateSubscribed:
+          type: string
+          description: The date of the subscription.
+          format: date-time
+      additionalProperties: false
+      description: Vessel subscription object.
+    VesselSubscriptionRequest:
+      type: object
+      properties:
+        imo:
+          type:
+          - string
+          - 'null'
+          description: The vessel's IMO number.
+        mmsi:
+          type: integer
+          description: The vessel's MMSI number.
+          format: int32
+      additionalProperties: false
     FailedVesselSubscriptionResponse:
       type: object
       properties:
@@ -150,37 +190,6 @@ components:
             $ref: '#/components/schemas/FailedVesselSubscriptionResponse'
           description: Contains the list of failed subscriptions.
       additionalProperties: false
-    VesselSubscriptionRequest:
-      type: object
-      properties:
-        imo:
-          type:
-          - string
-          - 'null'
-          description: The vessel's IMO number.
-        mmsi:
-          type: integer
-          description: The vessel's MMSI number.
-          format: int32
-      additionalProperties: false
-    VesselSubscriptionResponse:
-      type: object
-      properties:
-        imo:
-          type:
-          - string
-          - 'null'
-          description: The vessel's IMO number.
-        mmsi:
-          type: integer
-          description: The vessel's MMSI number.
-          format: int32
-        dateSubscribed:
-          type: string
-          description: The date of the subscription.
-          format: date-time
-      additionalProperties: false
-      description: Vessel subscription object.
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -9,10 +9,10 @@ info:
 
     A tool that can be used to easily view the layers you have access to using your obtained credentials. It also serves as a simple reference implementation of an interactive map viewer based on the Map Tile API.
 
-    Access the Map Tile API Playground [here](https://map.api.dtn.com/static/html/v2/map.html).
+    Access the Map Tile API Playground here.
 
 
-    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our [V2 Migration Guide](https://map.api.dtn.com/static/html/v2/migration_guide.pdf)'
+    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our V2 Migration Guide'
   version: 2.0.16
   title: DTN Map Tile Legends API
 servers:
@@ -28,7 +28,7 @@ paths:
     get:
       tags:
       - Legends
-      summary: Returns legend of a given layer by id.
+      summary: Returns legend of a given layer by id
       operationId: getLayerLegend
       parameters:
       - $ref: '#/components/parameters/layer-id'
@@ -52,31 +52,30 @@ paths:
           $ref: '#/components/responses/error'
 components:
   parameters:
-    max-width:
+    filter:
       in: query
-      name: maxWidth
-      description: max width of the legend image in pixels
+      name: filter
+      description: Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters.
       schema:
-        type: number
-        example: 1024
-    layer-id:
-      in: path
-      name: layerId
-      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
+        type: array
+        description: filter id for which the data driven style will include additional filter query
+        items:
+          type: string
+          example: nws-inland-flood-alerts,nws-winter-alerts
+    palette-override:
+      in: query
+      name: paletteOverride
+      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
+
+        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
+
+        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
 
         '
-      required: true
+      required: false
       schema:
         type: string
-        description: id for the layer from which to receive data.
-        example: radar-base-ref-precip-type-na-contours
-    legend-title:
-      in: query
-      name: legendTitle
-      description: Indicates whether or not to include the layer name as a title in the legend.
-      schema:
-        type: boolean
-        default: false
+        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
     locale:
       in: query
       name: locale
@@ -98,32 +97,6 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    palette-override:
-      in: query
-      name: paletteOverride
-      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
-
-        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
-
-        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
-
-        '
-      required: false
-      schema:
-        type: string
-        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
-    accept-legend:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
-      schema:
-        type: string
-        enum:
-        - image/png
-        - image/webp
-        - text/html
-        - application/json
     unit:
       in: query
       name: unit
@@ -138,6 +111,36 @@ components:
         - imperial-aviation
         - imperial-marine
         default: imperial
+    accept-legend:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - image/png
+        - image/webp
+        - text/html
+        - application/json
+    max-width:
+      in: query
+      name: maxWidth
+      description: max width of the legend image in pixels
+      schema:
+        type: number
+        example: 1024
+    layer-id:
+      in: path
+      name: layerId
+      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
+
+        '
+      required: true
+      schema:
+        type: string
+        description: id for the layer from which to receive data.
+        example: radar-base-ref-precip-type-na-contours
     layer-parameters:
       in: query
       name: parameters
@@ -148,16 +151,13 @@ components:
       schema:
         type: string
         example: id-1:value-1;id-2:value-2
-    filter:
+    legend-title:
       in: query
-      name: filter
-      description: Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters.
+      name: legendTitle
+      description: Indicates whether or not to include the layer name as a title in the legend.
       schema:
-        type: array
-        description: filter id for which the data driven style will include additional filter query
-        items:
-          type: string
-          example: nws-inland-flood-alerts,nws-winter-alerts
+        type: boolean
+        default: false
     accept-language:
       in: header
       name: Accept-Language
@@ -177,117 +177,7 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-  responses:
-    unprocessable-entity:
-      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://maps.dtn.com/error-details/invalid-object
-            title: Invalid object in request body
-            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
-            status: 422
-            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    legend:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/legend-list'
-        text/html:
-          schema:
-            type: string
-            example: <html>Empty legend</html>
-        image/png:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-        image/webp:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
   schemas:
-    general-error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          format: uri
-          description: A URL to a document describing the error condition.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
-          type: number
-          description: HTTP status code
-        instance:
-          type: string
-          format: uri
-          description: URL with the id for the specific error; this will often point to an error log for that specific response.
-      additionalProperties: true
-    legend-list:
-      type: array
-      items:
-        $ref: '#/components/schemas/legend'
     legend:
       type: object
       required:
@@ -350,6 +240,11 @@ components:
       properties:
         color:
           $ref: '#/components/schemas/hexColor'
+    hexColor:
+      type: string
+      pattern: ^#([a-fA-F0-9]{8})$
+      example: null
+      description: Hexadecimal color defined by 8 (hex triplet + alpha) characters.
     legendColorTableValueItem:
       allOf:
       - $ref: '#/components/schemas/legendColorTableBaseItem'
@@ -360,11 +255,31 @@ components:
             - number
             - 'null'
             description: Numeric value to map against a color. When used in a range, this indicates the lower boundary of a range. When it is not present, it covers all possible values before/after the adjacent item of the list.
-    hexColor:
-      type: string
-      pattern: ^#([a-fA-F0-9]{8})$
-      example: null
-      description: Hexadecimal color defined by 8 (hex triplet + alpha) characters.
+    legend-list:
+      type: array
+      items:
+        $ref: '#/components/schemas/legend'
+    general-error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          format: uri
+          description: A URL to a document describing the error condition.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: HTTP status code
+        instance:
+          type: string
+          format: uri
+          description: URL with the id for the specific error; this will often point to an error log for that specific response.
+      additionalProperties: true
     legendColorTableCategoryItem:
       allOf:
       - $ref: '#/components/schemas/legendColorTableBaseItem'
@@ -377,20 +292,105 @@ components:
             - string
             - 'null'
             description: Text value to map against a color.
+  responses:
+    legend:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/legend-list'
+        text/html:
+          schema:
+            type: string
+            example: <html>Empty legend</html>
+        image/png:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+        image/webp:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    unprocessable-entity:
+      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://maps.dtn.com/error-details/invalid-object
+            title: Invalid object in request body
+            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
+            status: 422
+            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
   headers:
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
     content-language:
       description: Describe the language(s) intended for the audience.
       schema:
         type: string
         default: en-US
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

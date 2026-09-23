@@ -15,7 +15,7 @@ paths:
     get:
       tags:
       - Supplier Terminal Monthly Counts
-      summary: Monthly details of average supplier and terminal counts for refined products rack loadings by product grade rack city at monitored rack.
+      summary: Monthly details of average supplier and terminal counts for refined products…
       operationId: GetSupplierTerminalCountsMontly
       parameters:
       - name: apiKey

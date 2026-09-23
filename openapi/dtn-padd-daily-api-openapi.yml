@@ -15,7 +15,7 @@ paths:
     get:
       tags:
       - PADD Daily
-      summary: Daily summaries of transactional refined products volumes for rack loadings at the PADD.
+      summary: Daily summaries of transactional refined products volumes for rack loadings at…
       operationId: GetDailyPADDs
       parameters:
       - name: apiKey
@@ -160,6 +160,21 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    DailyPADDs:
+      type: array
+      items:
+        $ref: '#/components/schemas/DailyPADD'
     DailyPADD:
       type: object
       properties:
@@ -192,21 +207,6 @@ components:
           type: string
           description: 'Timestamp of data retrieval in CST: "YYYY-MM-DDThh:mm:ssZ"'
           format: date-time
-    Error:
-      required:
-      - code
-      - message
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-    DailyPADDs:
-      type: array
-      items:
-        $ref: '#/components/schemas/DailyPADD'
   securitySchemes:
     clientCredentials:
       type: oauth2

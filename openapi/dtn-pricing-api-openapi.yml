@@ -74,6 +74,8 @@ paths:
                       $ref: '#/components/schemas/PricingRule'
                   metadata:
                     $ref: '#/components/schemas/Pagination'
+      summary: Get pricing rules
+      x-summary-source: derived
     put:
       tags:
       - Pricing
@@ -109,6 +111,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/PricingRulePut'
+      summary: Put pricing rules
+      x-summary-source: derived
     delete:
       tags:
       - Pricing
@@ -133,14 +137,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/DeletePriceResponse'
+      summary: Delete pricing rules
+      x-summary-source: derived
 components:
+  responses:
+    DeletePriceResponse:
+      description: A successful response containing details of the deleted prices
+      content:
+        application/json:
+          schema:
+            properties:
+              deleted:
+                type: number
+                example: 2
   schemas:
-    PricingRuleLabels:
-      type: string
-      enum:
-      - BASIS
-      - MARGIN
-      - COST
+    Pagination:
+      properties:
+        pageTotal:
+          type: number
+        pageNumber:
+          type: number
+        pageLimit:
+          type: number
     PricingRulePut:
       required:
       - value
@@ -161,14 +179,12 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
-    Pagination:
-      properties:
-        pageTotal:
-          type: number
-        pageNumber:
-          type: number
-        pageLimit:
-          type: number
+    PricingRuleLabels:
+      type: string
+      enum:
+      - BASIS
+      - MARGIN
+      - COST
     PricingRule:
       properties:
         id:
@@ -185,16 +201,6 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
-  responses:
-    DeletePriceResponse:
-      description: A successful response containing details of the deleted prices
-      content:
-        application/json:
-          schema:
-            properties:
-              deleted:
-                type: number
-                example: 2
   securitySchemes:
     clientCredentials:
       type: oauth2

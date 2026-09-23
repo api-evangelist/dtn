@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Storm Impact Analytics Event Geojson API
-  description: "# Introduction  \n<p>The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.</p>"
+  description: '# Introduction
+
+
+    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
   version: 1.0.0
 servers:
 - url: https://sia.dtn.com
@@ -12,7 +15,7 @@ tags:
 paths:
   /v1/event-geojson/{weatherEventId}:
     get:
-      summary: Get predictions and geoJson for each of your regions for a specific weather event.
+      summary: Get predictions and geoJson for each of your regions for a specific weather…
       description: Returns a feature collection containing the geoJson of the service region affected by a weather event.
       operationId: getEventGeoJson
       parameters:
@@ -29,7 +32,34 @@ paths:
       tags:
       - Event Geojson
 components:
+  parameters:
+    weatherEventId:
+      name: weatherEventId
+      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
+      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
+      in: path
+      required: true
+      schema:
+        type: string
+    geolevel:
+      name: geolevel
+      description: Name of desired geo level.
+      example: Division
+      in: query
+      required: false
+      schema:
+        type: string
   schemas:
+    eventFeatureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/eventFeature'
     eventFeature:
       type: object
       properties:
@@ -90,33 +120,6 @@ components:
           type: number
           example: 100
           description: Lower prediction range value.
-    eventFeatureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/eventFeature'
-  parameters:
-    weatherEventId:
-      name: weatherEventId
-      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
-      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
-      in: path
-      required: true
-      schema:
-        type: string
-    geolevel:
-      name: geolevel
-      description: Name of desired geo level.
-      example: Division
-      in: query
-      required: false
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

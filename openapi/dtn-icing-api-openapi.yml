@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: DTN Aviation Enhanced Flight Hazards (EFH) Icing API
-  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data. Each data type has its own endpoint. Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
   version: 1.10.3
 servers:
 - url: https://aviation.api.dtn.com
@@ -16,7 +16,7 @@ paths:
       tags:
       - Icing
       summary: Get active Icing
-      description: Get all available Icing, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.
+      description: Get all available Icing, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
       responses:
         '200':
           $ref: '#/components/responses/IcingSuccess'
@@ -47,29 +47,215 @@ paths:
       - $ref: '#/components/parameters/QueryAllowPartialModelRun'
       security:
       - clientCredentials: []
+      operationId: getV1Icing
+      x-operation-id-source: derived
 components:
+  parameters:
+    IcingQueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    IcingQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QueryAllowPartialModelRun:
+      name: allowPartialModelRun
+      description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    IcingQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    IcingQueryUntilDateTime:
+      name: untilDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    IcingQueryFromDateTime:
+      name: fromDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryConsolidate:
+      name: consolidate
+      description: Boolean indicator for merging GeoJSON Polygons objects into collective MultiPolygon objects.  If true, areal objects sharing the same defining attributes (e.g., vertical velocity & top for thunderstorms or EDR for turbulence) are combined together into single MultiPolygon to minimize the number of distinct objects.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryIcingCategories:
+      name: icingCategories
+      description: Comma-separated list of icing category values.  Must include only allowed values.  Limits to objects whose `icingCategory` value matches one of specified parameter values.
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - SLIGHT
+          - MODERATE
+          - SEVERE
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    QueryIcingAircraftSize:
+      name: aircraftSize
+      description: 'Comma-separated list of aircraft sizes for EFH icing data.  Must include only allowed values: `S` for small, `I` for intermediate, `L` for large, `H` for helicopter.'
+      in: query
+      required: true
+      schema:
+        type: string
+        items:
+          type: string
+          enum:
+          - S
+          - I
+          - L
+          - H
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    IcingQueryModelDateTime:
+      name: modelDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.  For this data type, value must be no earlier than 24 hours in past and no later than 3 hours in past.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryEfhIcingFlightLevel:
+      name: flightLevel
+      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
+      in: query
+      required: true
+      schema:
+        type: string
+        items:
+          type: string
+          enum:
+          - FL010
+          - FL030
+          - FL050
+          - FL080
+          - FL100
+          - FL140
+          - FL180
+          - FL240
+          - FL270
   schemas:
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
+    IcingFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/IcingFeature'
     IcingItem:
       type: object
       required:
@@ -96,6 +282,42 @@ components:
           type: string
         rid:
           type: number
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
     GeoJsonObject:
       description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
 
@@ -148,6 +370,27 @@ components:
             oneOf:
             - type: number
             - type: string
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
     Geometry:
       type: object
       description: GeoJSon geometry
@@ -168,286 +411,25 @@ components:
           - MultiLineString
           - MultiPolygon
           description: the geometry type
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-    IcingFeatureCollection:
-      description: GeoJSon 'FeatureCollection' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - features
-        properties:
-          features:
-            type: array
-            items:
-              $ref: '#/components/schemas/IcingFeature'
-  parameters:
-    QueryIcingAircraftSize:
-      name: aircraftSize
-      description: 'Comma-separated list of aircraft sizes for EFH icing data.  Must include only allowed values: `S` for small, `I` for intermediate, `L` for large, `H` for helicopter.'
-      in: query
-      required: true
-      schema:
-        type: string
-        items:
-          type: string
-          enum:
-          - S
-          - I
-          - L
-          - H
-    IcingQueryIsValidAt:
-      name: isValidAt
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    IcingQueryUntilDateTime:
-      name: untilDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is earlier than the specified value, i.e., only objects that began before this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    IcingQueryModelDateTime:
-      name: modelDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.  For this data type, value must be no earlier than 24 hours in past and no later than 3 hours in past.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryIcingCategories:
-      name: icingCategories
-      description: Comma-separated list of icing category values.  Must include only allowed values.  Limits to objects whose `icingCategory` value matches one of specified parameter values.
-      in: query
-      required: false
-      explode: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - SLIGHT
-          - MODERATE
-          - SEVERE
-    QueryEfhIcingFlightLevel:
-      name: flightLevel
-      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
-      in: query
-      required: true
-      schema:
-        type: string
-        items:
-          type: string
-          enum:
-          - FL010
-          - FL030
-          - FL050
-          - FL080
-          - FL100
-          - FL140
-          - FL180
-          - FL240
-          - FL270
-    QueryAllowPartialModelRun:
-      name: allowPartialModelRun
-      description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    IcingQueryFromDateTime:
-      name: fromDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `expirationDateTime` is later than that specified value, i.e., only objects not ended by this time.  A time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
-    IcingQueryInsertedAfter:
-      name: insertedAfter
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than current time.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    IcingQueryInsertedThrough:
-      name: insertedThrough
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than current time.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryConsolidate:
-      name: consolidate
-      description: Boolean indicator for merging GeoJSON Polygons objects into collective MultiPolygon objects.  If true, areal objects sharing the same defining attributes (e.g., vertical velocity & top for thunderstorms or EDR for turbulence) are combined together into single MultiPolygon to minimize the number of distinct objects.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryGeometry:
-      name: geometry
-      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: true
-    QuerySrid:
-      name: srid
-      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
-      in: query
-      required: false
-      explode: false
-      schema:
-        type: integer
-        enum:
-        - 4326
-        - 3857
-        default: 4326
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryDistanceUnits:
-      name: distanceUnits
-      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
-      in: query
-      required: false
-      schema:
-        type: string
-        enum:
-        - nm
-        - km
-        - m
-        - sm
-        default: nm
-  responses:
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    IcingSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/IcingFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/IcingSuccessResponse'
-    IcingBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/IcingBadRequestResponse'
   examples:
+    IcingBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/icing/?flightLevel=FL270&isValidAt=2025-03-04%2021:00:00%20UTC&polygon=-90,30,-80,30,-80,40,-85,35
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/icing/:requestId:0bfe3262-6b55-4552-a6d8-1264e66cd6e4
+        errors:
+        - message: '`aircraftSize` for icing must be provided and one of specific set of single characters: ''S'' for small, ''I'' for intermediate, ''L'' for large, ''H'' for helicopter'
+          parameter: aircraftSize
+        meta:
+          name: v1.icing.?flightLevel=FL270&isValidAt=2025-03-04%2021:00:00%20UTC&polygon=-90,30,-80,30,-80,40,-85,35
+          uuid: 72b7e86a-3339-4927-aacc-289f9116e1c2
+          request_id: 0bfe3262-6b55-4552-a6d8-1264e66cd6e4
+          start_timestamp: 1741111478637
+          end_timestamp: 1741111479020
+          execution_time: 383
     IcingSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/icing/?flightLevel=FL180&aircraftSize=S&isValidAt=2025-05-07T19:44:59.839Z&bbox=-100,25,-90,30&consolidate=true
@@ -1301,24 +1283,44 @@ components:
           start_timestamp: 1746647099889
           end_timestamp: 1746647124277
           execution_time: 24388
-    IcingBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/icing/?flightLevel=FL270&isValidAt=2025-03-04%2021:00:00%20UTC&polygon=-90,30,-80,30,-80,40,-85,35
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/icing/:requestId:0bfe3262-6b55-4552-a6d8-1264e66cd6e4
-        errors:
-        - message: '`aircraftSize` for icing must be provided and one of specific set of single characters: ''S'' for small, ''I'' for intermediate, ''L'' for large, ''H'' for helicopter'
-          parameter: aircraftSize
-        meta:
-          name: v1.icing.?flightLevel=FL270&isValidAt=2025-03-04%2021:00:00%20UTC&polygon=-90,30,-80,30,-80,40,-85,35
-          uuid: 72b7e86a-3339-4927-aacc-289f9116e1c2
-          request_id: 0bfe3262-6b55-4552-a6d8-1264e66cd6e4
-          start_timestamp: 1741111478637
-          end_timestamp: 1741111479020
-          execution_time: 383
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    IcingBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/IcingBadRequestResponse'
+    IcingSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/IcingFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/IcingSuccessResponse'
   securitySchemes:
     clientCredentials:
       type: oauth2

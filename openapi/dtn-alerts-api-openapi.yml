@@ -4,12 +4,12 @@ info:
   description: DTN Agency Bulletin API
   version: '1.0'
 tags:
-- name: alerts
+- name: Alerts
 paths:
   /v2/alerts:
     get:
       tags:
-      - alerts
+      - Alerts
       summary: Get Alerts
       operationId: get_alerts_v2_alerts_get
       parameters:
@@ -101,15 +101,33 @@ paths:
       - clientCredentials: []
 components:
   schemas:
-    HTTPValidationError:
-      title: HTTPValidationError
+    Area:
+      title: Area
       type: object
       properties:
-        detail:
-          title: Detail
+        areaDesc:
+          title: Areadesc
+          type: string
+        polygon:
+          title: Polygon
+          anyOf:
+          - type: object
+          - type: object
+          - type: object
+        circle:
+          title: Circle
+          type: string
+        ceiling:
+          title: Ceiling
+          type: number
+        altitude:
+          title: Altitude
+          type: number
+        geocodes:
+          title: Geocodes
           type: array
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/GeoCode'
     AlertInfo:
       title: AlertInfo
       required:
@@ -191,42 +209,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Area'
-    Area:
-      title: Area
-      type: object
-      properties:
-        areaDesc:
-          title: Areadesc
-          type: string
-        polygon:
-          title: Polygon
-          anyOf:
-          - type: object
-          - type: object
-          - type: object
-        circle:
-          title: Circle
-          type: string
-        ceiling:
-          title: Ceiling
-          type: number
-        altitude:
-          title: Altitude
-          type: number
-        geocodes:
-          title: Geocodes
-          type: array
-          items:
-            $ref: '#/components/schemas/GeoCode'
-    GeoCode:
-      title: GeoCode
-      type: object
-      properties:
-        valueName:
-          title: Valuename
-          type: string
-        value:
-          title: Value
     GeoJsonAlert:
       title: GeoJsonAlert
       required:
@@ -386,6 +368,34 @@ components:
                 geocodes:
                 - valueName: UGC
                   value: FLC117
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
     Alert:
       title: Alert
       required:
@@ -442,25 +452,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlertInfo'
-    ValidationError:
-      title: ValidationError
-      required:
-      - loc
-      - msg
-      - type
+    GeoCode:
+      title: GeoCode
       type: object
       properties:
-        loc:
-          title: Location
-          type: array
-          items:
-            type: string
-        msg:
-          title: Message
+        valueName:
+          title: Valuename
           type: string
-        type:
-          title: Error Type
-          type: string
+        value:
+          title: Value
   securitySchemes:
     clientCredentials:
       type: oauth2

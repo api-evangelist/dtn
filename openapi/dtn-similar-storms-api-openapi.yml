@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Storm Impact Analytics Similar Storms API
-  description: "# Introduction  \n<p>The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.</p>"
+  description: '# Introduction
+
+
+    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
   version: 1.0.0
 servers:
 - url: https://sia.dtn.com
@@ -12,7 +15,7 @@ tags:
 paths:
   /v1/similar-storms/{weatherEventId}:
     get:
-      summary: Get the historic events that are similar to the passed in event.
+      summary: Get the historic events that are similar to the passed in event
       description: Returns the historic events that match the passed in event the closest. It tries to match on weather conditions as well as time frame.
       operationId: getSimilarStorms
       parameters:
@@ -29,51 +32,24 @@ paths:
       tags:
       - Similar Storms
 components:
+  parameters:
+    territoryId:
+      name: territoryId
+      description: Name of desired territory id, if not passed in, the highest level territory will be selected automatically.
+      example: Oklahoma
+      in: query
+      required: false
+      schema:
+        type: string
+    weatherEventId:
+      name: weatherEventId
+      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
+      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
+      in: path
+      required: true
+      schema:
+        type: string
   schemas:
-    similarStorms:
-      type: object
-      properties:
-        eventId:
-          type: string
-          example: 5a1ca18f-223b-4b2b-8b75-6cb0baba2717
-          description: Unique identifier for a specific weather event. Can be used in the /v1/event-predictions endpoint to get the predictions for the event.
-        geoAreaId:
-          type: string
-          example: Ausnet
-          description: Full name of the region the predictions are for.
-        startDate:
-          type: string
-          format: date-time
-          example: '2025-09-14T21:00:00.000+00:00'
-          description: Start date and time of the weather event
-        duration:
-          type: number
-          example: 18
-          description: Length, in hours, of the passed in weather event.
-        maxWind:
-          type: number
-          example: 57
-          description: The max wind gust predicted for the passed in weather event. In MPH.
-        windDirection:
-          type: string
-          example: N
-          description: The direction the wind is predicted to be moving in.
-        totalPrecipitation:
-          type: number
-          example: 0
-          description: The total precipitation amount predicted for the passed in weather event. In inches.
-        snowPrecipitation:
-          type: number
-          example: 0
-          description: The total snow amount predicted for the passed in weather event. In inches.
-        bestPrediction:
-          type: number
-          example: 174
-          description: Best predicted number of outages for the passed in weather event.
-        similarEvents:
-          type: array
-          items:
-            $ref: '#/components/schemas/similarStorm'
     similarStorm:
       type: object
       properties:
@@ -168,23 +144,50 @@ components:
           type: number
           example: 7461
           description: The peak observed number of utility customers reported to be out in this similar event.
-  parameters:
-    territoryId:
-      name: territoryId
-      description: Name of desired territory id, if not passed in, the highest level territory will be selected automatically.
-      example: Oklahoma
-      in: query
-      required: false
-      schema:
-        type: string
-    weatherEventId:
-      name: weatherEventId
-      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
-      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
-      in: path
-      required: true
-      schema:
-        type: string
+    similarStorms:
+      type: object
+      properties:
+        eventId:
+          type: string
+          example: 5a1ca18f-223b-4b2b-8b75-6cb0baba2717
+          description: Unique identifier for a specific weather event. Can be used in the /v1/event-predictions endpoint to get the predictions for the event.
+        geoAreaId:
+          type: string
+          example: Ausnet
+          description: Full name of the region the predictions are for.
+        startDate:
+          type: string
+          format: date-time
+          example: '2025-09-14T21:00:00.000+00:00'
+          description: Start date and time of the weather event
+        duration:
+          type: number
+          example: 18
+          description: Length, in hours, of the passed in weather event.
+        maxWind:
+          type: number
+          example: 57
+          description: The max wind gust predicted for the passed in weather event. In MPH.
+        windDirection:
+          type: string
+          example: N
+          description: The direction the wind is predicted to be moving in.
+        totalPrecipitation:
+          type: number
+          example: 0
+          description: The total precipitation amount predicted for the passed in weather event. In inches.
+        snowPrecipitation:
+          type: number
+          example: 0
+          description: The total snow amount predicted for the passed in weather event. In inches.
+        bestPrediction:
+          type: number
+          example: 174
+          description: Best predicted number of outages for the passed in weather event.
+        similarEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/similarStorm'
   securitySchemes:
     clientCredentials:
       type: oauth2

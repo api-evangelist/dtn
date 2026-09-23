@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Pavement Conditions Logistics API
   version: 2.0.2
-  description: "The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination. DTN supplies road data on segments across North America and Europe, allowing users to request data for a geographic area or specific roadway within the database.\n\n**What's New in v2.0.2:**\n- Route Generation \n  \n  — A new `GET /v2/directions` endpoint generates route geometry via the Mapbox Directions API.\n\n- Query Pavement Conditions Along a Route or Route-Based Filtering (RB Filter)\n\n  - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - When `startPoint` and `endPoint` are supplied to the `v2/logistics` or `v2/pavement/conditions` endpoints, a route is automatically generated internally via the Mapbox API.\n  - Pagination is determined by the number of route `segments` when RB Filter is active.\n  - Each paginated response includes a `statistics` object summarizing covered, uncovered, and total segment counts.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n- Added pavementValidEndTime in returned data\n\n**Authentication**: This API uses Bearer token authentication. When obtaining your access token, use the following audience values:\n- **Production**: `https://pavement-condition.prd.wx.zones.dtn.com`\n- **Staging**: `https://pavement-condition.stg.wx.zones.dtn.com`"
+  description: The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination.
   contact:
     name: Ben Hershey
     url: https://pavement-condition.prd.wx.zones.dtn.com
@@ -21,7 +21,7 @@ paths:
       tags:
       - Logistics
       summary: Get Logistics Data
-      description: "Retrieves logistics-focused pavement data in GeoJSON FeatureCollection format. Returns up to 1000 records by default.\nData is grouped by segment ID with pagination metadata included in the response.\n\n**Query modes:**\n- By bounding box (`bbox`) — returns all segments within the area\n- By route (`startPoint` + `endPoint`) — uses Mapbox Directions API to generate a route, then returns segments along it\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a bounding box (`bbox`).\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\n**Return Data:**\n\n| Field Name | Description | Imperial Unit | Metric Unit |\n| ---------- | ----------- | ------------- | ----------- |\n| id | Database table primary key ID | N/A | N/A |\n| segmentId | Road segment identifier (string) | N/A | N/A |\n| lat | Latitude for center point of road segment | Degrees | Degrees |\n| lon | Longitude for center point of road segment | Degrees | Degrees |\n| timestamp | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementCreationTime | Date/time when the pavement model was run (UTC) | N/A | N/A |\n| pavementValidTime | Date/time for when the output variables are valid (UTC) | N/A | N/A |\n| pavementValidEndTime | Date/time for when the pavement forecast validity period ends (UTC) | N/A | N/A |\n| airTemp | Air temperature | Fahrenheit | Celsius |\n| visibility | Visibility distance | mi | km |\n| windDirection | Wind direction relative to true North (range from 0 to 360) | Degrees | Degrees |\n| windGust | Wind gust speed | mi/hr | km/hr |\n| windSpeed | Wind speed | mi/hr | km/hr |\n| iceRate | Ice precipitation rate | in/hr | mm/hr |\n| liquidRate | Liquid precipitation rate | in/hr | mm/hr |\n| snowRate | Snow precipitation rate | in/hr | mm/hr |\n| pavementTemperature | Temperature of the road surface | Fahrenheit | Celsius |\n| pavementCondition | Classification of the road condition. Possible conditions are dry, slush, chemical_wet, damp, wet, frost, ice, snow, compacted_snow | N/A | N/A |\n| crashRiskIndex | Crash risk factor compared to average conditions (ex: 2.0 means the risk of crash is two times the average) | N/A | N/A |\n| crashRiskUncertainty | One standard deviation on the crash risk factor (statistical error) | N/A | N/A |\n| roadName | Name of the road or highway | N/A | N/A |\n| osmClass | OpenStreetMap road classification (e.g., motorway, trunk, primary) | N/A | N/A |\n| geometry | GeoJSON geometry representing the road segment (LineString or MultiLineString) | N/A | N/A |\n| createdAt | Record creation timestamp | N/A | N/A |\n| updatedAt | Record last update timestamp | N/A | N/A |\n\n**Sample Requests:**\n\n1. **Get default data (1000 records):**\n   ```\n   GET /v2/logistics\n   ```\n\n2. **Get data for specific geographic area (US):**\n   ```\n   GET /v2/logistics?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521\n   ```\n\n3. **Get data for European area:**\n   ```\n   GET /v2/logistics?bbox=3.555,49.470,6.262,50.849\n   ```\n\n3. **Get specific page:**\n   ```\n   GET /v2/logistics?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&limit=1000&page=2\n   ```\n\n4. **Filter by time range:**\n   ```\n   GET /v2/logistics?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&startTime=2025-12-04T20:00:00.000Z&endTime=2025-12-05T20:00:00.000Z\n   ```\n\n5. **Get data in metric units:**\n   ```\n   GET /v2/logistics?units=metric\n   ```\n\n6. **Route-based filtering with departure time:**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n7. **Route-based filtering with arrival time:**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n8. **Route-based with ETA filter (single forecast per segment):**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&etaFilter=true\n   ```\n\n9. **Route-based with parameter filter:**\n   ```\n   GET /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z&parameter=crashRiskIndex,mobilityIndex\n   ```\n"
+      description: Retrieves logistics-focused pavement data in GeoJSON FeatureCollection format.
       operationId: getLogisticsV2
       parameters:
       - name: bbox
@@ -209,7 +209,72 @@ paths:
       tags:
       - Logistics
       summary: Get Logistics Data by Route
-      description: "Retrieves logistics-focused pavement data along a route in GeoJSON FeatureCollection format.\nSupports two modes:\n\n**Option 1 - Mapbox waypoints (query params):**\nProvide `startPoint` and `endPoint` to automatically generate a route via Mapbox Directions API.\nOptionally provide `departAt` or `arriveAt` (mutually exclusive) for per-segment timing.\n\n**Option 2 - Direct route (body):**\nProvide a GeoJSON LineString or FeatureCollection in the request body.\n\n**Filtering options:**\n- Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.\n  - Results may be optionally narrowed by a weather `parameter` filter.\n  - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).\n\nQuery parameters take priority over the request body when both are provided.\n\n**Timing behavior:**\n- When `departAt` is provided: each feature includes `arrivalTime` and the response includes `properties.arrivalTimeUTC` (departAt + route duration)\n- When `arriveAt` is provided: each feature includes `departureTime` and the response includes `properties.departureTimeUTC` (arriveAt - route duration)\n\n**Sample Requests:**\n\n1. **Route via Mapbox with departure time:**\n   ```\n   POST /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z\n   ```\n\n2. **Route via Mapbox with arrival time:**\n   ```\n   POST /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z\n   ```\n\n3. **Direct route via body:**\n   ```\n   POST /v2/logistics\n   Body: { \"type\": \"LineString\", \"coordinates\": [[-93.39, 45.13], [-93.27, 45.14]] }\n   ```\n"
+      description: 'Retrieves logistics-focused pavement data along a route in GeoJSON FeatureCollection format.
+
+        Supports two modes:
+
+
+        **Option 1 - Mapbox waypoints (query params):**
+
+        Provide `startPoint` and `endPoint` to automatically generate a route via Mapbox Directions API.
+
+        Optionally provide `departAt` or `arriveAt` (mutually exclusive) for per-segment timing.
+
+
+        **Option 2 - Direct route (body):**
+
+        Provide a GeoJSON LineString or FeatureCollection in the request body.
+
+
+        **Filtering options:**
+
+        - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.
+
+        - Results may be optionally narrowed by a weather `parameter` filter.
+
+        - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).
+
+
+        Query parameters take priority over the request body when both are provided.
+
+
+        **Timing behavior:**
+
+        - When `departAt` is provided: each feature includes `arrivalTime` and the response includes `properties.arrivalTimeUTC` (departAt + route duration)
+
+        - When `arriveAt` is provided: each feature includes `departureTime` and the response includes `properties.departureTimeUTC` (arriveAt - route duration)
+
+
+        **Sample Requests:**
+
+
+        1. **Route via Mapbox with departure time:**
+
+        ```
+
+        POST /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&departAt=2026-03-13T15:00:00.000Z
+
+        ```
+
+
+        2. **Route via Mapbox with arrival time:**
+
+        ```
+
+        POST /v2/logistics?startPoint=-93.3905,45.1310&endPoint=-93.2695,45.1420&arriveAt=2026-03-13T16:00:00.000Z
+
+        ```
+
+
+        3. **Direct route via body:**
+
+        ```
+
+        POST /v2/logistics
+
+        Body: { "type": "LineString", "coordinates": [[-93.39, 45.13], [-93.27, 45.14]] }
+
+        ```'
       operationId: getLogisticsByRoute
       parameters:
       - name: departAt
@@ -421,6 +486,170 @@ paths:
       - clientCredentials: []
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+    FeatureCollectionRoute:
+      type: object
+      required:
+      - type
+      - features
+      properties:
+        type:
+          type: string
+          enum:
+          - FeatureCollection
+        features:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - type
+            - geometry
+            properties:
+              type:
+                type: string
+                enum:
+                - Feature
+              geometry:
+                $ref: '#/components/schemas/LineStringRoute'
+    LineStringRoute:
+      type: object
+      required:
+      - type
+      - coordinates
+      properties:
+        type:
+          type: string
+          enum:
+          - LineString
+        coordinates:
+          type: array
+          minItems: 2
+          items:
+            type: array
+            minItems: 2
+            items:
+              type: number
+    LogisticsResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+            limit:
+              type: integer
+            nextOffset:
+              type: integer
+        geojson:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - FeatureCollection
+            features:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - Feature
+                  id:
+                    type: string
+                  geometry:
+                    type: object
+                    description: GeoJSON geometry for the road segment (LineString or MultiLineString)
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - LineString
+                        - MultiLineString
+                      coordinates:
+                        type: array
+                        description: Coordinate array (structure depends on geometry type)
+                        items:
+                          type: array
+                          items:
+                            type: number
+                  properties:
+                    type: object
+                    properties:
+                      segmentId:
+                        type: string
+                      roadName:
+                        type: string
+                      osmClass:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            lat:
+                              type: number
+                            lon:
+                              type: number
+                            timestamp:
+                              type: string
+                              format: date-time
+                            pavementCreationTime:
+                              type: string
+                              format: date-time
+                            pavementValidTime:
+                              type: string
+                              format: date-time
+                            pavementValidEndTime:
+                              type: string
+                              format: date-time
+                            airTemp:
+                              type: number
+                            visibility:
+                              type: number
+                            windDirection:
+                              type: number
+                            windGust:
+                              type: number
+                            windSpeed:
+                              type: number
+                            iceRate:
+                              type: number
+                            liquidRate:
+                              type: number
+                            snowRate:
+                              type: number
+                            pavementTemperature:
+                              type: number
+                            pavementCondition:
+                              type: string
+                            crashRiskIndex:
+                              type: number
+                            crashRiskUncertainty:
+                              type: number
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
     RouteLogisticsResponse:
       type: object
       properties:
@@ -546,179 +775,15 @@ components:
               type: string
               format: date-time
               description: Estimated departure time from the origin (arriveAt - route duration). Present when arriveAt is used.
-    LineStringRoute:
-      type: object
-      required:
-      - type
-      - coordinates
-      properties:
-        type:
-          type: string
-          enum:
-          - LineString
-        coordinates:
-          type: array
-          minItems: 2
-          items:
-            type: array
-            minItems: 2
-            items:
-              type: number
-    FeatureCollectionRoute:
-      type: object
-      required:
-      - type
-      - features
-      properties:
-        type:
-          type: string
-          enum:
-          - FeatureCollection
-        features:
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - type
-            - geometry
-            properties:
-              type:
-                type: string
-                enum:
-                - Feature
-              geometry:
-                $ref: '#/components/schemas/LineStringRoute'
-    LogisticsResponse:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            total:
-              type: integer
-            limit:
-              type: integer
-            nextOffset:
-              type: integer
-        geojson:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - FeatureCollection
-            features:
-              type: array
-              items:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                    - Feature
-                  id:
-                    type: string
-                  geometry:
-                    type: object
-                    description: GeoJSON geometry for the road segment (LineString or MultiLineString)
-                    properties:
-                      type:
-                        type: string
-                        enum:
-                        - LineString
-                        - MultiLineString
-                      coordinates:
-                        type: array
-                        description: Coordinate array (structure depends on geometry type)
-                        items:
-                          type: array
-                          items:
-                            type: number
-                  properties:
-                    type: object
-                    properties:
-                      segmentId:
-                        type: string
-                      roadName:
-                        type: string
-                      osmClass:
-                        type: string
-                      data:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            lat:
-                              type: number
-                            lon:
-                              type: number
-                            timestamp:
-                              type: string
-                              format: date-time
-                            pavementCreationTime:
-                              type: string
-                              format: date-time
-                            pavementValidTime:
-                              type: string
-                              format: date-time
-                            pavementValidEndTime:
-                              type: string
-                              format: date-time
-                            airTemp:
-                              type: number
-                            visibility:
-                              type: number
-                            windDirection:
-                              type: number
-                            windGust:
-                              type: number
-                            windSpeed:
-                              type: number
-                            iceRate:
-                              type: number
-                            liquidRate:
-                              type: number
-                            snowRate:
-                              type: number
-                            pavementTemperature:
-                              type: number
-                            pavementCondition:
-                              type: string
-                            crashRiskIndex:
-                              type: number
-                            crashRiskUncertainty:
-                              type: number
-                            createdAt:
-                              type: string
-                              format: date-time
-                            updatedAt:
-                              type: string
-                              format: date-time
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
   responses:
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Error'
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
       content:
         application/problem+json:
           schema:

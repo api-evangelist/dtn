@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Storm Impact Analytics Hourly Predictions API
-  description: "# Introduction  \n<p>The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.</p>"
+  description: '# Introduction
+
+
+    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
   version: 1.0.0
 servers:
 - url: https://sia.dtn.com
@@ -12,7 +15,7 @@ tags:
 paths:
   /v1/hourly-predictions:
     get:
-      summary: Get hourly predictions for each of your entire service region.
+      summary: Get hourly predictions for each of your entire service region
       description: Returns hourly predictions for an entire service territory. Includes hourly "best" and "base" values for each hour for the next 7 days. Predictions are generated every six (6) hours.
       operationId: getHourlyPredictions
       responses:

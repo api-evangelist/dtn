@@ -27,6 +27,8 @@ paths:
               schema:
                 type: string
                 example: <html>health check OK! <p> V4 </p></html>
+      operationId: getSinglesiteHealthHtml
+      x-operation-id-source: derived
   /feeds/{text_products_version}/healthcheck:
     get:
       tags:
@@ -45,6 +47,8 @@ paths:
               schema:
                 type: string
                 example: "{\n\t\"time\": \"2026-01-12 17:07:43.764086\",\n\t\"message\": \"Health Check Works!\",\n\t\"system\": \"3.9.25 (main, Dec 10 2025, 00:00:00) \n[GCC 11.5.0 20240719 (Red Hat 11.5.0-5)]\",\n\t\"useConnectionPool\": \"True\",\n\t\"title\": \"text-product-api\",\n\t\"version:\": \"3.1.0\",\n\t\"author\": \"DTN\",\n\t\"copyright\": \"Copyright 2024 DTN\",\n\t\"db\": [\n\t\t{\n\t\t\t\"pid\": 10955,\n\t\t\t\"datname\": \"RadarScopeTextProducts\",\n\t\t\t\"state\": \"active\",\n\t\t\t\"query\": \"select pid, datname, state, query, backend_type from pg_stat_activity where state = 'active';\",\n\t\t\t\"backend_type\": \"client backend\"\n\t\t}\n\t],\n\t\"engine\": [\n\t\t{\n\t\t\t\"version\": \"PostgreSQL 15.12 on x86_64-pc-linux-gnu, compiled by x86_64-pc-linux-gnu-gcc (GCC) 10.5.0, 64-bit\"\n\t\t}\n\t]\n}"
+      operationId: getFeedsByTextProductsVersionHealthcheck
+      x-operation-id-source: derived
 components:
   parameters:
     text_products_version:

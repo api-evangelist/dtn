@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: DTN Aviation Enhanced Flight Hazards (EFH) Nowcast API
-  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data. Each data type has its own endpoint. Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
   version: 1.10.3
 servers:
 - url: https://aviation.api.dtn.com
@@ -16,7 +16,7 @@ paths:
       tags:
       - Nowcast
       summary: Get active Nowcast
-      description: Get all available Nowcast, potentially filtered by various query parameters.  All specified filter parameters must be satisfied for an object to be returned in the response.
+      description: Get all available Nowcast, potentially filtered by various query parameters. All specified filter parameters must be satisfied for an object to be returned in the response.
       responses:
         '200':
           $ref: '#/components/responses/NowcastSuccess'
@@ -41,174 +41,19 @@ paths:
       - $ref: '#/components/parameters/QueryAllowPartialModelRun'
       security:
       - clientCredentials: []
+      operationId: getV1Nowcast
+      x-operation-id-source: derived
 components:
-  schemas:
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-    NowcastFeature:
-      description: GeoJSon 'Feature' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.2
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - geometry
-        - properties
-        properties:
-          geometry:
-            allOf:
-            - {}
-            - $ref: '#/components/schemas/Geometry'
-          properties:
-            $ref: '#/components/schemas/NowcastItem'
-          id:
-            oneOf:
-            - type: number
-            - type: string
-    GeoJsonObject:
-      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
-
-        '
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - Feature
-          - FeatureCollection
-          - Point
-          - MultiPoint
-          - LineString
-          - MultiLineString
-          - Polygon
-          - MultiPolygon
-          - GeometryCollection
-        bbox:
-          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
-
-            '
-          type: array
-          items:
-            type: number
-      required:
-      - type
-      discriminator:
-        propertyName: type
-    NowcastFeatureCollection:
-      description: GeoJSon 'FeatureCollection' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - features
-        properties:
-          features:
-            type: array
-            items:
-              $ref: '#/components/schemas/NowcastFeature'
-    Geometry:
-      type: object
-      description: GeoJSon geometry
-      discriminator:
-        propertyName: type
-      required:
-      - type
-      externalDocs:
-        url: http://geojson.org/geojson-spec.html#geometry-objects
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          description: the geometry type
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-    NowcastItem:
-      type: object
-      required:
-      - validDateTime
-      - insertedDateTime
-      - modelDateTime
-      - edr
-      - rid
-      properties:
-        validDateTime:
-          type: string
-          format: date-time
-        insertedDateTime:
-          type: string
-          format: date-time
-        modelDateTime:
-          type: string
-          format: date-time
-        edr:
-          type: number
-        rid:
-          type: number
   responses:
+    NowcastSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NowcastFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/NowcastSuccessResponse'
     NowcastBadRequest:
       description: Bad Request
       content:
@@ -237,59 +82,7 @@ components:
               start_timestamp: 1714019217213
               end_timestamp: 1714019217246
               execution_time: 33
-    NowcastSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NowcastFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/NowcastSuccessResponse'
   parameters:
-    QueryMinEdr:
-      name: minEdr
-      description: Minimum EDR.  Limits to objects whose `edr` value is greater than or equal to this.
-      in: query
-      required: false
-      schema:
-        type: number
-        minimum: 0.1
-        maximum: 0.9
-        default: 0.1
-        multipleOf: 0.1
-    QueryAllowPartialModelRun:
-      name: allowPartialModelRun
-      description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
     NowcastQueryIsValidAt:
       name: isValidAt
       description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
@@ -298,21 +91,22 @@ components:
       schema:
         type: string
         pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryIntersection:
-      name: intersection
-      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QueryAllowPartialModelRun:
+      name: allowPartialModelRun
+      description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
       in: query
       required: false
       schema:
         type: boolean
         default: false
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
     QueryEfhFlightLevel:
       name: flightLevel
       description: Specific flight level for EFH data.  Must use only one of allowed values.
@@ -352,6 +146,23 @@ components:
           - FL430
           - FL450
           - FL530
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
     QueryOffset:
       name: offset
       description: Skip over this many into the response set; used for paginated results.
@@ -360,14 +171,6 @@ components:
       schema:
         type: integer
         default: 0
-    QueryGeometry:
-      name: geometry
-      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: true
     QuerySrid:
       name: srid
       description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
@@ -380,13 +183,17 @@ components:
         - 4326
         - 3857
         default: 4326
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+    QueryMinEdr:
+      name: minEdr
+      description: Minimum EDR.  Limits to objects whose `edr` value is greater than or equal to this.
       in: query
       required: false
       schema:
-        type: string
+        type: number
+        minimum: 0.1
+        maximum: 0.9
+        default: 0.1
+        multipleOf: 0.1
     QueryDistanceUnits:
       name: distanceUnits
       description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
@@ -400,7 +207,55 @@ components:
         - m
         - sm
         default: nm
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryIntersection:
+      name: intersection
+      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
   examples:
+    NowcastBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/nowcast/?corridor=129,-16,115,4,150
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/nowcast/:requestId:f9207bc1-eb0f-4b4b-a8ac-e510df3de7d4
+        errors:
+        - message: '`flightLevel` for Nowcast must be provided and one of specific set of 3-digit numbers formatted like `FL###` where `###` in (010|030|050|080|100|120|125|140|160|180|200|220|240|260|270|280|300|320|330|340|350|360|370|380|390|400|410|430|450|530)'
+          parameter: flightLevel
+          value: FL290
+        meta:
+          name: v1.nowcast.?corridor=129,-16,115,4,150
+          uuid: db32846c-7dd6-441a-8eaa-52b287dfdc9c
+          request_id: e5e2c02e-c3b2-41df-9d3f-9b2c291d2bcb
+          start_timestamp: 1744921713121
+          end_timestamp: 1744921713557
+          execution_time: 436
     NowcastSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/nowcast/?flightLevel=fl340&bbox=-100,40,-90,50
@@ -1643,25 +1498,172 @@ components:
           start_timestamp: 1744921801767
           end_timestamp: 1744921804048
           execution_time: 2281
-    NowcastBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/nowcast/?corridor=129,-16,115,4,150
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/nowcast/:requestId:f9207bc1-eb0f-4b4b-a8ac-e510df3de7d4
+  schemas:
+    NowcastItem:
+      type: object
+      required:
+      - validDateTime
+      - insertedDateTime
+      - modelDateTime
+      - edr
+      - rid
+      properties:
+        validDateTime:
+          type: string
+          format: date-time
+        insertedDateTime:
+          type: string
+          format: date-time
+        modelDateTime:
+          type: string
+          format: date-time
+        edr:
+          type: number
+        rid:
+          type: number
+    NowcastFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/NowcastFeature'
+    NowcastFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/NowcastItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
         errors:
-        - message: '`flightLevel` for Nowcast must be provided and one of specific set of 3-digit numbers formatted like `FL###` where `###` in (010|030|050|080|100|120|125|140|160|180|200|220|240|260|270|280|300|320|330|340|350|360|370|380|390|400|410|430|450|530)'
-          parameter: flightLevel
-          value: FL290
+          type: array
+          items:
+            type: object
         meta:
-          name: v1.nowcast.?corridor=129,-16,115,4,150
-          uuid: db32846c-7dd6-441a-8eaa-52b287dfdc9c
-          request_id: e5e2c02e-c3b2-41df-9d3f-9b2c291d2bcb
-          start_timestamp: 1744921713121
-          end_timestamp: 1744921713557
-          execution_time: 436
+          $ref: '#/components/schemas/Meta'
+    GeoJsonObject:
+      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
+
+        '
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          - FeatureCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - GeometryCollection
+        bbox:
+          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
+
+            '
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      discriminator:
+        propertyName: type
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
   securitySchemes:
     clientCredentials:
       type: oauth2

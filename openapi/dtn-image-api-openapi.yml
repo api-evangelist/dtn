@@ -9,10 +9,10 @@ info:
 
     A tool that can be used to easily view the layers you have access to using your obtained credentials. It also serves as a simple reference implementation of an interactive map viewer based on the Map Tile API.
 
-    Access the Map Tile API Playground [here](https://map.api.dtn.com/static/html/v2/map.html).
+    Access the Map Tile API Playground here.
 
 
-    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our [V2 Migration Guide](https://map.api.dtn.com/static/html/v2/migration_guide.pdf)'
+    If you are migrating from V1 to V2 of the DTN Map Tile API, please refer to our V2 Migration Guide'
   version: 2.0.16
   title: DTN Map Tile Image API
 servers:
@@ -96,66 +96,145 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
+  responses:
+    image:
+      description: image response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        image/png:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+        image/jpeg:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+        image/gif:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+        image/webp:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
+    unauthenticated:
+      description: unauthenticated error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/unauthenticated
+            title: unauthorized
+            detail: Bearer token either not provided or unauthorized.
+            status: 401
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    unprocessable-entity:
+      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://maps.dtn.com/error-details/invalid-object
+            title: Invalid object in request body
+            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
+            status: 422
+            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
   parameters:
-    epsg:
-      in: query
-      name: epsg
-      description: "Specifies the projection to be used, as defined by an EPSG code.<br/>\nThe EPSG code being used must be present in the supportedEPSGs metadata attribute for each of the layers requested.<br/> \nWhen using a basemap style url, make sure to reference one using the same EPSG.\n\nExample values: \n- 3857 - Web Mercator\n- 3031 - Antarctic Polar Stereographic\n- 3995 - Arctic Polar Stereographic\n"
-      schema:
-        type: number
-        enum:
-        - 3857
-        - 3031
-        - 3995
-        default: 3857
-    locale:
-      in: query
-      name: locale
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        <b>If provided, overrides the Accept-Language header.</b><br/>
-
-        '
+    accept-image:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
       schema:
         type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    image-smoothing-profiles:
+        enum:
+        - image/png
+        - image/jpeg
+        - image/gif
+        - image/webp
+    image-get-viewport:
       in: query
-      name: smoothingProfiles
-      description: Comma separated list of smoothing profiles to apply to each of the requested layers, in the same order as in the layerIds attribute. Layers with no matching smoothing profile will not be smoothed.
+      name: viewport
+      description: "Defines the area to be rendered using comma separated numbers. Area can be defined either through: <br/>\n- lon,lat,zoom\n  <br/>lon should be between -180 and 180, lat between -90 and 90, zoom between 0 and 22\n- minLon,minLat,maxLon,maxLat\n  <br/>minLon and maxLon should be between -360 and 360, minLat and maxLat between -90 and 90, zoom between 0 and 22, minLon < maxLon, minLat < maxLat\n"
+      required: true
       schema:
-        type: array
-        minItems: 0
-        maxItems: 10
-        items:
-          type: string
-          enum:
-          - none
-          - low
-          - medium
-          - high
-        example: low, high
-    image-layers:
-      in: query
-      name: layerIds
-      description: Comma separated list of layer ids to render in stacking order.
-      schema:
-        type: array
-        minItems: 0
-        maxItems: 10
-        items:
-          type: string
-        example: radar-base-ref-precip-type-na-contours,sevwx-lightning-global-plot
+        oneOf:
+        - type: array
+          items:
+            type: number
+            format: float
+          minItems: 4
+          maxItems: 4
+        - type: array
+          items:
+            type: number
+            format: float
+          minItems: 3
+          maxItems: 3
     image-logo-position:
       in: query
       name: dtnLogoPosition
@@ -203,29 +282,38 @@ components:
               secondItem:
                 type: number
                 format: float
-    accept-image:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
-      schema:
-        type: string
-        enum:
-        - image/png
-        - image/jpeg
-        - image/gif
-        - image/webp
-    image-opacities:
+    image-width:
       in: query
-      name: opacities
-      description: Comma separated list of opacities to apply to each of the requested layers, in the same order as in the layerIds attribute. Layers with no matching opacity will use the default one being used in its style. Valid values from 0 to 1 inclusive.
+      name: width
+      description: Width of the rendered image in pixels
+      required: true
+      schema:
+        type: number
+        example: 1024
+        minimum: 256
+        maximum: 4096
+    image-layers:
+      in: query
+      name: layerIds
+      description: Comma separated list of layer ids to render in stacking order.
       schema:
         type: array
         minItems: 0
         maxItems: 10
         items:
-          type: number
-        example: .1, 0.5
+          type: string
+        example: radar-base-ref-precip-type-na-contours,sevwx-lightning-global-plot
+    epsg:
+      in: query
+      name: epsg
+      description: "Specifies the projection to be used, as defined by an EPSG code.<br/>\nThe EPSG code being used must be present in the supportedEPSGs metadata attribute for each of the layers requested.<br/> \nWhen using a basemap style url, make sure to reference one using the same EPSG.\n\nExample values: \n- 3857 - Web Mercator\n- 3031 - Antarctic Polar Stereographic\n- 3995 - Arctic Polar Stereographic\n"
+      schema:
+        type: number
+        enum:
+        - 3857
+        - 3031
+        - 3995
+        default: 3857
     image-basemap-style-url:
       in: query
       name: basemapStyleURL
@@ -270,6 +358,43 @@ components:
       schema:
         type: string
         example: https://api.mapbox.com/styles/v1/mapbox/outdoors-v11?access_token=ABC...
+    image-smoothing-profiles:
+      in: query
+      name: smoothingProfiles
+      description: Comma separated list of smoothing profiles to apply to each of the requested layers, in the same order as in the layerIds attribute. Layers with no matching smoothing profile will not be smoothed.
+      schema:
+        type: array
+        minItems: 0
+        maxItems: 10
+        items:
+          type: string
+          enum:
+          - none
+          - low
+          - medium
+          - high
+        example: low, high
+    locale:
+      in: query
+      name: locale
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        <b>If provided, overrides the Accept-Language header.</b><br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
     unit:
       in: query
       name: unit
@@ -284,16 +409,27 @@ components:
         - imperial-aviation
         - imperial-marine
         default: imperial
-    image-width:
+    image-height:
       in: query
-      name: width
-      description: Width of the rendered image in pixels
+      name: height
+      description: Height of the rendered image in pixels
       required: true
       schema:
         type: number
-        example: 1024
+        example: 768
         minimum: 256
         maximum: 4096
+    image-opacities:
+      in: query
+      name: opacities
+      description: Comma separated list of opacities to apply to each of the requested layers, in the same order as in the layerIds attribute. Layers with no matching opacity will use the default one being used in its style. Valid values from 0 to 1 inclusive.
+      schema:
+        type: array
+        minItems: 0
+        maxItems: 10
+        items:
+          type: number
+        example: .1, 0.5
     image-basemap-visibility-overrides:
       in: query
       name: basemapVisibilityOverrides
@@ -312,35 +448,6 @@ components:
       schema:
         type: string
         example: id-1:value-1;id-2:value-2
-    image-get-viewport:
-      in: query
-      name: viewport
-      description: "Defines the area to be rendered using comma separated numbers. Area can be defined either through: <br/>\n- lon,lat,zoom\n  <br/>lon should be between -180 and 180, lat between -90 and 90, zoom between 0 and 22\n- minLon,minLat,maxLon,maxLat\n  <br/>minLon and maxLon should be between -360 and 360, minLat and maxLat between -90 and 90, zoom between 0 and 22, minLon < maxLon, minLat < maxLat\n"
-      required: true
-      schema:
-        oneOf:
-        - type: array
-          items:
-            type: number
-            format: float
-          minItems: 4
-          maxItems: 4
-        - type: array
-          items:
-            type: number
-            format: float
-          minItems: 3
-          maxItems: 3
-    image-height:
-      in: query
-      name: height
-      description: Height of the rendered image in pixels
-      required: true
-      schema:
-        type: number
-        example: 768
-        minimum: 256
-        maximum: 4096
     accept-language:
       in: header
       name: Accept-Language
@@ -369,135 +476,29 @@ components:
         format: date-time
         description: Timestamp for which the tile should be valid, defaults to current time
         example: '2022-09-28T12:45:00Z'
-  responses:
-    unprocessable-entity:
-      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
+  requestBodies:
+    image-request:
+      description: A JSON object Image request
+      required: true
       content:
-        application/problem+json:
+        application/json:
           schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://maps.dtn.com/error-details/invalid-object
-            title: Invalid object in request body
-            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
-            status: 422
-            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    image:
-      description: image response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        image/png:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-        image/jpeg:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-        image/gif:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-        image/webp:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-    unauthenticated:
-      description: unauthenticated error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/unauthenticated
-            title: unauthorized
-            detail: Bearer token either not provided or unauthorized.
-            status: 401
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
+            $ref: '#/components/schemas/image-request'
+  headers:
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
   schemas:
-    general-error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          format: uri
-          description: A URL to a document describing the error condition.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
-          type: number
-          description: HTTP status code
-        instance:
-          type: string
-          format: uri
-          description: URL with the id for the specific error; this will often point to an error log for that specific response.
-      additionalProperties: true
     image-request:
       type: object
       required:
@@ -603,28 +604,27 @@ components:
         - style: mapbox://styles/dtn-mapbox/ckdj45sf20erl1intlu0zoonf
           visibilityOverrides:
           - '*label*:false'
-  headers:
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
-  requestBodies:
-    image-request:
-      description: A JSON object Image request
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/image-request'
+    general-error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          format: uri
+          description: A URL to a document describing the error condition.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: HTTP status code
+        instance:
+          type: string
+          format: uri
+          description: URL with the id for the specific error; this will often point to an error log for that specific response.
+      additionalProperties: true
   securitySchemes:
     clientCredentials:
       type: oauth2

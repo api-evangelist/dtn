@@ -1,7 +1,10 @@
 openapi: 3.2.0
 info:
   title: Storm Impact Analytics Weather Events API
-  description: "# Introduction  \n<p>The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.</p> <p>DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. </p> <p>If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.</p>"
+  description: '# Introduction
+
+
+    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
   version: 1.0.0
 servers:
 - url: https://sia.dtn.com
@@ -12,7 +15,7 @@ tags:
 paths:
   /v1/weather-events:
     get:
-      summary: Get all active weather events.
+      summary: Get all active weather events
       description: Returns list of all of the non-archived weather events. These are the same weather events that are visible within the SIA web application.
       operationId: geoWeatherEvents
       responses:

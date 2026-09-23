@@ -41,12 +41,13 @@ paths:
                 202601080903.ltg
 
                 '
+      operationId: getBySiteIdLTGDirlistTxt
+      x-operation-id-source: derived
   /{site_id}/LTG/{lightning_filename}:
     get:
       tags:
       - Lightning
       summary: Retrieves a CSV-formatted lightning data file
-      description: Retrieves a CSV-formatted lightning data file
       produces:
       - text/csv
       parameters:
@@ -66,19 +67,21 @@ paths:
                 -99.8608,33.7096,15
 
                 '
+      operationId: getBySiteIdLTGByLightningFilename
+      x-operation-id-source: derived
 components:
   parameters:
-    lightning_filename:
-      name: lightning_filename
-      in: path
-      description: Filename of a lightning strike file, CSV-formatted with longitude, latitude, and the number of seconds offset from the minute.
-      required: true
-      schema:
-        type: string
     site_id:
       name: site_id
       in: path
       description: The radar site's ID.
+      required: true
+      schema:
+        type: string
+    lightning_filename:
+      name: lightning_filename
+      in: path
+      description: Filename of a lightning strike file, CSV-formatted with longitude, latitude, and the number of seconds offset from the minute.
       required: true
       schema:
         type: string

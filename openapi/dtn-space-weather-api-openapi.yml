@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: DTN Aviation Enhanced Flight Hazards (EFH) Space Weather API
-  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data.  Each data type has its own endpoint.  Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
+  description: The DTN Aviation Enhanced Flight Hazards (EFH) API retrieves available turbulence (including Nowcast), icing, high ice water content (HIWC), thunderstorms, ozone, jet stream axis, space weather, and Quantitative Volcanic Ash (QVA) data. Each data type has its own endpoint. Filtering parameters allow to limit data requests in various ways, particularly in limiting the area for which to find data.
   version: 1.10.3
 servers:
 - url: https://aviation.api.dtn.com
@@ -33,6 +33,8 @@ paths:
       - $ref: '#/components/parameters/SwpcNoaaScalesQueryInsertedThrough'
       security:
       - clientCredentials: []
+      operationId: getV1SwpcNoaaScalesData
+      x-operation-id-source: derived
   /v1/swpc-noaa-scales/raw:
     get:
       tags:
@@ -53,6 +55,8 @@ paths:
       - $ref: '#/components/parameters/SwpcNoaaScalesQueryInsertedThrough'
       security:
       - clientCredentials: []
+      operationId: getV1SwpcNoaaScalesRaw
+      x-operation-id-source: derived
   /v1/swpc-noaa-scales/explanation:
     get:
       tags:
@@ -67,289 +71,9 @@ paths:
       parameters: []
       security:
       - clientCredentials: []
+      operationId: getV1SwpcNoaaScalesExplanation
+      x-operation-id-source: derived
 components:
-  schemas:
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-    SwpcNoaaScalesExplanationItem:
-      type: object
-      properties:
-        eventName:
-          type: string
-        scale:
-          type: object
-          additionalProperties:
-            type: object
-            properties:
-              category:
-                type: object
-                additionalProperties:
-                  type: string
-              descriptor:
-                type: string
-              hex:
-                type: string
-              colorName:
-                type: string
-              physicalMeasure:
-                type:
-                - string
-                - 'null'
-              averageFrequency:
-                type:
-                - string
-                - 'null'
-              r:
-                type: integer
-              g:
-                type: integer
-              b:
-                type: integer
-    SwpcNoaaScalesExplanation:
-      type: object
-      properties:
-        eventCode:
-          type: object
-          properties:
-            G:
-              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
-            S:
-              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
-            R:
-              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
-    SwpcNoaaScalesRawItem:
-      type: object
-      properties:
-        id:
-          type: string
-        insertedTimestamp:
-          type: string
-          format: date-time
-        raw:
-          type: object
-          additionalProperties:
-            type: object
-            properties:
-              G:
-                type: object
-                properties:
-                  Text:
-                    type:
-                    - string
-                    - 'null'
-                  Scale:
-                    type:
-                    - string
-                    - 'null'
-              R:
-                type: object
-                properties:
-                  Text:
-                    type:
-                    - string
-                    - 'null'
-                  Scale:
-                    type:
-                    - string
-                    - 'null'
-                  MajorProb:
-                    type:
-                    - string
-                    - 'null'
-                  MinorProb:
-                    type:
-                    - string
-                    - 'null'
-              S:
-                type: object
-                properties:
-                  Prob:
-                    type:
-                    - string
-                    - 'null'
-                  Text:
-                    type:
-                    - string
-                    - 'null'
-                  Scale:
-                    type:
-                    - string
-                    - 'null'
-              DateStamp:
-                type: string
-              TimeStamp:
-                type: string
-    SwpcNoaaScalesDataItem:
-      type: object
-      properties:
-        datum:
-          type: string
-        descriptor:
-          type:
-          - string
-          - 'null'
-        valueType:
-          type: string
-        valueDescription:
-          type: string
-        eventName:
-          type: string
-        eventCode:
-          type: string
-        periodDescription:
-          type: string
-        periodLabel:
-          type: string
-        id:
-          type: string
-        insertedTimestamp:
-          type: string
-          format: date-time
-        timestamp:
-          type: string
-          format: date-time
-    SwpcNoaaScalesData:
-      type: object
-      properties:
-        url:
-          type: string
-        swpcNoaaScalesData:
-          type: array
-          items:
-            $ref: '#/components/schemas/SwpcNoaaScalesDataItem'
-        meta:
-          $ref: '#/components/schemas/Meta'
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-    SwpcNoaaScalesRaw:
-      type: object
-      properties:
-        url:
-          type: string
-        swpcNoaaScalesRaw:
-          type: array
-          items:
-            $ref: '#/components/schemas/SwpcNoaaScalesRawItem'
-        meta:
-          $ref: '#/components/schemas/Meta'
-  responses:
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    SwpcNoaaScalesExplanationSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SwpcNoaaScalesExplanation'
-          examples:
-            Success:
-              $ref: '#/components/examples/SwpcNoaaScalesExplanationSuccessResponse'
-    SwpcNoaaScalesRawSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SwpcNoaaScalesRaw'
-          examples:
-            Success:
-              $ref: '#/components/examples/SwpcNoaaScalesRawSuccessResponse'
-    SwpcNoaaScalesRawBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/SwpcNoaaScalesRawBadRequestResponse'
-    SwpcNoaaScalesDataBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/SwpcNoaaScalesDataBadRequestResponse'
-    SwpcNoaaScalesDataSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SwpcNoaaScalesData'
-          examples:
-            Success:
-              $ref: '#/components/examples/SwpcNoaaScalesDataSuccessResponse'
   examples:
     SwpcNoaaScalesRawSuccessResponse:
       value:
@@ -440,215 +164,6 @@ components:
           start_timestamp: 1764722204817
           end_timestamp: 1764722205589
           execution_time: 772
-    SwpcNoaaScalesDataSuccessResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data
-        swpcNoaaScalesData:
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Geomagnetic Storm severity
-          eventName: Geomagnetic Storms
-          eventCode: G
-          periodDescription: Latest Observed
-          periodLabel: '0'
-          id: '65125'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Solar Radiation Storm severity
-          eventName: Solar Radiation Storms
-          eventCode: S
-          periodDescription: Latest Observed
-          periodLabel: '0'
-          id: '65126'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Radio Blackout severity
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Latest Observed
-          periodLabel: '0'
-          id: '65127'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '2'
-          descriptor: Moderate
-          valueType: Scale
-          valueDescription: Numerical index indicating Geomagnetic Storm severity
-          eventName: Geomagnetic Storms
-          eventCode: G
-          periodDescription: Predicted current day
-          periodLabel: '1'
-          id: '65128'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '15'
-          descriptor: null
-          valueType: Prob
-          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
-          eventName: Solar Radiation Storms
-          eventCode: S
-          periodDescription: Predicted current day
-          periodLabel: '1'
-          id: '65129'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '75'
-          descriptor: null
-          valueType: MinorProb
-          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Predicted current day
-          periodLabel: '1'
-          id: '65130'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '30'
-          descriptor: null
-          valueType: MajorProb
-          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Predicted current day
-          periodLabel: '1'
-          id: '65131'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-03T00:32:00.000Z'
-        - datum: '2'
-          descriptor: Moderate
-          valueType: Scale
-          valueDescription: Numerical index indicating Geomagnetic Storm severity
-          eventName: Geomagnetic Storms
-          eventCode: G
-          periodDescription: Predicted current day + 1
-          periodLabel: '2'
-          id: '65132'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-04T00:00:00.000Z'
-        - datum: '15'
-          descriptor: null
-          valueType: Prob
-          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
-          eventName: Solar Radiation Storms
-          eventCode: S
-          periodDescription: Predicted current day + 1
-          periodLabel: '2'
-          id: '65133'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-04T00:00:00.000Z'
-        - datum: '75'
-          descriptor: null
-          valueType: MinorProb
-          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Predicted current day + 1
-          periodLabel: '2'
-          id: '65134'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-04T00:00:00.000Z'
-        - datum: '30'
-          descriptor: null
-          valueType: MajorProb
-          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Predicted current day + 1
-          periodLabel: '2'
-          id: '65135'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-04T00:00:00.000Z'
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Geomagnetic Storm severity
-          eventName: Geomagnetic Storms
-          eventCode: G
-          periodDescription: Predicted current day + 2
-          periodLabel: '3'
-          id: '65136'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-05T00:00:00.000Z'
-        - datum: '15'
-          descriptor: null
-          valueType: Prob
-          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
-          eventName: Solar Radiation Storms
-          eventCode: S
-          periodDescription: Predicted current day + 2
-          periodLabel: '3'
-          id: '65137'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-05T00:00:00.000Z'
-        - datum: '75'
-          descriptor: null
-          valueType: MinorProb
-          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Predicted current day + 2
-          periodLabel: '3'
-          id: '65138'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-05T00:00:00.000Z'
-        - datum: '30'
-          descriptor: null
-          valueType: MajorProb
-          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: Predicted current day + 2
-          periodLabel: '3'
-          id: '65139'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-05T00:00:00.000Z'
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Geomagnetic Storm severity
-          eventName: Geomagnetic Storms
-          eventCode: G
-          periodDescription: 24-Hour Observed Maximum
-          periodLabel: '-1'
-          id: '65140'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-02T00:32:00.000Z'
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Solar Radiation Storm severity
-          eventName: Solar Radiation Storms
-          eventCode: S
-          periodDescription: 24-Hour Observed Maximum
-          periodLabel: '-1'
-          id: '65141'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-02T00:32:00.000Z'
-        - datum: '0'
-          descriptor: None
-          valueType: Scale
-          valueDescription: Numerical index indicating Radio Blackout severity
-          eventName: Radio Blackouts
-          eventCode: R
-          periodDescription: 24-Hour Observed Maximum
-          periodLabel: '-1'
-          id: '65142'
-          insertedTimestamp: '2025-12-03T00:32:58.182Z'
-          timestamp: '2025-12-02T00:32:00.000Z'
-        meta:
-          name: v1.swpc-noaa-scales.data
-          uuid: a21b5bcf-abf9-4857-bbf3-ffb60ce76593
-          request_id: 9dc8ae3b-f38e-4c06-b3fe-3de944e53a37
-          start_timestamp: 1764722202064
-          end_timestamp: 1764722205461
-          execution_time: 3397
     SwpcNoaaScalesDataBadRequestResponse:
       value:
         url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data?swpcNoaaScalesEventCodes=B
@@ -912,6 +427,215 @@ components:
           start_timestamp: 1764701508134
           end_timestamp: 1764701511262
           execution_time: 3128
+    SwpcNoaaScalesDataSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data
+        swpcNoaaScalesData:
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Latest Observed
+          periodLabel: '0'
+          id: '65125'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Solar Radiation Storm severity
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Latest Observed
+          periodLabel: '0'
+          id: '65126'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Radio Blackout severity
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Latest Observed
+          periodLabel: '0'
+          id: '65127'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '2'
+          descriptor: Moderate
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65128'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '15'
+          descriptor: null
+          valueType: Prob
+          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65129'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '75'
+          descriptor: null
+          valueType: MinorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65130'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '30'
+          descriptor: null
+          valueType: MajorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day
+          periodLabel: '1'
+          id: '65131'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-03T00:32:00.000Z'
+        - datum: '2'
+          descriptor: Moderate
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65132'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '15'
+          descriptor: null
+          valueType: Prob
+          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65133'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '75'
+          descriptor: null
+          valueType: MinorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65134'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '30'
+          descriptor: null
+          valueType: MajorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 1
+          periodLabel: '2'
+          id: '65135'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-04T00:00:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65136'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '15'
+          descriptor: null
+          valueType: Prob
+          valueDescription: This is the forecast probability of a Solar Radiation Storm occurring, meaning proton levels exceed the S1 (Minor) threshold on the NOAA Space Weather Scales.
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65137'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '75'
+          descriptor: null
+          valueType: MinorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R1 or R2 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65138'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '30'
+          descriptor: null
+          valueType: MajorProb
+          valueDescription: This is the forecast probability of a Radio Blackout of magnitude R3, R4, or R5 on the NOAA Space Weather Scales.
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: Predicted current day + 2
+          periodLabel: '3'
+          id: '65139'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-05T00:00:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Geomagnetic Storm severity
+          eventName: Geomagnetic Storms
+          eventCode: G
+          periodDescription: 24-Hour Observed Maximum
+          periodLabel: '-1'
+          id: '65140'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-02T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Solar Radiation Storm severity
+          eventName: Solar Radiation Storms
+          eventCode: S
+          periodDescription: 24-Hour Observed Maximum
+          periodLabel: '-1'
+          id: '65141'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-02T00:32:00.000Z'
+        - datum: '0'
+          descriptor: None
+          valueType: Scale
+          valueDescription: Numerical index indicating Radio Blackout severity
+          eventName: Radio Blackouts
+          eventCode: R
+          periodDescription: 24-Hour Observed Maximum
+          periodLabel: '-1'
+          id: '65142'
+          insertedTimestamp: '2025-12-03T00:32:58.182Z'
+          timestamp: '2025-12-02T00:32:00.000Z'
+        meta:
+          name: v1.swpc-noaa-scales.data
+          uuid: a21b5bcf-abf9-4857-bbf3-ffb60ce76593
+          request_id: 9dc8ae3b-f38e-4c06-b3fe-3de944e53a37
+          start_timestamp: 1764722202064
+          end_timestamp: 1764722205461
+          execution_time: 3397
     SwpcNoaaScalesRawBadRequestResponse:
       value:
         url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
@@ -935,40 +659,19 @@ components:
           end_timestamp: 1764800387383
           execution_time: 500
   parameters:
-    SwpcNoaaScalesQueryInsertedThrough:
-      name: insertedThrough
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+    QuerySwpcNoaaScalesEventCodes:
+      name: swpcNoaaScalesEventCodes
+      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
       in: query
       required: false
       schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    SwpcNoaaScalesQueryInsertedAfter:
-      name: insertedAfter
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
+        type: array
+        items:
+          type: string
+          enum:
+          - G
+          - R
+          - S
     QuerySwpcNoaaScalesPeriodLabels:
       name: swpcNoaaScalesPeriodLabels
       description: ''
@@ -984,19 +687,322 @@ components:
           - '2'
           - '3'
           - '-1'
-    QuerySwpcNoaaScalesEventCodes:
-      name: swpcNoaaScalesEventCodes
-      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
       in: query
       required: false
       schema:
-        type: array
-        items:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    SwpcNoaaScalesQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    SwpcNoaaScalesQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+  responses:
+    SwpcNoaaScalesDataSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesData'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesDataSuccessResponse'
+    SwpcNoaaScalesRawBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/SwpcNoaaScalesRawBadRequestResponse'
+    SwpcNoaaScalesExplanationSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesExplanation'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesExplanationSuccessResponse'
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    SwpcNoaaScalesRawSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesRaw'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesRawSuccessResponse'
+    SwpcNoaaScalesDataBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/SwpcNoaaScalesDataBadRequestResponse'
+  schemas:
+    SwpcNoaaScalesExplanationItem:
+      type: object
+      properties:
+        eventName:
           type: string
+        scale:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              category:
+                type: object
+                additionalProperties:
+                  type: string
+              descriptor:
+                type: string
+              hex:
+                type: string
+              colorName:
+                type: string
+              physicalMeasure:
+                type:
+                - string
+                - 'null'
+              averageFrequency:
+                type:
+                - string
+                - 'null'
+              r:
+                type: integer
+              g:
+                type: integer
+              b:
+                type: integer
+    SwpcNoaaScalesData:
+      type: object
+      properties:
+        url:
+          type: string
+        swpcNoaaScalesData:
+          type: array
+          items:
+            $ref: '#/components/schemas/SwpcNoaaScalesDataItem'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
           enum:
-          - G
-          - R
-          - S
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    SwpcNoaaScalesRaw:
+      type: object
+      properties:
+        url:
+          type: string
+        swpcNoaaScalesRaw:
+          type: array
+          items:
+            $ref: '#/components/schemas/SwpcNoaaScalesRawItem'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    SwpcNoaaScalesExplanation:
+      type: object
+      properties:
+        eventCode:
+          type: object
+          properties:
+            G:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+            S:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+            R:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+    SwpcNoaaScalesDataItem:
+      type: object
+      properties:
+        datum:
+          type: string
+        descriptor:
+          type:
+          - string
+          - 'null'
+        valueType:
+          type: string
+        valueDescription:
+          type: string
+        eventName:
+          type: string
+        eventCode:
+          type: string
+        periodDescription:
+          type: string
+        periodLabel:
+          type: string
+        id:
+          type: string
+        insertedTimestamp:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    SwpcNoaaScalesRawItem:
+      type: object
+      properties:
+        id:
+          type: string
+        insertedTimestamp:
+          type: string
+          format: date-time
+        raw:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              G:
+                type: object
+                properties:
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+              R:
+                type: object
+                properties:
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+                  MajorProb:
+                    type:
+                    - string
+                    - 'null'
+                  MinorProb:
+                    type:
+                    - string
+                    - 'null'
+              S:
+                type: object
+                properties:
+                  Prob:
+                    type:
+                    - string
+                    - 'null'
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+              DateStamp:
+                type: string
+              TimeStamp:
+                type: string
   securitySchemes:
     clientCredentials:
       type: oauth2
