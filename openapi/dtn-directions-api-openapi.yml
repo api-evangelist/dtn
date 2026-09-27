@@ -307,6 +307,19 @@ paths:
       security:
       - clientCredentials: []
 components:
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Error:
       type: object
@@ -392,19 +405,6 @@ components:
               type: string
               format: date-time
               description: Departure time from the first route. Present when arriveAt is used.
-  responses:
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2

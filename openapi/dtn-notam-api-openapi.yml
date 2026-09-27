@@ -34,6 +34,55 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotamList:
+      type: object
+      properties:
+        url:
+          type: string
+        notams:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotamItem'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    NotamItem:
+      type: object
+      properties:
+        stationId:
+          type: string
+        notamId:
+          type: string
+        raw_text:
+          type: string
+        issueDateTime:
+          type: string
+          format: date-time
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
     Error:
       title: Error
       description: Error
@@ -70,82 +119,64 @@ components:
             type: object
         meta:
           $ref: '#/components/schemas/Meta'
-    NotamItem:
-      type: object
-      properties:
-        stationId:
-          type: string
-        notamId:
-          type: string
-        raw_text:
-          type: string
-        issueDateTime:
-          type: string
-          format: date-time
-        expireDateTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    NotamList:
-      type: object
-      properties:
-        url:
-          type: string
-        notams:
-          type: array
-          items:
-            $ref: '#/components/schemas/NotamItem'
-        meta:
-          $ref: '#/components/schemas/Meta'
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-  parameters:
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.  Default = 0
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryStationId:
-      name: stationId
-      description: Station identifier, e.g., `KIND`, `CYYC`
-      in: query
-      required: true
-      schema:
-        type: string
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.  Default = 1000
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
+  responses:
+    NotamBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/NotamBadRequestResponse'
+    NotamSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotamList'
+          examples:
+            Success:
+              $ref: '#/components/examples/NotamSuccessResponse'
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
   examples:
+    NotamBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/notams/KIND?offset=-1&limit=10
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:895f33f9-925d-42df-9500-32fabbbd813c
+        errors:
+        - message: '`offset` query must be Integer zero or greater'
+          parameter: offset
+          value: -1
+        meta:
+          name: v1.notams.KIND?offset=-1&limit=10
+          uuid: b90dae85-86f6-4b79-a747-8dfd0655d36c
+          request_id: 895f33f9-925d-42df-9500-32fabbbd813c
+          start_timestamp: 1714013205229
+          end_timestamp: 1714013205461
+          execution_time: 232
     NotamSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/notams/KIND?limit=2
@@ -175,63 +206,32 @@ components:
           start_timestamp: 1714018407946
           end_timestamp: 1714018410376
           execution_time: 2430
-    NotamBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/notams/KIND?offset=-1&limit=10
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:895f33f9-925d-42df-9500-32fabbbd813c
-        errors:
-        - message: '`offset` query must be Integer zero or greater'
-          parameter: offset
-          value: -1
-        meta:
-          name: v1.notams.KIND?offset=-1&limit=10
-          uuid: b90dae85-86f6-4b79-a747-8dfd0655d36c
-          request_id: 895f33f9-925d-42df-9500-32fabbbd813c
-          start_timestamp: 1714013205229
-          end_timestamp: 1714013205461
-          execution_time: 232
-  responses:
-    NotamBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/NotamBadRequestResponse'
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    NotamSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotamList'
-          examples:
-            Success:
-              $ref: '#/components/examples/NotamSuccessResponse'
+  parameters:
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.  Default = 0
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.  Default = 1000
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryStationId:
+      name: stationId
+      description: Station identifier, e.g., `KIND`, `CYYC`
+      in: query
+      required: true
+      schema:
+        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -118,6 +118,18 @@ paths:
                 instance: urn:dtn:farm-intel-external-api:requestId:example-id
 components:
   schemas:
+    State:
+      type: object
+      description: A US state.
+      properties:
+        stateCode:
+          type: string
+          description: Two-letter state code.
+          example: IA
+        stateName:
+          type: string
+          description: Full state name.
+          example: Iowa
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -156,18 +168,6 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
-    State:
-      type: object
-      description: A US state.
-      properties:
-        stateCode:
-          type: string
-          description: Two-letter state code.
-          example: IA
-        stateName:
-          type: string
-          description: Full state name.
-          example: Iowa
     County:
       type: object
       description: A US county with its FIPS code.

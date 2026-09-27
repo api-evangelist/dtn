@@ -78,6 +78,11 @@ paths:
       operationId: getFeedsV3SoundingRawBySoundingEventTimeBySoundingStationIdBySoundingProductId
       x-operation-id-source: derived
 components:
+  headers:
+    content-type:
+      description: MIME-type of returned data
+      schema:
+        type: string
   parameters:
     day:
       name: day
@@ -86,10 +91,17 @@ components:
       required: true
       schema:
         type: string
-    sounding_station_id:
-      name: sounding_station_id
+    sounding_event_time:
+      name: sounding_event_time
       in: path
-      description: id of station reporting the sounding
+      description: event time, as returned from current or historical station listing
+      required: true
+      schema:
+        type: string
+    sounding_product_id:
+      name: sounding_product_id
+      in: path
+      description: 'sounding product; one of: ABV, MAN, SGL'
       required: true
       schema:
         type: string
@@ -107,23 +119,11 @@ components:
       required: true
       schema:
         type: string
-    sounding_product_id:
-      name: sounding_product_id
+    sounding_station_id:
+      name: sounding_station_id
       in: path
-      description: 'sounding product; one of: ABV, MAN, SGL'
+      description: id of station reporting the sounding
       required: true
-      schema:
-        type: string
-    sounding_event_time:
-      name: sounding_event_time
-      in: path
-      description: event time, as returned from current or historical station listing
-      required: true
-      schema:
-        type: string
-  headers:
-    content-type:
-      description: MIME-type of returned data
       schema:
         type: string
   responses:

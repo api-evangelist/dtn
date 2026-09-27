@@ -32,16 +32,6 @@ paths:
       - Service Area Geojson
 components:
   schemas:
-    featureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/feature'
     feature:
       type: object
       properties:
@@ -94,6 +84,16 @@ components:
           type: number
           example: 216
           description: Lower 80% of the range model applied to this storm type.
+    featureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
   parameters:
     geolevel:
       name: geolevel

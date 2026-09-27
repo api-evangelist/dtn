@@ -617,20 +617,20 @@ paths:
       security:
       - clientCredentials: []
 components:
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
     FeatureCollectionRoute:
       type: object
       required:
@@ -656,6 +656,134 @@ components:
                 - Feature
               geometry:
                 $ref: '#/components/schemas/LineStringRoute'
+    PavementConditionsResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+              description: Total number of records available
+            limit:
+              type: integer
+              description: Maximum number of records per page
+            nextOffset:
+              type: integer
+              description: Offset for the next page
+        geojson:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - FeatureCollection
+            features:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - Feature
+                  id:
+                    type: string
+                    description: Segment ID
+                  geometry:
+                    type: object
+                    description: GeoJSON geometry for the road segment (LineString or MultiLineString)
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - LineString
+                        - MultiLineString
+                      coordinates:
+                        type: array
+                        description: Coordinate array (structure depends on geometry type)
+                        items:
+                          type: array
+                          items:
+                            type: number
+                  properties:
+                    type: object
+                    properties:
+                      segmentId:
+                        type: string
+                      roadName:
+                        type: string
+                      osmClass:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            lat:
+                              type: number
+                            lon:
+                              type: number
+                            timestamp:
+                              type: string
+                              format: date-time
+                            pavementCreationTime:
+                              type: string
+                              format: date-time
+                            pavementValidTime:
+                              type: string
+                              format: date-time
+                            pavementValidEndTime:
+                              type: string
+                              format: date-time
+                            airTemp:
+                              type: number
+                            visibility:
+                              type: number
+                            windDirection:
+                              type: number
+                            windGust:
+                              type: number
+                            windSpeed:
+                              type: number
+                            iceRate:
+                              type: number
+                            liquidRate:
+                              type: number
+                            snowRate:
+                              type: number
+                            mobilityIndex:
+                              type: number
+                            pavementTemperature:
+                              type: number
+                            blowingSnowAlertLevel:
+                              type: integer
+                            compactedSnowDepth:
+                              type: number
+                            frostDepth:
+                              type: number
+                            iceDepth:
+                              type: number
+                            liquidDepth:
+                              type: number
+                            snowDepth:
+                              type: number
+                            unbondedIceDepth:
+                              type: number
+                            pavementCondition:
+                              type: string
+                            crashRiskIndex:
+                              type: number
+                            crashRiskUncertainty:
+                              type: number
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
     RouteConditionsResponse:
       type: object
       properties:
@@ -801,6 +929,19 @@ components:
               type: string
               format: date-time
               description: Estimated departure time from the origin (arriveAt - route duration). Present when arriveAt is used.
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     LineStringRoute:
       type: object
       required:
@@ -819,147 +960,6 @@ components:
             minItems: 2
             items:
               type: number
-    PavementConditionsResponse:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            total:
-              type: integer
-              description: Total number of records available
-            limit:
-              type: integer
-              description: Maximum number of records per page
-            nextOffset:
-              type: integer
-              description: Offset for the next page
-        geojson:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - FeatureCollection
-            features:
-              type: array
-              items:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                    - Feature
-                  id:
-                    type: string
-                    description: Segment ID
-                  geometry:
-                    type: object
-                    description: GeoJSON geometry for the road segment (LineString or MultiLineString)
-                    properties:
-                      type:
-                        type: string
-                        enum:
-                        - LineString
-                        - MultiLineString
-                      coordinates:
-                        type: array
-                        description: Coordinate array (structure depends on geometry type)
-                        items:
-                          type: array
-                          items:
-                            type: number
-                  properties:
-                    type: object
-                    properties:
-                      segmentId:
-                        type: string
-                      roadName:
-                        type: string
-                      osmClass:
-                        type: string
-                      data:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            lat:
-                              type: number
-                            lon:
-                              type: number
-                            timestamp:
-                              type: string
-                              format: date-time
-                            pavementCreationTime:
-                              type: string
-                              format: date-time
-                            pavementValidTime:
-                              type: string
-                              format: date-time
-                            pavementValidEndTime:
-                              type: string
-                              format: date-time
-                            airTemp:
-                              type: number
-                            visibility:
-                              type: number
-                            windDirection:
-                              type: number
-                            windGust:
-                              type: number
-                            windSpeed:
-                              type: number
-                            iceRate:
-                              type: number
-                            liquidRate:
-                              type: number
-                            snowRate:
-                              type: number
-                            mobilityIndex:
-                              type: number
-                            pavementTemperature:
-                              type: number
-                            blowingSnowAlertLevel:
-                              type: integer
-                            compactedSnowDepth:
-                              type: number
-                            frostDepth:
-                              type: number
-                            iceDepth:
-                              type: number
-                            liquidDepth:
-                              type: number
-                            snowDepth:
-                              type: number
-                            unbondedIceDepth:
-                              type: number
-                            pavementCondition:
-                              type: string
-                            crashRiskIndex:
-                              type: number
-                            crashRiskUncertainty:
-                              type: number
-                            createdAt:
-                              type: string
-                              format: date-time
-                            updatedAt:
-                              type: string
-                              format: date-time
-  responses:
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2

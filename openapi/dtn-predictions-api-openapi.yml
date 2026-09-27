@@ -89,76 +89,99 @@ paths:
                 items:
                   $ref: '#/components/schemas/prediction'
 components:
-  parameters:
-    endTime:
-      name: endTime
-      description: ISO 8601, end time of predictions.
-      example: '2023-06-01T08:00:00Z'
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date-time
-    predictionType:
-      name: predictionType
-      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
-      example: risk-index
-      in: query
-      required: false
-      schema:
-        type: string
-    fipsList:
-      name: fipsList
-      description: A single or comma seperated list of FIPS to get predictions for.
-      example: 27137,27089
-      in: query
-      required: false
-      schema:
-        type: string
-    lon:
-      name: lon
-      description: Longitude of point which is used to get predictions for county that contains it.
-      example: -93.258
-      in: query
-      required: false
-      schema:
-        type: number
-        format: float
-    timezoneId:
-      name: timezoneId
-      description: IANA timezone string to auto adjust prediction timestamps.
-      example: America/Chicago
-      in: query
-      required: false
-      schema:
-        type: string
-    regionName:
-      name: regionName
-      description: Can be a predefined, named region, a state abbreviation or full state name.
-      example: CONUS
-      in: query
-      required: false
-      schema:
-        type: string
-    lat:
-      name: lat
-      description: Latitude of point which is used to get predictions for county that contains it.
-      example: 44.9866
-      in: query
-      required: false
-      schema:
-        type: number
-        format: float
-    startTime:
-      name: startTime
-      description: ISO 8601, start time of predictions.
-      example: '2023-05-30T08:30:00Z'
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date-time
   schemas:
+    hourlyPrediction:
+      type: object
+      properties:
+        predictionDateTime:
+          type: string
+          example: 2023-05-30T19:00
+          description: Date time of this single hourly prediction
+        prediction:
+          type: number
+          example: 7
+          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
+        base:
+          type: number
+          example: 4
+          description: Baseline predicted value for this hourly prediction, changes based on predictionType defined.
+    feature:
+      type: object
+      properties:
+        type:
+          type: string
+          example: Feature
+        properties:
+          $ref: '#/components/schemas/featureProperties'
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              example: MultiPolygon
+        id:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        coordinates:
+          type: array
+          items:
+            type: number
+          example: []
+    featureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
+    prediction:
+      type: object
+      properties:
+        fips:
+          $ref: '#/components/schemas/fips'
+        gfsDateTime:
+          type: string
+          example: 2023-05-30T18:00
+          description: Date time of the GFS run these predictions were calculated with.
+        predictionType:
+          type: string
+          example: risk-index
+          description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+        weightingAlgorithm:
+          type: string
+          example: substation
+          description: Prediction weight algorithm used filter prediction values.
+        weight:
+          type: number
+          example: 50
+          description: Calculated weight used for predction filtering. If weightingAlgorithm is substation then this value is the number of substations contained within predictive area. For example - if 50 substations in county and this value is 25, then the predictions are 50% of their full value.
+        predictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/hourlyPrediction'
+    polygon:
+      type: object
+      properties:
+        type:
+          type: string
+          example: MultiPolygon
+        coordinates:
+          type: array
+          items:
+            type: number
+          example:
+          - - - - -94.1728
+                - 45.56023
+              - - -93.27777
+                - 44.7677
+              - - -93.0931
+                - 44.9496
+              - - -94.1728
+                - 45.56023
     featureProperties:
       type: object
       properties:
@@ -217,98 +240,75 @@ components:
           type: number
           example: 607
           description: Area of county in square miles.
-    prediction:
-      type: object
-      properties:
-        fips:
-          $ref: '#/components/schemas/fips'
-        gfsDateTime:
-          type: string
-          example: 2023-05-30T18:00
-          description: Date time of the GFS run these predictions were calculated with.
-        predictionType:
-          type: string
-          example: risk-index
-          description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
-        weightingAlgorithm:
-          type: string
-          example: substation
-          description: Prediction weight algorithm used filter prediction values.
-        weight:
-          type: number
-          example: 50
-          description: Calculated weight used for predction filtering. If weightingAlgorithm is substation then this value is the number of substations contained within predictive area. For example - if 50 substations in county and this value is 25, then the predictions are 50% of their full value.
-        predictions:
-          type: array
-          items:
-            $ref: '#/components/schemas/hourlyPrediction'
-    polygon:
-      type: object
-      properties:
-        type:
-          type: string
-          example: MultiPolygon
-        coordinates:
-          type: array
-          items:
-            type: number
-          example:
-          - - - - -94.1728
-                - 45.56023
-              - - -93.27777
-                - 44.7677
-              - - -93.0931
-                - 44.9496
-              - - -94.1728
-                - 45.56023
-    hourlyPrediction:
-      type: object
-      properties:
-        predictionDateTime:
-          type: string
-          example: 2023-05-30T19:00
-          description: Date time of this single hourly prediction
-        prediction:
-          type: number
-          example: 7
-          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
-        base:
-          type: number
-          example: 4
-          description: Baseline predicted value for this hourly prediction, changes based on predictionType defined.
-    featureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/feature'
-    feature:
-      type: object
-      properties:
-        type:
-          type: string
-          example: Feature
-        properties:
-          $ref: '#/components/schemas/featureProperties'
-        geometry:
-          type: object
-          properties:
-            type:
-              type: string
-              example: MultiPolygon
-        id:
-          type: string
-          example: '27053'
-          description: FIPS of county.
-        coordinates:
-          type: array
-          items:
-            type: number
-          example: []
+  parameters:
+    regionName:
+      name: regionName
+      description: Can be a predefined, named region, a state abbreviation or full state name.
+      example: CONUS
+      in: query
+      required: false
+      schema:
+        type: string
+    lon:
+      name: lon
+      description: Longitude of point which is used to get predictions for county that contains it.
+      example: -93.258
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    timezoneId:
+      name: timezoneId
+      description: IANA timezone string to auto adjust prediction timestamps.
+      example: America/Chicago
+      in: query
+      required: false
+      schema:
+        type: string
+    endTime:
+      name: endTime
+      description: ISO 8601, end time of predictions.
+      example: '2023-06-01T08:00:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    predictionType:
+      name: predictionType
+      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+      example: risk-index
+      in: query
+      required: false
+      schema:
+        type: string
+    startTime:
+      name: startTime
+      description: ISO 8601, start time of predictions.
+      example: '2023-05-30T08:30:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    fipsList:
+      name: fipsList
+      description: A single or comma seperated list of FIPS to get predictions for.
+      example: 27137,27089
+      in: query
+      required: false
+      schema:
+        type: string
+    lat:
+      name: lat
+      description: Latitude of point which is used to get predictions for county that contains it.
+      example: 44.9866
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -151,10 +151,10 @@ components:
       required: true
       schema:
         type: string
-    day:
-      name: day
+    hour:
+      name: hour
       in: path
-      description: 2 digit day, 01-31
+      description: 2 digit hour, 00-23
       required: true
       schema:
         type: string
@@ -165,10 +165,10 @@ components:
       required: true
       schema:
         type: string
-    minute:
-      name: minute
+    day:
+      name: day
       in: path
-      description: 2 digit minute, 00-59
+      description: 2 digit day, 01-31
       required: true
       schema:
         type: string
@@ -186,11 +186,16 @@ components:
       required: true
       schema:
         type: string
-    hour:
-      name: hour
+    minute:
+      name: minute
       in: path
-      description: 2 digit hour, 00-23
+      description: 2 digit minute, 00-59
       required: true
+      schema:
+        type: string
+  headers:
+    content-type:
+      description: MIME-type of returned data
       schema:
         type: string
   responses:
@@ -218,11 +223,6 @@ components:
       content:
         application/json:
           example: "[\n\t{\n\t\t\"c\": \"Gabrielle\",\n\t\t\"ph\": \"PTC\",\n\t\t\"a\": \"2025/AL07/39\",\n\t\t\"iss\": 1758897420,\n\t\t\"b\": 1758898800,\n\t\t\"o\": \"AL\",\n\t\t\"s\": \"AL07\",\n\t\t\"n\": \"39\",\n\t\t\"info\": {\n\t\t\t\"note\": \"ERRORS FOR TRACK HAVE AVERAGED NEAR 125 NM ON DAY 4 AND 175 NM ON DAY 5 AND FOR INTENSITY NEAR 15 KT EACH DAY\",\n\t\t\t\"points\": [\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"P\",\n\t\t\t\t\t\"d\": 1758888000,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-24.2,\n\t\t\t\t\t\t39.7\n\t\t\t\t\t]\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"C\",\n\t\t\t\t\t\"d\": 1758898800,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-22.8,\n\t\t\t\t\t\t40.0\n\t\t\t\t\t],\n\t\t\t\t\t\"a\": 30,\n\t\t\t\t\t\"v\": [\n\t\t\t\t\t\t65,\n\t\t\t\t\t\t27\n\t\t\t\t\t],\n\t\t\t\t\t\"t\": \"PTC\",\n\t\t\t\t\t\"pmb\": 992,\n\t\t\t\t\t\"w\": 55,\n\t\t\t\t\t\"g\": 65,\n\t\t\t\t\t\"s\": \"TS\",\n\t\t\t\t\t\"c\": 0,\n\t\t\t\t\t\"34kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t100,\n\t\t\t\t\t\t\t140,\n\t\t\t\t\t\t\t120,\n\t\t\t\t\t\t\t150\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42085,\n\t\t\t\t\t\t\t\t-22800\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41962,\n\t\t\t\t\t\t\t\t-22336\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41766,\n\t\t\t\t\t\t\t\t-21940\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41531,\n\t\t\t\t\t\t\t\t-21619\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41288,\n\t\t\t\t\t\t\t\t-21358\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t},\n\t\t\t\t\t\"50kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t70,\n\t\t\t\t\t\t\t60,\n\t\t\t\t\t\t\t40\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40334,\n\t\t\t\t\t\t\t\t-22800\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40243,\n\t\t\t\t\t\t\t\t-22744\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40140,\n\t\t\t\t\t\t\t\t-22734\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40054,\n\t\t\t\t\t\t\t\t-22760\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40006,\n\t\t\t\t\t\t\t\t-22793\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"F\",\n\t\t\t\t\t\"d\": 1758931200,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-18.6,\n\t\t\t\t\t\t40.8\n\t\t\t\t\t],\n\t\t\t\t\t\"w\": 60,\n\t\t\t\t\t\"g\": 75,\n\t\t\t\t\t\"s\": \"TS\",\n\t\t\t\t\t\"c\": 0,\n\t\t\t\t\t\"34kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t120,\n\t\t\t\t\t\t\t150,\n\t\t\t\t\t\t\t120,\n\t\t\t\t\t\t\t150\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t43051,\n\t\t\t\t\t\t\t\t-18600\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42957,\n\t\t\t\t\t\t\t\t-18082\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42790,\n\t\t\t\t\t\t\t\t-17615\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42573,\n\t\t\t\t\t\t\t\t-17209\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42328,\n\t\t\t\t\t\t\t\t-16858\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42068,\n\t\t\t\t\t\t\t\t-16543\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t},\n\t\t\t\t\t\"50kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t60,\n\t\t\t\t\t\t\t60,\n\t\t\t\t\t\t\t50\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41217,\n\t\t\t\t\t\t\t\t-18600\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41116,\n\t\t\t\t\t\t\t\t-18526\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40994,\n\t\t\t\t\t\t\t\t-18507\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40886,\n\t\t\t\t\t\t\t\t-18535\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40816,\n\t\t\t\t\t\t\t\t-18582\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"F\",\n\t\t\t\t\t\"d\": 1758974400,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-13.8,\n\t\t\t\t\t\t41.0\n\t\t\t\t\t],\n\t\t\t\t\t\"w\": 50,\n\t\t\t\t\t\"g\": 60,\n\t\t\t\t\t\"s\": \"TS\",\n\t\t\t\t\t\"c\": 0,\n\t\t\t\t\t\"34kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t110,\n\t\t\t\t\t\t\t120,\n\t\t\t\t\t\t\t140,\n\t\t\t\t\t\t\t150\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t43168,\n\t\t\t\t\t\t\t\t-13800\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t43075,\n\t\t\t\t\t\t\t\t-13301\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42902,\n\t\t\t\t\t\t\t\t-12857\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42676,\n\t\t\t\t\t\t\t\t-12483\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t42418,\n\t\t\t\t\t\t\t\t-12182\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t},\n\t\t\t\t\t\"50kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t60,\n\t\t\t\t\t\t\t50\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41469,\n\t\t\t\t\t\t\t\t-13800\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41405,\n\t\t\t\t\t\t\t\t-13705\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41310,\n\t\t\t\t\t\t\t\t-13650\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41205,\n\t\t\t\t\t\t\t\t-13643\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41112,\n\t\t\t\t\t\t\t\t-13676\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41068,\n\t\t\t\t\t\t\t\t-13693\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41055,\n\t\t\t\t\t\t\t\t-13674\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41039,\n\t\t\t\t\t\t\t\t-13659\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"F\",\n\t\t\t\t\t\"d\": 1759017600,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-10.4,\n\t\t\t\t\t\t40.1\n\t\t\t\t\t],\n\t\t\t\t\t\"w\": 45,\n\t\t\t\t\t\"g\": 55,\n\t\t\t\t\t\"s\": \"TS\",\n\t\t\t\t\t\"c\": 0,\n\t\t\t\t\t\"34kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t60,\n\t\t\t\t\t\t\t100,\n\t\t\t\t\t\t\t110\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t41017,\n\t\t\t\t\t\t\t\t-10400\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40827,\n\t\t\t\t\t\t\t\t-10231\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40580,\n\t\t\t\t\t\t\t\t-10171\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40339,\n\t\t\t\t\t\t\t\t-10220\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t40157,\n\t\t\t\t\t\t\t\t-10337\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"F\",\n\t\t\t\t\t\"d\": 1759060800,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-8.3,\n\t\t\t\t\t\t38.5\n\t\t\t\t\t],\n\t\t\t\t\t\"w\": 35,\n\t\t\t\t\t\"g\": 45,\n\t\t\t\t\t\"s\": \"TS\",\n\t\t\t\t\t\"c\": 0,\n\t\t\t\t\t\"34kt\": {\n\t\t\t\t\t\t\"q\": [\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t0,\n\t\t\t\t\t\t\t70,\n\t\t\t\t\t\t\t70\n\t\t\t\t\t\t],\n\t\t\t\t\t\t\"g\": [\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t39157,\n\t\t\t\t\t\t\t\t-8300\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t39066,\n\t\t\t\t\t\t\t\t-8172\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t38932,\n\t\t\t\t\t\t\t\t-8099\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t[\n\t\t\t\t\t\t\t\t38786,\n\t\t\t\t\t\t\t\t-8089\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t]\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"F\",\n\t\t\t\t\t\"d\": 1759104000,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-7.2,\n\t\t\t\t\t\t36.9\n\t\t\t\t\t],\n\t\t\t\t\t\"w\": 30,\n\t\t\t\t\t\"g\": 40,\n\t\t\t\t\t\"s\": \"TD\",\n\t\t\t\t\t\"c\": 0\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"F\",\n\t\t\t\t\t\"d\": 1759147200,\n\t\t\t\t\t\"pos\": [\n\t\t\t\t\t\t-7.1,\n\t\t\t\t\t\t35.6\n\t\t\t\t\t],\n\t\t\t\t\t\"w\": 25,\n\t\t\t\t\t\"g\": 35,\n\t\t\t\t\t\"s\": \"TD\",\n\t\t\t\t\t\"c\": 0\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"l\": \"O\",\n\t\t\t\t\t\"d\": 1759233600,\n\t\t\t\t\t\"status\": \"DISSIPATED\",\n\t\t\t\t\t\"pos\": []\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"cone\": {\n\t\t\t\t\"g\": [\n\t\t\t\t\t[\n\t\t\t\t\t\t35528,\n\t\t\t\t\t\t-5146\n\t\t\t\t\t],\n\t\t\t\t\t[\n\t\t\t\t\t\t35335,\n\t\t\t\t\t\t-5173\n\t\t\t\t\t],\n\t\t\t\t\t[\n\t\t\t\t\t\t35118,\n\t\t\t\t\t\t-5240\n\t\t\t\t\t]\n\t\t\t\t]\n\t\t\t},\n\t\t\t\"path\": {\n\t\t\t\t\"p\": [\n\t\t\t\t\t[\n\t\t\t\t\t\t4000,\n\t\t\t\t\t\t-2280\n\t\t\t\t\t],\n\t\t\t\t\t[\n\t\t\t\t\t\t4037,\n\t\t\t\t\t\t-2113\n\t\t\t\t\t],\n\t\t\t\t\t[\n\t\t\t\t\t\t4067,\n\t\t\t\t\t\t-1950\n\t\t\t\t\t]\n\t\t\t\t]\n\t\t\t}\n\t\t}\n\t}\n]"
-  headers:
-    content-type:
-      description: MIME-type of returned data
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

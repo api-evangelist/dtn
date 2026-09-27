@@ -134,9 +134,7 @@
     "dtn-zulu-icing-airmet-api-openapi.yml",
     "dtn-winds-aloft-api-openapi.yml"
   ],
-  "archived": [
-    "deleted 1 superseded output(s) from the previous generation"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
@@ -241,8 +239,7 @@
     "tag 'Orders' spans 2 source specs (dtn-digital-commerce-orders-openapi.json, dtn-energy-digital-commerce-integrations-api-openapi.json): per-path servers applied",
     "tag 'Health Check' spans 2 source specs (dtn-energy-event-index-api-openapi.json, dtn-storm-impact-analytics-openapi.json): per-path servers applied",
     "tag 'Information' spans 2 source specs (dtn-financial-market-data-openapi.json, dtn-storm-risk-analytics-api-openapi.json): per-path servers applied",
-    "superseded outputs removed: dtn-ap-is-api-openapi.yml",
-    "apis.yml register: written (+1 apis, 99 total)"
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "_original/dtn-soil-api-openapi.json: archived document superseded by a larger archived document",
@@ -253,8 +250,8 @@
     "dtn-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "dtn-agency-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "dtn-alerts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
-    "dtn-ap-is-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "dtn-api-endpoints-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "dtn-apis-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "dtn-archive-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "dtn-atmospheric-soundings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
     "dtn-auth-api-openapi.yml: previously refined output, superseded by openapi/_original/",

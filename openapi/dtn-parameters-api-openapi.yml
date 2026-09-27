@@ -201,50 +201,7 @@ paths:
     - url: https://pavement-condition.stg.wx.zones.dtn.com/v2
       description: Staging server
 components:
-  responses:
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-    GetParameter:
-      description: Parameter List
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Parameters'
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    ValidationError:
-      title: Validation Error
-      type: array
-      items:
-        type: object
-        required:
-        - msg
-        - param
-        - location
-        properties:
-          value:
-            type: string
-          msg:
-            type: string
-          param:
-            type: string
-          location:
-            type: string
     Parameters:
       title: Parameters
       description: Success
@@ -265,19 +222,24 @@ components:
           type:
             type: string
             description: Data Type used by Parameter.
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
+    ValidationError:
+      title: Validation Error
+      type: array
+      items:
+        type: object
+        required:
+        - msg
+        - param
+        - location
+        properties:
+          value:
+            type: string
+          msg:
+            type: string
+          param:
+            type: string
+          location:
+            type: string
     Parameter:
       type: object
       properties:
@@ -297,6 +259,44 @@ components:
           type: string
         notes:
           type: string
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+  responses:
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    GetParameter:
+      description: Parameter List
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Parameters'
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -140,16 +140,6 @@ paths:
       summary: Delete pricing rules
       x-summary-source: derived
 components:
-  responses:
-    DeletePriceResponse:
-      description: A successful response containing details of the deleted prices
-      content:
-        application/json:
-          schema:
-            properties:
-              deleted:
-                type: number
-                example: 2
   schemas:
     Pagination:
       properties:
@@ -179,12 +169,6 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
-    PricingRuleLabels:
-      type: string
-      enum:
-      - BASIS
-      - MARGIN
-      - COST
     PricingRule:
       properties:
         id:
@@ -201,6 +185,22 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
+    PricingRuleLabels:
+      type: string
+      enum:
+      - BASIS
+      - MARGIN
+      - COST
+  responses:
+    DeletePriceResponse:
+      description: A successful response containing details of the deleted prices
+      content:
+        application/json:
+          schema:
+            properties:
+              deleted:
+                type: number
+                example: 2
   securitySchemes:
     clientCredentials:
       type: oauth2

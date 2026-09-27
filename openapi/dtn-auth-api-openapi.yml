@@ -38,6 +38,15 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Token:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+      description: Token for authentication.
     Meta:
       type: object
       properties:
@@ -68,6 +77,29 @@ components:
           description: Token generation execution time.
           format: int32
       additionalProperties: false
+    Data:
+      type: object
+      properties:
+        access_token:
+          type:
+          - string
+          - 'null'
+          description: The JWT Access Token string you will use as your Bearer token.
+        scope:
+          type:
+          - string
+          - 'null'
+          description: The scopes that this Access Token gives you permissions to access.
+        expires_in:
+          type: integer
+          description: The length of time before this Access Token will expire, in seconds.
+          format: int32
+        token_type:
+          type:
+          - string
+          - 'null'
+          description: Verifies that this Access Token should be used as a Bearer token.
+      additionalProperties: false
     RequestToken:
       type: object
       properties:
@@ -95,38 +127,6 @@ components:
           default: client_credentials
       additionalProperties: false
       description: Request for retreiving auth tokens.
-    Data:
-      type: object
-      properties:
-        access_token:
-          type:
-          - string
-          - 'null'
-          description: The JWT Access Token string you will use as your Bearer token.
-        scope:
-          type:
-          - string
-          - 'null'
-          description: The scopes that this Access Token gives you permissions to access.
-        expires_in:
-          type: integer
-          description: The length of time before this Access Token will expire, in seconds.
-          format: int32
-        token_type:
-          type:
-          - string
-          - 'null'
-          description: Verifies that this Access Token should be used as a Bearer token.
-      additionalProperties: false
-    Token:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Data'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      additionalProperties: false
-      description: Token for authentication.
   securitySchemes:
     clientCredentials:
       type: oauth2

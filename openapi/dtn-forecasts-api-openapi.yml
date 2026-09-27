@@ -116,6 +116,52 @@ paths:
                 $ref: '#/components/schemas/DailyForecastResponse'
 components:
   schemas:
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+    DailyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecastPoint'
+    HourlyForecastPoint:
+      type: object
+      properties:
+        validAt:
+          type: string
+          format: date-time
+        airTemperatureInCelsius:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        precipitationProbabilityInPercent:
+          type: number
+        windSpeedInMeterPerSecond:
+          type: number
+        windDirectionInDegree:
+          type: number
+        windGustInMeterPerSecond:
+          type: number
+        relativeHumidityInPercent:
+          type: number
+        weatherSymbol:
+          type: integer
     Error:
       type: object
       properties:
@@ -157,61 +203,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HourlyForecastPoint'
-    HourlyForecastPoint:
-      type: object
-      properties:
-        validAt:
-          type: string
-          format: date-time
-        airTemperatureInCelsius:
-          type: number
-        precipitationAmountInMillimeter:
-          type: number
-        precipitationProbabilityInPercent:
-          type: number
-        windSpeedInMeterPerSecond:
-          type: number
-        windDirectionInDegree:
-          type: number
-        windGustInMeterPerSecond:
-          type: number
-        relativeHumidityInPercent:
-          type: number
-        weatherSymbol:
-          type: integer
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
-    DailyForecastResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        location:
-          $ref: '#/components/schemas/Location'
-        forecasts:
-          type: array
-          items:
-            $ref: '#/components/schemas/DailyForecastPoint'
   responses:
-    BadRequest:
-      description: Invalid query parameters
+    Unauthorized:
+      description: Missing or invalid Bearer token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid Bearer token
+    BadRequest:
+      description: Invalid query parameters
       content:
         application/json:
           schema:

@@ -32,34 +32,7 @@ paths:
       tags:
       - Event Geojson
 components:
-  parameters:
-    weatherEventId:
-      name: weatherEventId
-      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
-      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
-      in: path
-      required: true
-      schema:
-        type: string
-    geolevel:
-      name: geolevel
-      description: Name of desired geo level.
-      example: Division
-      in: query
-      required: false
-      schema:
-        type: string
   schemas:
-    eventFeatureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/eventFeature'
     eventFeature:
       type: object
       properties:
@@ -93,6 +66,16 @@ components:
                   - -37.741
                 - - 145.107
                   - -37.738
+    eventFeatureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/eventFeature'
     eventFeatureProperties:
       type: object
       properties:
@@ -120,6 +103,23 @@ components:
           type: number
           example: 100
           description: Lower prediction range value.
+  parameters:
+    geolevel:
+      name: geolevel
+      description: Name of desired geo level.
+      example: Division
+      in: query
+      required: false
+      schema:
+        type: string
+    weatherEventId:
+      name: weatherEventId
+      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
+      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

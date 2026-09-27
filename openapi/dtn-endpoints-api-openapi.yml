@@ -8930,6 +8930,448 @@ paths:
     - url: https://weather.api.dtn.com
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    MetadataDTNResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+        dtnEvents:
+          additionalProperties:
+            type: string
+          type: object
+          title: Dtnevents
+      type: object
+      required:
+      - url
+      - dtnEvents
+      title: MetadataDTNResponse
+      example:
+        url: https://wxbulletin.api.dtn.com/v2/metadata/dtn
+        dtnEvents:
+          '0': Uncategorized
+          '1': Snow
+          '2': Low Temperature
+          '3': Fog
+          '4': Heat
+          '5': Marine and Coastal
+          '6': Winter Storm
+          '7': Tropical Storm, Hurricane, and Typhoon
+          '8': Thunderstorm
+          '9': Tornado
+          '10': Radiological Hazard
+          '11': Volcano
+          '12': Avalanche
+          '13': Tsunami
+          '14': Wind
+          '15': Smoke
+          '16': Flood
+          '17': Rain
+          '18': Weather Conditions
+          '19': Administrative Message
+          '20': Air Quality
+          '21': Civil Emergency Message
+          '22': Dust
+          '23': Fire
+          '24': Test
+          '25': Earthquake
+          '26': Agriculture
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    GeoJsonAlertProperties:
+      properties:
+        identifier:
+          type: string
+          title: Identifier
+          description: The identifier of the alert message
+        sender:
+          type: string
+          title: Sender
+          description: The identifier of the sender of the alert message
+        sent:
+          type: string
+          format: date-time
+          title: Sent
+          description: The time and date of the origination of the alert message
+        status:
+          type: string
+          title: Status
+          description: The code denoting the appropriate handling of the alert message
+        msgType:
+          type: string
+          title: Msgtype
+          description: The code denoting the nature of the alert message
+        scope:
+          type: string
+          title: Scope
+          description: The code denoting the intended distribution of the alert message
+        code:
+          type: string
+          title: Code
+          description: The code denoting the special handling of the alert message
+        source:
+          type: string
+          title: Source
+          description: The text identifying the source of the alert message
+        updated:
+          type: string
+          format: date-time
+          title: Updated
+          description: Date when the alert was last updated
+        restriction:
+          type: string
+          title: Restriction
+          description: The text describing the rule for limiting distribution of the restricted alert message
+        addresses:
+          type: string
+          title: Addresses
+          description: The group listing of intended recipients of the alert message
+        note:
+          type: string
+          title: Note
+          description: The text describing the purpose or significance of the alert message
+        references:
+          type: string
+          title: References
+          description: The group listing identifying earlier message(s) referenced by alert message
+        info:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlertInfo'
+          type: array
+          title: Info
+          description: Additional information about the alert
+      type: object
+      required:
+      - identifier
+      - sender
+      - sent
+      - status
+      - msgType
+      - scope
+      - updated
+      - info
+      title: GeoJsonAlertProperties
+    GeoJsonAlert:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The identifier of the alert message
+        agency:
+          type: string
+          title: Agency
+          description: Agency issuing the alert
+        country:
+          type: string
+          title: Country
+          description: Country code of the alert
+        type:
+          type: string
+          title: Type
+          description: Type of the GeoJSON object
+        geometry:
+          anyOf:
+          - type: object
+          - type: object
+          - type: object
+          title: Geometry
+          description: Geometry of the alert area
+        properties:
+          allOf:
+          - $ref: '#/components/schemas/GeoJsonAlertProperties'
+          title: Properties
+          description: Properties of the alert
+        dtnInfo:
+          type: object
+          title: Dtninfo
+          description: Additional DTN information about the alert
+      type: object
+      required:
+      - id
+      - agency
+      - country
+      - type
+      - properties
+      - dtnInfo
+      title: GeoJsonAlert
+    GeoJsonAlertInfo:
+      properties:
+        event:
+          type: string
+          title: Event
+          description: The text denoting the type of the subject event of the alert message
+        eventCode:
+          items: {}
+          type: array
+          title: Eventcode
+          description: A system- specific code identifying the event type of the alert message
+        category:
+          type: string
+          title: Category
+          description: The code denoting the category of the subject event of the alert message
+        language:
+          type: string
+          title: Language
+          description: The code denoting the language of the info sub- element of the alert message
+        urgency:
+          type: string
+          title: Urgency
+          description: The code denoting the urgency of the subject event of the alert message
+        severity:
+          type: string
+          title: Severity
+          description: The code denoting the severity of the subject event of the alert message
+        certainty:
+          type: string
+          title: Certainty
+          description: The code denoting the certainty of the subject event of the alert message
+        responseType:
+          type: string
+          title: Responsetype
+          description: The code denoting the type of action recommended for the target audience
+        effective:
+          type: string
+          format: date-time
+          title: Effective
+          description: The effective time of the information of the alert message
+        onset:
+          type: string
+          format: date-time
+          title: Onset
+          description: The expected time of the beginning of the subject event of the alert message
+        expires:
+          type: string
+          format: date-time
+          title: Expires
+          description: The expiry time of the information of the alert message
+        audience:
+          type: string
+          title: Audience
+          description: The text describing the intended audience of the alert message
+        senderName:
+          type: string
+          title: Sendername
+          description: The text naming the originator of the alert message
+        headline:
+          type: string
+          title: Headline
+          description: The text headline of the alert message
+        description:
+          type: string
+          title: Description
+          description: The text describing the subject event of the alert message
+        instruction:
+          type: string
+          title: Instruction
+          description: The text describing the recommended action to be taken by recipients of the alert message
+        web:
+          type: string
+          title: Web
+          description: The identifier of the hyperlink associating additional information with the alert message
+        contact:
+          type: string
+          title: Contact
+          description: The text describing the contact for follow-up and confirmation of the alert message
+        parameters:
+          items:
+            type: object
+          type: array
+          title: Parameters
+          description: A system- specific additional parameter associated with the alert message
+        area:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlertInfoArea'
+          type: array
+          title: Area
+          description: The container for all component parts of the area sub-element of the info sub- element of the alert message
+      type: object
+      required:
+      - event
+      - category
+      - language
+      - urgency
+      - severity
+      - certainty
+      - expires
+      - area
+      title: GeoJsonAlertInfo
+    GeoJsonAlertResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: The complete URL to access the alert data, including any query parameters
+        totalAlerts:
+          type: integer
+          title: Totalalerts
+          description: Total number of alerts
+        type:
+          type: string
+          title: Type
+          description: Type of the GeoJSON object
+        features:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlert'
+          type: array
+          title: Features
+          description: List of alert features
+      type: object
+      required:
+      - url
+      - type
+      - features
+      title: GeoJsonAlertResponse
+      example:
+        url: https://wxbulletin.api.dtn.com/v2/bulletins?excludeGeometry=true&showTotal=true&country=US&startTime=2024-06-24T20%3A49%3A00&event=heat+advisory
+        totalAlerts: 1
+        type: FeatureCollection
+        features:
+        - id: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
+          agency: NWS
+          country: US
+          type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -98
+                - 40
+              - - -98
+                - 41
+              - - -97
+                - 41
+              - - -97
+                - 40
+              - - -98
+                - 40
+          properties:
+            identifier: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
+            sender: w-nws.webmaster@noaa.gov
+            sent: '2024-06-24T20:49:00'
+            status: Actual
+            msgType: Update
+            scope: Public
+            code: IPAWSv1.0
+            updated: '2024-06-24T20:49:00'
+            references: w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.29e524a2edad47b728e81f62a538ac730e40e49a.001.1,2024-06-24T02:54:00-05:00
+            info:
+            - event: Heat Advisory
+              eventCode:
+              - valueName: SAME
+                value: NWS
+              - valueName: NationalWeatherService
+                value: HTY
+              category: Met
+              language: en-US
+              urgency: Expected
+              severity: Moderate
+              certainty: Likely
+              responseType: Execute
+              effective: '2024-06-24T20:49:00'
+              onset: '2024-06-25T18:00:00'
+              expires: '2024-06-26T00:00:00'
+              senderName: NWS Hastings NE
+              headline: Heat Advisory issued June 24 at 3:49PM CDT until June 25 at 7:00PM CDT by NWS Hastings NE
+              description: '* WHAT...For the first Heat Advisory, heat index values up to 110
+
+                possible. For the second Heat Advisory, heat index values around
+
+                105 expected.
+
+
+                * WHERE...In Kansas, Jewell, Mitchell, Osborne, Phillips, Rooks, and
+
+                Smith Counties. In Nebraska, Nuckolls and Thayer Counties.
+
+
+                * WHEN...For the first Heat Advisory, until 8 PM CDT this evening.
+
+                For the second Heat Advisory, from 1 PM to 7 PM CDT Tuesday.
+
+
+                * IMPACTS...Hot temperatures and high humidity may cause heat
+
+                illnesses.'
+              instruction: 'Take extra precautions when outside. Wear lightweight and loose
+
+                fitting clothing. Try to limit strenuous activities to early morning
+
+                or evening. Take action when you see symptoms of heat exhaustion and
+
+                heat stroke. Drink plenty of fluids, stay in an air-conditioned
+
+                room, stay out of
+
+                the sun, and check up on relatives and neighbors.'
+              web: http://www.weather.gov
+              parameters:
+              - valueName: AWIPSidentifier
+                value: NPWGID
+              - valueName: WMOidentifier
+                value: WWUS73 KGID 242049
+              - valueName: NWSheadline
+                value: HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM CDT THIS EVENING... ...HEAT ADVISORY REMAINS IN EFFECT FROM 1 PM TO 7 PM CDT TUESDAY
+              - valueName: BLOCKCHANNEL
+                value: EAS,NWEM,CMAS
+              - valueName: VTEC
+                value: /O.CON.KGID.HT.Y.0002.240625T1800Z-240626T0000Z/
+              - valueName: eventEndingTime
+                value: 2024-06-26T00:00:00+0000
+              - valueName: CAPversion
+                value: '1.2'
+              - valueName: originalID
+                value: 2.49.0.1.840.0.f950770a5e0de71a60b45e3820f5c39fcdfe4222.001.2
+              area:
+              - areaDesc: Phillips; Smith; Jewell; Rooks; Osborne; Mitchell; Nuckolls; Thayer
+                geocodes:
+                - valueName: UGC
+                  value: KSZ005
+                - valueName: UGC
+                  value: KSZ006
+                - valueName: UGC
+                  value: KSZ007
+                - valueName: UGC
+                  value: KSZ017
+                - valueName: UGC
+                  value: KSZ018
+                - valueName: UGC
+                  value: KSZ019
+                - valueName: UGC
+                  value: NEZ086
+                - valueName: UGC
+                  value: NEZ087
+          dtnInfo:
+            dtnMsgType: Update
+            dtnExpires: '2024-06-26T00:00:00'
+            dtnEvent: Heat
+            dtnEventCode: '4'
+            dtnDisclaimer: Any DTN expiration dates, times, and message types shown here are automatically generated by the DTN's system, not by the alerting agencies themselves. Additionally, the dtnEvent and dtnEventCode are DTN's normalized event parameters for uniformity and do not necessarily reflect the exact terminology of the issuing agency. To access the original event name as published by the agency, please refer to the event parameter in the response.
     MetadataResponse:
       properties:
         url:
@@ -9854,49 +10296,21 @@ components:
                   - Waspada Hujan Lebat - Moderate
                   - Waspada Hujan Lebat - Severe
                   - Waspada Hujan Lebat - Extreme
-    GeoJsonAlert:
+    Values:
       properties:
-        id:
+        valueName:
           type: string
-          title: Id
-          description: The identifier of the alert message
-        agency:
+          title: Valuename
+          description: Value name
+        value:
           type: string
-          title: Agency
-          description: Agency issuing the alert
-        country:
-          type: string
-          title: Country
-          description: Country code of the alert
-        type:
-          type: string
-          title: Type
-          description: Type of the GeoJSON object
-        geometry:
-          anyOf:
-          - type: object
-          - type: object
-          - type: object
-          title: Geometry
-          description: Geometry of the alert area
-        properties:
-          allOf:
-          - $ref: '#/components/schemas/GeoJsonAlertProperties'
-          title: Properties
-          description: Properties of the alert
-        dtnInfo:
-          type: object
-          title: Dtninfo
-          description: Additional DTN information about the alert
+          title: Value
+          description: Actual value
       type: object
       required:
-      - id
-      - agency
-      - country
-      - type
-      - properties
-      - dtnInfo
-      title: GeoJsonAlert
+      - valueName
+      - value
+      title: Values
     GeoJsonAlertInfoArea:
       properties:
         areaDesc:
@@ -9929,420 +10343,6 @@ components:
       required:
       - areaDesc
       title: GeoJsonAlertInfoArea
-    GeoJsonAlertInfo:
-      properties:
-        event:
-          type: string
-          title: Event
-          description: The text denoting the type of the subject event of the alert message
-        eventCode:
-          items: {}
-          type: array
-          title: Eventcode
-          description: A system- specific code identifying the event type of the alert message
-        category:
-          type: string
-          title: Category
-          description: The code denoting the category of the subject event of the alert message
-        language:
-          type: string
-          title: Language
-          description: The code denoting the language of the info sub- element of the alert message
-        urgency:
-          type: string
-          title: Urgency
-          description: The code denoting the urgency of the subject event of the alert message
-        severity:
-          type: string
-          title: Severity
-          description: The code denoting the severity of the subject event of the alert message
-        certainty:
-          type: string
-          title: Certainty
-          description: The code denoting the certainty of the subject event of the alert message
-        responseType:
-          type: string
-          title: Responsetype
-          description: The code denoting the type of action recommended for the target audience
-        effective:
-          type: string
-          format: date-time
-          title: Effective
-          description: The effective time of the information of the alert message
-        onset:
-          type: string
-          format: date-time
-          title: Onset
-          description: The expected time of the beginning of the subject event of the alert message
-        expires:
-          type: string
-          format: date-time
-          title: Expires
-          description: The expiry time of the information of the alert message
-        audience:
-          type: string
-          title: Audience
-          description: The text describing the intended audience of the alert message
-        senderName:
-          type: string
-          title: Sendername
-          description: The text naming the originator of the alert message
-        headline:
-          type: string
-          title: Headline
-          description: The text headline of the alert message
-        description:
-          type: string
-          title: Description
-          description: The text describing the subject event of the alert message
-        instruction:
-          type: string
-          title: Instruction
-          description: The text describing the recommended action to be taken by recipients of the alert message
-        web:
-          type: string
-          title: Web
-          description: The identifier of the hyperlink associating additional information with the alert message
-        contact:
-          type: string
-          title: Contact
-          description: The text describing the contact for follow-up and confirmation of the alert message
-        parameters:
-          items:
-            type: object
-          type: array
-          title: Parameters
-          description: A system- specific additional parameter associated with the alert message
-        area:
-          items:
-            $ref: '#/components/schemas/GeoJsonAlertInfoArea'
-          type: array
-          title: Area
-          description: The container for all component parts of the area sub-element of the info sub- element of the alert message
-      type: object
-      required:
-      - event
-      - category
-      - language
-      - urgency
-      - severity
-      - certainty
-      - expires
-      - area
-      title: GeoJsonAlertInfo
-    GeoJsonAlertResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: The complete URL to access the alert data, including any query parameters
-        totalAlerts:
-          type: integer
-          title: Totalalerts
-          description: Total number of alerts
-        type:
-          type: string
-          title: Type
-          description: Type of the GeoJSON object
-        features:
-          items:
-            $ref: '#/components/schemas/GeoJsonAlert'
-          type: array
-          title: Features
-          description: List of alert features
-      type: object
-      required:
-      - url
-      - type
-      - features
-      title: GeoJsonAlertResponse
-      example:
-        url: https://wxbulletin.api.dtn.com/v2/bulletins?excludeGeometry=true&showTotal=true&country=US&startTime=2024-06-24T20%3A49%3A00&event=heat+advisory
-        totalAlerts: 1
-        type: FeatureCollection
-        features:
-        - id: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
-          agency: NWS
-          country: US
-          type: Feature
-          geometry:
-            type: Polygon
-            coordinates:
-            - - - -98
-                - 40
-              - - -98
-                - 41
-              - - -97
-                - 41
-              - - -97
-                - 40
-              - - -98
-                - 40
-          properties:
-            identifier: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
-            sender: w-nws.webmaster@noaa.gov
-            sent: '2024-06-24T20:49:00'
-            status: Actual
-            msgType: Update
-            scope: Public
-            code: IPAWSv1.0
-            updated: '2024-06-24T20:49:00'
-            references: w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.29e524a2edad47b728e81f62a538ac730e40e49a.001.1,2024-06-24T02:54:00-05:00
-            info:
-            - event: Heat Advisory
-              eventCode:
-              - valueName: SAME
-                value: NWS
-              - valueName: NationalWeatherService
-                value: HTY
-              category: Met
-              language: en-US
-              urgency: Expected
-              severity: Moderate
-              certainty: Likely
-              responseType: Execute
-              effective: '2024-06-24T20:49:00'
-              onset: '2024-06-25T18:00:00'
-              expires: '2024-06-26T00:00:00'
-              senderName: NWS Hastings NE
-              headline: Heat Advisory issued June 24 at 3:49PM CDT until June 25 at 7:00PM CDT by NWS Hastings NE
-              description: '* WHAT...For the first Heat Advisory, heat index values up to 110
-
-                possible. For the second Heat Advisory, heat index values around
-
-                105 expected.
-
-
-                * WHERE...In Kansas, Jewell, Mitchell, Osborne, Phillips, Rooks, and
-
-                Smith Counties. In Nebraska, Nuckolls and Thayer Counties.
-
-
-                * WHEN...For the first Heat Advisory, until 8 PM CDT this evening.
-
-                For the second Heat Advisory, from 1 PM to 7 PM CDT Tuesday.
-
-
-                * IMPACTS...Hot temperatures and high humidity may cause heat
-
-                illnesses.'
-              instruction: 'Take extra precautions when outside. Wear lightweight and loose
-
-                fitting clothing. Try to limit strenuous activities to early morning
-
-                or evening. Take action when you see symptoms of heat exhaustion and
-
-                heat stroke. Drink plenty of fluids, stay in an air-conditioned
-
-                room, stay out of
-
-                the sun, and check up on relatives and neighbors.'
-              web: http://www.weather.gov
-              parameters:
-              - valueName: AWIPSidentifier
-                value: NPWGID
-              - valueName: WMOidentifier
-                value: WWUS73 KGID 242049
-              - valueName: NWSheadline
-                value: HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM CDT THIS EVENING... ...HEAT ADVISORY REMAINS IN EFFECT FROM 1 PM TO 7 PM CDT TUESDAY
-              - valueName: BLOCKCHANNEL
-                value: EAS,NWEM,CMAS
-              - valueName: VTEC
-                value: /O.CON.KGID.HT.Y.0002.240625T1800Z-240626T0000Z/
-              - valueName: eventEndingTime
-                value: 2024-06-26T00:00:00+0000
-              - valueName: CAPversion
-                value: '1.2'
-              - valueName: originalID
-                value: 2.49.0.1.840.0.f950770a5e0de71a60b45e3820f5c39fcdfe4222.001.2
-              area:
-              - areaDesc: Phillips; Smith; Jewell; Rooks; Osborne; Mitchell; Nuckolls; Thayer
-                geocodes:
-                - valueName: UGC
-                  value: KSZ005
-                - valueName: UGC
-                  value: KSZ006
-                - valueName: UGC
-                  value: KSZ007
-                - valueName: UGC
-                  value: KSZ017
-                - valueName: UGC
-                  value: KSZ018
-                - valueName: UGC
-                  value: KSZ019
-                - valueName: UGC
-                  value: NEZ086
-                - valueName: UGC
-                  value: NEZ087
-          dtnInfo:
-            dtnMsgType: Update
-            dtnExpires: '2024-06-26T00:00:00'
-            dtnEvent: Heat
-            dtnEventCode: '4'
-            dtnDisclaimer: Any DTN expiration dates, times, and message types shown here are automatically generated by the DTN's system, not by the alerting agencies themselves. Additionally, the dtnEvent and dtnEventCode are DTN's normalized event parameters for uniformity and do not necessarily reflect the exact terminology of the issuing agency. To access the original event name as published by the agency, please refer to the event parameter in the response.
-    Values:
-      properties:
-        valueName:
-          type: string
-          title: Valuename
-          description: Value name
-        value:
-          type: string
-          title: Value
-          description: Actual value
-      type: object
-      required:
-      - valueName
-      - value
-      title: Values
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    MetadataDTNResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-        dtnEvents:
-          additionalProperties:
-            type: string
-          type: object
-          title: Dtnevents
-      type: object
-      required:
-      - url
-      - dtnEvents
-      title: MetadataDTNResponse
-      example:
-        url: https://wxbulletin.api.dtn.com/v2/metadata/dtn
-        dtnEvents:
-          '0': Uncategorized
-          '1': Snow
-          '2': Low Temperature
-          '3': Fog
-          '4': Heat
-          '5': Marine and Coastal
-          '6': Winter Storm
-          '7': Tropical Storm, Hurricane, and Typhoon
-          '8': Thunderstorm
-          '9': Tornado
-          '10': Radiological Hazard
-          '11': Volcano
-          '12': Avalanche
-          '13': Tsunami
-          '14': Wind
-          '15': Smoke
-          '16': Flood
-          '17': Rain
-          '18': Weather Conditions
-          '19': Administrative Message
-          '20': Air Quality
-          '21': Civil Emergency Message
-          '22': Dust
-          '23': Fire
-          '24': Test
-          '25': Earthquake
-          '26': Agriculture
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    GeoJsonAlertProperties:
-      properties:
-        identifier:
-          type: string
-          title: Identifier
-          description: The identifier of the alert message
-        sender:
-          type: string
-          title: Sender
-          description: The identifier of the sender of the alert message
-        sent:
-          type: string
-          format: date-time
-          title: Sent
-          description: The time and date of the origination of the alert message
-        status:
-          type: string
-          title: Status
-          description: The code denoting the appropriate handling of the alert message
-        msgType:
-          type: string
-          title: Msgtype
-          description: The code denoting the nature of the alert message
-        scope:
-          type: string
-          title: Scope
-          description: The code denoting the intended distribution of the alert message
-        code:
-          type: string
-          title: Code
-          description: The code denoting the special handling of the alert message
-        source:
-          type: string
-          title: Source
-          description: The text identifying the source of the alert message
-        updated:
-          type: string
-          format: date-time
-          title: Updated
-          description: Date when the alert was last updated
-        restriction:
-          type: string
-          title: Restriction
-          description: The text describing the rule for limiting distribution of the restricted alert message
-        addresses:
-          type: string
-          title: Addresses
-          description: The group listing of intended recipients of the alert message
-        note:
-          type: string
-          title: Note
-          description: The text describing the purpose or significance of the alert message
-        references:
-          type: string
-          title: References
-          description: The group listing identifying earlier message(s) referenced by alert message
-        info:
-          items:
-            $ref: '#/components/schemas/GeoJsonAlertInfo'
-          type: array
-          title: Info
-          description: Additional information about the alert
-      type: object
-      required:
-      - identifier
-      - sender
-      - sent
-      - status
-      - msgType
-      - scope
-      - updated
-      - info
-      title: GeoJsonAlertProperties
     SunMoon:
       type: object
       properties:
@@ -10543,50 +10543,7 @@ components:
           format: uri
           description: A URL with the specific error ID (often pointing to an error log for that specific response).
       additionalProperties: false
-  parameters:
-    endDate:
-      name: endDate
-      in: query
-      schema:
-        type: string
-        format: date
-      example: '2023-08-12'
-    startDate:
-      name: startDate
-      in: query
-      schema:
-        type: string
-        format: date
-      example: '2023-08-10'
-    lon:
-      name: lon
-      in: query
-      schema:
-        type: number
-        format: float
-      example: 4.875
-      required: true
-    lat:
-      name: lat
-      in: query
-      schema:
-        type: number
-        format: float
-      example: 52.369
-      required: true
   responses:
-    unauthorized:
-      description: Unable to authenticate credentials.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user.
-            detail: invalid token
-            status: 401
-            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
     not-acceptable:
       description: Unable to produce a response matching the Accept request header.
       content:
@@ -10611,6 +10568,49 @@ components:
             detail: Validation failed.
             status: 400
             instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
+    unauthorized:
+      description: Unable to authenticate credentials.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user.
+            detail: invalid token
+            status: 401
+            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
+  parameters:
+    lon:
+      name: lon
+      in: query
+      schema:
+        type: number
+        format: float
+      example: 4.875
+      required: true
+    endDate:
+      name: endDate
+      in: query
+      schema:
+        type: string
+        format: date
+      example: '2023-08-12'
+    startDate:
+      name: startDate
+      in: query
+      schema:
+        type: string
+        format: date
+      example: '2023-08-10'
+    lat:
+      name: lat
+      in: query
+      schema:
+        type: number
+        format: float
+      example: 52.369
+      required: true
   securitySchemes:
     clientCredentials:
       type: oauth2

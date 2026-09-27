@@ -256,83 +256,6 @@ paths:
                 detail: This request requires 10 producer credits, but only 5 remain.
 components:
   schemas:
-    Error:
-      type: object
-      description: RFC 7807 Problem Detail error response.
-      properties:
-        type:
-          type: string
-          description: Error type identifier.
-          example: bad-request
-        title:
-          type: string
-          description: Human-readable error title.
-          example: Invalid Request
-        status:
-          type: integer
-          description: HTTP status code.
-          example: 400
-        detail:
-          type: string
-          description: Human-readable error description.
-          example: Validation failed.
-        instance:
-          type: string
-          description: URI identifying the specific request that failed (includes request ID for tracing).
-          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
-        errors:
-          type: array
-          description: Detailed validation errors (present for 400 responses).
-          items:
-            type: object
-            properties:
-              message:
-                type: string
-                description: Description of what's wrong.
-                example: Required query parameter lat is invalid or missing.
-              parameter:
-                type: string
-                description: The parameter that failed validation.
-                example: lat
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
-    Segment:
-      type: object
-      description: A customer-defined segment (saved audience of producers).
-      properties:
-        segmentId:
-          type: integer
-          description: Unique identifier for the segment.
-          example: 4521
-        segmentName:
-          type: string
-          description: Human-readable name of the segment.
-          example: Iowa Corn Operators 500+ Acres
-        numberOfProducers:
-          type: integer
-          description: Number of producers currently in the segment.
-          example: 312
-        dateCreated:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the segment was created.
-          example: '2025-03-15T14:30:00Z'
-        creator:
-          type:
-          - string
-          - 'null'
-          description: Name of the user who created the segment.
-          example: Jane Doe
     Producer:
       type: object
       description: A producer record representing an agricultural entity (farmer, company, cooperative).
@@ -483,6 +406,83 @@ components:
             '
           example:
           - john@smithfarms.com
+    Pagination:
+      type: object
+      description: Pagination metadata for list responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
+    Error:
+      type: object
+      description: RFC 7807 Problem Detail error response.
+      properties:
+        type:
+          type: string
+          description: Error type identifier.
+          example: bad-request
+        title:
+          type: string
+          description: Human-readable error title.
+          example: Invalid Request
+        status:
+          type: integer
+          description: HTTP status code.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable error description.
+          example: Validation failed.
+        instance:
+          type: string
+          description: URI identifying the specific request that failed (includes request ID for tracing).
+          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
+        errors:
+          type: array
+          description: Detailed validation errors (present for 400 responses).
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Description of what's wrong.
+                example: Required query parameter lat is invalid or missing.
+              parameter:
+                type: string
+                description: The parameter that failed validation.
+                example: lat
+    Segment:
+      type: object
+      description: A customer-defined segment (saved audience of producers).
+      properties:
+        segmentId:
+          type: integer
+          description: Unique identifier for the segment.
+          example: 4521
+        segmentName:
+          type: string
+          description: Human-readable name of the segment.
+          example: Iowa Corn Operators 500+ Acres
+        numberOfProducers:
+          type: integer
+          description: Number of producers currently in the segment.
+          example: 312
+        dateCreated:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the segment was created.
+          example: '2025-03-15T14:30:00Z'
+        creator:
+          type:
+          - string
+          - 'null'
+          description: Name of the user who created the segment.
+          example: Jane Doe
   securitySchemes:
     clientCredentials:
       type: oauth2

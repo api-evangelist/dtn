@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Developer Portal Backend AP Is API
+  title: Developer Portal Backend APIs API
   version: v1
   description: Backend APIs used by DTN's Developer Portal Web App
   contact:
@@ -247,6 +247,11 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ApiList:
+      title: APIs
+      type: array
+      items:
+        $ref: '#/components/schemas/Api'
     ApiVersion:
       title: Schema for an API specs version
       type: object
@@ -278,50 +283,6 @@ components:
         is_published_changelog: true
         createdAt: '2022-09-09T13:00:08.888Z'
         updatedAt: '2022-09-09T13:00:08.888Z'
-    Api:
-      title: Schema for an API
-      type: object
-      properties:
-        id:
-          type: number
-        name:
-          type: string
-        summary:
-          type: string
-        overview:
-          type: string
-        slug:
-          type: string
-        api_link:
-          type: string
-        link:
-          type: string
-        category:
-          type: string
-        status:
-          type: string
-        createdAt:
-          type: string
-        updatedAt:
-          type: string
-        api_specs_versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiVersion'
-      example:
-        id: 1
-        name: DTN Weather Conditions API
-        summary: Worldwide gridded forecast, current condition, and historical analysis data
-        overview: The DTN Weather Conditions API is an all-encompassing solution to integrating advanced weather data and analytics into your operating systems. DTN utilizes the latest in cloud technology to ensure that its global suite of forecast models meet your specific needs. Models and forecast data are continuously validated, calibrated, and tuned to the latest observations. The Weather Conditions API provides results based on the user input or omission of start and end time parameters. For example, current conditions data will be provided if start and end time specifications are omitted.
-        slug: dtn-weather-conditions-api
-        api_link: https://weather.api.dtn.com/v1/docs/conditions
-        link: https://weather.api.dtn.com/v1/docs/conditions/openapi.yaml
-        category: Weather
-        status: active
-        createdAt: '2022-09-09T13:00:08.888Z'
-        updatedAt: '2022-09-09T13:00:08.888Z'
-        api_specs_versions:
-          $ref: '#/components/schemas/ApiVersion/example'
     ApiWoCategory:
       title: Schema for an API sans category
       type: object
@@ -386,6 +347,50 @@ components:
           type: string
           description: An identifier for the request
           example: urn:dtn:dev-portal-api:/api/catalog/:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
+    Api:
+      title: Schema for an API
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        summary:
+          type: string
+        overview:
+          type: string
+        slug:
+          type: string
+        api_link:
+          type: string
+        link:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        api_specs_versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiVersion'
+      example:
+        id: 1
+        name: DTN Weather Conditions API
+        summary: Worldwide gridded forecast, current condition, and historical analysis data
+        overview: The DTN Weather Conditions API is an all-encompassing solution to integrating advanced weather data and analytics into your operating systems. DTN utilizes the latest in cloud technology to ensure that its global suite of forecast models meet your specific needs. Models and forecast data are continuously validated, calibrated, and tuned to the latest observations. The Weather Conditions API provides results based on the user input or omission of start and end time parameters. For example, current conditions data will be provided if start and end time specifications are omitted.
+        slug: dtn-weather-conditions-api
+        api_link: https://weather.api.dtn.com/v1/docs/conditions
+        link: https://weather.api.dtn.com/v1/docs/conditions/openapi.yaml
+        category: Weather
+        status: active
+        createdAt: '2022-09-09T13:00:08.888Z'
+        updatedAt: '2022-09-09T13:00:08.888Z'
+        api_specs_versions:
+          $ref: '#/components/schemas/ApiVersion/example'
     http-status-400:
       type: object
       properties:
@@ -439,12 +444,16 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ApiWoCategory'
-    ApiList:
-      title: APIs
-      type: array
-      items:
-        $ref: '#/components/schemas/Api'
   responses:
+    http-status-400:
+      description: Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/http-status-400'
     http-status-401:
       description: Unauthorized -- Token was missing or invalid.
       headers:
@@ -493,27 +502,18 @@ components:
                 status: 404
                 detail: Resource was not found.
                 instance: urn:dtn:dev-portal-api:/resource/name:requestId:e5384521-506c-4af6-bd6d-c5f3691f1bde
-    http-status-400:
-      description: Bad Request -- Something in the `Request` body was not syntactically valid or was missing completely.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/http-status-400'
+  headers:
+    x-request-id:
+      description: The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.
+      schema:
+        type: string
+        example: f8941c97-9998-4bbf-b8e9-cbc6e85c8818
   parameters:
     x-request-id:
       name: X-Request-ID
       in: header
       required: false
       description: A UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-        example: f8941c97-9998-4bbf-b8e9-cbc6e85c8818
-  headers:
-    x-request-id:
-      description: The value of the `X-Request-ID` Request header, or an internally generated UUID when one is not provided, used for tracing.
       schema:
         type: string
         example: f8941c97-9998-4bbf-b8e9-cbc6e85c8818

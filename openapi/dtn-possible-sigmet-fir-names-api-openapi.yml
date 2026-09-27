@@ -28,102 +28,6 @@ paths:
       operationId: getV1PossibleFirNames
       x-operation-id-source: derived
 components:
-  schemas:
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-    PossibleFirNamesList:
-      type: object
-      properties:
-        url:
-          type: string
-        possibleFirNames:
-          type: array
-        meta:
-          $ref: '#/components/schemas/Meta'
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-  responses:
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    PossibleFirNameSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PossibleFirNamesList'
-          examples:
-            Success:
-              $ref: '#/components/examples/PossibleFirNameSuccessResponse'
   examples:
     PossibleFirNameSuccessResponse:
       value:
@@ -464,6 +368,102 @@ components:
           start_timestamp: 1724442333507
           end_timestamp: 1724442333631
           execution_time: 124
+  responses:
+    PossibleFirNameSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PossibleFirNamesList'
+          examples:
+            Success:
+              $ref: '#/components/examples/PossibleFirNameSuccessResponse'
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+  schemas:
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    PossibleFirNamesList:
+      type: object
+      properties:
+        url:
+          type: string
+        possibleFirNames:
+          type: array
+        meta:
+          $ref: '#/components/schemas/Meta'
   securitySchemes:
     clientCredentials:
       type: oauth2

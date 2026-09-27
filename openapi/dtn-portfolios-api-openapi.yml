@@ -254,56 +254,6 @@ paths:
                 detail: This request requires 10 producer credits, but only 5 remain.
 components:
   schemas:
-    Error:
-      type: object
-      description: RFC 7807 Problem Detail error response.
-      properties:
-        type:
-          type: string
-          description: Error type identifier.
-          example: bad-request
-        title:
-          type: string
-          description: Human-readable error title.
-          example: Invalid Request
-        status:
-          type: integer
-          description: HTTP status code.
-          example: 400
-        detail:
-          type: string
-          description: Human-readable error description.
-          example: Validation failed.
-        instance:
-          type: string
-          description: URI identifying the specific request that failed (includes request ID for tracing).
-          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
-        errors:
-          type: array
-          description: Detailed validation errors (present for 400 responses).
-          items:
-            type: object
-            properties:
-              message:
-                type: string
-                description: Description of what's wrong.
-                example: Required query parameter lat is invalid or missing.
-              parameter:
-                type: string
-                description: The parameter that failed validation.
-                example: lat
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
     Producer:
       type: object
       description: A producer record representing an agricultural entity (farmer, company, cooperative).
@@ -454,6 +404,56 @@ components:
             '
           example:
           - john@smithfarms.com
+    Pagination:
+      type: object
+      description: Pagination metadata for list responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
+    Error:
+      type: object
+      description: RFC 7807 Problem Detail error response.
+      properties:
+        type:
+          type: string
+          description: Error type identifier.
+          example: bad-request
+        title:
+          type: string
+          description: Human-readable error title.
+          example: Invalid Request
+        status:
+          type: integer
+          description: HTTP status code.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable error description.
+          example: Validation failed.
+        instance:
+          type: string
+          description: URI identifying the specific request that failed (includes request ID for tracing).
+          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
+        errors:
+          type: array
+          description: Detailed validation errors (present for 400 responses).
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Description of what's wrong.
+                example: Required query parameter lat is invalid or missing.
+              parameter:
+                type: string
+                description: The parameter that failed validation.
+                example: lat
     Portfolio:
       type: object
       description: A customer-defined portfolio (curated list of producers).

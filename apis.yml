@@ -21625,7 +21625,7 @@ apis:
   - type: Documentation
     url: https://devportal.dtn.com/catalog/Weather/radarscope-radar-products/documentation
 - aid: dtn:dtn-apis-api
-  name: DTN AP Is API
+  name: DTN APIs API
   description: Endpoints for the api/catalog resources
   humanURL: https://api.weather.mg/api-detail-pages/forecast-parameter.html
   baseURL: https://point-forecast.weather.mg
@@ -21948,4 +21948,5 @@ tags:
 - Forecasting
 - Observations
 - Commodities
+- Real-Time
 created: '2026-05-01'

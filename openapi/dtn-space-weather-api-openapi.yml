@@ -74,115 +74,287 @@ paths:
       operationId: getV1SwpcNoaaScalesExplanation
       x-operation-id-source: derived
 components:
-  examples:
-    SwpcNoaaScalesRawSuccessResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw
+  parameters:
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    SwpcNoaaScalesQueryInsertedAfter:
+      name: insertedAfter
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QuerySwpcNoaaScalesPeriodLabels:
+      name: swpcNoaaScalesPeriodLabels
+      description: ''
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+          - '-1'
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    SwpcNoaaScalesQueryInsertedThrough:
+      name: insertedThrough
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
+    QuerySwpcNoaaScalesEventCodes:
+      name: swpcNoaaScalesEventCodes
+      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - G
+          - R
+          - S
+  schemas:
+    SwpcNoaaScalesExplanation:
+      type: object
+      properties:
+        eventCode:
+          type: object
+          properties:
+            G:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+            S:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+            R:
+              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
+    SwpcNoaaScalesRawItem:
+      type: object
+      properties:
+        id:
+          type: string
+        insertedTimestamp:
+          type: string
+          format: date-time
+        raw:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              G:
+                type: object
+                properties:
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+              R:
+                type: object
+                properties:
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+                  MajorProb:
+                    type:
+                    - string
+                    - 'null'
+                  MinorProb:
+                    type:
+                    - string
+                    - 'null'
+              S:
+                type: object
+                properties:
+                  Prob:
+                    type:
+                    - string
+                    - 'null'
+                  Text:
+                    type:
+                    - string
+                    - 'null'
+                  Scale:
+                    type:
+                    - string
+                    - 'null'
+              DateStamp:
+                type: string
+              TimeStamp:
+                type: string
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+    SwpcNoaaScalesExplanationItem:
+      type: object
+      properties:
+        eventName:
+          type: string
+        scale:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              category:
+                type: object
+                additionalProperties:
+                  type: string
+              descriptor:
+                type: string
+              hex:
+                type: string
+              colorName:
+                type: string
+              physicalMeasure:
+                type:
+                - string
+                - 'null'
+              averageFrequency:
+                type:
+                - string
+                - 'null'
+              r:
+                type: integer
+              g:
+                type: integer
+              b:
+                type: integer
+    SwpcNoaaScalesDataItem:
+      type: object
+      properties:
+        datum:
+          type: string
+        descriptor:
+          type:
+          - string
+          - 'null'
+        valueType:
+          type: string
+        valueDescription:
+          type: string
+        eventName:
+          type: string
+        eventCode:
+          type: string
+        periodDescription:
+          type: string
+        periodLabel:
+          type: string
+        id:
+          type: string
+        insertedTimestamp:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    SwpcNoaaScalesData:
+      type: object
+      properties:
+        url:
+          type: string
+        swpcNoaaScalesData:
+          type: array
+          items:
+            $ref: '#/components/schemas/SwpcNoaaScalesDataItem'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    SwpcNoaaScalesRaw:
+      type: object
+      properties:
+        url:
+          type: string
         swpcNoaaScalesRaw:
-        - id: '3619'
-          insertedTimestamp: '2025-12-03T00:32:58.163Z'
-          raw:
-            '0':
-              G:
-                Text: none
-                Scale: '0'
-              R:
-                Text: none
-                Scale: '0'
-                MajorProb: null
-                MinorProb: null
-              S:
-                Prob: null
-                Text: none
-                Scale: '0'
-              DateStamp: '2025-12-03'
-              TimeStamp: 00:32:00
-            '1':
-              G:
-                Text: moderate
-                Scale: '2'
-              R:
-                Text: null
-                Scale: null
-                MajorProb: '30'
-                MinorProb: '75'
-              S:
-                Prob: '15'
-                Text: null
-                Scale: null
-              DateStamp: '2025-12-03'
-              TimeStamp: 00:32:00
-            '2':
-              G:
-                Text: moderate
-                Scale: '2'
-              R:
-                Text: null
-                Scale: null
-                MajorProb: '30'
-                MinorProb: '75'
-              S:
-                Prob: '15'
-                Text: null
-                Scale: null
-              DateStamp: '2025-12-04'
-              TimeStamp: 00:00:00
-            '3':
-              G:
-                Text: none
-                Scale: '0'
-              R:
-                Text: null
-                Scale: null
-                MajorProb: '30'
-                MinorProb: '75'
-              S:
-                Prob: '15'
-                Text: null
-                Scale: null
-              DateStamp: '2025-12-05'
-              TimeStamp: 00:00:00
-            '-1':
-              G:
-                Text: none
-                Scale: '0'
-              R:
-                Text: none
-                Scale: '0'
-                MajorProb: null
-                MinorProb: null
-              S:
-                Prob: null
-                Text: none
-                Scale: '0'
-              DateStamp: '2025-12-02'
-              TimeStamp: 00:32:00
+          type: array
+          items:
+            $ref: '#/components/schemas/SwpcNoaaScalesRawItem'
         meta:
-          name: v1.swpc-noaa-scales.raw
-          uuid: 5a713c77-e356-406e-af59-2b82c94a45ff
-          request_id: d4c53ffe-cf28-4529-8cce-ca3c3c83b05f
-          start_timestamp: 1764722204817
-          end_timestamp: 1764722205589
-          execution_time: 772
-    SwpcNoaaScalesDataBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data?swpcNoaaScalesEventCodes=B
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/swpc-noaa-scales/data:requestId:aeddadf8-e16b-43a0-b577-2cd4212d9f3e
+          $ref: '#/components/schemas/Meta'
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
         errors:
-        - message: '`swpcNoaaScalesEventCodes` may include only ''G'' (for Geomagnetic Storms), ''S'' (for Solar Radiation Storms), or ''R'' (for Radio Blackouts)'
-          parameter: swpcNoaaScalesEventCodes
-          value: B
+          type: array
+          items:
+            type: object
         meta:
-          name: v1.swpc-noaa-scales.data?swpcNoaaScalesEventCodes=B
-          uuid: 8f8f48a3-03a2-42d1-b434-dbc9d201cac4
-          request_id: aeddadf8-e16b-43a0-b577-2cd4212d9f3e
-          start_timestamp: 1764800252845
-          end_timestamp: 1764800253143
-          execution_time: 298
+          $ref: '#/components/schemas/Meta'
+  examples:
     SwpcNoaaScalesExplanationSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/explanation
@@ -427,6 +599,136 @@ components:
           start_timestamp: 1764701508134
           end_timestamp: 1764701511262
           execution_time: 3128
+    SwpcNoaaScalesDataBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data?swpcNoaaScalesEventCodes=B
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/swpc-noaa-scales/data:requestId:aeddadf8-e16b-43a0-b577-2cd4212d9f3e
+        errors:
+        - message: '`swpcNoaaScalesEventCodes` may include only ''G'' (for Geomagnetic Storms), ''S'' (for Solar Radiation Storms), or ''R'' (for Radio Blackouts)'
+          parameter: swpcNoaaScalesEventCodes
+          value: B
+        meta:
+          name: v1.swpc-noaa-scales.data?swpcNoaaScalesEventCodes=B
+          uuid: 8f8f48a3-03a2-42d1-b434-dbc9d201cac4
+          request_id: aeddadf8-e16b-43a0-b577-2cd4212d9f3e
+          start_timestamp: 1764800252845
+          end_timestamp: 1764800253143
+          execution_time: 298
+    SwpcNoaaScalesRawSuccessResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw
+        swpcNoaaScalesRaw:
+        - id: '3619'
+          insertedTimestamp: '2025-12-03T00:32:58.163Z'
+          raw:
+            '0':
+              G:
+                Text: none
+                Scale: '0'
+              R:
+                Text: none
+                Scale: '0'
+                MajorProb: null
+                MinorProb: null
+              S:
+                Prob: null
+                Text: none
+                Scale: '0'
+              DateStamp: '2025-12-03'
+              TimeStamp: 00:32:00
+            '1':
+              G:
+                Text: moderate
+                Scale: '2'
+              R:
+                Text: null
+                Scale: null
+                MajorProb: '30'
+                MinorProb: '75'
+              S:
+                Prob: '15'
+                Text: null
+                Scale: null
+              DateStamp: '2025-12-03'
+              TimeStamp: 00:32:00
+            '2':
+              G:
+                Text: moderate
+                Scale: '2'
+              R:
+                Text: null
+                Scale: null
+                MajorProb: '30'
+                MinorProb: '75'
+              S:
+                Prob: '15'
+                Text: null
+                Scale: null
+              DateStamp: '2025-12-04'
+              TimeStamp: 00:00:00
+            '3':
+              G:
+                Text: none
+                Scale: '0'
+              R:
+                Text: null
+                Scale: null
+                MajorProb: '30'
+                MinorProb: '75'
+              S:
+                Prob: '15'
+                Text: null
+                Scale: null
+              DateStamp: '2025-12-05'
+              TimeStamp: 00:00:00
+            '-1':
+              G:
+                Text: none
+                Scale: '0'
+              R:
+                Text: none
+                Scale: '0'
+                MajorProb: null
+                MinorProb: null
+              S:
+                Prob: null
+                Text: none
+                Scale: '0'
+              DateStamp: '2025-12-02'
+              TimeStamp: 00:32:00
+        meta:
+          name: v1.swpc-noaa-scales.raw
+          uuid: 5a713c77-e356-406e-af59-2b82c94a45ff
+          request_id: d4c53ffe-cf28-4529-8cce-ca3c3c83b05f
+          start_timestamp: 1764722204817
+          end_timestamp: 1764722205589
+          execution_time: 772
+    SwpcNoaaScalesRawBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/swpc-noaa-scales/raw:requestId:5300551c-712b-4a52-bd33-ab895ea11292
+        errors:
+        - message: Timestamp (UTC) must be within constraints set by data type and type of timestamp (outside SwpcNoaaScales insertedAfter allowed timeframe spanning 2025-12-02T22:19:47.365Z to 2025-12-03T22:20:23.365Z)
+          parameter: insertedAfter
+          value: '2025-07-10 10:00:00'
+        - message: Timestamp (UTC) must be within constraints set by data type and type of timestamp (outside SwpcNoaaScales insertedThrough allowed timeframe spanning 2025-12-02T22:19:47.367Z to 2025-12-03T22:20:23.367Z)
+          parameter: insertedThrough
+          value: '2025-07-10 11:00:00'
+        meta:
+          name: v1.swpc-noaa-scales.raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
+          uuid: ba5bfa53-3b50-4c44-93ca-b187dd8a8ef2
+          request_id: 5300551c-712b-4a52-bd33-ab895ea11292
+          start_timestamp: 1764800386883
+          end_timestamp: 1764800387383
+          execution_time: 500
     SwpcNoaaScalesDataSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/data
@@ -636,119 +938,16 @@ components:
           start_timestamp: 1764722202064
           end_timestamp: 1764722205461
           execution_time: 3397
-    SwpcNoaaScalesRawBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/swpc-noaa-scales/raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/swpc-noaa-scales/raw:requestId:5300551c-712b-4a52-bd33-ab895ea11292
-        errors:
-        - message: Timestamp (UTC) must be within constraints set by data type and type of timestamp (outside SwpcNoaaScales insertedAfter allowed timeframe spanning 2025-12-02T22:19:47.365Z to 2025-12-03T22:20:23.365Z)
-          parameter: insertedAfter
-          value: '2025-07-10 10:00:00'
-        - message: Timestamp (UTC) must be within constraints set by data type and type of timestamp (outside SwpcNoaaScales insertedThrough allowed timeframe spanning 2025-12-02T22:19:47.367Z to 2025-12-03T22:20:23.367Z)
-          parameter: insertedThrough
-          value: '2025-07-10 11:00:00'
-        meta:
-          name: v1.swpc-noaa-scales.raw?insertedAfter=2025-07-10%2010:00:00&insertedThrough=2025-07-10%2011:00:00
-          uuid: ba5bfa53-3b50-4c44-93ca-b187dd8a8ef2
-          request_id: 5300551c-712b-4a52-bd33-ab895ea11292
-          start_timestamp: 1764800386883
-          end_timestamp: 1764800387383
-          execution_time: 500
-  parameters:
-    QuerySwpcNoaaScalesEventCodes:
-      name: swpcNoaaScalesEventCodes
-      description: Specific flight level for EFH icing data.  Must use only one of allowed values.
-      in: query
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - G
-          - R
-          - S
-    QuerySwpcNoaaScalesPeriodLabels:
-      name: swpcNoaaScalesPeriodLabels
-      description: ''
-      in: query
-      required: false
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - '0'
-          - '1'
-          - '2'
-          - '3'
-          - '-1'
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    SwpcNoaaScalesQueryInsertedThrough:
-      name: insertedThrough
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is not later than that specified value.  This allows to acquire only data that became available through this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
-    SwpcNoaaScalesQueryInsertedAfter:
-      name: insertedAfter
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss.fff`.  Limits to objects whose `insertedDateTime` is later than that specified value.  This allows to acquire only data that became available after this time.  Requires use of fractional seconds for full precision.  A data insertion time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 168 hours in past and no later than current time.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?
   responses:
-    SwpcNoaaScalesDataSuccess:
+    SwpcNoaaScalesRawSuccess:
       description: Successful
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SwpcNoaaScalesData'
+            $ref: '#/components/schemas/SwpcNoaaScalesRaw'
           examples:
             Success:
-              $ref: '#/components/examples/SwpcNoaaScalesDataSuccessResponse'
-    SwpcNoaaScalesRawBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/SwpcNoaaScalesRawBadRequestResponse'
-    SwpcNoaaScalesExplanationSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SwpcNoaaScalesExplanation'
-          examples:
-            Success:
-              $ref: '#/components/examples/SwpcNoaaScalesExplanationSuccessResponse'
+              $ref: '#/components/examples/SwpcNoaaScalesRawSuccessResponse'
     ErrorUnauthorized:
       description: Unauthorized
       content:
@@ -768,15 +967,15 @@ components:
               start_timestamp: 1714019217213
               end_timestamp: 1714019217246
               execution_time: 33
-    SwpcNoaaScalesRawSuccess:
+    SwpcNoaaScalesExplanationSuccess:
       description: Successful
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SwpcNoaaScalesRaw'
+            $ref: '#/components/schemas/SwpcNoaaScalesExplanation'
           examples:
             Success:
-              $ref: '#/components/examples/SwpcNoaaScalesRawSuccessResponse'
+              $ref: '#/components/examples/SwpcNoaaScalesExplanationSuccessResponse'
     SwpcNoaaScalesDataBadRequest:
       description: Bad Request
       content:
@@ -786,223 +985,24 @@ components:
           examples:
             BadRequest:
               $ref: '#/components/examples/SwpcNoaaScalesDataBadRequestResponse'
-  schemas:
-    SwpcNoaaScalesExplanationItem:
-      type: object
-      properties:
-        eventName:
-          type: string
-        scale:
-          type: object
-          additionalProperties:
-            type: object
-            properties:
-              category:
-                type: object
-                additionalProperties:
-                  type: string
-              descriptor:
-                type: string
-              hex:
-                type: string
-              colorName:
-                type: string
-              physicalMeasure:
-                type:
-                - string
-                - 'null'
-              averageFrequency:
-                type:
-                - string
-                - 'null'
-              r:
-                type: integer
-              g:
-                type: integer
-              b:
-                type: integer
-    SwpcNoaaScalesData:
-      type: object
-      properties:
-        url:
-          type: string
-        swpcNoaaScalesData:
-          type: array
-          items:
-            $ref: '#/components/schemas/SwpcNoaaScalesDataItem'
-        meta:
-          $ref: '#/components/schemas/Meta'
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-    SwpcNoaaScalesRaw:
-      type: object
-      properties:
-        url:
-          type: string
-        swpcNoaaScalesRaw:
-          type: array
-          items:
-            $ref: '#/components/schemas/SwpcNoaaScalesRawItem'
-        meta:
-          $ref: '#/components/schemas/Meta'
-    SwpcNoaaScalesExplanation:
-      type: object
-      properties:
-        eventCode:
-          type: object
-          properties:
-            G:
-              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
-            S:
-              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
-            R:
-              $ref: '#/components/schemas/SwpcNoaaScalesExplanationItem'
-    SwpcNoaaScalesDataItem:
-      type: object
-      properties:
-        datum:
-          type: string
-        descriptor:
-          type:
-          - string
-          - 'null'
-        valueType:
-          type: string
-        valueDescription:
-          type: string
-        eventName:
-          type: string
-        eventCode:
-          type: string
-        periodDescription:
-          type: string
-        periodLabel:
-          type: string
-        id:
-          type: string
-        insertedTimestamp:
-          type: string
-          format: date-time
-        timestamp:
-          type: string
-          format: date-time
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-    SwpcNoaaScalesRawItem:
-      type: object
-      properties:
-        id:
-          type: string
-        insertedTimestamp:
-          type: string
-          format: date-time
-        raw:
-          type: object
-          additionalProperties:
-            type: object
-            properties:
-              G:
-                type: object
-                properties:
-                  Text:
-                    type:
-                    - string
-                    - 'null'
-                  Scale:
-                    type:
-                    - string
-                    - 'null'
-              R:
-                type: object
-                properties:
-                  Text:
-                    type:
-                    - string
-                    - 'null'
-                  Scale:
-                    type:
-                    - string
-                    - 'null'
-                  MajorProb:
-                    type:
-                    - string
-                    - 'null'
-                  MinorProb:
-                    type:
-                    - string
-                    - 'null'
-              S:
-                type: object
-                properties:
-                  Prob:
-                    type:
-                    - string
-                    - 'null'
-                  Text:
-                    type:
-                    - string
-                    - 'null'
-                  Scale:
-                    type:
-                    - string
-                    - 'null'
-              DateStamp:
-                type: string
-              TimeStamp:
-                type: string
+    SwpcNoaaScalesRawBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/SwpcNoaaScalesRawBadRequestResponse'
+    SwpcNoaaScalesDataSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SwpcNoaaScalesData'
+          examples:
+            Success:
+              $ref: '#/components/examples/SwpcNoaaScalesDataSuccessResponse'
   securitySchemes:
     clientCredentials:
       type: oauth2

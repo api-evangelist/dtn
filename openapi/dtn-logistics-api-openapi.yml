@@ -485,20 +485,20 @@ paths:
       security:
       - clientCredentials: []
 components:
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
     FeatureCollectionRoute:
       type: object
       required:
@@ -524,132 +524,6 @@ components:
                 - Feature
               geometry:
                 $ref: '#/components/schemas/LineStringRoute'
-    LineStringRoute:
-      type: object
-      required:
-      - type
-      - coordinates
-      properties:
-        type:
-          type: string
-          enum:
-          - LineString
-        coordinates:
-          type: array
-          minItems: 2
-          items:
-            type: array
-            minItems: 2
-            items:
-              type: number
-    LogisticsResponse:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            total:
-              type: integer
-            limit:
-              type: integer
-            nextOffset:
-              type: integer
-        geojson:
-          type: object
-          properties:
-            type:
-              type: string
-              enum:
-              - FeatureCollection
-            features:
-              type: array
-              items:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                    - Feature
-                  id:
-                    type: string
-                  geometry:
-                    type: object
-                    description: GeoJSON geometry for the road segment (LineString or MultiLineString)
-                    properties:
-                      type:
-                        type: string
-                        enum:
-                        - LineString
-                        - MultiLineString
-                      coordinates:
-                        type: array
-                        description: Coordinate array (structure depends on geometry type)
-                        items:
-                          type: array
-                          items:
-                            type: number
-                  properties:
-                    type: object
-                    properties:
-                      segmentId:
-                        type: string
-                      roadName:
-                        type: string
-                      osmClass:
-                        type: string
-                      data:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            lat:
-                              type: number
-                            lon:
-                              type: number
-                            timestamp:
-                              type: string
-                              format: date-time
-                            pavementCreationTime:
-                              type: string
-                              format: date-time
-                            pavementValidTime:
-                              type: string
-                              format: date-time
-                            pavementValidEndTime:
-                              type: string
-                              format: date-time
-                            airTemp:
-                              type: number
-                            visibility:
-                              type: number
-                            windDirection:
-                              type: number
-                            windGust:
-                              type: number
-                            windSpeed:
-                              type: number
-                            iceRate:
-                              type: number
-                            liquidRate:
-                              type: number
-                            snowRate:
-                              type: number
-                            pavementTemperature:
-                              type: number
-                            pavementCondition:
-                              type: string
-                            crashRiskIndex:
-                              type: number
-                            crashRiskUncertainty:
-                              type: number
-                            createdAt:
-                              type: string
-                              format: date-time
-                            updatedAt:
-                              type: string
-                              format: date-time
     RouteLogisticsResponse:
       type: object
       properties:
@@ -775,19 +649,145 @@ components:
               type: string
               format: date-time
               description: Estimated departure time from the origin (arriveAt - route duration). Present when arriveAt is used.
-  responses:
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+    LogisticsResponse:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            total:
+              type: integer
+            limit:
+              type: integer
+            nextOffset:
+              type: integer
+        geojson:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - FeatureCollection
+            features:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - Feature
+                  id:
+                    type: string
+                  geometry:
+                    type: object
+                    description: GeoJSON geometry for the road segment (LineString or MultiLineString)
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - LineString
+                        - MultiLineString
+                      coordinates:
+                        type: array
+                        description: Coordinate array (structure depends on geometry type)
+                        items:
+                          type: array
+                          items:
+                            type: number
+                  properties:
+                    type: object
+                    properties:
+                      segmentId:
+                        type: string
+                      roadName:
+                        type: string
+                      osmClass:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            lat:
+                              type: number
+                            lon:
+                              type: number
+                            timestamp:
+                              type: string
+                              format: date-time
+                            pavementCreationTime:
+                              type: string
+                              format: date-time
+                            pavementValidTime:
+                              type: string
+                              format: date-time
+                            pavementValidEndTime:
+                              type: string
+                              format: date-time
+                            airTemp:
+                              type: number
+                            visibility:
+                              type: number
+                            windDirection:
+                              type: number
+                            windGust:
+                              type: number
+                            windSpeed:
+                              type: number
+                            iceRate:
+                              type: number
+                            liquidRate:
+                              type: number
+                            snowRate:
+                              type: number
+                            pavementTemperature:
+                              type: number
+                            pavementCondition:
+                              type: string
+                            crashRiskIndex:
+                              type: number
+                            crashRiskUncertainty:
+                              type: number
+                            createdAt:
+                              type: string
+                              format: date-time
+                            updatedAt:
+                              type: string
+                              format: date-time
+    LineStringRoute:
+      type: object
+      required:
+      - type
+      - coordinates
+      properties:
+        type:
+          type: string
+          enum:
+          - LineString
+        coordinates:
+          type: array
+          minItems: 2
+          items:
+            type: array
+            minItems: 2
+            items:
+              type: number
   securitySchemes:
     clientCredentials:
       type: oauth2

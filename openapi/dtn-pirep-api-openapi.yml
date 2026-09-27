@@ -34,6 +34,68 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    PirepFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/PirepItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
     Error:
       title: Error
       description: Error
@@ -84,27 +146,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/PirepFeature'
-    PirepFeature:
-      description: GeoJSon 'Feature' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.2
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - geometry
-        - properties
-        properties:
-          geometry:
-            allOf:
-            - {}
-            - $ref: '#/components/schemas/Geometry'
-          properties:
-            $ref: '#/components/schemas/PirepItem'
-          id:
-            oneOf:
-            - type: number
-            - type: string
     GeoJsonObject:
       description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
 
@@ -136,27 +177,6 @@ components:
       - type
       discriminator:
         propertyName: type
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
     PirepItem:
       type: object
       required:
@@ -183,72 +203,45 @@ components:
           type: number
         flightLevelHigh:
           type: number
-    Geometry:
-      type: object
-      description: GeoJSon geometry
-      discriminator:
-        propertyName: type
-      required:
-      - type
-      externalDocs:
-        url: http://geojson.org/geojson-spec.html#geometry-objects
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          description: the geometry type
-  parameters:
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.  Default = 0
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryStationId:
-      name: stationId
-      description: Station identifier, e.g., `KIND`, `CYYC`
-      in: query
-      required: true
-      schema:
-        type: string
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.  Default = 1000
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
+  responses:
+    PirepSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PirepFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/PirepSuccessResponse'
+    PirepBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/PirepBadRequestResponse'
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
   examples:
-    PirepBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.comv1/pireps?stationId=IND&offset=-1
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/pireps:requestId:0a73a828-8415-4bb7-ac36-02322a3f0e19
-        errors:
-        - message: '`offset` query must be Integer zero or greater'
-          parameter: offset
-          value: -1
-        meta:
-          name: v1.pireps?stationId=IND&offset=-1
-          uuid: e288fbbb-cd74-4c54-8c8e-78d0939fa309
-          request_id: 0a73a828-8415-4bb7-ac36-02322a3f0e19
-          start_timestamp: 1714683025786
-          end_timestamp: 1714683026098
-          execution_time: 312
     PirepSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/pireps/?stationId=IND&limit=2
@@ -401,44 +394,51 @@ components:
           start_timestamp: 1714681278028
           end_timestamp: 1714681279690
           execution_time: 1662
-  responses:
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
-    PirepSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PirepFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/PirepSuccessResponse'
-    PirepBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/PirepBadRequestResponse'
+    PirepBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.comv1/pireps?stationId=IND&offset=-1
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/pireps:requestId:0a73a828-8415-4bb7-ac36-02322a3f0e19
+        errors:
+        - message: '`offset` query must be Integer zero or greater'
+          parameter: offset
+          value: -1
+        meta:
+          name: v1.pireps?stationId=IND&offset=-1
+          uuid: e288fbbb-cd74-4c54-8c8e-78d0939fa309
+          request_id: 0a73a828-8415-4bb7-ac36-02322a3f0e19
+          start_timestamp: 1714683025786
+          end_timestamp: 1714683026098
+          execution_time: 312
+  parameters:
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.  Default = 0
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.  Default = 1000
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryStationId:
+      name: stationId
+      description: Station identifier, e.g., `KIND`, `CYYC`
+      in: query
+      required: true
+      schema:
+        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2
