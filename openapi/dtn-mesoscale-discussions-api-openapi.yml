@@ -79,37 +79,11 @@ paths:
       operationId: getFeedsV3DiscussionArchiveByYearByMonthByDayByHourByMinute
       x-operation-id-source: derived
 components:
-  headers:
-    content-type:
-      description: MIME-type of returned data
-      schema:
-        type: string
   parameters:
-    hour:
-      name: hour
+    minute:
+      name: minute
       in: path
-      description: 2 digit hour, 00-23
-      required: true
-      schema:
-        type: string
-    mesoscale_discussion_id:
-      name: mesoscale_discussion_id
-      in: path
-      description: id of the discussion to be retrieved
-      required: true
-      schema:
-        type: string
-    day:
-      name: day
-      in: path
-      description: 2 digit day, 01-31
-      required: true
-      schema:
-        type: string
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
+      description: 2 digit minute, 00-59
       required: true
       schema:
         type: string
@@ -120,11 +94,37 @@ components:
       required: true
       schema:
         type: string
-    minute:
-      name: minute
+    mesoscale_discussion_id:
+      name: mesoscale_discussion_id
       in: path
-      description: 2 digit minute, 00-59
+      description: id of the discussion to be retrieved
       required: true
+      schema:
+        type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
+      required: true
+      schema:
+        type: string
+    hour:
+      name: hour
+      in: path
+      description: 2 digit hour, 00-23
+      required: true
+      schema:
+        type: string
+    day:
+      name: day
+      in: path
+      description: 2 digit day, 01-31
+      required: true
+      schema:
+        type: string
+  headers:
+    content-type:
+      description: MIME-type of returned data
       schema:
         type: string
   securitySchemes:

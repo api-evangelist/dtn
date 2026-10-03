@@ -53,19 +53,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  parameters:
+    strikeLimitParam:
+      name: limit
+      in: query
+      description: Limit on the number of strikes to return. If this parameter is specified, then Limit number of strikes above and below the money will be returned.
+      schema:
+        type: integer
+        default: 200
+    optionPrefixParam:
+      name: optionPrefix
+      in: query
+      description: A prefix is a combination of an option root and a maturity.
+      required: true
+      schema:
+        type: string
+    fieldGroupParam:
+      name: fieldGroup
+      in: query
+      description: "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
+      required: false
+      schema:
+        type: string
+        enum:
+        - price
+        - grains
+        - racks
+        - complete
+        default: complete
+    fieldsParam:
+      name: fields
+      in: query
+      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
+
+        '
+      required: false
+      schema:
+        type: string
   schemas:
-    OptionSeries:
+    Error:
       type: object
       properties:
-        optionPrefix:
-          type: string
-          description: A prefix is a combination of an option root and a maturity.
-        underlying:
-          $ref: '#/components/schemas/Quote'
-        strikeList:
+        meta:
+          type: object
+          properties:
+            type:
+              type: string
+              description: A more detailed or finer grained type declaration. In some cases could be a 'class' to assist with automated Exception throwing.
+            eventId:
+              type: string
+              description: A UUID that represents this unique request.  This can be used to help troubleshoot errors.
+            dateTime:
+              type: string
+              format: date-time
+              description: Repeat of optional dateTime from the messages section.
+        messages:
           type: array
           items:
-            $ref: '#/components/schemas/OptionStrike'
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.  These can vary and have a general definition of the potential problem.  Some potential values are ERROR, NotFound, InvalidParameters, NotAuthorized.
+                examples:
+                - NotAuthorized
+              id:
+                type: string
+                description: An identifier for the error.  This can represent a unique identifier for the error that occurred, but in many cases a unique number does not exist and it might simply be a 500.  Some API's will make better use of this value and it will be used to help track down particular problems.
+                examples:
+                - '401'
+              status:
+                type: integer
+                format: int32
+                description: Deprecated - this represents the HTTP Status code, but should not be used or relied upon.  Future version will remove this.
+                examples:
+                - 401
+              message:
+                type: string
+                description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
+                examples:
+                - Unauthorized access to service.
     MarketDepth:
       description: If available for the symbol, market depth is returned as two arrays.  One for bids, and the other for asks.  Bids are sorted from highest price to lowest, and asks are sroted lowest price to highest.
       properties:
@@ -1430,6 +1497,26 @@ components:
       required:
       - symbol
       type: object
+    OptionSeries:
+      type: object
+      properties:
+        optionPrefix:
+          type: string
+          description: A prefix is a combination of an option root and a maturity.
+        underlying:
+          $ref: '#/components/schemas/Quote'
+        strikeList:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptionStrike'
+    MarketDepthQuote:
+      properties:
+        size:
+          format: int64
+          type: integer
+        value:
+          $ref: '#/components/schemas/Price'
+      type: object
     Greeks:
       type: object
       description: An object to hold futures options price sensitivity values known as greeks.  Only returned by /quotes/greeks
@@ -1493,15 +1580,6 @@ components:
           examples:
           - DTN
       description: Symbol identifier and request status.
-    OptionStrike:
-      type: object
-      properties:
-        strikePrice:
-          type: string
-        call:
-          $ref: '#/components/schemas/Quote'
-        put:
-          $ref: '#/components/schemas/Quote'
     Meta:
       type: object
       properties:
@@ -1526,98 +1604,20 @@ components:
         pageToken:
           type: string
           description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
-    Error:
-      type: object
-      properties:
-        meta:
-          type: object
-          properties:
-            type:
-              type: string
-              description: A more detailed or finer grained type declaration. In some cases could be a 'class' to assist with automated Exception throwing.
-            eventId:
-              type: string
-              description: A UUID that represents this unique request.  This can be used to help troubleshoot errors.
-            dateTime:
-              type: string
-              format: date-time
-              description: Repeat of optional dateTime from the messages section.
-        messages:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The error type.  These can vary and have a general definition of the potential problem.  Some potential values are ERROR, NotFound, InvalidParameters, NotAuthorized.
-                examples:
-                - NotAuthorized
-              id:
-                type: string
-                description: An identifier for the error.  This can represent a unique identifier for the error that occurred, but in many cases a unique number does not exist and it might simply be a 500.  Some API's will make better use of this value and it will be used to help track down particular problems.
-                examples:
-                - '401'
-              status:
-                type: integer
-                format: int32
-                description: Deprecated - this represents the HTTP Status code, but should not be used or relied upon.  Future version will remove this.
-                examples:
-                - 401
-              message:
-                type: string
-                description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
-                examples:
-                - Unauthorized access to service.
-    MarketDepthQuote:
-      properties:
-        size:
-          format: int64
-          type: integer
-        value:
-          $ref: '#/components/schemas/Price'
-      type: object
     Price:
       type: string
       description: Prices are represented as strings to prevent float rounding problems
       examples:
       - '123.25'
-  parameters:
-    strikeLimitParam:
-      name: limit
-      in: query
-      description: Limit on the number of strikes to return. If this parameter is specified, then Limit number of strikes above and below the money will be returned.
-      schema:
-        type: integer
-        default: 200
-    fieldGroupParam:
-      name: fieldGroup
-      in: query
-      description: "Fields groups are collections of fields that are commonly used together.\nIf this parameter is not set, it will default to 'complete' which returns all available fields.  Setting the fields parameter\nwill override the default fieldGroups.  Specifying both fields and fieldGroups will return the union of the fields and field groups.\n\n&nbsp;\n\nThere are currently four field groups defined.  They are price, grains, racks, and complete.  The complete field group will return all available fields.  \nPrice will return fields that are useful for just getting the latest price for a symbol.  Grains is for grain elevator pricing.  Racks is field common \nto refined fuel energy racks.  More fields may be added to these groups in the future.  The fields in each group is listed below.  For more information \non fields see the fields of a quote object.\n      \n- Price\n  - last, high, low, open, bid, ask, close, previous, cumVolume, openInterest, change, week52High, week52Low, bidDateTime, askDateTime, tradeDateTime,\n    description, month, settleDate, settlementPrice, expirationDate, contractHigh, contractLow, quoteDelay, commodity\n- Grains\n  - last, high, low, open, previous, change, tradeDateTime, underlying, description, basis, elevatorName, elevatorState, elevatorCounty,\n    elevatorCity, elevatorZip, elevatorLatitude, elevatorLongitude, elevatorDistance, basisSymbol, fipsCode\n- Racks\n  - last, high, low, open, previous, change, tradeDateTime, description, effectiveDate, effectiveTime, rackCity, rackState, productName,\n    productSupplier, summaryName, branded, grossNetIndicator, region\n  \n"
-      required: false
-      schema:
-        type: string
-        enum:
-        - price
-        - grains
-        - racks
-        - complete
-        default: complete
-    optionPrefixParam:
-      name: optionPrefix
-      in: query
-      description: A prefix is a combination of an option root and a maturity.
-      required: true
-      schema:
-        type: string
-    fieldsParam:
-      name: fields
-      in: query
-      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
-
-        '
-      required: false
-      schema:
-        type: string
+    OptionStrike:
+      type: object
+      properties:
+        strikePrice:
+          type: string
+        call:
+          $ref: '#/components/schemas/Quote'
+        put:
+          $ref: '#/components/schemas/Quote'
   securitySchemes:
     clientCredentials:
       type: oauth2

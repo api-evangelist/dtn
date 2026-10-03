@@ -96,16 +96,39 @@ paths:
       operationId: getFeedsV3OutlookArchiveByYearByMonthByDayByHourByMinute
       x-operation-id-source: derived
 components:
-  headers:
-    content-type:
-      description: MIME-type of returned data
+  parameters:
+    convective_outlook_id:
+      name: convective_outlook_id
+      in: path
+      description: id of the outlook to be retrieved
+      required: true
       schema:
         type: string
-  parameters:
+    minute:
+      name: minute
+      in: path
+      description: 2 digit minute, 00-59
+      required: true
+      schema:
+        type: string
+    year:
+      name: year
+      in: path
+      description: 4 digit year, e.g. 2026
+      required: true
+      schema:
+        type: string
     convective_outlook_horizon:
       name: convective_outlook_horizon
       in: path
       description: horizon in days, 1 through 8 inclusive
+      required: true
+      schema:
+        type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string
@@ -123,32 +146,9 @@ components:
       required: true
       schema:
         type: string
-    convective_outlook_id:
-      name: convective_outlook_id
-      in: path
-      description: id of the outlook to be retrieved
-      required: true
-      schema:
-        type: string
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
-      required: true
-      schema:
-        type: string
-    year:
-      name: year
-      in: path
-      description: 4 digit year, e.g. 2026
-      required: true
-      schema:
-        type: string
-    minute:
-      name: minute
-      in: path
-      description: 2 digit minute, 00-59
-      required: true
+  headers:
+    content-type:
+      description: MIME-type of returned data
       schema:
         type: string
   responses:

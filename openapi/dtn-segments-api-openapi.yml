@@ -256,6 +256,33 @@ paths:
                 detail: This request requires 10 producer credits, but only 5 remain.
 components:
   schemas:
+    Segment:
+      type: object
+      description: A customer-defined segment (saved audience of producers).
+      properties:
+        segmentId:
+          type: integer
+          description: Unique identifier for the segment.
+          example: 4521
+        segmentName:
+          type: string
+          description: Human-readable name of the segment.
+          example: Iowa Corn Operators 500+ Acres
+        numberOfProducers:
+          type: integer
+          description: Number of producers currently in the segment.
+          example: 312
+        dateCreated:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the segment was created.
+          example: '2025-03-15T14:30:00Z'
+        creator:
+          type:
+          - string
+          - 'null'
+          description: Name of the user who created the segment.
+          example: Jane Doe
     Producer:
       type: object
       description: A producer record representing an agricultural entity (farmer, company, cooperative).
@@ -406,18 +433,6 @@ components:
             '
           example:
           - john@smithfarms.com
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -456,33 +471,18 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
-    Segment:
+    Pagination:
       type: object
-      description: A customer-defined segment (saved audience of producers).
+      description: Pagination metadata for list responses.
       properties:
-        segmentId:
+        total:
           type: integer
-          description: Unique identifier for the segment.
-          example: 4521
-        segmentName:
-          type: string
-          description: Human-readable name of the segment.
-          example: Iowa Corn Operators 500+ Acres
-        numberOfProducers:
-          type: integer
-          description: Number of producers currently in the segment.
-          example: 312
-        dateCreated:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the segment was created.
-          example: '2025-03-15T14:30:00Z'
-        creator:
-          type:
-          - string
-          - 'null'
-          description: Name of the user who created the segment.
-          example: Jane Doe
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
   securitySchemes:
     clientCredentials:
       type: oauth2

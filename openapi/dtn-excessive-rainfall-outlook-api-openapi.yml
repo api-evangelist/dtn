@@ -77,24 +77,17 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    ero_horizon:
-      name: ero_horizon
+    minute:
+      name: minute
       in: path
-      description: horizon in days, from 1 to 5 inclusive
+      description: 2 digit minute, 00-59
       required: true
       schema:
         type: string
-    hour:
-      name: hour
+    year:
+      name: year
       in: path
-      description: 2 digit hour, 00-23
-      required: true
-      schema:
-        type: string
-    day:
-      name: day
-      in: path
-      description: 2 digit day, 01-31
+      description: 4 digit year, e.g. 2026
       required: true
       schema:
         type: string
@@ -112,23 +105,25 @@ components:
       required: true
       schema:
         type: string
-    year:
-      name: year
+    hour:
+      name: hour
       in: path
-      description: 4 digit year, e.g. 2026
+      description: 2 digit hour, 00-23
       required: true
       schema:
         type: string
-    minute:
-      name: minute
+    day:
+      name: day
       in: path
-      description: 2 digit minute, 00-59
+      description: 2 digit day, 01-31
       required: true
       schema:
         type: string
-  headers:
-    content-type:
-      description: MIME-type of returned data
+    ero_horizon:
+      name: ero_horizon
+      in: path
+      description: horizon in days, from 1 to 5 inclusive
+      required: true
       schema:
         type: string
   responses:
@@ -140,6 +135,11 @@ components:
       content:
         application/json:
           example: "[\n\t{\n\t\t\"t\": \"RAIN\",\n\t\t\"o\": \"KWNH\",\n\t\t\"s\": \"D1\",\n\t\t\"f\": \"MRGL\",\n\t\t\"b\": 1767628800,\n\t\t\"e\": 1767700800,\n\t\t\"p\": [\n\t\t\t[\n\t\t\t\t3688,\n\t\t\t\t-12232\n\t\t\t],\n\t\t\t[\n\t\t\t\t3710,\n\t\t\t\t-12261\n\t\t\t],\n\t\t\t[\n\t\t\t\t3772,\n\t\t\t\t-12271\n\t\t\t],\n\t\t\t[\n\t\t\t\t3788,\n\t\t\t\t-12315\n\t\t\t],\n\t\t\t[\n\t\t\t\t3836,\n\t\t\t\t-12328\n\t\t\t],\n\t\t\t[\n\t\t\t\t3885,\n\t\t\t\t-12388\n\t\t\t],\n\t\t\t[\n\t\t\t\t3941,\n\t\t\t\t-12404\n\t\t\t],\n\t\t\t[\n\t\t\t\t3964,\n\t\t\t\t-12399\n\t\t\t],\n\t\t\t[\n\t\t\t\t4027,\n\t\t\t\t-12458\n\t\t\t],\n\t\t\t[\n\t\t\t\t4044,\n\t\t\t\t-12433\n\t\t\t],\n\t\t\t[\n\t\t\t\t4068,\n\t\t\t\t-12316\n\t\t\t],\n\t\t\t[\n\t\t\t\t4078,\n\t\t\t\t-12307\n\t\t\t],\n\t\t\t[\n\t\t\t\t4114,\n\t\t\t\t-12222\n\t\t\t],\n\t\t\t[\n\t\t\t\t4104,\n\t\t\t\t-12201\n\t\t\t],\n\t\t\t[\n\t\t\t\t4067,\n\t\t\t\t-12179\n\t\t\t],\n\t\t\t[\n\t\t\t\t4002,\n\t\t\t\t-12162\n\t\t\t],\n\t\t\t[\n\t\t\t\t3976,\n\t\t\t\t-12126\n\t\t\t],\n\t\t\t[\n\t\t\t\t3955,\n\t\t\t\t-12115\n\t\t\t],\n\t\t\t[\n\t\t\t\t3949,\n\t\t\t\t-12155\n\t\t\t],\n\t\t\t[\n\t\t\t\t3913,\n\t\t\t\t-12186\n\t\t\t],\n\t\t\t[\n\t\t\t\t3871,\n\t\t\t\t-12193\n\t\t\t],\n\t\t\t[\n\t\t\t\t3841,\n\t\t\t\t-12185\n\t\t\t],\n\t\t\t[\n\t\t\t\t3746,\n\t\t\t\t-12207\n\t\t\t],\n\t\t\t[\n\t\t\t\t3715,\n\t\t\t\t-12204\n\t\t\t],\n\t\t\t[\n\t\t\t\t3700,\n\t\t\t\t-12212\n\t\t\t],\n\t\t\t[\n\t\t\t\t3688,\n\t\t\t\t-12232\n\t\t\t]\n\t\t],\n\t\t\"a\": \"202601052011-Q\"\n\t}\n]"
+  headers:
+    content-type:
+      description: MIME-type of returned data
+      schema:
+        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

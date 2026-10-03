@@ -42,20 +42,20 @@ paths:
       - Event Predictions
 components:
   parameters:
-    weatherEventId:
-      name: weatherEventId
-      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
-      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
-      in: path
-      required: true
-      schema:
-        type: string
     geolevel:
       name: geolevel
       description: Name of desired geo level.
       example: Division
       in: query
       required: false
+      schema:
+        type: string
+    weatherEventId:
+      name: weatherEventId
+      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
+      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
+      in: path
+      required: true
       schema:
         type: string
   schemas:

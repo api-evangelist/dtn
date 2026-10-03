@@ -65,19 +65,20 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
     Error:
       type: object
       properties:
@@ -85,21 +86,6 @@ components:
           type: string
         message:
           type: string
-    CurrentConditionsResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        units:
-          type: string
-          enum:
-          - US
-          - SI
-        location:
-          $ref: '#/components/schemas/Location'
-        observations:
-          $ref: '#/components/schemas/WeatherObservation'
     WeatherObservation:
       type: object
       properties:
@@ -138,19 +124,33 @@ components:
           type: number
           minimum: 0
           maximum: 100
-  responses:
-    Unauthorized:
-      description: Missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid query parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    CurrentConditionsResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+          enum:
+          - US
+          - SI
+        location:
+          $ref: '#/components/schemas/Location'
+        observations:
+          $ref: '#/components/schemas/WeatherObservation'
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
   securitySchemes:
     oauth2:
       type: oauth2

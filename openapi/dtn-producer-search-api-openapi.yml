@@ -822,18 +822,6 @@ components:
             '
           example:
           - john@smithfarms.com
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -872,6 +860,18 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
+    Pagination:
+      type: object
+      description: Pagination metadata for list responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
   securitySchemes:
     clientCredentials:
       type: oauth2

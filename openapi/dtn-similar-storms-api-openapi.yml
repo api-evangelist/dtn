@@ -172,20 +172,20 @@ components:
           example: 7461
           description: The peak observed number of utility customers reported to be out in this similar event.
   parameters:
-    weatherEventId:
-      name: weatherEventId
-      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
-      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
-      in: path
-      required: true
-      schema:
-        type: string
     territoryId:
       name: territoryId
       description: Name of desired territory id, if not passed in, the highest level territory will be selected automatically.
       example: Oklahoma
       in: query
       required: false
+      schema:
+        type: string
+    weatherEventId:
+      name: weatherEventId
+      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
+      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
+      in: path
+      required: true
       schema:
         type: string
   securitySchemes:

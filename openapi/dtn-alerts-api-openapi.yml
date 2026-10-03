@@ -101,6 +101,161 @@ paths:
       - clientCredentials: []
 components:
   schemas:
+    AlertInfo:
+      title: AlertInfo
+      required:
+      - event
+      - eventCode
+      - category
+      type: object
+      properties:
+        event:
+          title: Event
+          type: array
+          items:
+            type: string
+        eventCode:
+          title: Eventcode
+          type: array
+          items:
+            type: string
+        category:
+          title: Category
+          type: array
+          items:
+            type: string
+        language:
+          title: Language
+          type: string
+        urgency:
+          title: Urgency
+          type: string
+        severity:
+          title: Severity
+          type: string
+        certainty:
+          title: Certainty
+          type: string
+        responseType:
+          title: Responsetype
+          type: string
+        effective:
+          title: Effective
+          type: string
+          format: date-time
+        onset:
+          title: Onset
+          type: string
+          format: date-time
+        expires:
+          title: Expires
+          type: string
+          format: date-time
+        audience:
+          title: Audience
+          type: string
+        senderName:
+          title: Sendername
+          type: string
+        headline:
+          title: Headline
+          type: string
+        description:
+          title: Description
+          type: string
+        instruction:
+          title: Instruction
+          type: string
+        web:
+          title: Web
+          type: string
+        contact:
+          title: Contact
+          type: string
+        parameters:
+          title: Parameters
+          type: array
+          items:
+            type: object
+        area:
+          title: Area
+          type: array
+          items:
+            $ref: '#/components/schemas/Area'
+    GeoCode:
+      title: GeoCode
+      type: object
+      properties:
+        valueName:
+          title: Valuename
+          type: string
+        value:
+          title: Value
+    Alert:
+      title: Alert
+      required:
+      - identifier
+      - sender
+      - sent
+      - status
+      - info
+      type: object
+      properties:
+        identifier:
+          title: Identifier
+          type: string
+        sender:
+          title: Sender
+          type: string
+        sent:
+          title: Sent
+          type: string
+          format: date-time
+        status:
+          title: Status
+          type: string
+        msgType:
+          title: Msgtype
+          type: string
+        scope:
+          title: Scope
+          type: string
+        code:
+          title: Code
+          type: string
+        source:
+          title: Source
+          type: string
+        updated:
+          title: Updated
+          type: string
+          format: date-time
+        restriction:
+          title: Restriction
+          type: string
+        addresses:
+          title: Addresses
+          type: string
+        note:
+          title: Note
+          type: string
+        references:
+          title: References
+          type: string
+        info:
+          title: Info
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertInfo'
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
     ValidationError:
       title: ValidationError
       required:
@@ -120,73 +275,6 @@ components:
         type:
           title: Error Type
           type: string
-    HTTPValidationError:
-      title: HTTPValidationError
-      type: object
-      properties:
-        detail:
-          title: Detail
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
-    GeoCode:
-      title: GeoCode
-      type: object
-      properties:
-        valueName:
-          title: Valuename
-          type: string
-        value:
-          title: Value
-    GeoJsonAlert:
-      title: GeoJsonAlert
-      required:
-      - id
-      - type
-      - properties
-      type: object
-      properties:
-        id:
-          title: Id
-          type: string
-        type:
-          title: Type
-          type: string
-        geometry:
-          title: Geometry
-          anyOf:
-          - type: object
-          - type: object
-          - type: object
-        properties:
-          $ref: '#/components/schemas/Alert'
-    Area:
-      title: Area
-      type: object
-      properties:
-        areaDesc:
-          title: Areadesc
-          type: string
-        polygon:
-          title: Polygon
-          anyOf:
-          - type: object
-          - type: object
-          - type: object
-        circle:
-          title: Circle
-          type: string
-        ceiling:
-          title: Ceiling
-          type: number
-        altitude:
-          title: Altitude
-          type: number
-        geocodes:
-          title: Geocodes
-          type: array
-          items:
-            $ref: '#/components/schemas/GeoCode'
     GeoJsonAlertResponse:
       title: GeoJsonAlertResponse
       required:
@@ -324,143 +412,55 @@ components:
                 geocodes:
                 - valueName: UGC
                   value: FLC117
-    Alert:
-      title: Alert
-      required:
-      - identifier
-      - sender
-      - sent
-      - status
-      - info
+    Area:
+      title: Area
       type: object
       properties:
-        identifier:
-          title: Identifier
+        areaDesc:
+          title: Areadesc
           type: string
-        sender:
-          title: Sender
+        polygon:
+          title: Polygon
+          anyOf:
+          - type: object
+          - type: object
+          - type: object
+        circle:
+          title: Circle
           type: string
-        sent:
-          title: Sent
-          type: string
-          format: date-time
-        status:
-          title: Status
-          type: string
-        msgType:
-          title: Msgtype
-          type: string
-        scope:
-          title: Scope
-          type: string
-        code:
-          title: Code
-          type: string
-        source:
-          title: Source
-          type: string
-        updated:
-          title: Updated
-          type: string
-          format: date-time
-        restriction:
-          title: Restriction
-          type: string
-        addresses:
-          title: Addresses
-          type: string
-        note:
-          title: Note
-          type: string
-        references:
-          title: References
-          type: string
-        info:
-          title: Info
+        ceiling:
+          title: Ceiling
+          type: number
+        altitude:
+          title: Altitude
+          type: number
+        geocodes:
+          title: Geocodes
           type: array
           items:
-            $ref: '#/components/schemas/AlertInfo'
-    AlertInfo:
-      title: AlertInfo
+            $ref: '#/components/schemas/GeoCode'
+    GeoJsonAlert:
+      title: GeoJsonAlert
       required:
-      - event
-      - eventCode
-      - category
+      - id
+      - type
+      - properties
       type: object
       properties:
-        event:
-          title: Event
-          type: array
-          items:
-            type: string
-        eventCode:
-          title: Eventcode
-          type: array
-          items:
-            type: string
-        category:
-          title: Category
-          type: array
-          items:
-            type: string
-        language:
-          title: Language
+        id:
+          title: Id
           type: string
-        urgency:
-          title: Urgency
+        type:
+          title: Type
           type: string
-        severity:
-          title: Severity
-          type: string
-        certainty:
-          title: Certainty
-          type: string
-        responseType:
-          title: Responsetype
-          type: string
-        effective:
-          title: Effective
-          type: string
-          format: date-time
-        onset:
-          title: Onset
-          type: string
-          format: date-time
-        expires:
-          title: Expires
-          type: string
-          format: date-time
-        audience:
-          title: Audience
-          type: string
-        senderName:
-          title: Sendername
-          type: string
-        headline:
-          title: Headline
-          type: string
-        description:
-          title: Description
-          type: string
-        instruction:
-          title: Instruction
-          type: string
-        web:
-          title: Web
-          type: string
-        contact:
-          title: Contact
-          type: string
-        parameters:
-          title: Parameters
-          type: array
-          items:
-            type: object
-        area:
-          title: Area
-          type: array
-          items:
-            $ref: '#/components/schemas/Area'
+        geometry:
+          title: Geometry
+          anyOf:
+          - type: object
+          - type: object
+          - type: object
+        properties:
+          $ref: '#/components/schemas/Alert'
   securitySchemes:
     clientCredentials:
       type: oauth2

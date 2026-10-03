@@ -219,30 +219,6 @@ components:
               end_timestamp: 1713991179404
               execution_time: 1
   schemas:
-    HealthCheck:
-      title: HealthCheckResponse
-      description: Health Check Response
-      required:
-      - status
-      type: object
-      properties:
-        status:
-          type: string
-        version:
-          type: string
-        info:
-          type: string
-        timestamp:
-          format: date-time
-          type: string
-        env:
-          type: string
-      example:
-        status: up
-        version: unknown
-        info: Service is healthy
-        timestamp: '2021-04-19T22:10:53Z'
-        env: unknown
     Error:
       title: Root Type for Error
       description: Error
@@ -269,6 +245,30 @@ components:
         status: error
         code: invalid-token
         description: The token has expired.
+    HealthCheck:
+      title: HealthCheckResponse
+      description: Health Check Response
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        info:
+          type: string
+        timestamp:
+          format: date-time
+          type: string
+        env:
+          type: string
+      example:
+        status: up
+        version: unknown
+        info: Service is healthy
+        timestamp: '2021-04-19T22:10:53Z'
+        env: unknown
     HealthCheck_2:
       title: HealthCheckResponse
       description: Health Check Response.
@@ -293,6 +293,19 @@ components:
         info: Service is healthy
         timestamp: '2021-04-19T22:10:53Z'
         env: unknown
+    Error_2:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     HealthCheck_3:
       type: object
       properties:
@@ -307,40 +320,6 @@ components:
           format: date-time
         env:
           type: string
-    Error_2:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
     Error_3:
       title: Error
       description: Error
@@ -397,6 +376,27 @@ components:
           type: string
         meta:
           $ref: '#/components/schemas/Meta'
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
   securitySchemes:
     clientCredentials:
       type: oauth2

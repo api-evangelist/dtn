@@ -39,6 +39,44 @@ paths:
       operationId: getV1Windsaloft
       x-operation-id-source: derived
 components:
+  responses:
+    WindsaloftBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/WindsaloftBadRequestResponse'
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    WindsaloftSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WindsaloftFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/WindsaloftSuccessResponse'
   parameters:
     QueryWindsAloftFlightLevel:
       name: flt_level
@@ -61,6 +99,13 @@ components:
           - fl390
           - fl450
           - fl530
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
     QueryDistanceUnits:
       name: distanceUnits
       description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
@@ -82,9 +127,9 @@ components:
       schema:
         type: integer
         default: 0
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
       in: query
       required: false
       schema:
@@ -104,13 +149,6 @@ components:
       schema:
         type: string
         pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
     QueryLimit:
       name: limit
       description: Provide no more than this many items in the response set.
@@ -121,118 +159,14 @@ components:
         default: 1000
         minimum: 1
         maximum: 10000
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
       in: query
       required: false
       schema:
         type: string
   schemas:
-    WindsaloftFeatureCollection:
-      description: GeoJSon 'FeatureCollection' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - features
-        properties:
-          features:
-            type: array
-            items:
-              $ref: '#/components/schemas/WindsaloftFeature'
-    WindsaloftFeature:
-      description: GeoJSon 'Feature' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.2
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - geometry
-        - properties
-        properties:
-          geometry:
-            allOf:
-            - {}
-            - $ref: '#/components/schemas/Geometry'
-          properties:
-            $ref: '#/components/schemas/WindsaloftItem'
-          id:
-            oneOf:
-            - type: number
-            - type: string
-    WindsaloftItem:
-      type: object
-      required:
-      - valid_utc
-      - expiration_utc
-      - model_utc
-      - wind_speed_kts
-      - wind_direction
-      - temperature_c
-      - flt_level
-      properties:
-        valid_utc:
-          type: string
-          format: date-time
-        expiration_utc:
-          type: string
-          format: date-time
-        model_utc:
-          type: string
-          format: date-time
-        wind_speed_kts:
-          type: number
-        wind_direction:
-          type: number
-        temperature_c:
-          type: number
-        flt_level:
-          type: string
-    Geometry:
-      type: object
-      description: GeoJSon geometry
-      discriminator:
-        propertyName: type
-      required:
-      - type
-      externalDocs:
-        url: http://geojson.org/geojson-spec.html#geometry-objects
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          description: the geometry type
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
     GeoJsonObject:
       description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
 
@@ -264,6 +198,27 @@ components:
       - type
       discriminator:
         propertyName: type
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
     Error:
       title: Error
       description: Error
@@ -300,26 +255,90 @@ components:
             type: object
         meta:
           $ref: '#/components/schemas/Meta'
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+    WindsaloftItem:
+      type: object
+      required:
+      - valid_utc
+      - expiration_utc
+      - model_utc
+      - wind_speed_kts
+      - wind_direction
+      - temperature_c
+      - flt_level
+      properties:
+        valid_utc:
+          type: string
+          format: date-time
+        expiration_utc:
+          type: string
+          format: date-time
+        model_utc:
+          type: string
+          format: date-time
+        wind_speed_kts:
+          type: number
+        wind_direction:
+          type: number
+        temperature_c:
+          type: number
+        flt_level:
+          type: string
+    WindsaloftFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/WindsaloftItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    WindsaloftFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/WindsaloftFeature'
   examples:
-    WindsaloftBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/windsaloft/:requestId:883234a3-dc99-4285-ac74-93a46eb6f05a
-        errors:
-        - message: '`flt_level` must be in the format fl### and one of specifically allowed levels (010|030|050|100|180|240|300|340|390|450|530)'
-          parameter: flt_level
-          value: fl320
-        meta:
-          name: v1.windsaloft.?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
-          uuid: 4611bb70-9c0e-494d-85dc-eee855f7d532
-          request_id: 883234a3-dc99-4285-ac74-93a46eb6f05a
-          start_timestamp: 1741812361342
-          end_timestamp: 1741812361760
-          execution_time: 418
     WindsaloftSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl300&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
@@ -486,44 +505,25 @@ components:
           start_timestamp: 1741812067610
           end_timestamp: 1741812078012
           execution_time: 10402
-  responses:
-    WindsaloftSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WindsaloftFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/WindsaloftSuccessResponse'
-    WindsaloftBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/WindsaloftBadRequestResponse'
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
+    WindsaloftBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/windsaloft/:requestId:883234a3-dc99-4285-ac74-93a46eb6f05a
+        errors:
+        - message: '`flt_level` must be in the format fl### and one of specifically allowed levels (010|030|050|100|180|240|300|340|390|450|530)'
+          parameter: flt_level
+          value: fl320
+        meta:
+          name: v1.windsaloft.?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
+          uuid: 4611bb70-9c0e-494d-85dc-eee855f7d532
+          request_id: 883234a3-dc99-4285-ac74-93a46eb6f05a
+          start_timestamp: 1741812361342
+          end_timestamp: 1741812361760
+          execution_time: 418
   securitySchemes:
     clientCredentials:
       type: oauth2

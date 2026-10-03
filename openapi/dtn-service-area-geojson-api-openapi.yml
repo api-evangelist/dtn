@@ -32,6 +32,39 @@ paths:
       - Service Area Geojson
 components:
   schemas:
+    featureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
+    featureProperties:
+      type: object
+      properties:
+        name:
+          type: string
+          example: CENTRAL
+          description: Name of a specific feature.
+        description:
+          type: string
+          example: Zone
+          description: Description of the geographic level.
+        prediction:
+          type: number
+          example: 293
+          description: Best predicted value for this hourly prediction.
+        prediction_high:
+          type: number
+          example: 312
+          description: Upper 20% of the range model applied to this storm type.
+        prediction_low:
+          type: number
+          example: 216
+          description: Lower 80% of the range model applied to this storm type.
     feature:
       type: object
       properties:
@@ -61,39 +94,6 @@ components:
                   - -37.741
                 - - 145.107
                   - -37.738
-    featureProperties:
-      type: object
-      properties:
-        name:
-          type: string
-          example: CENTRAL
-          description: Name of a specific feature.
-        description:
-          type: string
-          example: Zone
-          description: Description of the geographic level.
-        prediction:
-          type: number
-          example: 293
-          description: Best predicted value for this hourly prediction.
-        prediction_high:
-          type: number
-          example: 312
-          description: Upper 20% of the range model applied to this storm type.
-        prediction_low:
-          type: number
-          example: 216
-          description: Lower 80% of the range model applied to this storm type.
-    featureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/feature'
   parameters:
     geolevel:
       name: geolevel

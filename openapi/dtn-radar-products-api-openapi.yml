@@ -70,24 +70,17 @@ components:
       required: true
       schema:
         type: string
+    year:
+      name: year
+      in: path
+      description: 4 digit year, e.g. 2026
+      required: true
+      schema:
+        type: string
     day:
       name: day
       in: path
       description: 2 digit day, 01-31
-      required: true
-      schema:
-        type: string
-    nids_filename:
-      name: nids_filename
-      in: path
-      description: The filename of a NIDS-formatted file, as returned by the directory list query.
-      required: true
-      schema:
-        type: string
-    site_id:
-      name: site_id
-      in: path
-      description: The radar site's ID.
       required: true
       schema:
         type: string
@@ -98,10 +91,17 @@ components:
       required: true
       schema:
         type: string
-    year:
-      name: year
+    site_id:
+      name: site_id
       in: path
-      description: 4 digit year, e.g. 2026
+      description: The radar site's ID.
+      required: true
+      schema:
+        type: string
+    nids_filename:
+      name: nids_filename
+      in: path
+      description: The filename of a NIDS-formatted file, as returned by the directory list query.
       required: true
       schema:
         type: string

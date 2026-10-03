@@ -207,36 +207,22 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
+    TropicalFeature:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
         type:
           type: string
-          title: Error Type
+          title: Type
+          default: Feature
+        properties:
+          type: object
+          title: Properties
+          default: {}
+        geometry:
+          $ref: '#/components/schemas/TropicalGeometry'
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+      - geometry
+      title: TropicalFeature
     TropicalFeatureCollection:
       properties:
         type:
@@ -255,62 +241,6 @@ components:
       required:
       - metadata
       title: TropicalFeatureCollection
-    TropicalGeometry:
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          title: Type
-        coordinates:
-          items: {}
-          type: array
-          title: Coordinates
-      type: object
-      required:
-      - type
-      - coordinates
-      title: TropicalGeometry
-    TropicalFeature:
-      properties:
-        type:
-          type: string
-          title: Type
-          default: Feature
-        properties:
-          type: object
-          title: Properties
-          default: {}
-        geometry:
-          $ref: '#/components/schemas/TropicalGeometry'
-      type: object
-      required:
-      - geometry
-      title: TropicalFeature
-    TropicalResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-        cycloneCount:
-          type: integer
-          title: Cyclonecount
-        data:
-          items:
-            $ref: '#/components/schemas/TropicalFeatureCollection'
-          type: array
-          title: Data
-          default: []
-      type: object
-      required:
-      - url
-      - cycloneCount
-      title: TropicalResponse
     StormMetadata:
       properties:
         stormName:
@@ -336,6 +266,76 @@ components:
       - stormNum
       - stormId
       title: StormMetadata
+    TropicalResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+        cycloneCount:
+          type: integer
+          title: Cyclonecount
+        data:
+          items:
+            $ref: '#/components/schemas/TropicalFeatureCollection'
+          type: array
+          title: Data
+          default: []
+      type: object
+      required:
+      - url
+      - cycloneCount
+      title: TropicalResponse
+    TropicalGeometry:
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          title: Type
+        coordinates:
+          items: {}
+          type: array
+          title: Coordinates
+      type: object
+      required:
+      - type
+      - coordinates
+      title: TropicalGeometry
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -207,10 +207,6 @@ components:
           type: string
           description: 'Timestamp of data retrieval in CST: "YYYY-MM-DDThh:mm:ssZ"'
           format: date-time
-    DailyRacks:
-      type: array
-      items:
-        $ref: '#/components/schemas/DailyRack'
     Error:
       required:
       - code
@@ -222,6 +218,10 @@ components:
           format: int32
         message:
           type: string
+    DailyRacks:
+      type: array
+      items:
+        $ref: '#/components/schemas/DailyRack'
   securitySchemes:
     clientCredentials:
       type: oauth2

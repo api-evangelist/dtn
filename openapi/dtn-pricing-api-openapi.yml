@@ -149,6 +149,12 @@ components:
           type: number
         pageLimit:
           type: number
+    PricingRuleLabels:
+      type: string
+      enum:
+      - BASIS
+      - MARGIN
+      - COST
     PricingRulePut:
       required:
       - value
@@ -185,12 +191,6 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
-    PricingRuleLabels:
-      type: string
-      enum:
-      - BASIS
-      - MARGIN
-      - COST
   responses:
     DeletePriceResponse:
       description: A successful response containing details of the deleted prices

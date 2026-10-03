@@ -65,127 +65,7 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
-  headers:
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
-  responses:
-    catalog:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/catalog'
-    unprocessable-entity:
-      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://maps.dtn.com/error-details/invalid-object
-            title: Invalid object in request body
-            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
-            status: 422
-            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
   parameters:
-    catalog-id:
-      in: path
-      name: catalogId
-      description: Unique identifier for a catalog
-      required: true
-      schema:
-        type: string
-    accept-language:
-      in: header
-      name: Accept-Language
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    accept-json:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
-      schema:
-        type: string
-        enum:
-        - application/json
     locale:
       in: query
       name: locale
@@ -207,6 +87,126 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    catalog-id:
+      in: path
+      name: catalogId
+      description: Unique identifier for a catalog
+      required: true
+      schema:
+        type: string
+    accept-json:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - application/json
+    accept-language:
+      in: header
+      name: Accept-Language
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+  headers:
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
+  responses:
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    unprocessable-entity:
+      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://maps.dtn.com/error-details/invalid-object
+            title: Invalid object in request body
+            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
+            status: 422
+            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
+    catalog:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/catalog'
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
   schemas:
     general-error:
       type: object
@@ -229,19 +229,20 @@ components:
           format: uri
           description: URL with the id for the specific error; this will often point to an error log for that specific response.
       additionalProperties: true
-    catalog:
+    layer:
       type: object
       properties:
-        groups:
-          type: array
-          description: layer groups
-          items:
-            $ref: '#/components/schemas/group'
-        layers:
-          type: array
-          description: full catalog of layers
-          items:
-            $ref: '#/components/schemas/layer'
+        id:
+          type: string
+          example: eu-contoured-radar
+        label:
+          type: string
+          example: European contoured radar
+        group:
+          type: string
+          format: uri
+          example: contoured-radar
+          description: group the layer belongs to
     group:
       type: object
       properties:
@@ -258,20 +259,19 @@ components:
           format: uri
           description: Reference to a parent group, null indicates root level.
           example: null
-    layer:
+    catalog:
       type: object
       properties:
-        id:
-          type: string
-          example: eu-contoured-radar
-        label:
-          type: string
-          example: European contoured radar
-        group:
-          type: string
-          format: uri
-          example: contoured-radar
-          description: group the layer belongs to
+        groups:
+          type: array
+          description: layer groups
+          items:
+            $ref: '#/components/schemas/group'
+        layers:
+          type: array
+          description: full catalog of layers
+          items:
+            $ref: '#/components/schemas/layer'
   securitySchemes:
     clientCredentials:
       type: oauth2

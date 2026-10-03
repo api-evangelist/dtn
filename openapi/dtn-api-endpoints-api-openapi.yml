@@ -637,37 +637,6 @@ paths:
         source: "let url = URL(string: \"https://obs.api.dtn.com/v2/observations/parameters\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer YOUR_ACCESS_TOKEN\", forHTTPHeaderField: \"Authorization\")\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n    if let data = data {\n        print(String(data: data, encoding: .utf8) ?? \"\")\n    }\n}\ntask.resume()"
 components:
   schemas:
-    HTTPValidationError:
-      title: HTTPValidationError
-      type: object
-      properties:
-        detail:
-          title: Detail
-          oneOf:
-          - type: string
-            description: Simple validation error message
-          - type: array
-            description: Detailed validation errors
-            items:
-              $ref: '#/components/schemas/ValidationError'
-      examples:
-        missing_field:
-          summary: Missing required field
-          value:
-            detail: 'Validation error. Message: stationCode field is required.'
-        time_range_exceeded:
-          summary: Time range validation
-          value:
-            detail: 'Validation error. Message: Maximum hours for time range query is 45 days. You''ve provided: startTime = 2025-09-01 00:00:00, endTime = 2025-11-30 00:00:00.'
-        invalid_format:
-          summary: Invalid field format
-          value:
-            detail:
-            - loc:
-              - query
-              - endTime
-              msg: invalid datetime format
-              type: value_error.datetime
     ParametersListResp:
       title: ParametersListResp
       required:
@@ -700,61 +669,6 @@ components:
         requiredScope:
           type: string
           title: Requiredscope
-    ArchiveCounts:
-      title: ArchiveCounts
-      required:
-      - yearMonth
-      type: object
-      properties:
-        yearMonth:
-          title: Yearmonth
-          type: integer
-    StationsGeometry:
-      title: Geometry
-      required:
-      - type
-      - coordinates
-      type: object
-      properties:
-        type:
-          title: Type
-          type: string
-        coordinates:
-          title: Coordinates
-          type: array
-          items:
-            type: number
-    StationsFeature:
-      title: Feature
-      required:
-      - stationCode
-      - type
-      - geometry
-      - properties
-      type: object
-      properties:
-        stationCode:
-          title: Stationcode
-          type: string
-        type:
-          title: Type
-          type: string
-        geometry:
-          $ref: '#/components/schemas/StationsGeometry'
-        properties:
-          $ref: '#/components/schemas/StationsProperties'
-    Observation:
-      title: Observation
-      required:
-      - parameter
-      - parameterProperties
-      type: object
-      properties:
-        parameter:
-          title: Parameter
-          type: number
-        parameterProperties:
-          $ref: '#/components/schemas/ObservationProperties'
     ObsDataRespModel:
       title: ObsDataRespModel
       required:
@@ -773,29 +687,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ObservationsFeature'
-    ArchiveParameter:
-      title: ArchiveParameter
-      required:
-      - parameter
-      type: object
-      properties:
-        parameter:
-          $ref: '#/components/schemas/ArchiveCounts'
-    ObservationsFeature:
-      title: Feature
-      required:
-      - type
-      - geometry
-      - properties
-      type: object
-      properties:
-        type:
-          title: Type
-          type: string
-        geometry:
-          $ref: '#/components/schemas/ObservationsGeometry'
-        properties:
-          $ref: '#/components/schemas/ObservationsProperties'
     ObservationsGeometry:
       title: Geometry
       required:
@@ -811,31 +702,6 @@ components:
           type: array
           items:
             type: number
-    ObservationProperties:
-      title: ObservationProperties
-      required:
-      - obsType
-      - isDerived
-      - qc
-      type: object
-      properties:
-        obsType:
-          title: Obstype
-          type: string
-        isDerived:
-          title: Isderived
-          type: boolean
-        qc:
-          title: Qc
-          type: string
-    ObservationsProperties:
-      title: Properties
-      required:
-      - timestamp
-      type: object
-      properties:
-        timestamp:
-          $ref: '#/components/schemas/Observation'
     ValidationError:
       title: ValidationError
       required:
@@ -855,16 +721,131 @@ components:
         type:
           title: Error Type
           type: string
-    GatewayTimeoutError:
-      title: GatewayTimeoutError
+    Observation:
+      title: Observation
+      required:
+      - parameter
+      - parameterProperties
+      type: object
+      properties:
+        parameter:
+          title: Parameter
+          type: number
+        parameterProperties:
+          $ref: '#/components/schemas/ObservationProperties'
+    ObservationProperties:
+      title: ObservationProperties
+      required:
+      - obsType
+      - isDerived
+      - qc
+      type: object
+      properties:
+        obsType:
+          title: Obstype
+          type: string
+        isDerived:
+          title: Isderived
+          type: boolean
+        qc:
+          title: Qc
+          type: string
+    HTTPValidationError:
+      title: HTTPValidationError
       type: object
       properties:
         detail:
           title: Detail
+          oneOf:
+          - type: string
+            description: Simple validation error message
+          - type: array
+            description: Detailed validation errors
+            items:
+              $ref: '#/components/schemas/ValidationError'
+      examples:
+        missing_field:
+          summary: Missing required field
+          value:
+            detail: 'Validation error. Message: stationCode field is required.'
+        time_range_exceeded:
+          summary: Time range validation
+          value:
+            detail: 'Validation error. Message: Maximum hours for time range query is 45 days. You''ve provided: startTime = 2025-09-01 00:00:00, endTime = 2025-11-30 00:00:00.'
+        invalid_format:
+          summary: Invalid field format
+          value:
+            detail:
+            - loc:
+              - query
+              - endTime
+              msg: invalid datetime format
+              type: value_error.datetime
+    ObservationsProperties:
+      title: Properties
+      required:
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/Observation'
+    ObservationsFeature:
+      title: Feature
+      required:
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        type:
+          title: Type
           type: string
-          description: Error message describing the timeout
-      example:
-        detail: stream timeout
+        geometry:
+          $ref: '#/components/schemas/ObservationsGeometry'
+        properties:
+          $ref: '#/components/schemas/ObservationsProperties'
+    ArchiveParameter:
+      title: ArchiveParameter
+      required:
+      - parameter
+      type: object
+      properties:
+        parameter:
+          $ref: '#/components/schemas/ArchiveCounts'
+    StationsProperties:
+      title: Properties
+      required:
+      - parameters
+      - elevation
+      - isArchived
+      - lastObsTimestamp
+      - obsTypes
+      type: object
+      properties:
+        tags:
+          title: Tags
+          type: object
+        parameters:
+          title: Parameters
+          type: array
+          items:
+            type: string
+        elevation:
+          title: Elevation
+          type: number
+        isArchived:
+          title: Isarchived
+          type: boolean
+        lastObsTimestamp:
+          title: Lastobstimestamp
+          type: string
+        obsTypes:
+          title: Obstypes
+          type: array
+          items:
+            type: string
+        archiveCounts:
+          $ref: '#/components/schemas/ArchiveParameter'
     UnauthorizedError:
       title: UnauthorizedError
       type: object
@@ -875,6 +856,25 @@ components:
           description: Error message describing the authorization failure
       example:
         detail: JWT is expired
+    StationsFeature:
+      title: Feature
+      required:
+      - stationCode
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        stationCode:
+          title: Stationcode
+          type: string
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/StationsGeometry'
+        properties:
+          $ref: '#/components/schemas/StationsProperties'
     StnDataRespModel:
       title: StnDataRespModel
       required:
@@ -966,40 +966,40 @@ components:
             lastObsTimestamp: '2024-03-22T16:00:00Z'
             obsTypes:
             - SYNOP
-    StationsProperties:
-      title: Properties
+    StationsGeometry:
+      title: Geometry
       required:
-      - parameters
-      - elevation
-      - isArchived
-      - lastObsTimestamp
-      - obsTypes
+      - type
+      - coordinates
       type: object
       properties:
-        tags:
-          title: Tags
-          type: object
-        parameters:
-          title: Parameters
-          type: array
-          items:
-            type: string
-        elevation:
-          title: Elevation
-          type: number
-        isArchived:
-          title: Isarchived
-          type: boolean
-        lastObsTimestamp:
-          title: Lastobstimestamp
+        type:
+          title: Type
           type: string
-        obsTypes:
-          title: Obstypes
+        coordinates:
+          title: Coordinates
           type: array
           items:
-            type: string
-        archiveCounts:
-          $ref: '#/components/schemas/ArchiveParameter'
+            type: number
+    GatewayTimeoutError:
+      title: GatewayTimeoutError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the timeout
+      example:
+        detail: stream timeout
+    ArchiveCounts:
+      title: ArchiveCounts
+      required:
+      - yearMonth
+      type: object
+      properties:
+        yearMonth:
+          title: Yearmonth
+          type: integer
   examples:
     Observations_with_showTags_true:
       summary: Response with station tags included (showTags=true)
@@ -1029,140 +1029,6 @@ components:
             '2025-01-22T01:00:00Z':
               airTemp: 2.9
               windSpeed: 1.54
-    Observations_Endpoint_Core_Scope:
-      summary: Response for the accounts with Core Scope
-      value:
-        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
-        type: FeatureCollection
-        features:
-        - type: Feature
-          geometry:
-            type: Point
-            coordinates:
-            - -0.45
-            - 51.4833
-          properties:
-            '2025-01-22T00:00:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              windSpeed: 2.06
-              windSpeedProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-            '2025-01-22T00:20:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-            '2025-01-22T00:50:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-            '2025-01-22T01:00:00Z':
-              airTemp: 2.9
-              airTempProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-    Observations_Endpoint_Plus_Scope:
-      summary: Response for the accounts with Plus Scope
-      value:
-        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
-        type: FeatureCollection
-        features:
-        - type: Feature
-          geometry:
-            type: Point
-            coordinates:
-            - -0.45
-            - 51.4833
-          properties:
-            '2025-01-22T00:00:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              windSpeed: 2.06
-              windSpeedProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              wbgt: 2.4
-              wbgtProperties:
-                obsType: SYNOP
-                isDerived: true
-                qc: pass
-            '2025-01-22T00:20:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              wbgt: 2.2
-              wbgtProperties:
-                obsType: METAR
-                isDerived: true
-                qc: pass
-            '2025-01-22T00:50:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              wbgt: 2.2
-              wbgtProperties:
-                obsType: METAR
-                isDerived: true
-                qc: pass
-            '2025-01-22T01:00:00Z':
-              airTemp: 2.9
-              airTempProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              wbgt: 2.4
-              wbgtProperties:
-                obsType: SYNOP
-                isDerived: true
-                qc: pass
     Observations_with_showTags_false:
       summary: Response without station tags (showTags=false or omitted)
       value:
@@ -1695,6 +1561,140 @@ components:
         description: Maximum wind speed at 2m above the surface over the 60 minutes before the valid timestamp.
         notes: This height is an approximation for data sources where we know or it is reasonable to assume that winds will be measured closer to 2m than 10m. As a general rule 10m wind speeds will be 30% higher than 2m.
         requiredScope: ''
+    Observations_Endpoint_Core_Scope:
+      summary: Response for the accounts with Core Scope
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 2.06
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+    Observations_Endpoint_Plus_Scope:
+      summary: Response for the accounts with Plus Scope
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 2.06
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              wbgt: 2.4
+              wbgtProperties:
+                obsType: SYNOP
+                isDerived: true
+                qc: pass
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              wbgt: 2.2
+              wbgtProperties:
+                obsType: METAR
+                isDerived: true
+                qc: pass
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              wbgt: 2.2
+              wbgtProperties:
+                obsType: METAR
+                isDerived: true
+                qc: pass
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              wbgt: 2.4
+              wbgtProperties:
+                obsType: SYNOP
+                isDerived: true
+                qc: pass
   securitySchemes:
     clientCredentials:
       type: oauth2

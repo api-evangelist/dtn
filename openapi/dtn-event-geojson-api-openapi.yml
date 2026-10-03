@@ -32,40 +32,24 @@ paths:
       tags:
       - Event Geojson
 components:
+  parameters:
+    geolevel:
+      name: geolevel
+      description: Name of desired geo level.
+      example: Division
+      in: query
+      required: false
+      schema:
+        type: string
+    weatherEventId:
+      name: weatherEventId
+      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
+      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
+      in: path
+      required: true
+      schema:
+        type: string
   schemas:
-    eventFeature:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '0'
-          description: Unique identifier for the feature
-        type:
-          type: string
-          example: Feature
-        properties:
-          $ref: '#/components/schemas/eventFeatureProperties'
-        geometry:
-          type: object
-          properties:
-            type:
-              type: string
-              example: Polygon
-            coordinates:
-              type: array
-              items:
-                type: array
-                items:
-                  type: array
-                  items:
-                    type: number
-              example:
-              - - - 145.103
-                  - -37.744
-                - - 145.102
-                  - -37.741
-                - - 145.107
-                  - -37.738
     eventFeatureCollection:
       type: object
       properties:
@@ -103,23 +87,39 @@ components:
           type: number
           example: 100
           description: Lower prediction range value.
-  parameters:
-    geolevel:
-      name: geolevel
-      description: Name of desired geo level.
-      example: Division
-      in: query
-      required: false
-      schema:
-        type: string
-    weatherEventId:
-      name: weatherEventId
-      description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
-      example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
-      in: path
-      required: true
-      schema:
-        type: string
+    eventFeature:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '0'
+          description: Unique identifier for the feature
+        type:
+          type: string
+          example: Feature
+        properties:
+          $ref: '#/components/schemas/eventFeatureProperties'
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              example: Polygon
+            coordinates:
+              type: array
+              items:
+                type: array
+                items:
+                  type: array
+                  items:
+                    type: number
+              example:
+              - - - 145.103
+                  - -37.744
+                - - 145.102
+                  - -37.741
+                - - 145.107
+                  - -37.738
   securitySchemes:
     clientCredentials:
       type: oauth2

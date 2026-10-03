@@ -147,24 +147,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ValidationError:
-      title: Validation Error
-      type: array
-      items:
-        type: object
-        required:
-        - msg
-        - param
-        - location
-        properties:
-          value:
-            type: string
-          msg:
-            type: string
-          param:
-            type: string
-          location:
-            type: string
     StrikesArchive:
       title: Strikes Archive
       description: Success
@@ -199,6 +181,24 @@ components:
         expirationTime:
           type: string
           description: The time when the `downloadUrl` will expire.
+    ValidationError:
+      title: Validation Error
+      type: array
+      items:
+        type: object
+        required:
+        - msg
+        - param
+        - location
+        properties:
+          value:
+            type: string
+          msg:
+            type: string
+          param:
+            type: string
+          location:
+            type: string
   responses:
     ValidationError:
       description: Validation Error

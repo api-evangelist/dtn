@@ -114,21 +114,6 @@ components:
           type: number
           minimum: 0
           maximum: 100
-    TimedObservation:
-      allOf:
-      - $ref: '#/components/schemas/WeatherObservation'
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
     ObservationsResponse:
       type: object
       properties:
@@ -145,6 +130,21 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/TimedObservation'
+    TimedObservation:
+      allOf:
+      - $ref: '#/components/schemas/WeatherObservation'
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
   securitySchemes:
     oauth2:
       type: oauth2

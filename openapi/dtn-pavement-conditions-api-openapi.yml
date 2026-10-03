@@ -617,45 +617,20 @@ paths:
       security:
       - clientCredentials: []
 components:
-  responses:
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    FeatureCollectionRoute:
+    Error:
       type: object
-      required:
-      - type
-      - features
       properties:
         type:
           type: string
-          enum:
-          - FeatureCollection
-        features:
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - type
-            - geometry
-            properties:
-              type:
-                type: string
-                enum:
-                - Feature
-              geometry:
-                $ref: '#/components/schemas/LineStringRoute'
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     PavementConditionsResponse:
       type: object
       properties:
@@ -784,6 +759,31 @@ components:
                             updatedAt:
                               type: string
                               format: date-time
+    FeatureCollectionRoute:
+      type: object
+      required:
+      - type
+      - features
+      properties:
+        type:
+          type: string
+          enum:
+          - FeatureCollection
+        features:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - type
+            - geometry
+            properties:
+              type:
+                type: string
+                enum:
+                - Feature
+              geometry:
+                $ref: '#/components/schemas/LineStringRoute'
     RouteConditionsResponse:
       type: object
       properties:
@@ -929,19 +929,6 @@ components:
               type: string
               format: date-time
               description: Estimated departure time from the origin (arriveAt - route duration). Present when arriveAt is used.
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
     LineStringRoute:
       type: object
       required:
@@ -960,6 +947,19 @@ components:
             minItems: 2
             items:
               type: number
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2
