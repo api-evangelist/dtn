@@ -1,29 +1,27 @@
-# Kin Score artifact — dtn — 2026-09-01T210448
+# Kin Score artifact — dtn — 2026-10-03T000835
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: dtn
-  schema_version: 0.18.0
-  scored_at: '2026-09-01'
-  run_ts: 2026-09-01T210448
-  composite: 56.5
-  band: strong
+  schema_version: 0.23.0
+  scored_at: '2026-10-03'
+  run_ts: 2026-10-03T000835
+  composite: 52.0
+  band: developing
   facets:
-    discoverability: 75.9
-    contract_quality: 64.8
-    governance: 14.4
+    discoverability: 73.2
+    contract_quality: 60.5
+    contract_governance: 14.4
     operational_transparency: 36.8
     developer_ergonomics: 68.5
-    commercial_clarity: 34.2
-    contract_governance: 14.4
     access_clarity: 34.2
   agent_readiness:
-    score: 32.9
+    score: 34.6
     band: agent-ready
     dimensions:
       spec_presence: true
       agentic_access: derived
-      reversibility_documented: false
+      reversibility_documented: documented
       mcp_server: false
       auth_clarity: negotiable
       idempotency: false
@@ -44,7 +42,7 @@ kin_score:
     applies: true
     regime: Energy & Utilities
     regime_id: energy_utilities
-    score: 56.8
+    score: 34.4
     matched_via: tags
   provenance:
     mcp: derived
@@ -55,4 +53,4 @@ kin_score:
       total: 98
       derived: 0
       coverage: 0.0
-      callable: 95.9
+      callable: 96.9
