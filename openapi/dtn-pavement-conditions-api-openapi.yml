@@ -618,19 +618,24 @@ paths:
       - clientCredentials: []
 components:
   schemas:
-    Error:
+    LineStringRoute:
       type: object
+      required:
+      - type
+      - coordinates
       properties:
         type:
           type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
+          enum:
+          - LineString
+        coordinates:
+          type: array
+          minItems: 2
+          items:
+            type: array
+            minItems: 2
+            items:
+              type: number
     PavementConditionsResponse:
       type: object
       properties:
@@ -784,6 +789,19 @@ components:
                 - Feature
               geometry:
                 $ref: '#/components/schemas/LineStringRoute'
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     RouteConditionsResponse:
       type: object
       properties:
@@ -929,24 +947,6 @@ components:
               type: string
               format: date-time
               description: Estimated departure time from the origin (arriveAt - route duration). Present when arriveAt is used.
-    LineStringRoute:
-      type: object
-      required:
-      - type
-      - coordinates
-      properties:
-        type:
-          type: string
-          enum:
-          - LineString
-        coordinates:
-          type: array
-          minItems: 2
-          items:
-            type: array
-            minItems: 2
-            items:
-              type: number
   responses:
     UnauthorizedResponse:
       description: Unauthorized - Missing or invalid Bearer token

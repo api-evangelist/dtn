@@ -52,16 +52,121 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
-  parameters:
-    accept-json:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
+  schemas:
+    filter:
+      type: object
+      properties:
+        id:
+          type: string
+          example: nws-tropical-bulletin
+        label:
+          type: string
+          example: NWS Tropical Bulletins
+        description:
+          type: string
+          example: Only display Flash Floods and Heat weather bulletins
+        query:
+          type: array
+          description: Generic array structure supporting complex data-driven style filters. Can contain nested arrays, strings, numbers, or objects according to the filter requirements.
+          items: {}
+          example:
+          - in
+          - - GET
+            - phenomena
+          - - literal
+            - - HT
+              - FF
+        enabledByDefault:
+          type: boolean
+          example: false
+    general-error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          format: uri
+          description: A URL to a document describing the error condition.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: HTTP status code
+        instance:
+          type: string
+          format: uri
+          description: URL with the id for the specific error; this will often point to an error log for that specific response.
+      additionalProperties: true
+    mapbox-style:
+      type: object
+      additionalProperties: true
+      example:
+        version: 8
+        layers:
+          fill-opacity: 1
+          source-layer: geojsonLayer
+          type: fill
+          paint:
+            fill-color:
+            - interpolate
+            - - linear
+            - - get
+              - value
+            - 77
+            - '#B7E0A9'
+            - 100
+            - '#5CA743'
+            - 110
+            - '#468936'
+            - 119
+            - '#2E6A2E'
+            - 124
+            - '#2A5525'
+            - 131
+            - '#ECCF49'
+            - 141
+            - '#EB7127'
+            - 150
+            - '#D3182D'
+            - 158
+            - '#B8305C'
+            - 166
+            - '#A6459A'
+            - 179
+            - '#7C3090'
+    style:
+      type: object
+      properties:
+        id:
+          type: string
+          example: default
+        label:
+          type: string
+          example: Color scale
+        mapBoxStyle:
+          $ref: '#/components/schemas/mapbox-style'
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/filter'
+  headers:
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
       schema:
         type: string
-        enum:
-        - application/json
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+  parameters:
     locale:
       in: query
       name: locale
@@ -72,6 +177,25 @@ components:
         Defaults to English (en-US) if unsupported locale is specified.<br/>
 
         <b>If provided, overrides the Accept-Language header.</b><br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    accept-language:
+      in: header
+      name: Accept-Language
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
 
         '
       schema:
@@ -118,59 +242,16 @@ components:
         type: string
         description: id for the layer from which to receive data.
         example: radar-base-ref-precip-type-na-contours
-    accept-language:
+    accept-json:
       in: header
-      name: Accept-Language
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        '
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
       schema:
         type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-  headers:
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
+        enum:
+        - application/json
   responses:
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
     style-list:
       description: successful operation
       headers:
@@ -243,106 +324,25 @@ components:
             detail: Bearer token either not provided or unauthorized.
             status: 401
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
-  schemas:
-    filter:
-      type: object
-      properties:
-        id:
-          type: string
-          example: nws-tropical-bulletin
-        label:
-          type: string
-          example: NWS Tropical Bulletins
-        description:
-          type: string
-          example: Only display Flash Floods and Heat weather bulletins
-        query:
-          type: array
-          description: Generic array structure supporting complex data-driven style filters. Can contain nested arrays, strings, numbers, or objects according to the filter requirements.
-          items: {}
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
           example:
-          - in
-          - - GET
-            - phenomena
-          - - literal
-            - - HT
-              - FF
-        enabledByDefault:
-          type: boolean
-          example: false
-    style:
-      type: object
-      properties:
-        id:
-          type: string
-          example: default
-        label:
-          type: string
-          example: Color scale
-        mapBoxStyle:
-          $ref: '#/components/schemas/mapbox-style'
-        filters:
-          type: array
-          items:
-            $ref: '#/components/schemas/filter'
-    mapbox-style:
-      type: object
-      additionalProperties: true
-      example:
-        version: 8
-        layers:
-          fill-opacity: 1
-          source-layer: geojsonLayer
-          type: fill
-          paint:
-            fill-color:
-            - interpolate
-            - - linear
-            - - get
-              - value
-            - 77
-            - '#B7E0A9'
-            - 100
-            - '#5CA743'
-            - 110
-            - '#468936'
-            - 119
-            - '#2E6A2E'
-            - 124
-            - '#2A5525'
-            - 131
-            - '#ECCF49'
-            - 141
-            - '#EB7127'
-            - 150
-            - '#D3182D'
-            - 158
-            - '#B8305C'
-            - 166
-            - '#A6459A'
-            - 179
-            - '#7C3090'
-    general-error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          format: uri
-          description: A URL to a document describing the error condition.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
-          type: number
-          description: HTTP status code
-        instance:
-          type: string
-          format: uri
-          description: URL with the id for the specific error; this will often point to an error log for that specific response.
-      additionalProperties: true
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
   securitySchemes:
     clientCredentials:
       type: oauth2

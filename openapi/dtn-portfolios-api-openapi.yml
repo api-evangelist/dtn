@@ -254,6 +254,45 @@ paths:
                 detail: This request requires 10 producer credits, but only 5 remain.
 components:
   schemas:
+    Portfolio:
+      type: object
+      description: A customer-defined portfolio (curated list of producers).
+      properties:
+        portfolioId:
+          type: integer
+          description: Unique identifier for the portfolio.
+          example: 782
+        portfolioName:
+          type: string
+          description: Human-readable name of the portfolio.
+          example: 2025 Spring Prospects
+        numberOfProducers:
+          type: integer
+          description: Number of producers currently in the portfolio.
+          example: 45
+        dateCreated:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the portfolio was created.
+          example: '2025-01-10T09:15:00Z'
+        creator:
+          type:
+          - string
+          - 'null'
+          description: Name of the user who created the portfolio.
+          example: John Smith
+    Pagination:
+      type: object
+      description: Pagination metadata for list responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
     Producer:
       type: object
       description: A producer record representing an agricultural entity (farmer, company, cooperative).
@@ -404,33 +443,6 @@ components:
             '
           example:
           - john@smithfarms.com
-    Portfolio:
-      type: object
-      description: A customer-defined portfolio (curated list of producers).
-      properties:
-        portfolioId:
-          type: integer
-          description: Unique identifier for the portfolio.
-          example: 782
-        portfolioName:
-          type: string
-          description: Human-readable name of the portfolio.
-          example: 2025 Spring Prospects
-        numberOfProducers:
-          type: integer
-          description: Number of producers currently in the portfolio.
-          example: 45
-        dateCreated:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the portfolio was created.
-          example: '2025-01-10T09:15:00Z'
-        creator:
-          type:
-          - string
-          - 'null'
-          description: Name of the user who created the portfolio.
-          example: John Smith
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -469,18 +481,6 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
   securitySchemes:
     clientCredentials:
       type: oauth2

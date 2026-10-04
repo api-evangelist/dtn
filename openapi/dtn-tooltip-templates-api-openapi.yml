@@ -48,77 +48,6 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
-  parameters:
-    accept-tooltip-template:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
-      schema:
-        type: string
-        enum:
-        - text/x-handlebars-template
-    locale:
-      in: query
-      name: locale
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        <b>If provided, overrides the Accept-Language header.</b><br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    layer-id:
-      in: path
-      name: layerId
-      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
-
-        '
-      required: true
-      schema:
-        type: string
-        description: id for the layer from which to receive data.
-        example: radar-base-ref-precip-type-na-contours
-    layer-parameters:
-      in: query
-      name: parameters
-      description: 'Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.
-
-        '
-      required: false
-      schema:
-        type: string
-        example: id-1:value-1;id-2:value-2
-    accept-language:
-      in: header
-      name: Accept-Language
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
   responses:
     tooltip-template:
       description: successful operation
@@ -134,25 +63,6 @@ components:
           schema:
             type: string
             example: "<div class='dtn-tooltip-container'>\n <h3 class='dtn-tooltip-header'>Bridge Deck Condition</h3>\n <table class='dtn-tooltip-table'>\n\t <tr>\n\t <td>\n\t <div class='dtn-tooltip-label'>Bridge Deck Condition:</div>\n\t </td>\n\t <td>\n\t\t <div class='dtn-tooltip-data'>{{properties.bridgeDeckCondition)}}</div>\n\t\t </td>\n\t </tr>\n </table>\n </div>"
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
     unprocessable-entity:
       description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
       headers:
@@ -210,13 +120,28 @@ components:
             detail: Bearer token either not provided or unauthorized.
             status: 401
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
   headers:
     x-request-id:
       description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
       schema:
         type: string
     content-language:
@@ -224,6 +149,81 @@ components:
       schema:
         type: string
         default: en-US
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+  parameters:
+    locale:
+      in: query
+      name: locale
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        <b>If provided, overrides the Accept-Language header.</b><br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    accept-language:
+      in: header
+      name: Accept-Language
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    layer-parameters:
+      in: query
+      name: parameters
+      description: 'Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.
+
+        '
+      required: false
+      schema:
+        type: string
+        example: id-1:value-1;id-2:value-2
+    layer-id:
+      in: path
+      name: layerId
+      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
+
+        '
+      required: true
+      schema:
+        type: string
+        description: id for the layer from which to receive data.
+        example: radar-base-ref-precip-type-na-contours
+    accept-tooltip-template:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - text/x-handlebars-template
   schemas:
     general-error:
       type: object

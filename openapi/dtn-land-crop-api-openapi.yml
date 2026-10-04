@@ -176,41 +176,6 @@ paths:
                 detail: This request requires 8 land credits, but only 5 remain.
 components:
   schemas:
-    LandCrop:
-      type: object
-      description: A crop history record for a land parcel.
-      properties:
-        landId:
-          type: integer
-          description: Land parcel identifier.
-          example: 3456789
-        cropYear:
-          type: integer
-          description: Year the crop was planted/harvested.
-          example: 2025
-        acres:
-          type: number
-          format: float
-          description: Acres planted with this crop in the given year.
-          example: 148.2
-        lciId:
-          type: integer
-          description: Land Cover Index (crop type) identifier. Use /codes/crops to look up crop names.
-          example: 1
-        planted:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Date the crop was planted (ISO 8601 timestamp), or null if unknown.
-          example: '2025-04-15T00:00:00Z'
-        harvested:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Date the crop was harvested (ISO 8601 timestamp), or null if unknown.
-          example: '2025-10-20T00:00:00Z'
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -249,6 +214,41 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
+    LandCrop:
+      type: object
+      description: A crop history record for a land parcel.
+      properties:
+        landId:
+          type: integer
+          description: Land parcel identifier.
+          example: 3456789
+        cropYear:
+          type: integer
+          description: Year the crop was planted/harvested.
+          example: 2025
+        acres:
+          type: number
+          format: float
+          description: Acres planted with this crop in the given year.
+          example: 148.2
+        lciId:
+          type: integer
+          description: Land Cover Index (crop type) identifier. Use /codes/crops to look up crop names.
+          example: 1
+        planted:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date the crop was planted (ISO 8601 timestamp), or null if unknown.
+          example: '2025-04-15T00:00:00Z'
+        harvested:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date the crop was harvested (ISO 8601 timestamp), or null if unknown.
+          example: '2025-10-20T00:00:00Z'
   securitySchemes:
     clientCredentials:
       type: oauth2

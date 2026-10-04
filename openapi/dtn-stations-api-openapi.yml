@@ -52,27 +52,6 @@ paths:
                 $ref: '#/components/schemas/StationList'
 components:
   schemas:
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
-    StationList:
-      type: object
-      properties:
-        total:
-          type: integer
-        stations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Station'
     Station:
       type: object
       properties:
@@ -93,6 +72,27 @@ components:
           - BUOY
           - SHIP
           - AGRICULTURAL
+    StationList:
+      type: object
+      properties:
+        total:
+          type: integer
+        stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
   securitySchemes:
     oauth2:
       type: oauth2

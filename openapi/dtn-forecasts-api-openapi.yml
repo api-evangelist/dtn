@@ -115,63 +115,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DailyForecastResponse'
 components:
-  responses:
-    Unauthorized:
-      description: Missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Invalid query parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-    HourlyForecastPoint:
-      type: object
-      properties:
-        validAt:
-          type: string
-          format: date-time
-        airTemperatureInCelsius:
-          type: number
-        precipitationAmountInMillimeter:
-          type: number
-        precipitationProbabilityInPercent:
-          type: number
-        windSpeedInMeterPerSecond:
-          type: number
-        windDirectionInDegree:
-          type: number
-        windGustInMeterPerSecond:
-          type: number
-        relativeHumidityInPercent:
-          type: number
-        weatherSymbol:
-          type: integer
-    HourlyForecastResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        units:
-          type: string
-        location:
-          $ref: '#/components/schemas/Location'
-        forecasts:
-          type: array
-          items:
-            $ref: '#/components/schemas/HourlyForecastPoint'
     DailyForecastPoint:
       type: object
       properties:
@@ -204,6 +148,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DailyForecastPoint'
+    HourlyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/HourlyForecastPoint'
+    HourlyForecastPoint:
+      type: object
+      properties:
+        validAt:
+          type: string
+          format: date-time
+        airTemperatureInCelsius:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        precipitationProbabilityInPercent:
+          type: number
+        windSpeedInMeterPerSecond:
+          type: number
+        windDirectionInDegree:
+          type: number
+        windGustInMeterPerSecond:
+          type: number
+        relativeHumidityInPercent:
+          type: number
+        weatherSymbol:
+          type: integer
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
     Location:
       type: object
       properties:
@@ -216,6 +203,19 @@ components:
         elevation:
           type: number
           description: Elevation in meters
+  responses:
+    BadRequest:
+      description: Invalid query parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     oauth2:
       type: oauth2

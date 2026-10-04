@@ -190,6 +190,18 @@ paths:
                 detail: Your credit quota expired on 2025-12-31T23:59:59.000Z
 components:
   schemas:
+    Crop:
+      type: object
+      description: A crop code entry from the Land Cover Index.
+      properties:
+        cropId:
+          type: integer
+          description: Unique crop identifier (LCI ID).
+          example: 1
+        cropName:
+          type: string
+          description: Human-readable crop name.
+          example: Field Corn
     Error:
       type: object
       description: RFC 7807 Problem Detail error response.
@@ -228,18 +240,6 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
-    Crop:
-      type: object
-      description: A crop code entry from the Land Cover Index.
-      properties:
-        cropId:
-          type: integer
-          description: Unique crop identifier (LCI ID).
-          example: 1
-        cropName:
-          type: string
-          description: Human-readable crop name.
-          example: Field Corn
   securitySchemes:
     clientCredentials:
       type: oauth2

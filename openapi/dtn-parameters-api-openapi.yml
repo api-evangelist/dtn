@@ -201,31 +201,6 @@ paths:
     - url: https://pavement-condition.stg.wx.zones.dtn.com/v2
       description: Staging server
 components:
-  responses:
-    GetParameter:
-      description: Parameter List
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Parameters'
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-    UnauthorizedResponse:
-      description: Unauthorized - Missing or invalid Bearer token
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ForbiddenResponse:
-      description: Forbidden - No valid Bearer token provided
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     ValidationError:
       title: Validation Error
@@ -297,6 +272,31 @@ components:
           type: string
         instance:
           type: string
+  responses:
+    GetParameter:
+      description: Parameter List
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Parameters'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2

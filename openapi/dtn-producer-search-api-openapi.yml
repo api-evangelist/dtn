@@ -672,6 +672,18 @@ paths:
                 detail: This request requires 1 producer credit, but only 0 remain.
 components:
   schemas:
+    Pagination:
+      type: object
+      description: Pagination metadata for list responses.
+      properties:
+        total:
+          type: integer
+          description: Total number of records matching the query (across all pages).
+          example: 150
+        hasMore:
+          type: boolean
+          description: Whether there are more results beyond the current page.
+          example: true
     Producer:
       type: object
       description: A producer record representing an agricultural entity (farmer, company, cooperative).
@@ -860,18 +872,6 @@ components:
                 type: string
                 description: The parameter that failed validation.
                 example: lat
-    Pagination:
-      type: object
-      description: Pagination metadata for list responses.
-      properties:
-        total:
-          type: integer
-          description: Total number of records matching the query (across all pages).
-          example: 150
-        hasMore:
-          type: boolean
-          description: Whether there are more results beyond the current page.
-          example: true
   securitySchemes:
     clientCredentials:
       type: oauth2

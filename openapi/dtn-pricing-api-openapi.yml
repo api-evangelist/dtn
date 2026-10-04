@@ -141,14 +141,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Pagination:
-      properties:
-        pageTotal:
-          type: number
-        pageNumber:
-          type: number
-        pageLimit:
-          type: number
     PricingRuleLabels:
       type: string
       enum:
@@ -175,6 +167,14 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
+    Pagination:
+      properties:
+        pageTotal:
+          type: number
+        pageNumber:
+          type: number
+        pageLimit:
+          type: number
     PricingRule:
       properties:
         id:

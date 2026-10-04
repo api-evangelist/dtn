@@ -8930,6 +8930,51 @@ paths:
     - url: https://weather.api.dtn.com
 components:
   schemas:
+    MetadataDTNResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+        dtnEvents:
+          additionalProperties:
+            type: string
+          type: object
+          title: Dtnevents
+      type: object
+      required:
+      - url
+      - dtnEvents
+      title: MetadataDTNResponse
+      example:
+        url: https://wxbulletin.api.dtn.com/v2/metadata/dtn
+        dtnEvents:
+          '0': Uncategorized
+          '1': Snow
+          '2': Low Temperature
+          '3': Fog
+          '4': Heat
+          '5': Marine and Coastal
+          '6': Winter Storm
+          '7': Tropical Storm, Hurricane, and Typhoon
+          '8': Thunderstorm
+          '9': Tornado
+          '10': Radiological Hazard
+          '11': Volcano
+          '12': Avalanche
+          '13': Tsunami
+          '14': Wind
+          '15': Smoke
+          '16': Flood
+          '17': Rain
+          '18': Weather Conditions
+          '19': Administrative Message
+          '20': Air Quality
+          '21': Civil Emergency Message
+          '22': Dust
+          '23': Fire
+          '24': Test
+          '25': Earthquake
+          '26': Agriculture
     Values:
       properties:
         valueName:
@@ -9018,152 +9063,6 @@ components:
       - updated
       - info
       title: GeoJsonAlertProperties
-    MetadataDTNResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-        dtnEvents:
-          additionalProperties:
-            type: string
-          type: object
-          title: Dtnevents
-      type: object
-      required:
-      - url
-      - dtnEvents
-      title: MetadataDTNResponse
-      example:
-        url: https://wxbulletin.api.dtn.com/v2/metadata/dtn
-        dtnEvents:
-          '0': Uncategorized
-          '1': Snow
-          '2': Low Temperature
-          '3': Fog
-          '4': Heat
-          '5': Marine and Coastal
-          '6': Winter Storm
-          '7': Tropical Storm, Hurricane, and Typhoon
-          '8': Thunderstorm
-          '9': Tornado
-          '10': Radiological Hazard
-          '11': Volcano
-          '12': Avalanche
-          '13': Tsunami
-          '14': Wind
-          '15': Smoke
-          '16': Flood
-          '17': Rain
-          '18': Weather Conditions
-          '19': Administrative Message
-          '20': Air Quality
-          '21': Civil Emergency Message
-          '22': Dust
-          '23': Fire
-          '24': Test
-          '25': Earthquake
-          '26': Agriculture
-    GeoJsonAlertInfo:
-      properties:
-        event:
-          type: string
-          title: Event
-          description: The text denoting the type of the subject event of the alert message
-        eventCode:
-          items: {}
-          type: array
-          title: Eventcode
-          description: A system- specific code identifying the event type of the alert message
-        category:
-          type: string
-          title: Category
-          description: The code denoting the category of the subject event of the alert message
-        language:
-          type: string
-          title: Language
-          description: The code denoting the language of the info sub- element of the alert message
-        urgency:
-          type: string
-          title: Urgency
-          description: The code denoting the urgency of the subject event of the alert message
-        severity:
-          type: string
-          title: Severity
-          description: The code denoting the severity of the subject event of the alert message
-        certainty:
-          type: string
-          title: Certainty
-          description: The code denoting the certainty of the subject event of the alert message
-        responseType:
-          type: string
-          title: Responsetype
-          description: The code denoting the type of action recommended for the target audience
-        effective:
-          type: string
-          format: date-time
-          title: Effective
-          description: The effective time of the information of the alert message
-        onset:
-          type: string
-          format: date-time
-          title: Onset
-          description: The expected time of the beginning of the subject event of the alert message
-        expires:
-          type: string
-          format: date-time
-          title: Expires
-          description: The expiry time of the information of the alert message
-        audience:
-          type: string
-          title: Audience
-          description: The text describing the intended audience of the alert message
-        senderName:
-          type: string
-          title: Sendername
-          description: The text naming the originator of the alert message
-        headline:
-          type: string
-          title: Headline
-          description: The text headline of the alert message
-        description:
-          type: string
-          title: Description
-          description: The text describing the subject event of the alert message
-        instruction:
-          type: string
-          title: Instruction
-          description: The text describing the recommended action to be taken by recipients of the alert message
-        web:
-          type: string
-          title: Web
-          description: The identifier of the hyperlink associating additional information with the alert message
-        contact:
-          type: string
-          title: Contact
-          description: The text describing the contact for follow-up and confirmation of the alert message
-        parameters:
-          items:
-            type: object
-          type: array
-          title: Parameters
-          description: A system- specific additional parameter associated with the alert message
-        area:
-          items:
-            $ref: '#/components/schemas/GeoJsonAlertInfoArea'
-          type: array
-          title: Area
-          description: The container for all component parts of the area sub-element of the info sub- element of the alert message
-      type: object
-      required:
-      - event
-      - category
-      - language
-      - urgency
-      - severity
-      - certainty
-      - expires
-      - area
-      title: GeoJsonAlertInfo
     MetadataResponse:
       properties:
         url:
@@ -10088,68 +9987,6 @@ components:
                   - Waspada Hujan Lebat - Moderate
                   - Waspada Hujan Lebat - Severe
                   - Waspada Hujan Lebat - Extreme
-    GeoJsonAlertInfoArea:
-      properties:
-        areaDesc:
-          type: string
-          title: Areadesc
-          description: The text describing the affected area of the alert message
-        polygon:
-          type: object
-          title: Polygon
-          description: The paired values of points defining a polygon that delineates the affected area of the alert message
-        circle:
-          type: string
-          title: Circle
-          description: The paired values of a point and radius delineating the affected area of the alert message
-        ceiling:
-          type: number
-          title: Ceiling
-          description: The maximum altitude of the affected area of the alert message
-        altitude:
-          type: number
-          title: Altitude
-          description: The specific or minimum altitude of the affected area of the alert message
-        geocodes:
-          items:
-            $ref: '#/components/schemas/Values'
-          type: array
-          title: Geocodes
-          description: The geographic code delineating the affected area of the alert message
-      type: object
-      required:
-      - areaDesc
-      title: GeoJsonAlertInfoArea
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     GeoJsonAlertResponse:
       properties:
         url:
@@ -10300,6 +10137,137 @@ components:
             dtnEvent: Heat
             dtnEventCode: '4'
             dtnDisclaimer: Any DTN expiration dates, times, and message types shown here are automatically generated by the DTN's system, not by the alerting agencies themselves. Additionally, the dtnEvent and dtnEventCode are DTN's normalized event parameters for uniformity and do not necessarily reflect the exact terminology of the issuing agency. To access the original event name as published by the agency, please refer to the event parameter in the response.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    GeoJsonAlertInfo:
+      properties:
+        event:
+          type: string
+          title: Event
+          description: The text denoting the type of the subject event of the alert message
+        eventCode:
+          items: {}
+          type: array
+          title: Eventcode
+          description: A system- specific code identifying the event type of the alert message
+        category:
+          type: string
+          title: Category
+          description: The code denoting the category of the subject event of the alert message
+        language:
+          type: string
+          title: Language
+          description: The code denoting the language of the info sub- element of the alert message
+        urgency:
+          type: string
+          title: Urgency
+          description: The code denoting the urgency of the subject event of the alert message
+        severity:
+          type: string
+          title: Severity
+          description: The code denoting the severity of the subject event of the alert message
+        certainty:
+          type: string
+          title: Certainty
+          description: The code denoting the certainty of the subject event of the alert message
+        responseType:
+          type: string
+          title: Responsetype
+          description: The code denoting the type of action recommended for the target audience
+        effective:
+          type: string
+          format: date-time
+          title: Effective
+          description: The effective time of the information of the alert message
+        onset:
+          type: string
+          format: date-time
+          title: Onset
+          description: The expected time of the beginning of the subject event of the alert message
+        expires:
+          type: string
+          format: date-time
+          title: Expires
+          description: The expiry time of the information of the alert message
+        audience:
+          type: string
+          title: Audience
+          description: The text describing the intended audience of the alert message
+        senderName:
+          type: string
+          title: Sendername
+          description: The text naming the originator of the alert message
+        headline:
+          type: string
+          title: Headline
+          description: The text headline of the alert message
+        description:
+          type: string
+          title: Description
+          description: The text describing the subject event of the alert message
+        instruction:
+          type: string
+          title: Instruction
+          description: The text describing the recommended action to be taken by recipients of the alert message
+        web:
+          type: string
+          title: Web
+          description: The identifier of the hyperlink associating additional information with the alert message
+        contact:
+          type: string
+          title: Contact
+          description: The text describing the contact for follow-up and confirmation of the alert message
+        parameters:
+          items:
+            type: object
+          type: array
+          title: Parameters
+          description: A system- specific additional parameter associated with the alert message
+        area:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlertInfoArea'
+          type: array
+          title: Area
+          description: The container for all component parts of the area sub-element of the info sub- element of the alert message
+      type: object
+      required:
+      - event
+      - category
+      - language
+      - urgency
+      - severity
+      - certainty
+      - expires
+      - area
+      title: GeoJsonAlertInfo
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     GeoJsonAlert:
       properties:
         id:
@@ -10343,6 +10311,58 @@ components:
       - properties
       - dtnInfo
       title: GeoJsonAlert
+    GeoJsonAlertInfoArea:
+      properties:
+        areaDesc:
+          type: string
+          title: Areadesc
+          description: The text describing the affected area of the alert message
+        polygon:
+          type: object
+          title: Polygon
+          description: The paired values of points defining a polygon that delineates the affected area of the alert message
+        circle:
+          type: string
+          title: Circle
+          description: The paired values of a point and radius delineating the affected area of the alert message
+        ceiling:
+          type: number
+          title: Ceiling
+          description: The maximum altitude of the affected area of the alert message
+        altitude:
+          type: number
+          title: Altitude
+          description: The specific or minimum altitude of the affected area of the alert message
+        geocodes:
+          items:
+            $ref: '#/components/schemas/Values'
+          type: array
+          title: Geocodes
+          description: The geographic code delineating the affected area of the alert message
+      type: object
+      required:
+      - areaDesc
+      title: GeoJsonAlertInfoArea
+    general-error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          description: The error type.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: The HTTP status code.
+        instance:
+          type: string
+          format: uri
+          description: A URL with the specific error ID (often pointing to an error log for that specific response).
+      additionalProperties: false
     SunMoon:
       type: object
       properties:
@@ -10523,26 +10543,43 @@ components:
                 phaseName: Waning Crescent
                 moonrise: Never Rise
                 moonset: '2023-08-12T17:57:59Z'
-    general-error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          description: The error type.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
-          type: number
-          description: The HTTP status code.
-        instance:
-          type: string
-          format: uri
-          description: A URL with the specific error ID (often pointing to an error log for that specific response).
-      additionalProperties: false
+  responses:
+    bad-request:
+      description: An invalid request.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: bad request
+            title: Invalid Request
+            detail: Validation failed.
+            status: 400
+            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
+    not-acceptable:
+      description: Unable to produce a response matching the Accept request header.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: not-acceptable
+            title: Not Acceptable
+            detail: The Accept header value is invalid or unsupported.
+            status: 406
+            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
+    unauthorized:
+      description: Unable to authenticate credentials.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user.
+            detail: invalid token
+            status: 401
+            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
   parameters:
     startDate:
       name: startDate
@@ -10574,43 +10611,6 @@ components:
         format: float
       example: 52.369
       required: true
-  responses:
-    not-acceptable:
-      description: Unable to produce a response matching the Accept request header.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: not-acceptable
-            title: Not Acceptable
-            detail: The Accept header value is invalid or unsupported.
-            status: 406
-            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
-    unauthorized:
-      description: Unable to authenticate credentials.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user.
-            detail: invalid token
-            status: 401
-            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
-    bad-request:
-      description: An invalid request.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: bad request
-            title: Invalid Request
-            detail: Validation failed.
-            status: 400
-            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
   securitySchemes:
     clientCredentials:
       type: oauth2

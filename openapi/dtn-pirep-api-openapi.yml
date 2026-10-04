@@ -33,177 +33,26 @@ paths:
       operationId: getV1Pireps
       x-operation-id-source: derived
 components:
-  schemas:
-    Geometry:
-      type: object
-      description: GeoJSon geometry
-      discriminator:
-        propertyName: type
-      required:
-      - type
-      externalDocs:
-        url: http://geojson.org/geojson-spec.html#geometry-objects
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          description: the geometry type
-    Error:
-      title: Error
-      description: Error
-      required:
-      - type
-      - title
-      - status
-      - detail
-      - meta
-      type: object
-      properties:
-        url:
-          type: string
-        type:
-          enum:
-          - internal-server-error
-          - unauthorized
-          - bad-request
-          - service-unavailable
-          - forbidden
-          - not-found
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-        meta:
-          $ref: '#/components/schemas/Meta'
-    PirepFeature:
-      description: GeoJSon 'Feature' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.2
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - geometry
-        - properties
-        properties:
-          geometry:
-            allOf:
-            - {}
-            - $ref: '#/components/schemas/Geometry'
-          properties:
-            $ref: '#/components/schemas/PirepItem'
-          id:
-            oneOf:
-            - type: number
-            - type: string
-    GeoJsonObject:
-      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
-
-        '
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - Feature
-          - FeatureCollection
-          - Point
-          - MultiPoint
-          - LineString
-          - MultiLineString
-          - Polygon
-          - MultiPolygon
-          - GeometryCollection
-        bbox:
-          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
-
-            '
-          type: array
-          items:
-            type: number
-      required:
-      - type
-      discriminator:
-        propertyName: type
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
-    PirepFeatureCollection:
-      description: GeoJSon 'FeatureCollection' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - features
-        properties:
-          features:
-            type: array
-            items:
-              $ref: '#/components/schemas/PirepFeature'
-    PirepItem:
-      type: object
-      required:
-      - raw_text
-      - typeOfAircraft
-      - stationId
-      - issueOffice
-      - validDateTime
-      - flightLevelLow
-      - flightLevelHigh
-      properties:
-        raw_text:
-          type: string
-        typeOfAircraft:
-          type: string
-        stationId:
-          type: string
-        issueOffice:
-          type: string
-        validDateTime:
-          type: string
-          format: date-time
-        flightLevelLow:
-          type: number
-        flightLevelHigh:
-          type: number
   examples:
+    PirepBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.comv1/pireps?stationId=IND&offset=-1
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/pireps:requestId:0a73a828-8415-4bb7-ac36-02322a3f0e19
+        errors:
+        - message: '`offset` query must be Integer zero or greater'
+          parameter: offset
+          value: -1
+        meta:
+          name: v1.pireps?stationId=IND&offset=-1
+          uuid: e288fbbb-cd74-4c54-8c8e-78d0939fa309
+          request_id: 0a73a828-8415-4bb7-ac36-02322a3f0e19
+          start_timestamp: 1714683025786
+          end_timestamp: 1714683026098
+          execution_time: 312
     PirepSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/pireps/?stationId=IND&limit=2
@@ -356,26 +205,16 @@ components:
           start_timestamp: 1714681278028
           end_timestamp: 1714681279690
           execution_time: 1662
-    PirepBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.comv1/pireps?stationId=IND&offset=-1
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/pireps:requestId:0a73a828-8415-4bb7-ac36-02322a3f0e19
-        errors:
-        - message: '`offset` query must be Integer zero or greater'
-          parameter: offset
-          value: -1
-        meta:
-          name: v1.pireps?stationId=IND&offset=-1
-          uuid: e288fbbb-cd74-4c54-8c8e-78d0939fa309
-          request_id: 0a73a828-8415-4bb7-ac36-02322a3f0e19
-          start_timestamp: 1714683025786
-          end_timestamp: 1714683026098
-          execution_time: 312
   responses:
+    PirepSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PirepFeatureCollection'
+          examples:
+            Success:
+              $ref: '#/components/examples/PirepSuccessResponse'
     ErrorUnauthorized:
       description: Unauthorized
       content:
@@ -404,15 +243,176 @@ components:
           examples:
             BadRequest:
               $ref: '#/components/examples/PirepBadRequestResponse'
-    PirepSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/PirepFeatureCollection'
-          examples:
-            Success:
-              $ref: '#/components/examples/PirepSuccessResponse'
+  schemas:
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
+    PirepFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/PirepFeature'
+    PirepItem:
+      type: object
+      required:
+      - raw_text
+      - typeOfAircraft
+      - stationId
+      - issueOffice
+      - validDateTime
+      - flightLevelLow
+      - flightLevelHigh
+      properties:
+        raw_text:
+          type: string
+        typeOfAircraft:
+          type: string
+        stationId:
+          type: string
+        issueOffice:
+          type: string
+        validDateTime:
+          type: string
+          format: date-time
+        flightLevelLow:
+          type: number
+        flightLevelHigh:
+          type: number
+    GeoJsonObject:
+      description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
+
+        '
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Feature
+          - FeatureCollection
+          - Point
+          - MultiPoint
+          - LineString
+          - MultiLineString
+          - Polygon
+          - MultiPolygon
+          - GeometryCollection
+        bbox:
+          description: 'A GeoJSON object MAY have a member named "bbox" to include information on the coordinate range for its Geometries, Features, or FeatureCollections. The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries.
+
+            '
+          type: array
+          items:
+            type: number
+      required:
+      - type
+      discriminator:
+        propertyName: type
+    Error:
+      title: Error
+      description: Error
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - meta
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          enum:
+          - internal-server-error
+          - unauthorized
+          - bad-request
+          - service-unavailable
+          - forbidden
+          - not-found
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+    PirepFeature:
+      description: GeoJSon 'Feature' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/PirepItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
   parameters:
     QueryLimit:
       name: limit

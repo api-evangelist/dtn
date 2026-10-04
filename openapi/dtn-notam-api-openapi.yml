@@ -34,6 +34,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    NotamItem:
+      type: object
+      properties:
+        stationId:
+          type: string
+        notamId:
+          type: string
+        raw_text:
+          type: string
+        issueDateTime:
+          type: string
+          format: date-time
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
     Error:
       title: Error
       description: Error
@@ -81,23 +98,6 @@ components:
             $ref: '#/components/schemas/NotamItem'
         meta:
           $ref: '#/components/schemas/Meta'
-    NotamItem:
-      type: object
-      properties:
-        stationId:
-          type: string
-        notamId:
-          type: string
-        raw_text:
-          type: string
-        issueDateTime:
-          type: string
-          format: date-time
-        expireDateTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
     Meta:
       title: Meta
       description: Meta data attached to every response
@@ -119,6 +119,32 @@ components:
           type: integer
         execution_time:
           type: integer
+  parameters:
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.  Default = 1000
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.  Default = 0
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryStationId:
+      name: stationId
+      description: Station identifier, e.g., `KIND`, `CYYC`
+      in: query
+      required: true
+      schema:
+        type: string
   examples:
     NotamBadRequestResponse:
       value:
@@ -169,6 +195,24 @@ components:
           end_timestamp: 1714018410376
           execution_time: 2430
   responses:
+    NotamBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/NotamBadRequestResponse'
+    NotamSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotamList'
+          examples:
+            Success:
+              $ref: '#/components/examples/NotamSuccessResponse'
     ErrorUnauthorized:
       description: Unauthorized
       content:
@@ -188,50 +232,6 @@ components:
               start_timestamp: 1714019217213
               end_timestamp: 1714019217246
               execution_time: 33
-    NotamSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotamList'
-          examples:
-            Success:
-              $ref: '#/components/examples/NotamSuccessResponse'
-    NotamBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/NotamBadRequestResponse'
-  parameters:
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.  Default = 1000
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.  Default = 0
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryStationId:
-      name: stationId
-      description: Station identifier, e.g., `KIND`, `CYYC`
-      in: query
-      required: true
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

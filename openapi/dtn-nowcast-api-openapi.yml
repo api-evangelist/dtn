@@ -82,160 +82,6 @@ components:
           examples:
             BadRequest:
               $ref: '#/components/examples/NowcastBadRequestResponse'
-  parameters:
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryDistanceUnits:
-      name: distanceUnits
-      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
-      in: query
-      required: false
-      schema:
-        type: string
-        enum:
-        - nm
-        - km
-        - m
-        - sm
-        default: nm
-    QuerySrid:
-      name: srid
-      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
-      in: query
-      required: false
-      explode: false
-      schema:
-        type: integer
-        enum:
-        - 4326
-        - 3857
-        default: 4326
-    QueryGeometry:
-      name: geometry
-      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: true
-    QueryEfhFlightLevel:
-      name: flightLevel
-      description: Specific flight level for EFH data.  Must use only one of allowed values.
-      in: query
-      required: true
-      schema:
-        type: string
-        items:
-          type: string
-          enum:
-          - FL010
-          - FL030
-          - FL050
-          - FL080
-          - FL100
-          - FL120
-          - FL140
-          - FL160
-          - FL180
-          - FL200
-          - FL220
-          - FL240
-          - FL260
-          - FL270
-          - FL280
-          - FL300
-          - FL320
-          - FL330
-          - FL340
-          - FL350
-          - FL360
-          - FL370
-          - FL380
-          - FL390
-          - FL400
-          - FL410
-          - FL430
-          - FL450
-          - FL530
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryAllowPartialModelRun:
-      name: allowPartialModelRun
-      description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryMinEdr:
-      name: minEdr
-      description: Minimum EDR.  Limits to objects whose `edr` value is greater than or equal to this.
-      in: query
-      required: false
-      schema:
-        type: number
-        minimum: 0.1
-        maximum: 0.9
-        default: 0.1
-        multipleOf: 0.1
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    NowcastQueryIsValidAt:
-      name: isValidAt
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryIntersection:
-      name: intersection
-      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
   schemas:
     GeoJsonObject:
       description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
@@ -268,27 +114,28 @@ components:
       - type
       discriminator:
         propertyName: type
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
+    NowcastItem:
       type: object
+      required:
+      - validDateTime
+      - insertedDateTime
+      - modelDateTime
+      - edr
+      - rid
       properties:
-        name:
+        validDateTime:
           type: string
-        request_id:
+          format: date-time
+        insertedDateTime:
           type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
+          format: date-time
+        modelDateTime:
+          type: string
+          format: date-time
+        edr:
+          type: number
+        rid:
+          type: number
     Error:
       title: Error
       description: Error
@@ -346,28 +193,6 @@ components:
             oneOf:
             - type: number
             - type: string
-    NowcastItem:
-      type: object
-      required:
-      - validDateTime
-      - insertedDateTime
-      - modelDateTime
-      - edr
-      - rid
-      properties:
-        validDateTime:
-          type: string
-          format: date-time
-        insertedDateTime:
-          type: string
-          format: date-time
-        modelDateTime:
-          type: string
-          format: date-time
-        edr:
-          type: number
-        rid:
-          type: number
     Geometry:
       type: object
       description: GeoJSon geometry
@@ -402,6 +227,181 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/NowcastFeature'
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+  parameters:
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryEfhFlightLevel:
+      name: flightLevel
+      description: Specific flight level for EFH data.  Must use only one of allowed values.
+      in: query
+      required: true
+      schema:
+        type: string
+        items:
+          type: string
+          enum:
+          - FL010
+          - FL030
+          - FL050
+          - FL080
+          - FL100
+          - FL120
+          - FL140
+          - FL160
+          - FL180
+          - FL200
+          - FL220
+          - FL240
+          - FL260
+          - FL270
+          - FL280
+          - FL300
+          - FL320
+          - FL330
+          - FL340
+          - FL350
+          - FL360
+          - FL370
+          - FL380
+          - FL390
+          - FL400
+          - FL410
+          - FL430
+          - FL450
+          - FL530
+    NowcastQueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryIntersection:
+      name: intersection
+      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryMinEdr:
+      name: minEdr
+      description: Minimum EDR.  Limits to objects whose `edr` value is greater than or equal to this.
+      in: query
+      required: false
+      schema:
+        type: number
+        minimum: 0.1
+        maximum: 0.9
+        default: 0.1
+        multipleOf: 0.1
+    QueryAllowPartialModelRun:
+      name: allowPartialModelRun
+      description: Boolean indicator for whether to allow partial model run data to be returned.  If false (default), response data will be from latest completely ingested model run.  If true, response data will come from the latest model run that can satisfy the set of request parameters even if that model run is not completely ingested and a different request may only be able to pull from earlier model run.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
   examples:
     NowcastSuccessResponse:
       value:

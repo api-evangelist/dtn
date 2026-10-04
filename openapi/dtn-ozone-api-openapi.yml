@@ -44,15 +44,6 @@ paths:
       x-operation-id-source: derived
 components:
   responses:
-    OzoneBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/OzoneBadRequestResponse'
     ErrorUnauthorized:
       description: Unauthorized
       content:
@@ -72,6 +63,15 @@ components:
               start_timestamp: 1714019217213
               end_timestamp: 1714019217246
               execution_time: 33
+    OzoneBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/OzoneBadRequestResponse'
     OzoneSuccess:
       description: Successful
       content:
@@ -81,28 +81,122 @@ components:
           examples:
             Success:
               $ref: '#/components/examples/OzoneSuccessResponse'
+  parameters:
+    OzoneQueryModelDateTime:
+      name: modelDateTime
+      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.  For this data type, value must be no earlier than 18 hours in past and no later than 3 hours in past.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    OzoneQueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryMinOzoneCode:
+      name: minOzoneCode
+      description: Minimum ozone category code.  Limits to objects whose `categoryCode` value is greater than or equal to this.
+      in: query
+      required: false
+      schema:
+        type: integer
+        enum:
+        - 1
+        - 2
+        default: 1
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QuerySrid:
+      name: srid
+      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
+      in: query
+      required: false
+      explode: false
+      schema:
+        type: integer
+        enum:
+        - 4326
+        - 3857
+        default: 4326
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryIntersection:
+      name: intersection
+      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    QueryGeometry:
+      name: geometry
+      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
   schemas:
-    OzoneFeature:
-      description: GeoJSon 'Feature' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.2
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - geometry
-        - properties
-        properties:
-          geometry:
-            allOf:
-            - {}
-            - $ref: '#/components/schemas/Geometry'
-          properties:
-            $ref: '#/components/schemas/OzoneItem'
-          id:
-            oneOf:
-            - type: number
-            - type: string
     GeoJsonObject:
       description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
 
@@ -134,27 +228,6 @@ components:
       - type
       discriminator:
         propertyName: type
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
     Error:
       title: Error
       description: Error
@@ -191,6 +264,26 @@ components:
             type: object
         meta:
           $ref: '#/components/schemas/Meta'
+    Geometry:
+      type: object
+      description: GeoJSon geometry
+      discriminator:
+        propertyName: type
+      required:
+      - type
+      externalDocs:
+        url: http://geojson.org/geojson-spec.html#geometry-objects
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          description: the geometry type
     OzoneItem:
       type: object
       required:
@@ -234,141 +327,48 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/OzoneFeature'
-    Geometry:
-      type: object
-      description: GeoJSon geometry
-      discriminator:
-        propertyName: type
-      required:
-      - type
+    OzoneFeature:
+      description: GeoJSon 'Feature' object
       externalDocs:
-        url: http://geojson.org/geojson-spec.html#geometry-objects
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - geometry
+        - properties
+        properties:
+          geometry:
+            allOf:
+            - {}
+            - $ref: '#/components/schemas/Geometry'
+          properties:
+            $ref: '#/components/schemas/OzoneItem'
+          id:
+            oneOf:
+            - type: number
+            - type: string
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
       properties:
-        type:
+        name:
           type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          description: the geometry type
-  parameters:
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
-    OzoneQueryModelDateTime:
-      name: modelDateTime
-      description: UTC timestamp in format `YYYY-MM-DD hh:00:00`.  Limits to objects whose `modelDateTime` (for model run time) is specifically the given value, overriding the default setting to provide data from the latest completely ingest model run.  The `hh` must be one of `00`, `06`, `12`, or `18`, and date portion must be recent.  Value must be no earlier than 24 hours ago (because only most recent 2 to 3 model runs may be available) no later than 3 hours ago (because model run data are not available until at least 3 hours after the run time).  A model run time value being accepted through this parameter does not mean there will be applicable data to return in response.  For this data type, value must be no earlier than 18 hours in past and no later than 3 hours in past.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryDistanceUnits:
-      name: distanceUnits
-      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
-      in: query
-      required: false
-      schema:
-        type: string
-        enum:
-        - nm
-        - km
-        - m
-        - sm
-        default: nm
-    QuerySrid:
-      name: srid
-      description: SRID Identifier for coordinate system for spatial filter coordinates.  Default is 4326 (i.e., ordinary longitude & latitude in degrees).
-      in: query
-      required: false
-      explode: false
-      schema:
-        type: integer
-        enum:
-        - 4326
-        - 3857
-        default: 4326
-    QueryGeometry:
-      name: geometry
-      description: Boolean indicator for inclusion of Geometry in response.  If false, geometry will be returned empty.
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: true
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    OzoneQueryIsValidAt:
-      name: isValidAt
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.  Allowed values relative to the current time vary depending on the data type.  For this data type, value must be no earlier than 18 hours in past and no later than 36 hours in future.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryMinOzoneCode:
-      name: minOzoneCode
-      description: Minimum ozone category code.  Limits to objects whose `categoryCode` value is greater than or equal to this.
-      in: query
-      required: false
-      schema:
-        type: integer
-        enum:
-        - 1
-        - 2
-        default: 1
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryIntersection:
-      name: intersection
-      description: 'Boolean indicator for constraining object geometries to spatial filter coverage.  If true, object shapes will be truncated at the bounds of the spatial filter.  NOTE: Over large areas and if intersecting the antimeridian the results will likely be inaccurate.'
-      in: query
-      required: false
-      schema:
-        type: boolean
-        default: false
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
   examples:
     OzoneBadRequestResponse:
       value:

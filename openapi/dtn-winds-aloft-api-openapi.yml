@@ -40,15 +40,6 @@ paths:
       x-operation-id-source: derived
 components:
   responses:
-    WindsaloftBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/WindsaloftBadRequestResponse'
     ErrorUnauthorized:
       description: Unauthorized
       content:
@@ -77,95 +68,15 @@ components:
           examples:
             Success:
               $ref: '#/components/examples/WindsaloftSuccessResponse'
-  parameters:
-    QueryWindsAloftFlightLevel:
-      name: flt_level
-      description: Comma-separated list of flight levels for winds aloft data.  Must include only allowed values.
-      in: query
-      required: true
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - fl010
-          - fl030
-          - fl050
-          - fl100
-          - fl180
-          - fl240
-          - fl300
-          - fl340
-          - fl390
-          - fl450
-          - fl530
-    QueryPolygon:
-      name: polygon
-      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryDistanceUnits:
-      name: distanceUnits
-      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
-      in: query
-      required: false
-      schema:
-        type: string
-        enum:
-        - nm
-        - km
-        - m
-        - sm
-        default: nm
-    QueryOffset:
-      name: offset
-      description: Skip over this many into the response set; used for paginated results.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 0
-    QueryCircle:
-      name: circle
-      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryCorridor:
-      name: corridor
-      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
-      in: query
-      required: false
-      schema:
-        type: string
-    QueryIsValidAt:
-      name: isValidAt
-      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.
-      in: query
-      required: false
-      schema:
-        type: string
-        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
-    QueryLimit:
-      name: limit
-      description: Provide no more than this many items in the response set.
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 1000
-        minimum: 1
-        maximum: 10000
-    QueryBbox:
-      name: bbox
-      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
-      in: query
-      required: false
-      schema:
-        type: string
+    WindsaloftBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/WindsaloftBadRequestResponse'
   schemas:
     GeoJsonObject:
       description: 'GeoJSon object The coordinate reference system for all GeoJSON coordinates is a geographic coordinate reference system, using the World Geodetic System 1984 (WGS 84) datum, with longitude and latitude units of decimal degrees. This is equivalent to the coordinate reference system identified by the Open Geospatial Consortium (OGC) URN An OPTIONAL third-position element SHALL be the height in meters above or below the WGS 84 reference ellipsoid. In the absence of elevation values, applications sensitive to height or depth SHOULD interpret positions as being at local ground or sea level.
@@ -198,27 +109,6 @@ components:
       - type
       discriminator:
         propertyName: type
-    Meta:
-      title: Meta
-      description: Meta data attached to every response
-      required:
-      - name
-      - request_id
-      - start_timestamp
-      - end_timestamp
-      - execution_time
-      type: object
-      properties:
-        name:
-          type: string
-        request_id:
-          type: string
-        start_timestamp:
-          type: integer
-        end_timestamp:
-          type: integer
-        execution_time:
-          type: integer
     Error:
       title: Error
       description: Error
@@ -275,6 +165,20 @@ components:
           - MultiLineString
           - MultiPolygon
           description: the geometry type
+    WindsaloftFeatureCollection:
+      description: GeoJSon 'FeatureCollection' object
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      allOf:
+      - $ref: '#/components/schemas/GeoJsonObject'
+      - type: object
+        required:
+        - features
+        properties:
+          features:
+            type: array
+            items:
+              $ref: '#/components/schemas/WindsaloftFeature'
     WindsaloftItem:
       type: object
       required:
@@ -324,21 +228,136 @@ components:
             oneOf:
             - type: number
             - type: string
-    WindsaloftFeatureCollection:
-      description: GeoJSon 'FeatureCollection' object
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      allOf:
-      - $ref: '#/components/schemas/GeoJsonObject'
-      - type: object
-        required:
-        - features
-        properties:
-          features:
-            type: array
-            items:
-              $ref: '#/components/schemas/WindsaloftFeature'
+    Meta:
+      title: Meta
+      description: Meta data attached to every response
+      required:
+      - name
+      - request_id
+      - start_timestamp
+      - end_timestamp
+      - execution_time
+      type: object
+      properties:
+        name:
+          type: string
+        request_id:
+          type: string
+        start_timestamp:
+          type: integer
+        end_timestamp:
+          type: integer
+        execution_time:
+          type: integer
+  parameters:
+    QueryCorridor:
+      name: corridor
+      description: Line coordinates and distance from the line in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>,<HALFWIDTH>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 2 and 40 coordinates for the line.  The `<HALFWIDTH>` defines the distance (in default or `distanceUnits`-specified units) from the line defined by the coordinates out to which to create encompassing shape.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with corridor definition of area that crosses antimeridian will fail or give unexpected results.  The larger the defined area, the more its shape on projected map will differ from true corridor on spherical coordinates.  Maximum allowed <HALFWIDTH> is 200nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryCircle:
+      name: circle
+      description: Circle coordinates and radius distance in the format `<X>,<Y>,<RADIUS>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  The `<RADIUS>` defines the distance (in default or `distanceUnits`-specified units) from the defined point.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with circle definition of area that crosses antimeridian will fail.  The larger the defined area, the more its shape on projected map will differ from true circle on spherical coordinates.  Maximum allowed <RADIUS> is 400nm (and equal lengths for different `distanceUnits`).
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryBbox:
+      name: bbox
+      description: Bounding box coordinates in the format `<min_X>,<min_Y>,<max_X>,<max_Y>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with bbox definition of area that crosses antimeridian will fail.
+      in: query
+      required: false
+      schema:
+        type: string
+    QueryDistanceUnits:
+      name: distanceUnits
+      description: Units identifier for distances in definition for circle or corridor spatial filter.  Default is `nm` (nautical miles).
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+        - nm
+        - km
+        - m
+        - sm
+        default: nm
+    QueryOffset:
+      name: offset
+      description: Skip over this many into the response set; used for paginated results.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+    QueryIsValidAt:
+      name: isValidAt
+      description: UTC timestamp in format `YYYY-MM-DD hh:mm:ss`.  Limits to objects whose `validDateTime` is not earlier than the specified value and whose `expirationDateTime` is later than that specified value.  Allowed values relative to the current time vary depending on the data type.  A valid time value being accepted through this parameter does not mean there will be applicable data to return in response.
+      in: query
+      required: false
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}
+    QueryWindsAloftFlightLevel:
+      name: flt_level
+      description: Comma-separated list of flight levels for winds aloft data.  Must include only allowed values.
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - fl010
+          - fl030
+          - fl050
+          - fl100
+          - fl180
+          - fl240
+          - fl300
+          - fl340
+          - fl390
+          - fl450
+          - fl530
+    QueryLimit:
+      name: limit
+      description: Provide no more than this many items in the response set.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1000
+        minimum: 1
+        maximum: 10000
+    QueryPolygon:
+      name: polygon
+      description: Polygon coordinates in the format `<X_0>,<Y_0>,<X_1>,<Y_1>...,<X_n>,<Y_n>`.  The `X,Y` coordinates must be consistent with the `srid` (`4326` for longitude/latitude by default).  Must provide between 3 and 40 coordinates.  If the last `X,Y` does not match the first `X,Y`, the first `X,Y` is copied to the end to close the polygon.  Limits to objects within or intersecting the area so defined.  No more than one of `bbox`, `polygon`, `circle`, and `corridor` may be used in one request.  Requests with polygon definition of area that crosses antimeridian will fail or give unexpected results.
+      in: query
+      required: false
+      schema:
+        type: string
   examples:
+    WindsaloftBadRequestResponse:
+      value:
+        url: https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
+        type: bad-request
+        title: Invalid Request
+        status: 400
+        detail: Validation failed.
+        instance: urn:dtn:aviation-api:/v1/windsaloft/:requestId:883234a3-dc99-4285-ac74-93a46eb6f05a
+        errors:
+        - message: '`flt_level` must be in the format fl### and one of specifically allowed levels (010|030|050|100|180|240|300|340|390|450|530)'
+          parameter: flt_level
+          value: fl320
+        meta:
+          name: v1.windsaloft.?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
+          uuid: 4611bb70-9c0e-494d-85dc-eee855f7d532
+          request_id: 883234a3-dc99-4285-ac74-93a46eb6f05a
+          start_timestamp: 1741812361342
+          end_timestamp: 1741812361760
+          execution_time: 418
     WindsaloftSuccessResponse:
       value:
         url: https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl300&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
@@ -505,25 +524,6 @@ components:
           start_timestamp: 1741812067610
           end_timestamp: 1741812078012
           execution_time: 10402
-    WindsaloftBadRequestResponse:
-      value:
-        url: https://aviation.api.dtn.com/v1/windsaloft/?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
-        type: bad-request
-        title: Invalid Request
-        status: 400
-        detail: Validation failed.
-        instance: urn:dtn:aviation-api:/v1/windsaloft/:requestId:883234a3-dc99-4285-ac74-93a46eb6f05a
-        errors:
-        - message: '`flt_level` must be in the format fl### and one of specifically allowed levels (010|030|050|100|180|240|300|340|390|450|530)'
-          parameter: flt_level
-          value: fl320
-        meta:
-          name: v1.windsaloft.?flt_level=fl320&valid_utc=2025-03-12%2020:15:00&circle=-119,37,100
-          uuid: 4611bb70-9c0e-494d-85dc-eee855f7d532
-          request_id: 883234a3-dc99-4285-ac74-93a46eb6f05a
-          start_timestamp: 1741812361342
-          end_timestamp: 1741812361760
-          execution_time: 418
   securitySchemes:
     clientCredentials:
       type: oauth2

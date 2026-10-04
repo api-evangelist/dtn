@@ -87,10 +87,10 @@ components:
       required: true
       schema:
         type: string
-    year:
-      name: year
+    hour:
+      name: hour
       in: path
-      description: 4 digit year, e.g. 2026
+      description: 2 digit hour, 00-23
       required: true
       schema:
         type: string
@@ -108,17 +108,17 @@ components:
       required: true
       schema:
         type: string
-    hour:
-      name: hour
-      in: path
-      description: 2 digit hour, 00-23
-      required: true
-      schema:
-        type: string
     day:
       name: day
       in: path
       description: 2 digit day, 01-31
+      required: true
+      schema:
+        type: string
+    year:
+      name: year
+      in: path
+      description: 4 digit year, e.g. 2026
       required: true
       schema:
         type: string

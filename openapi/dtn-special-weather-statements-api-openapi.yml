@@ -76,34 +76,11 @@ paths:
       operationId: getFeedsV3SpsArchiveByYearByMonthByDayByHourByMinute
       x-operation-id-source: derived
 components:
-  responses:
-    special_weather_statement_list:
-      description: Special Weather Statement List
-      headers:
-        Content-Type:
-          $ref: '#/components/headers/content-type'
-      content:
-        application/json:
-          example: "[\n\t{\n\t\t\"u\": \"WWUS83_KFGF_SPSFGF_20260108_0227_56058461.txt\",\n\t\t\"a\": \"WWUS83_KFGF_SPSFGF_20260108_0227_56058461.txt\",\n\t\t\"t\": \"SPS\",\n\t\t\"o\": \"KFGF\",\n\t\t\"b\": 1767839220,\n\t\t\"e\": 1767852000,\n\t\t\"f\": [\n\t\t\t\"MNZ017\",\n\t\t\t\"MNZ024\"\n\t\t],\n\t\t\"p\": []\n\t},\n\t{\n\t\t\"u\": \"WWUS83_KBIS_SPSBIS_20260108_0013_55816497.txt\",\n\t\t\"a\": \"WWUS83_KBIS_SPSBIS_20260108_0013_55816497.txt\",\n\t\t\"t\": \"SPS\",\n\t\t\"o\": \"KBIS\",\n\t\t\"b\": 1767831180,\n\t\t\"e\": 1767837600,\n\t\t\"f\": [\n\t\t\t\"NDZ004\",\n\t\t\t\"NDZ005\",\n\t\t\t\"NDZ012\",\n\t\t\t\"NDZ013\"\n\t\t],\n\t\t\"p\": []\n\t},\n\t{\n\t\t\"u\": \"WWUS81_KBGM_SPSBGM_20260108_0102_55904097.txt\",\n\t\t\"a\": \"WWUS81_KBGM_SPSBGM_20260108_0102_55904097.txt\",\n\t\t\"t\": \"SPS\",\n\t\t\"o\": \"KBGM\",\n\t\t\"b\": 1767834120,\n\t\t\"e\": 1767848400,\n\t\t\"f\": [\n\t\t\t\"NYZ009\",\n\t\t\t\"NYZ016\",\n\t\t\t\"NYZ017\",\n\t\t\t\"NYZ018\",\n\t\t\t\"NYZ025\",\n\t\t\t\"NYZ036\",\n\t\t\t\"NYZ037\",\n\t\t\t\"NYZ044\",\n\t\t\t\"NYZ045\",\n\t\t\t\"NYZ046\",\n\t\t\t\"NYZ055\",\n\t\t\t\"NYZ056\",\n\t\t\t\"NYZ057\"\n\t\t],\n\t\t\"p\": []\n\t}\n]"
   parameters:
     minute:
       name: minute
       in: path
       description: 2 digit minute, 00-59
-      required: true
-      schema:
-        type: string
-    year:
-      name: year
-      in: path
-      description: 4 digit year, e.g. 2026
-      required: true
-      schema:
-        type: string
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
       required: true
       schema:
         type: string
@@ -121,6 +98,13 @@ components:
       required: true
       schema:
         type: string
+    month:
+      name: month
+      in: path
+      description: 2 digit month, 01-12
+      required: true
+      schema:
+        type: string
     day:
       name: day
       in: path
@@ -128,6 +112,22 @@ components:
       required: true
       schema:
         type: string
+    year:
+      name: year
+      in: path
+      description: 4 digit year, e.g. 2026
+      required: true
+      schema:
+        type: string
+  responses:
+    special_weather_statement_list:
+      description: Special Weather Statement List
+      headers:
+        Content-Type:
+          $ref: '#/components/headers/content-type'
+      content:
+        application/json:
+          example: "[\n\t{\n\t\t\"u\": \"WWUS83_KFGF_SPSFGF_20260108_0227_56058461.txt\",\n\t\t\"a\": \"WWUS83_KFGF_SPSFGF_20260108_0227_56058461.txt\",\n\t\t\"t\": \"SPS\",\n\t\t\"o\": \"KFGF\",\n\t\t\"b\": 1767839220,\n\t\t\"e\": 1767852000,\n\t\t\"f\": [\n\t\t\t\"MNZ017\",\n\t\t\t\"MNZ024\"\n\t\t],\n\t\t\"p\": []\n\t},\n\t{\n\t\t\"u\": \"WWUS83_KBIS_SPSBIS_20260108_0013_55816497.txt\",\n\t\t\"a\": \"WWUS83_KBIS_SPSBIS_20260108_0013_55816497.txt\",\n\t\t\"t\": \"SPS\",\n\t\t\"o\": \"KBIS\",\n\t\t\"b\": 1767831180,\n\t\t\"e\": 1767837600,\n\t\t\"f\": [\n\t\t\t\"NDZ004\",\n\t\t\t\"NDZ005\",\n\t\t\t\"NDZ012\",\n\t\t\t\"NDZ013\"\n\t\t],\n\t\t\"p\": []\n\t},\n\t{\n\t\t\"u\": \"WWUS81_KBGM_SPSBGM_20260108_0102_55904097.txt\",\n\t\t\"a\": \"WWUS81_KBGM_SPSBGM_20260108_0102_55904097.txt\",\n\t\t\"t\": \"SPS\",\n\t\t\"o\": \"KBGM\",\n\t\t\"b\": 1767834120,\n\t\t\"e\": 1767848400,\n\t\t\"f\": [\n\t\t\t\"NYZ009\",\n\t\t\t\"NYZ016\",\n\t\t\t\"NYZ017\",\n\t\t\t\"NYZ018\",\n\t\t\t\"NYZ025\",\n\t\t\t\"NYZ036\",\n\t\t\t\"NYZ037\",\n\t\t\t\"NYZ044\",\n\t\t\t\"NYZ045\",\n\t\t\t\"NYZ046\",\n\t\t\t\"NYZ055\",\n\t\t\t\"NYZ056\",\n\t\t\t\"NYZ057\"\n\t\t],\n\t\t\"p\": []\n\t}\n]"
   headers:
     content-type:
       description: MIME-type of returned data

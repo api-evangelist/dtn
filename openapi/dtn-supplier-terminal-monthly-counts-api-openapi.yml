@@ -182,17 +182,10 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      required:
-      - code
-      - message
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+    SupplierTerminalMonthlyCounts:
+      type: array
+      items:
+        $ref: '#/components/schemas/SupplierTerminalMonthlyCount'
     SupplierTerminalMonthlyCount:
       type: object
       properties:
@@ -223,10 +216,17 @@ components:
           type: integer
           description: Average number of terminals for a given rack and product
           format: int64
-    SupplierTerminalMonthlyCounts:
-      type: array
-      items:
-        $ref: '#/components/schemas/SupplierTerminalMonthlyCount'
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -637,244 +637,6 @@ paths:
         source: "let url = URL(string: \"https://obs.api.dtn.com/v2/observations/parameters\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer YOUR_ACCESS_TOKEN\", forHTTPHeaderField: \"Authorization\")\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n    if let data = data {\n        print(String(data: data, encoding: .utf8) ?? \"\")\n    }\n}\ntask.resume()"
 components:
   schemas:
-    ParametersListResp:
-      title: ParametersListResp
-      required:
-      - name
-      - unit
-      - type
-      type: object
-      properties:
-        name:
-          type: string
-          title: Name
-        unit:
-          type: string
-          title: Unit
-        imperial_unit:
-          type: string
-          title: Imperialunit
-        type:
-          type: string
-          title: Type
-        precision:
-          type: integer
-          title: Precision
-        description:
-          type: string
-          title: Description
-        notes:
-          type: string
-          title: Notes
-        requiredScope:
-          type: string
-          title: Requiredscope
-    ObsDataRespModel:
-      title: ObsDataRespModel
-      required:
-      - url
-      - type
-      - features
-      type: object
-      properties:
-        url:
-          title: Url
-          type: string
-        type:
-          type: string
-        features:
-          title: Features
-          type: array
-          items:
-            $ref: '#/components/schemas/ObservationsFeature'
-    ObservationsGeometry:
-      title: Geometry
-      required:
-      - type
-      - coordinates
-      type: object
-      properties:
-        type:
-          title: Type
-          type: string
-        coordinates:
-          title: Coordinates
-          type: array
-          items:
-            type: number
-    ValidationError:
-      title: ValidationError
-      required:
-      - loc
-      - msg
-      - type
-      type: object
-      properties:
-        loc:
-          title: Location
-          type: array
-          items:
-            type: string
-        msg:
-          title: Message
-          type: string
-        type:
-          title: Error Type
-          type: string
-    Observation:
-      title: Observation
-      required:
-      - parameter
-      - parameterProperties
-      type: object
-      properties:
-        parameter:
-          title: Parameter
-          type: number
-        parameterProperties:
-          $ref: '#/components/schemas/ObservationProperties'
-    ObservationProperties:
-      title: ObservationProperties
-      required:
-      - obsType
-      - isDerived
-      - qc
-      type: object
-      properties:
-        obsType:
-          title: Obstype
-          type: string
-        isDerived:
-          title: Isderived
-          type: boolean
-        qc:
-          title: Qc
-          type: string
-    HTTPValidationError:
-      title: HTTPValidationError
-      type: object
-      properties:
-        detail:
-          title: Detail
-          oneOf:
-          - type: string
-            description: Simple validation error message
-          - type: array
-            description: Detailed validation errors
-            items:
-              $ref: '#/components/schemas/ValidationError'
-      examples:
-        missing_field:
-          summary: Missing required field
-          value:
-            detail: 'Validation error. Message: stationCode field is required.'
-        time_range_exceeded:
-          summary: Time range validation
-          value:
-            detail: 'Validation error. Message: Maximum hours for time range query is 45 days. You''ve provided: startTime = 2025-09-01 00:00:00, endTime = 2025-11-30 00:00:00.'
-        invalid_format:
-          summary: Invalid field format
-          value:
-            detail:
-            - loc:
-              - query
-              - endTime
-              msg: invalid datetime format
-              type: value_error.datetime
-    ObservationsProperties:
-      title: Properties
-      required:
-      - timestamp
-      type: object
-      properties:
-        timestamp:
-          $ref: '#/components/schemas/Observation'
-    ObservationsFeature:
-      title: Feature
-      required:
-      - type
-      - geometry
-      - properties
-      type: object
-      properties:
-        type:
-          title: Type
-          type: string
-        geometry:
-          $ref: '#/components/schemas/ObservationsGeometry'
-        properties:
-          $ref: '#/components/schemas/ObservationsProperties'
-    ArchiveParameter:
-      title: ArchiveParameter
-      required:
-      - parameter
-      type: object
-      properties:
-        parameter:
-          $ref: '#/components/schemas/ArchiveCounts'
-    StationsProperties:
-      title: Properties
-      required:
-      - parameters
-      - elevation
-      - isArchived
-      - lastObsTimestamp
-      - obsTypes
-      type: object
-      properties:
-        tags:
-          title: Tags
-          type: object
-        parameters:
-          title: Parameters
-          type: array
-          items:
-            type: string
-        elevation:
-          title: Elevation
-          type: number
-        isArchived:
-          title: Isarchived
-          type: boolean
-        lastObsTimestamp:
-          title: Lastobstimestamp
-          type: string
-        obsTypes:
-          title: Obstypes
-          type: array
-          items:
-            type: string
-        archiveCounts:
-          $ref: '#/components/schemas/ArchiveParameter'
-    UnauthorizedError:
-      title: UnauthorizedError
-      type: object
-      properties:
-        detail:
-          title: Detail
-          type: string
-          description: Error message describing the authorization failure
-      example:
-        detail: JWT is expired
-    StationsFeature:
-      title: Feature
-      required:
-      - stationCode
-      - type
-      - geometry
-      - properties
-      type: object
-      properties:
-        stationCode:
-          title: Stationcode
-          type: string
-        type:
-          title: Type
-          type: string
-        geometry:
-          $ref: '#/components/schemas/StationsGeometry'
-        properties:
-          $ref: '#/components/schemas/StationsProperties'
     StnDataRespModel:
       title: StnDataRespModel
       required:
@@ -966,6 +728,244 @@ components:
             lastObsTimestamp: '2024-03-22T16:00:00Z'
             obsTypes:
             - SYNOP
+    GatewayTimeoutError:
+      title: GatewayTimeoutError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the timeout
+      example:
+        detail: stream timeout
+    UnauthorizedError:
+      title: UnauthorizedError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the authorization failure
+      example:
+        detail: JWT is expired
+    ObsDataRespModel:
+      title: ObsDataRespModel
+      required:
+      - url
+      - type
+      - features
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+        type:
+          type: string
+        features:
+          title: Features
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationsFeature'
+    ParametersListResp:
+      title: ParametersListResp
+      required:
+      - name
+      - unit
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+          title: Name
+        unit:
+          type: string
+          title: Unit
+        imperial_unit:
+          type: string
+          title: Imperialunit
+        type:
+          type: string
+          title: Type
+        precision:
+          type: integer
+          title: Precision
+        description:
+          type: string
+          title: Description
+        notes:
+          type: string
+          title: Notes
+        requiredScope:
+          type: string
+          title: Requiredscope
+    ObservationsProperties:
+      title: Properties
+      required:
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/Observation'
+    ObservationsFeature:
+      title: Feature
+      required:
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/ObservationsGeometry'
+        properties:
+          $ref: '#/components/schemas/ObservationsProperties'
+    ObservationsGeometry:
+      title: Geometry
+      required:
+      - type
+      - coordinates
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        coordinates:
+          title: Coordinates
+          type: array
+          items:
+            type: number
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          oneOf:
+          - type: string
+            description: Simple validation error message
+          - type: array
+            description: Detailed validation errors
+            items:
+              $ref: '#/components/schemas/ValidationError'
+      examples:
+        missing_field:
+          summary: Missing required field
+          value:
+            detail: 'Validation error. Message: stationCode field is required.'
+        time_range_exceeded:
+          summary: Time range validation
+          value:
+            detail: 'Validation error. Message: Maximum hours for time range query is 45 days. You''ve provided: startTime = 2025-09-01 00:00:00, endTime = 2025-11-30 00:00:00.'
+        invalid_format:
+          summary: Invalid field format
+          value:
+            detail:
+            - loc:
+              - query
+              - endTime
+              msg: invalid datetime format
+              type: value_error.datetime
+    ArchiveParameter:
+      title: ArchiveParameter
+      required:
+      - parameter
+      type: object
+      properties:
+        parameter:
+          $ref: '#/components/schemas/ArchiveCounts'
+    ArchiveCounts:
+      title: ArchiveCounts
+      required:
+      - yearMonth
+      type: object
+      properties:
+        yearMonth:
+          title: Yearmonth
+          type: integer
+    StationsProperties:
+      title: Properties
+      required:
+      - parameters
+      - elevation
+      - isArchived
+      - lastObsTimestamp
+      - obsTypes
+      type: object
+      properties:
+        tags:
+          title: Tags
+          type: object
+        parameters:
+          title: Parameters
+          type: array
+          items:
+            type: string
+        elevation:
+          title: Elevation
+          type: number
+        isArchived:
+          title: Isarchived
+          type: boolean
+        lastObsTimestamp:
+          title: Lastobstimestamp
+          type: string
+        obsTypes:
+          title: Obstypes
+          type: array
+          items:
+            type: string
+        archiveCounts:
+          $ref: '#/components/schemas/ArchiveParameter'
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+    Observation:
+      title: Observation
+      required:
+      - parameter
+      - parameterProperties
+      type: object
+      properties:
+        parameter:
+          title: Parameter
+          type: number
+        parameterProperties:
+          $ref: '#/components/schemas/ObservationProperties'
+    ObservationProperties:
+      title: ObservationProperties
+      required:
+      - obsType
+      - isDerived
+      - qc
+      type: object
+      properties:
+        obsType:
+          title: Obstype
+          type: string
+        isDerived:
+          title: Isderived
+          type: boolean
+        qc:
+          title: Qc
+          type: string
     StationsGeometry:
       title: Geometry
       required:
@@ -981,54 +981,26 @@ components:
           type: array
           items:
             type: number
-    GatewayTimeoutError:
-      title: GatewayTimeoutError
-      type: object
-      properties:
-        detail:
-          title: Detail
-          type: string
-          description: Error message describing the timeout
-      example:
-        detail: stream timeout
-    ArchiveCounts:
-      title: ArchiveCounts
+    StationsFeature:
+      title: Feature
       required:
-      - yearMonth
+      - stationCode
+      - type
+      - geometry
+      - properties
       type: object
       properties:
-        yearMonth:
-          title: Yearmonth
-          type: integer
+        stationCode:
+          title: Stationcode
+          type: string
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/StationsGeometry'
+        properties:
+          $ref: '#/components/schemas/StationsProperties'
   examples:
-    Observations_with_showTags_true:
-      summary: Response with station tags included (showTags=true)
-      value:
-        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&showTags=true
-        type: FeatureCollection
-        features:
-        - type: Feature
-          geometry:
-            type: Point
-            coordinates:
-            - -0.45
-            - 51.4833
-          properties:
-            tags:
-              name: London Weather Station
-              mgID: LDN001
-            '2025-01-22T00:00:00Z':
-              airTemp: 3
-              windSpeed: 2.06
-            '2025-01-22T00:20:00Z':
-              airTemp: 3
-              windSpeed: 1.54
-            '2025-01-22T00:50:00Z':
-              airTemp: 3
-              windSpeed: 1.54
-            '2025-01-22T01:00:00Z':
-              airTemp: 2.9
-              windSpeed: 1.54
     Observations_with_showTags_false:
       summary: Response without station tags (showTags=false or omitted)
       value:
@@ -1695,6 +1667,34 @@ components:
                 obsType: SYNOP
                 isDerived: true
                 qc: pass
+    Observations_with_showTags_true:
+      summary: Response with station tags included (showTags=true)
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&showTags=true
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            tags:
+              name: London Weather Station
+              mgID: LDN001
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              windSpeed: 2.06
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              windSpeed: 1.54
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              windSpeed: 1.54
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              windSpeed: 1.54
   securitySchemes:
     clientCredentials:
       type: oauth2

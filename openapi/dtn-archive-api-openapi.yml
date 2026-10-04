@@ -146,15 +146,26 @@ paths:
       operationId: getV1ArchiveBulkResult
       x-operation-id-source: derived
 components:
+  responses:
+    GetStrikesArchive:
+      description: Lightning Strikes Archive
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StrikesArchive'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    GetStrikesArchiveBulkResult:
+      description: Lightning Strikes Archive Bulk Result
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StrikesArchiveBulkResult'
   schemas:
-    StrikesArchive:
-      title: Strikes Archive
-      description: Success
-      type: object
-      properties:
-        id:
-          type: string
-          description: Request ID that will be used to check the status of the result and to retrieve the historical data.
     StrikesArchiveBulkResult:
       title: Strikes Archive Bulk Result
       description: Success
@@ -199,25 +210,14 @@ components:
             type: string
           location:
             type: string
-  responses:
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-    GetStrikesArchiveBulkResult:
-      description: Lightning Strikes Archive Bulk Result
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StrikesArchiveBulkResult'
-    GetStrikesArchive:
-      description: Lightning Strikes Archive
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StrikesArchive'
+    StrikesArchive:
+      title: Strikes Archive
+      description: Success
+      type: object
+      properties:
+        id:
+          type: string
+          description: Request ID that will be used to check the status of the result and to retrieve the historical data.
   securitySchemes:
     clientCredentials:
       type: oauth2

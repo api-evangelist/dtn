@@ -89,7 +89,95 @@ paths:
                 items:
                   $ref: '#/components/schemas/prediction'
 components:
+  parameters:
+    fipsList:
+      name: fipsList
+      description: A single or comma seperated list of FIPS to get predictions for.
+      example: 27137,27089
+      in: query
+      required: false
+      schema:
+        type: string
+    endTime:
+      name: endTime
+      description: ISO 8601, end time of predictions.
+      example: '2023-06-01T08:00:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    timezoneId:
+      name: timezoneId
+      description: IANA timezone string to auto adjust prediction timestamps.
+      example: America/Chicago
+      in: query
+      required: false
+      schema:
+        type: string
+    lon:
+      name: lon
+      description: Longitude of point which is used to get predictions for county that contains it.
+      example: -93.258
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    startTime:
+      name: startTime
+      description: ISO 8601, start time of predictions.
+      example: '2023-05-30T08:30:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    regionName:
+      name: regionName
+      description: Can be a predefined, named region, a state abbreviation or full state name.
+      example: CONUS
+      in: query
+      required: false
+      schema:
+        type: string
+    lat:
+      name: lat
+      description: Latitude of point which is used to get predictions for county that contains it.
+      example: 44.9866
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    predictionType:
+      name: predictionType
+      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+      example: risk-index
+      in: query
+      required: false
+      schema:
+        type: string
   schemas:
+    polygon:
+      type: object
+      properties:
+        type:
+          type: string
+          example: MultiPolygon
+        coordinates:
+          type: array
+          items:
+            type: number
+          example:
+          - - - - -94.1728
+                - 45.56023
+              - - -93.27777
+                - 44.7677
+              - - -93.0931
+                - 44.9496
+              - - -94.1728
+                - 45.56023
     prediction:
       type: object
       properties:
@@ -115,6 +203,51 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/hourlyPrediction'
+    featureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
+    fips:
+      type: object
+      properties:
+        fedId:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        fedName:
+          type: string
+          example: Hennepin
+          description: Name of county.
+        fedParentId:
+          type: string
+          example: '27'
+          description: FIPS code for parent state.
+        fedParentName:
+          type: string
+          example: Minnesota
+          description: Name of parent state.
+        fedParentAbbreviation:
+          type: string
+          example: MN
+          description: Abbreviated name of parent state.
+        substationCount:
+          type: number
+          example: 50
+          description: Total number of known substations in county.
+        population:
+          type: number
+          example: 1267416
+          description: Population of county. Can be 0 if data unknown.
+        totalArea:
+          type: number
+          example: 607
+          description: Area of county in square miles.
     feature:
       type: object
       properties:
@@ -161,60 +294,6 @@ components:
           type: string
           example: Hennepin
           description: Name of county.
-    fips:
-      type: object
-      properties:
-        fedId:
-          type: string
-          example: '27053'
-          description: FIPS of county.
-        fedName:
-          type: string
-          example: Hennepin
-          description: Name of county.
-        fedParentId:
-          type: string
-          example: '27'
-          description: FIPS code for parent state.
-        fedParentName:
-          type: string
-          example: Minnesota
-          description: Name of parent state.
-        fedParentAbbreviation:
-          type: string
-          example: MN
-          description: Abbreviated name of parent state.
-        substationCount:
-          type: number
-          example: 50
-          description: Total number of known substations in county.
-        population:
-          type: number
-          example: 1267416
-          description: Population of county. Can be 0 if data unknown.
-        totalArea:
-          type: number
-          example: 607
-          description: Area of county in square miles.
-    polygon:
-      type: object
-      properties:
-        type:
-          type: string
-          example: MultiPolygon
-        coordinates:
-          type: array
-          items:
-            type: number
-          example:
-          - - - - -94.1728
-                - 45.56023
-              - - -93.27777
-                - 44.7677
-              - - -93.0931
-                - 44.9496
-              - - -94.1728
-                - 45.56023
     hourlyPrediction:
       type: object
       properties:
@@ -230,85 +309,6 @@ components:
           type: number
           example: 4
           description: Baseline predicted value for this hourly prediction, changes based on predictionType defined.
-    featureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/feature'
-  parameters:
-    startTime:
-      name: startTime
-      description: ISO 8601, start time of predictions.
-      example: '2023-05-30T08:30:00Z'
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date-time
-    timezoneId:
-      name: timezoneId
-      description: IANA timezone string to auto adjust prediction timestamps.
-      example: America/Chicago
-      in: query
-      required: false
-      schema:
-        type: string
-    lon:
-      name: lon
-      description: Longitude of point which is used to get predictions for county that contains it.
-      example: -93.258
-      in: query
-      required: false
-      schema:
-        type: number
-        format: float
-    predictionType:
-      name: predictionType
-      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
-      example: risk-index
-      in: query
-      required: false
-      schema:
-        type: string
-    endTime:
-      name: endTime
-      description: ISO 8601, end time of predictions.
-      example: '2023-06-01T08:00:00Z'
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date-time
-    lat:
-      name: lat
-      description: Latitude of point which is used to get predictions for county that contains it.
-      example: 44.9866
-      in: query
-      required: false
-      schema:
-        type: number
-        format: float
-    fipsList:
-      name: fipsList
-      description: A single or comma seperated list of FIPS to get predictions for.
-      example: 27137,27089
-      in: query
-      required: false
-      schema:
-        type: string
-    regionName:
-      name: regionName
-      description: Can be a predefined, named region, a state abbreviation or full state name.
-      example: CONUS
-      in: query
-      required: false
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

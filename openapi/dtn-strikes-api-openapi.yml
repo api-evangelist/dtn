@@ -117,24 +117,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ValidationError:
-      title: Validation Error
-      type: array
-      items:
-        type: object
-        required:
-        - msg
-        - param
-        - location
-        properties:
-          value:
-            type: string
-          msg:
-            type: string
-          param:
-            type: string
-          location:
-            type: string
     StrikesDefault:
       title: Strikes
       description: Success
@@ -203,19 +185,37 @@ components:
                                 value:
                                   type: string
                                   description: Value of the parameter.
+    ValidationError:
+      title: Validation Error
+      type: array
+      items:
+        type: object
+        required:
+        - msg
+        - param
+        - location
+        properties:
+          value:
+            type: string
+          msg:
+            type: string
+          param:
+            type: string
+          location:
+            type: string
   responses:
-    GetStrikesDefault:
-      description: Lightning Strikes
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StrikesDefault'
     ValidationError:
       description: Validation Error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ValidationError'
+    GetStrikesDefault:
+      description: Lightning Strikes
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StrikesDefault'
   securitySchemes:
     clientCredentials:
       type: oauth2
