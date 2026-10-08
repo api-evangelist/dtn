@@ -21847,6 +21847,12 @@ apis:
   - type: Documentation
     url: https://devportal.dtn.com/catalog/Weather/radarscope-radar-products/documentation
 common:
+- type: Plans
+  url: plans/dtn-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/dtn-rate-limits.yml
+- type: FinOps
+  url: finops/dtn-finops.yml
 - type: CapabilityMap
   url: capabilities/dtn-capability-edges.yml
   name: DTN Business Capability Map
