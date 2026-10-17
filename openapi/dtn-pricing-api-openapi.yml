@@ -147,6 +147,14 @@ components:
       - BASIS
       - MARGIN
       - COST
+    Pagination:
+      properties:
+        pageTotal:
+          type: number
+        pageNumber:
+          type: number
+        pageLimit:
+          type: number
     PricingRulePut:
       required:
       - value
@@ -167,14 +175,6 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
-    Pagination:
-      properties:
-        pageTotal:
-          type: number
-        pageNumber:
-          type: number
-        pageLimit:
-          type: number
     PricingRule:
       properties:
         id:

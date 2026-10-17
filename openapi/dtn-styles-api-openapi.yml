@@ -52,6 +52,20 @@ paths:
         default:
           $ref: '#/components/responses/error'
 components:
+  headers:
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
   schemas:
     filter:
       type: object
@@ -152,42 +166,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/filter'
-  headers:
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
   parameters:
-    locale:
-      in: query
-      name: locale
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        <b>If provided, overrides the Accept-Language header.</b><br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
     accept-language:
       in: header
       name: Accept-Language
@@ -207,20 +186,6 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    palette-override:
-      in: query
-      name: paletteOverride
-      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
-
-        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
-
-        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
-
-        '
-      required: false
-      schema:
-        type: string
-        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
     filter:
       in: query
       name: filter
@@ -242,6 +207,27 @@ components:
         type: string
         description: id for the layer from which to receive data.
         example: radar-base-ref-precip-type-na-contours
+    locale:
+      in: query
+      name: locale
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        <b>If provided, overrides the Accept-Language header.</b><br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
     accept-json:
       in: header
       name: Accept
@@ -251,6 +237,20 @@ components:
         type: string
         enum:
         - application/json
+    palette-override:
+      in: query
+      name: paletteOverride
+      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
+
+        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
+
+        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
+
+        '
+      required: false
+      schema:
+        type: string
+        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
   responses:
     style-list:
       description: successful operation
@@ -305,25 +305,6 @@ components:
             detail: Either the accept header is missing or none of the values are acceptable.
             status: 406
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    unauthenticated:
-      description: unauthenticated error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/unauthenticated
-            title: unauthorized
-            detail: Bearer token either not provided or unauthorized.
-            status: 401
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
     error:
       description: error response
       headers:
@@ -343,6 +324,25 @@ components:
             detail: The layer you requested could not be found.
             status: 404
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    unauthenticated:
+      description: unauthenticated error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/unauthenticated
+            title: unauthorized
+            detail: Bearer token either not provided or unauthorized.
+            status: 401
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-426614176000
   securitySchemes:
     clientCredentials:
       type: oauth2

@@ -76,6 +76,22 @@ paths:
                 $ref: '#/components/schemas/ObservationsResponse'
 components:
   schemas:
+    ObservationsResponse:
+      type: object
+      properties:
+        stations:
+          type: array
+          items:
+            type: object
+            properties:
+              stationId:
+                type: string
+              location:
+                $ref: '#/components/schemas/Location'
+              observations:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimedObservation'
     WeatherObservation:
       type: object
       properties:
@@ -114,22 +130,6 @@ components:
           type: number
           minimum: 0
           maximum: 100
-    ObservationsResponse:
-      type: object
-      properties:
-        stations:
-          type: array
-          items:
-            type: object
-            properties:
-              stationId:
-                type: string
-              location:
-                $ref: '#/components/schemas/Location'
-              observations:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimedObservation'
     Location:
       type: object
       properties:

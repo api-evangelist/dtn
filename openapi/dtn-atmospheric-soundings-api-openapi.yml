@@ -86,17 +86,10 @@ components:
       required: true
       schema:
         type: string
-    sounding_event_time:
-      name: sounding_event_time
+    year:
+      name: year
       in: path
-      description: event time, as returned from current or historical station listing
-      required: true
-      schema:
-        type: string
-    sounding_station_id:
-      name: sounding_station_id
-      in: path
-      description: id of station reporting the sounding
+      description: 4 digit year, e.g. 2026
       required: true
       schema:
         type: string
@@ -114,10 +107,17 @@ components:
       required: true
       schema:
         type: string
-    year:
-      name: year
+    sounding_event_time:
+      name: sounding_event_time
       in: path
-      description: 4 digit year, e.g. 2026
+      description: event time, as returned from current or historical station listing
+      required: true
+      schema:
+        type: string
+    sounding_station_id:
+      name: sounding_station_id
+      in: path
+      description: id of station reporting the sounding
       required: true
       schema:
         type: string

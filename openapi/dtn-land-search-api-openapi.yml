@@ -247,44 +247,6 @@ paths:
                 instance: urn:dtn:farm-intel-external-api:requestId:example-id
 components:
   schemas:
-    Error:
-      type: object
-      description: RFC 7807 Problem Detail error response.
-      properties:
-        type:
-          type: string
-          description: Error type identifier.
-          example: bad-request
-        title:
-          type: string
-          description: Human-readable error title.
-          example: Invalid Request
-        status:
-          type: integer
-          description: HTTP status code.
-          example: 400
-        detail:
-          type: string
-          description: Human-readable error description.
-          example: Validation failed.
-        instance:
-          type: string
-          description: URI identifying the specific request that failed (includes request ID for tracing).
-          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
-        errors:
-          type: array
-          description: Detailed validation errors (present for 400 responses).
-          items:
-            type: object
-            properties:
-              message:
-                type: string
-                description: Description of what's wrong.
-                example: Required query parameter lat is invalid or missing.
-              parameter:
-                type: string
-                description: The parameter that failed validation.
-                example: lat
     LandSearchResult:
       type: object
       description: A land parcel record returned from search or list endpoints.
@@ -324,6 +286,44 @@ components:
           - 'null'
           description: Meridian-Township-Range-Section legal description.
           example: 4-080N-024W-14
+    Error:
+      type: object
+      description: RFC 7807 Problem Detail error response.
+      properties:
+        type:
+          type: string
+          description: Error type identifier.
+          example: bad-request
+        title:
+          type: string
+          description: Human-readable error title.
+          example: Invalid Request
+        status:
+          type: integer
+          description: HTTP status code.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable error description.
+          example: Validation failed.
+        instance:
+          type: string
+          description: URI identifying the specific request that failed (includes request ID for tracing).
+          example: urn:dtn:farm-intel-external-api:/api/v1/producer/search/radius:requestId:abc123
+        errors:
+          type: array
+          description: Detailed validation errors (present for 400 responses).
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Description of what's wrong.
+                example: Required query parameter lat is invalid or missing.
+              parameter:
+                type: string
+                description: The parameter that failed validation.
+                example: lat
   securitySchemes:
     clientCredentials:
       type: oauth2

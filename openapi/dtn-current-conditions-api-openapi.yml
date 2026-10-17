@@ -111,6 +111,18 @@ components:
           type: string
         message:
           type: string
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
     CurrentConditionsResponse:
       type: object
       properties:
@@ -126,27 +138,15 @@ components:
           $ref: '#/components/schemas/Location'
         observations:
           $ref: '#/components/schemas/WeatherObservation'
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
   responses:
-    BadRequest:
-      description: Invalid query parameters
+    Unauthorized:
+      description: Missing or invalid Bearer token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid Bearer token
+    BadRequest:
+      description: Invalid query parameters
       content:
         application/json:
           schema:

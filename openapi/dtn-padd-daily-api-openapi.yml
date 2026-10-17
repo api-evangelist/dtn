@@ -160,17 +160,10 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      required:
-      - code
-      - message
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
+    DailyPADDs:
+      type: array
+      items:
+        $ref: '#/components/schemas/DailyPADD'
     DailyPADD:
       type: object
       properties:
@@ -203,10 +196,17 @@ components:
           type: string
           description: 'Timestamp of data retrieval in CST: "YYYY-MM-DDThh:mm:ssZ"'
           format: date-time
-    DailyPADDs:
-      type: array
-      items:
-        $ref: '#/components/schemas/DailyPADD'
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
   securitySchemes:
     clientCredentials:
       type: oauth2

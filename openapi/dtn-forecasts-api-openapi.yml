@@ -116,38 +116,6 @@ paths:
                 $ref: '#/components/schemas/DailyForecastResponse'
 components:
   schemas:
-    DailyForecastPoint:
-      type: object
-      properties:
-        validOn:
-          type: string
-          format: date
-        maxAirTemperatureInCelsius:
-          type: number
-        minAirTemperatureInCelsius:
-          type: number
-        precipitationAmountInMillimeter:
-          type: number
-        precipitationProbabilityInPercent:
-          type: number
-        weatherSymbol:
-          type: integer
-        windSpeedInMeterPerSecond:
-          type: number
-        windDirectionInDegree:
-          type: number
-    DailyForecastResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        location:
-          $ref: '#/components/schemas/Location'
-        forecasts:
-          type: array
-          items:
-            $ref: '#/components/schemas/DailyForecastPoint'
     HourlyForecastResponse:
       type: object
       properties:
@@ -162,6 +130,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HourlyForecastPoint'
+    DailyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecastPoint'
     HourlyForecastPoint:
       type: object
       properties:
@@ -191,6 +171,26 @@ components:
           type: string
         message:
           type: string
+    DailyForecastPoint:
+      type: object
+      properties:
+        validOn:
+          type: string
+          format: date
+        maxAirTemperatureInCelsius:
+          type: number
+        minAirTemperatureInCelsius:
+          type: number
+        precipitationAmountInMillimeter:
+          type: number
+        precipitationProbabilityInPercent:
+          type: number
+        weatherSymbol:
+          type: integer
+        windSpeedInMeterPerSecond:
+          type: number
+        windDirectionInDegree:
+          type: number
     Location:
       type: object
       properties:
@@ -204,14 +204,14 @@ components:
           type: number
           description: Elevation in meters
   responses:
-    BadRequest:
-      description: Invalid query parameters
+    Unauthorized:
+      description: Missing or invalid Bearer token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Missing or invalid Bearer token
+    BadRequest:
+      description: Invalid query parameters
       content:
         application/json:
           schema:

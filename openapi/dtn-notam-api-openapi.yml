@@ -33,24 +33,45 @@ paths:
       operationId: getV1Notams
       x-operation-id-source: derived
 components:
+  responses:
+    ErrorUnauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Missing Authorization token.
+            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+            meta:
+              name: v1.notams.KIND
+              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
+              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
+              start_timestamp: 1714019217213
+              end_timestamp: 1714019217246
+              execution_time: 33
+    NotamSuccess:
+      description: Successful
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotamList'
+          examples:
+            Success:
+              $ref: '#/components/examples/NotamSuccessResponse'
+    NotamBadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            BadRequest:
+              $ref: '#/components/examples/NotamBadRequestResponse'
   schemas:
-    NotamItem:
-      type: object
-      properties:
-        stationId:
-          type: string
-        notamId:
-          type: string
-        raw_text:
-          type: string
-        issueDateTime:
-          type: string
-          format: date-time
-        expireDateTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
     Error:
       title: Error
       description: Error
@@ -98,6 +119,23 @@ components:
             $ref: '#/components/schemas/NotamItem'
         meta:
           $ref: '#/components/schemas/Meta'
+    NotamItem:
+      type: object
+      properties:
+        stationId:
+          type: string
+        notamId:
+          type: string
+        raw_text:
+          type: string
+        issueDateTime:
+          type: string
+          format: date-time
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
     Meta:
       title: Meta
       description: Meta data attached to every response
@@ -130,6 +168,13 @@ components:
         default: 1000
         minimum: 1
         maximum: 10000
+    QueryStationId:
+      name: stationId
+      description: Station identifier, e.g., `KIND`, `CYYC`
+      in: query
+      required: true
+      schema:
+        type: string
     QueryOffset:
       name: offset
       description: Skip over this many into the response set; used for paginated results.  Default = 0
@@ -138,13 +183,6 @@ components:
       schema:
         type: integer
         default: 0
-    QueryStationId:
-      name: stationId
-      description: Station identifier, e.g., `KIND`, `CYYC`
-      in: query
-      required: true
-      schema:
-        type: string
   examples:
     NotamBadRequestResponse:
       value:
@@ -194,44 +232,6 @@ components:
           start_timestamp: 1714018407946
           end_timestamp: 1714018410376
           execution_time: 2430
-  responses:
-    NotamBadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            BadRequest:
-              $ref: '#/components/examples/NotamBadRequestResponse'
-    NotamSuccess:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/NotamList'
-          examples:
-            Success:
-              $ref: '#/components/examples/NotamSuccessResponse'
-    ErrorUnauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Missing Authorization token.
-            instance: urn:dtn:aviation-api:/v1/notams/KIND:requestId:19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-            meta:
-              name: v1.notams.KIND
-              uuid: d64fc634-9bee-430d-8ab1-200337e6e9b2
-              request_id: 19e1b83a-cb2e-4460-b687-ce9d0c50b4b6
-              start_timestamp: 1714019217213
-              end_timestamp: 1714019217246
-              execution_time: 33
   securitySchemes:
     clientCredentials:
       type: oauth2

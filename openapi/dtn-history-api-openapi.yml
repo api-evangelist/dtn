@@ -175,34 +175,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   parameters:
-    curveDateParam:
-      name: curveDate
-      in: query
-      description: The date to return prices for when requesting a forward curve.  Leave blank for most recent history.
-      schema:
-        type: string
-        format: date
-    rootParam:
-      name: root
-      in: query
-      description: A single futures root.  A futures root is the part of a symbol that does not change with expiration.
-      required: true
-      examples:
-        corn:
-          summary: CBOT Corn root
-          value: '@C'
-        oil:
-          summary: NYMEX Crude Oil root
-          value: QCL
-      schema:
-        type: string
-    endDateParam:
-      name: endDate
-      in: query
-      description: The latest date to include in the result. Date in ISO 8601 format YYYY-MM-DD
-      schema:
-        type: string
-        format: date
     symbolParam:
       name: symbol
       in: query
@@ -225,37 +197,43 @@ components:
           value: CORN$.MN.F27117
       schema:
         type: string
-    tickLimitParam:
-      name: limit
+    marketParam:
+      name: market
       in: query
-      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 50,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
-      schema:
-        type: integer
-        default: 1000
-        maximum: 50000
-    minuteLimitParam:
-      name: limit
-      in: query
-      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 100,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
-      schema:
-        type: integer
-        default: 1440
-        maximum: 100000
-    startTimeParam:
-      name: startTime
-      in: query
-      description: Earliest datetime to include in the result.  Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
+      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
+
+        '
       schema:
         type: string
-        format: datetime
-    dailyLimitParam:
-      name: limit
+    startDateParam:
+      name: startDate
       in: query
-      description: The maximum number of rows of history to return per symbol.   The maximum number of points for a single symbol in one request is 3,660. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
+      description: Earliest date to include in the result.  Date in ISO 8601 format YYYY-MM-DD
+      schema:
+        type: string
+        format: date
+    symbolLimitParam:
+      name: symbolLimit
+      in: query
+      description: The number of symbols to return in one request up to a maximum of 4000.
       schema:
         type: integer
-        default: 260
-        maximum: 3660
+        default: 600
+        maximum: 4000
+    rootParam:
+      name: root
+      in: query
+      description: A single futures root.  A futures root is the part of a symbol that does not change with expiration.
+      required: true
+      examples:
+        corn:
+          summary: CBOT Corn root
+          value: '@C'
+        oil:
+          summary: NYMEX Crude Oil root
+          value: QCL
+      schema:
+        type: string
     limitParam:
       name: limit
       in: query
@@ -264,6 +242,58 @@ components:
         type: integer
         default: 200
         maximum: 4998
+    dailyLimitParam:
+      name: limit
+      in: query
+      description: The maximum number of rows of history to return per symbol.   The maximum number of points for a single symbol in one request is 3,660. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
+      schema:
+        type: integer
+        default: 260
+        maximum: 3660
+    startTimeParam:
+      name: startTime
+      in: query
+      description: Earliest datetime to include in the result.  Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
+      schema:
+        type: string
+        format: datetime
+    curveDateParam:
+      name: curveDate
+      in: query
+      description: The date to return prices for when requesting a forward curve.  Leave blank for most recent history.
+      schema:
+        type: string
+        format: date
+    tickLimitParam:
+      name: limit
+      in: query
+      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 50,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
+      schema:
+        type: integer
+        default: 1000
+        maximum: 50000
+    endDateParam:
+      name: endDate
+      in: query
+      description: The latest date to include in the result. Date in ISO 8601 format YYYY-MM-DD
+      schema:
+        type: string
+        format: date
+    endTimeParam:
+      name: endTime
+      in: query
+      description: The latest datetime to include in the result. Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
+      schema:
+        type: string
+        format: datetime
+    intervalParam:
+      name: inteval
+      in: query
+      description: The number of bars to combine together into one bar.
+      required: false
+      schema:
+        type: integer
+        default: 1
     filterParam:
       name: filter
       in: query
@@ -274,78 +304,78 @@ components:
         - 0
         - 1
         default: 1
-    symbolLimitParam:
-      name: symbolLimit
+    minuteLimitParam:
+      name: limit
       in: query
-      description: The number of symbols to return in one request up to a maximum of 4000.
+      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 100,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
       schema:
         type: integer
-        default: 600
-        maximum: 4000
+        default: 1440
+        maximum: 100000
     pageTokenParam:
       name: pageToken
       in: query
       description: "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
       schema:
         type: string
-    intervalParam:
-      name: inteval
-      in: query
-      description: The number of bars to combine together into one bar.
-      required: false
-      schema:
-        type: integer
-        default: 1
-    endTimeParam:
-      name: endTime
-      in: query
-      description: The latest datetime to include in the result. Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
-      schema:
-        type: string
-        format: datetime
-    startDateParam:
-      name: startDate
-      in: query
-      description: Earliest date to include in the result.  Date in ISO 8601 format YYYY-MM-DD
-      schema:
-        type: string
-        format: date
-    marketParam:
-      name: market
-      in: query
-      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
-
-        '
-      schema:
-        type: string
   schemas:
-    BarHistoricPrice:
-      required:
-      - close
-      - high
-      - low
-      - open
-      - startDateTime
-      - volume
+    DailyHistory:
       type: object
       properties:
-        oi:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        open:
-          $ref: '#/components/schemas/NullablePrice'
-        close:
-          $ref: '#/components/schemas/NullablePrice'
-        low:
-          $ref: '#/components/schemas/NullablePrice'
-        startDateTime:
+        description:
           type: string
-          description: The date for the related values.
-          format: date-time
-        high:
+          description: Detailed description for symbol.
+          examples:
+          - CORN September 2018
+        historicPrices:
+          type: array
+          description: List of the historic prices based on the query param limitations
+          items:
+            $ref: '#/components/schemas/BarHistoricPrice'
+        marketName:
+          type: string
+          description: Market symbol belongs too.
+          examples:
+          - CBOT
+        symbol:
+          type: string
+          description: The symbol requested.
+          examples:
+          - '@C@1'
+        tickerSymbol:
+          type: string
+          description: The official current ticker symbol.
+          examples:
+          - '@CU18'
+        vendor:
+          type: string
+          description: Vendor for symbol.
+          examples:
+          - DTN
+      description: A simple object to contain the list of historic prices.
+    TickHistoricPrice:
+      required:
+      - price
+      - volume
+      - bate
+      - tickDateTime
+      type: object
+      properties:
+        price:
           $ref: '#/components/schemas/NullablePrice'
+        tickDateTime:
+          type: string
+          description: The datetime the tick occured.
+          format: date-time
+        bate:
+          type: string
+          description: A field used by tick history to indicate if the tick was a Trade (T), a Bid (B), or an Ask (A).
+          enum:
+          - T
+          - B
+          - A
+          examples:
+          - T
         volume:
           type:
           - number
@@ -353,7 +383,75 @@ components:
           description: Volume.
           examples:
           - 1010
-      description: Price information for a particular time interval.
+      description: Information from a single trade.
+    TickHistory:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Detailed description for symbol.
+          examples:
+          - CORN September 2018
+        historicPrices:
+          type: array
+          description: List of the historic prices based on the query param limitations
+          items:
+            $ref: '#/components/schemas/TickHistoricPrice'
+        marketName:
+          type: string
+          description: Market symbol belongs too.
+          examples:
+          - CBOT
+        symbol:
+          type: string
+          description: The symbol requested.
+          examples:
+          - '@C@1'
+        tickerSymbol:
+          type: string
+          description: The official current ticker symbol.
+          examples:
+          - '@CU18'
+        vendor:
+          type: string
+          description: Vendor for symbol.
+          examples:
+          - DTN
+      description: A simple object to contain the list of historic prices.
+    MinuteHistory:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Detailed description for symbol.
+          examples:
+          - CORN September 2018
+        historicPrices:
+          type: array
+          description: List of the historic prices based on the query param limitations
+          items:
+            $ref: '#/components/schemas/BarHistoricPrice'
+        marketName:
+          type: string
+          description: Market symbol belongs too.
+          examples:
+          - CBOT
+        symbol:
+          type: string
+          description: The symbol requested.
+          examples:
+          - '@C@1'
+        tickerSymbol:
+          type: string
+          description: The official current ticker symbol.
+          examples:
+          - '@CU18'
+        vendor:
+          type: string
+          description: Vendor for symbol.
+          examples:
+          - DTN
+      description: A simple object to contain the list of historic prices.
     Error:
       type: object
       properties:
@@ -396,40 +494,6 @@ components:
                 description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
                 examples:
                 - Unauthorized access to service.
-    DailyHistory:
-      type: object
-      properties:
-        description:
-          type: string
-          description: Detailed description for symbol.
-          examples:
-          - CORN September 2018
-        historicPrices:
-          type: array
-          description: List of the historic prices based on the query param limitations
-          items:
-            $ref: '#/components/schemas/BarHistoricPrice'
-        marketName:
-          type: string
-          description: Market symbol belongs too.
-          examples:
-          - CBOT
-        symbol:
-          type: string
-          description: The symbol requested.
-          examples:
-          - '@C@1'
-        tickerSymbol:
-          type: string
-          description: The official current ticker symbol.
-          examples:
-          - '@CU18'
-        vendor:
-          type: string
-          description: Vendor for symbol.
-          examples:
-          - DTN
-      description: A simple object to contain the list of historic prices.
     NullablePrice:
       type:
       - 'null'
@@ -437,74 +501,41 @@ components:
       description: Prices are represented as strings to prevent float rounding problems
       examples:
       - '123.25'
-    MinuteHistory:
+    BarHistoricPrice:
+      required:
+      - close
+      - high
+      - low
+      - open
+      - startDateTime
+      - volume
       type: object
       properties:
-        description:
+        oi:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        open:
+          $ref: '#/components/schemas/NullablePrice'
+        close:
+          $ref: '#/components/schemas/NullablePrice'
+        low:
+          $ref: '#/components/schemas/NullablePrice'
+        startDateTime:
           type: string
-          description: Detailed description for symbol.
+          description: The date for the related values.
+          format: date-time
+        high:
+          $ref: '#/components/schemas/NullablePrice'
+        volume:
+          type:
+          - number
+          - 'null'
+          description: Volume.
           examples:
-          - CORN September 2018
-        historicPrices:
-          type: array
-          description: List of the historic prices based on the query param limitations
-          items:
-            $ref: '#/components/schemas/BarHistoricPrice'
-        marketName:
-          type: string
-          description: Market symbol belongs too.
-          examples:
-          - CBOT
-        symbol:
-          type: string
-          description: The symbol requested.
-          examples:
-          - '@C@1'
-        tickerSymbol:
-          type: string
-          description: The official current ticker symbol.
-          examples:
-          - '@CU18'
-        vendor:
-          type: string
-          description: Vendor for symbol.
-          examples:
-          - DTN
-      description: A simple object to contain the list of historic prices.
-    TickHistory:
-      type: object
-      properties:
-        description:
-          type: string
-          description: Detailed description for symbol.
-          examples:
-          - CORN September 2018
-        historicPrices:
-          type: array
-          description: List of the historic prices based on the query param limitations
-          items:
-            $ref: '#/components/schemas/TickHistoricPrice'
-        marketName:
-          type: string
-          description: Market symbol belongs too.
-          examples:
-          - CBOT
-        symbol:
-          type: string
-          description: The symbol requested.
-          examples:
-          - '@C@1'
-        tickerSymbol:
-          type: string
-          description: The official current ticker symbol.
-          examples:
-          - '@CU18'
-        vendor:
-          type: string
-          description: Vendor for symbol.
-          examples:
-          - DTN
-      description: A simple object to contain the list of historic prices.
+          - 1010
+      description: Price information for a particular time interval.
     Meta:
       type: object
       properties:
@@ -573,37 +604,6 @@ components:
           $ref: '#/components/schemas/BarHistoricPrice'
           description: The daily price bar for this contract
       description: A simple object to contain the list of historic prices.
-    TickHistoricPrice:
-      required:
-      - price
-      - volume
-      - bate
-      - tickDateTime
-      type: object
-      properties:
-        price:
-          $ref: '#/components/schemas/NullablePrice'
-        tickDateTime:
-          type: string
-          description: The datetime the tick occured.
-          format: date-time
-        bate:
-          type: string
-          description: A field used by tick history to indicate if the tick was a Trade (T), a Bid (B), or an Ask (A).
-          enum:
-          - T
-          - B
-          - A
-          examples:
-          - T
-        volume:
-          type:
-          - number
-          - 'null'
-          description: Volume.
-          examples:
-          - 1010
-      description: Information from a single trade.
   securitySchemes:
     clientCredentials:
       type: oauth2

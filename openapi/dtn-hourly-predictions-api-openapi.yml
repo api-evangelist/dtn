@@ -31,24 +31,6 @@ paths:
       - Hourly Predictions
 components:
   schemas:
-    predictionEstimate:
-      type: object
-      properties:
-        best:
-          type: number
-          format: float
-          example: 1.09
-          description: Best case prediction value
-        base:
-          type: number
-          format: float
-          example: 1.09
-          description: Base case prediction value
-        predictionDateTime:
-          type: string
-          format: date-time
-          example: '2025-09-14T00:00:00Z'
-          description: Date and time for this prediction estimate
     hourlyPrediction:
       type: object
       properties:
@@ -85,6 +67,24 @@ components:
           items:
             $ref: '#/components/schemas/predictionEstimate'
           description: Array of hourly prediction estimates
+    predictionEstimate:
+      type: object
+      properties:
+        best:
+          type: number
+          format: float
+          example: 1.09
+          description: Best case prediction value
+        base:
+          type: number
+          format: float
+          example: 1.09
+          description: Base case prediction value
+        predictionDateTime:
+          type: string
+          format: date-time
+          example: '2025-09-14T00:00:00Z'
+          description: Date and time for this prediction estimate
   securitySchemes:
     clientCredentials:
       type: oauth2

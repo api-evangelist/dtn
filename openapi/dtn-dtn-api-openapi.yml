@@ -207,6 +207,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     TropicalGeometry:
       properties:
         type:
@@ -253,45 +274,6 @@ components:
       - stormNum
       - stormId
       title: StormMetadata
-    TropicalFeatureCollection:
-      properties:
-        type:
-          type: string
-          title: Type
-          default: FeatureCollection
-        features:
-          items:
-            $ref: '#/components/schemas/TropicalFeature'
-          type: array
-          title: Features
-          default: []
-        metadata:
-          $ref: '#/components/schemas/StormMetadata'
-      type: object
-      required:
-      - metadata
-      title: TropicalFeatureCollection
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     TropicalResponse:
       properties:
         url:
@@ -311,6 +293,15 @@ components:
       - url
       - cycloneCount
       title: TropicalResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     TropicalFeature:
       properties:
         type:
@@ -327,15 +318,24 @@ components:
       required:
       - geometry
       title: TropicalFeature
-    HTTPValidationError:
+    TropicalFeatureCollection:
       properties:
-        detail:
+        type:
+          type: string
+          title: Type
+          default: FeatureCollection
+        features:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/TropicalFeature'
           type: array
-          title: Detail
+          title: Features
+          default: []
+        metadata:
+          $ref: '#/components/schemas/StormMetadata'
       type: object
-      title: HTTPValidationError
+      required:
+      - metadata
+      title: TropicalFeatureCollection
   securitySchemes:
     clientCredentials:
       type: oauth2

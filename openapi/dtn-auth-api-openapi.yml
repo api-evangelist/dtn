@@ -68,15 +68,6 @@ components:
           description: Token generation execution time.
           format: int32
       additionalProperties: false
-    Token:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Data'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      additionalProperties: false
-      description: Token for authentication.
     Data:
       type: object
       properties:
@@ -100,6 +91,15 @@ components:
           - 'null'
           description: Verifies that this Access Token should be used as a Bearer token.
       additionalProperties: false
+    Token:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+      description: Token for authentication.
     RequestToken:
       type: object
       properties:

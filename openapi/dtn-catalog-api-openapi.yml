@@ -66,36 +66,34 @@ paths:
           $ref: '#/components/responses/error'
 components:
   headers:
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
     content-language:
       description: Describe the language(s) intended for the audience.
       schema:
         type: string
         default: en-US
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
     content-encoding:
       description: Lists any encodings that have been applied to the returned payload.
       schema:
         type: string
   schemas:
-    group:
+    layer:
       type: object
       properties:
         id:
           type: string
-          example: contoured-radar
+          example: eu-contoured-radar
         label:
           type: string
-          example: Contoured radar layers
-        parent:
-          type:
-          - string
-          - 'null'
+          example: European contoured radar
+        group:
+          type: string
           format: uri
-          description: Reference to a parent group, null indicates root level.
-          example: null
+          example: contoured-radar
+          description: group the layer belongs to
     general-error:
       type: object
       properties:
@@ -130,20 +128,22 @@ components:
           description: full catalog of layers
           items:
             $ref: '#/components/schemas/layer'
-    layer:
+    group:
       type: object
       properties:
         id:
           type: string
-          example: eu-contoured-radar
+          example: contoured-radar
         label:
           type: string
-          example: European contoured radar
-        group:
-          type: string
+          example: Contoured radar layers
+        parent:
+          type:
+          - string
+          - 'null'
           format: uri
-          example: contoured-radar
-          description: group the layer belongs to
+          description: Reference to a parent group, null indicates root level.
+          example: null
   parameters:
     accept-language:
       in: header
@@ -164,6 +164,13 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    catalog-id:
+      in: path
+      name: catalogId
+      description: Unique identifier for a catalog
+      required: true
+      schema:
+        type: string
     locale:
       in: query
       name: locale
@@ -185,13 +192,6 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    catalog-id:
-      in: path
-      name: catalogId
-      description: Unique identifier for a catalog
-      required: true
-      schema:
-        type: string
     accept-json:
       in: header
       name: Accept
@@ -202,6 +202,19 @@ components:
         enum:
         - application/json
   responses:
+    catalog:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/catalog'
     unprocessable-entity:
       description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
       headers:
@@ -240,19 +253,6 @@ components:
             detail: Either the accept header is missing or none of the values are acceptable.
             status: 406
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    catalog:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/catalog'
     error:
       description: error response
       headers:

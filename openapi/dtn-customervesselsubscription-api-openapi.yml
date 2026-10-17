@@ -141,18 +141,23 @@ components:
           format: date-time
       additionalProperties: false
       description: Vessel subscription object.
-    VesselSubscriptionRequest:
+    BulkVesselSubscriptionResponse:
       type: object
       properties:
-        imo:
+        succeeded:
           type:
-          - string
+          - array
           - 'null'
-          description: The vessel's IMO number.
-        mmsi:
-          type: integer
-          description: The vessel's MMSI number.
-          format: int32
+          items:
+            $ref: '#/components/schemas/VesselSubscriptionResponse'
+          description: Contains the list of successfully created subscriptions.
+        failed:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailedVesselSubscriptionResponse'
+          description: Contains the list of failed subscriptions.
       additionalProperties: false
     FailedVesselSubscriptionResponse:
       type: object
@@ -172,23 +177,18 @@ components:
           - 'null'
           description: The error description of why it fails.
       additionalProperties: false
-    BulkVesselSubscriptionResponse:
+    VesselSubscriptionRequest:
       type: object
       properties:
-        succeeded:
+        imo:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/VesselSubscriptionResponse'
-          description: Contains the list of successfully created subscriptions.
-        failed:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FailedVesselSubscriptionResponse'
-          description: Contains the list of failed subscriptions.
+          description: The vessel's IMO number.
+        mmsi:
+          type: integer
+          description: The vessel's MMSI number.
+          format: int32
       additionalProperties: false
   securitySchemes:
     clientCredentials:

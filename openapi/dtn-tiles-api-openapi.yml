@@ -122,71 +122,14 @@ paths:
           $ref: '#/components/responses/error'
 components:
   parameters:
-    timezone:
-      in: query
-      name: timezone
-      description: A recognized geographical region in `Continent/Region` format that observes a uniform standard time. Follows the [IANA timezone database](https://data.iana.org/time-zones/tzdb-2021a/zone1970.tab).
-      schema:
-        type: string
-        enum:
-        - Etc/GMT
-        - America/New_York
-        - Asia/Tokyo
-        - Europe/Paris
-        - Pacific/Honolulu
-        - check the IANA database for more values
-        default: Etc/GMT
-    y:
+    x:
       in: path
-      name: y
-      description: y coordinate for tile.
+      name: x
+      description: x coordinate for tile.
       required: true
       schema:
         type: integer
-        description: y coordinate for tile.
-    palette-override:
-      in: query
-      name: paletteOverride
-      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
-
-        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
-
-        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
-
-        '
-      required: false
-      schema:
-        type: string
-        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
-    tile-size:
-      in: query
-      name: size
-      description: It indicates the expected size for the tile. Only allowed for raster tiles
-      schema:
-        type: number
-        example: 512
-        default: 256
-        enum:
-        - 256
-        - 512
-    scheme:
-      in: query
-      name: scheme
-      description: Tile scheme, either "xyz" or "tms".
-      schema:
-        items:
-          type: string
-          enum:
-          - xyz
-          - tms
-          default: xyz
-    token:
-      in: query
-      name: token
-      description: JSON Web Token in query parameter as an alternative to Authorization header.
-      schema:
-        type: string
-        example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVC...
+        description: x coordinate for tile.
     unit:
       in: query
       name: unit
@@ -211,47 +154,17 @@ components:
         items:
           type: string
           example: nws-inland-flood-alerts,nws-winter-alerts
-    layer-id:
-      in: path
-      name: layerId
-      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
-
-        '
-      required: true
+    scheme:
+      in: query
+      name: scheme
+      description: Tile scheme, either "xyz" or "tms".
       schema:
-        type: string
-        description: id for the layer from which to receive data.
-        example: radar-base-ref-precip-type-na-contours
-    ext:
-      in: path
-      name: ext
-      description: File extension indicating format of choice.
-      required: true
-      schema:
-        type: string
-        enum:
-        - .png
-        - .pbf
-        - .webp
-        - .tiff
-        description: Data type returned, it overrides the Accept header when both are provided.
-    x:
-      in: path
-      name: x
-      description: x coordinate for tile.
-      required: true
-      schema:
-        type: integer
-        description: x coordinate for tile.
-    tile-set-id:
-      in: path
-      name: tileSetId
-      description: tileSetId, as retrieved from the timestamps endpoint.
-      required: true
-      schema:
-        type: string
-        description: id for the timestamp from which to receive data.
-        example: 46c63648-397c-469d-97a7-622825c58437
+        items:
+          type: string
+          enum:
+          - xyz
+          - tms
+          default: xyz
     locale:
       in: query
       name: locale
@@ -273,6 +186,17 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    tile-size:
+      in: query
+      name: size
+      description: It indicates the expected size for the tile. Only allowed for raster tiles
+      schema:
+        type: number
+        example: 512
+        default: 256
+        enum:
+        - 256
+        - 512
     accept-language:
       in: header
       name: Accept-Language
@@ -292,26 +216,41 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    accept-tile:
-      in: header
-      name: Accept
+    ext:
+      in: path
+      name: ext
+      description: File extension indicating format of choice.
       required: true
-      description: Indicates response media types that are acceptable.
       schema:
         type: string
         enum:
-        - image/png
-        - image/webp
-        - application/x-protobuf
-        - image/tiff
-    z:
+        - .png
+        - .pbf
+        - .webp
+        - .tiff
+        description: Data type returned, it overrides the Accept header when both are provided.
+    y:
       in: path
-      name: z
-      description: Zoom level for tile access.
+      name: y
+      description: y coordinate for tile.
       required: true
       schema:
         type: integer
-        description: Zoom level for tile access.
+        description: y coordinate for tile.
+    timezone:
+      in: query
+      name: timezone
+      description: A recognized geographical region in `Continent/Region` format that observes a uniform standard time. Follows the [IANA timezone database](https://data.iana.org/time-zones/tzdb-2021a/zone1970.tab).
+      schema:
+        type: string
+        enum:
+        - Etc/GMT
+        - America/New_York
+        - Asia/Tokyo
+        - Europe/Paris
+        - Pacific/Honolulu
+        - check the IANA database for more values
+        default: Etc/GMT
     smoothing-profile:
       in: query
       name: smoothingProfile
@@ -324,26 +263,68 @@ components:
         - medium
         - high
         default: none
+    token:
+      in: query
+      name: token
+      description: JSON Web Token in query parameter as an alternative to Authorization header.
+      schema:
+        type: string
+        example: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVC...
+    layer-id:
+      in: path
+      name: layerId
+      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
+
+        '
+      required: true
+      schema:
+        type: string
+        description: id for the layer from which to receive data.
+        example: radar-base-ref-precip-type-na-contours
+    tile-set-id:
+      in: path
+      name: tileSetId
+      description: tileSetId, as retrieved from the timestamps endpoint.
+      required: true
+      schema:
+        type: string
+        description: id for the timestamp from which to receive data.
+        example: 46c63648-397c-469d-97a7-622825c58437
+    z:
+      in: path
+      name: z
+      description: Zoom level for tile access.
+      required: true
+      schema:
+        type: integer
+        description: Zoom level for tile access.
+    accept-tile:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - image/png
+        - image/webp
+        - application/x-protobuf
+        - image/tiff
+    palette-override:
+      in: query
+      name: paletteOverride
+      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
+
+        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
+
+        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
+
+        '
+      required: false
+      schema:
+        type: string
+        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
   responses:
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
     error:
       description: error response
       headers:
@@ -363,6 +344,25 @@ components:
             detail: The layer you requested could not be found.
             status: 404
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    unprocessable-entity:
+      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://maps.dtn.com/error-details/invalid-object
+            title: Invalid object in request body
+            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
+            status: 422
+            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
     tile:
       description: tile response
       headers:
@@ -388,8 +388,8 @@ components:
             type: string
             format: binary
             example: base64 encoded string
-    unprocessable-entity:
-      description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
       headers:
         X-Request-ID:
           $ref: '#/components/headers/x-request-id'
@@ -402,11 +402,11 @@ components:
           schema:
             $ref: '#/components/schemas/general-error'
           example:
-            type: https://maps.dtn.com/error-details/invalid-object
-            title: Invalid object in request body
-            detail: 'Error in Query: The object '''' contains forbidden keys: ''param'''
-            status: 422
-            instance: urn:dtn:maps:api:timestamps/sevwx-nws-alert-zones:requestId:341af5d9-022b-4451-b06d-64ef2f2a5964
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
   schemas:
     general-error:
       type: object
@@ -430,19 +430,19 @@ components:
           description: URL with the id for the specific error; this will often point to an error log for that specific response.
       additionalProperties: true
   headers:
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
     content-language:
       description: Describe the language(s) intended for the audience.
       schema:
         type: string
         default: en-US
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
   securitySchemes:
     clientCredentials:
       type: oauth2
