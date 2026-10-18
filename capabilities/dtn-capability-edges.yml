@@ -12,7 +12,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 6
+edge_count: 7
 edges:
 - tag: Pricing
   spec_file: dtn-pricing-api-openapi.yml
@@ -45,6 +45,17 @@ edges:
   reason: Parcel-level land metadata, linked producers, soil types and grain bins from the Farm Intelligence
     API — field and parcel record management. Soil and grain-bin sub-resources touch agronomy and on-farm
     storage, but the organising object is the land parcel record.
+- tag: Land Geospatial
+  spec_file: dtn-land-geospatial-api-openapi.yml
+  capability_id: BC-3540.20
+  capability_id_l1: BC-3540
+  capability_name: Field and Parcel Management
+  confidence: 0.78
+  evidence: GET /api/v1/geospatial/land/{landId} — "Get GeoJSON polygon for a land parcel"; "Get GeoJSON
+    polygons for a producer's lands"
+  reason: Farm Intelligence API exposing land-parcel boundary geometry tied to producers — this is field/parcel
+    boundary records within Farm Land & Asset Management, not weather data. Some residual doubt whether
+    'land' here is a pure reference dataset rather than operational parcel management.
 - tag: Land Crop
   spec_file: dtn-land-crop-api-openapi.yml
   capability_id: BC-3540.20
@@ -57,15 +68,17 @@ edges:
     Field and Parcel Management ('field boundary records, field history ... at field and parcel level').
     Some ambiguity versus cropping-system planning, but the operation is a historical parcel record, not
     a plan.
-- tag: Land Geospatial
-  spec_file: dtn-land-geospatial-api-openapi.yml
+- tag: Land Search
+  spec_file: dtn-land-search-api-openapi.yml
   capability_id: BC-3540.20
   capability_id_l1: BC-3540
   capability_name: Field and Parcel Management
-  confidence: 0.75
-  evidence: getGeospatialLand Get GeoJSON polygon for a land parcel
-  reason: Returns field/parcel boundary geometry, matching field boundary records at parcel level.
-  recovered_from: vertical-agriculture-food-production-edges.json
+  confidence: 0.72
+  evidence: GET /api/v1/land/search "Search land parcels"; GET /api/v1/land/list "Batch land metadata
+    by IDs"; schema LandSearchResult
+  reason: Lookup and retrieval of farm land parcel metadata within DTN's Farm Intelligence agricultural
+    dataset maps to field and parcel records. Search-style surface lowers confidence slightly, but the
+    object searched is explicitly agricultural land parcels.
 - tag: Orders
   spec_file: dtn-orders-api-openapi.yml
   capability_id: BC-3090
