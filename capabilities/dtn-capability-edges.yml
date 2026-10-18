@@ -3,6 +3,7 @@ provider: DTN
 generated_by: planning/capability-mapping/scripts/classify_capabilities.py
 model: claude-opus-5
 frame:
+- Agriculture & Food Production
 - Oil & Gas
 min_confidence: 0.7
 capability_model:
@@ -11,7 +12,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 5
+edge_count: 6
 edges:
 - tag: Pricing
   spec_file: dtn-pricing-api-openapi.yml
@@ -29,13 +30,33 @@ edges:
   capability_id: BC-4270.30
   capability_id_l1: BC-4270
   capability_name: Developer Portal Management
+  confidence: 0.8
+  evidence: Backend APIs used by DTN's Developer Portal Web App; 'Get API spec', 'Get API changelog'
+  reason: Operations serve the developer portal catalog of API specs and changelogs — developer portal
+    management.
+- tag: Land Details
+  spec_file: dtn-land-details-api-openapi.yml
+  capability_id: BC-3540.20
+  capability_id_l1: BC-3540
+  capability_name: Field and Parcel Management
   confidence: 0.78
-  evidence: '"Backend APIs used by DTN''s Developer Portal Web App"; "Get all APIs on the system", "Get
-    API spec", "Get API changelog"'
-  reason: Operations serve the vendor's developer portal — cataloguing published APIs, their specs, versions
-    and changelogs. That is developer portal / public API lifecycle stewardship, not a domain business
-    function. L2 set to Developer Portal Management since the spec explicitly states it backs the portal
-    web app, though version/changelog operations also touch Public API Lifecycle Management.
+  evidence: Get land metadata by ID / Get producers linked to a land parcel / Get soil types for a land
+    parcel
+  reason: Parcel-level land metadata, linked producers, soil types and grain bins from the Farm Intelligence
+    API — field and parcel record management. Soil and grain-bin sub-resources touch agronomy and on-farm
+    storage, but the organising object is the land parcel record.
+- tag: Land Crop
+  spec_file: dtn-land-crop-api-openapi.yml
+  capability_id: BC-3540.20
+  capability_id_l1: BC-3540
+  capability_name: Field and Parcel Management
+  confidence: 0.75
+  evidence: GET /api/v1/land/{landId}/crop  getLandCropHistory  Get crop history for a land parcel (schema
+    LandCrop)
+  reason: Returns per-parcel crop history from DTN's Farm Intelligence agricultural dataset, which matches
+    Field and Parcel Management ('field boundary records, field history ... at field and parcel level').
+    Some ambiguity versus cropping-system planning, but the operation is a historical parcel record, not
+    a plan.
 - tag: Land Geospatial
   spec_file: dtn-land-geospatial-api-openapi.yml
   capability_id: BC-3540.20
@@ -44,16 +65,6 @@ edges:
   confidence: 0.75
   evidence: getGeospatialLand Get GeoJSON polygon for a land parcel
   reason: Returns field/parcel boundary geometry, matching field boundary records at parcel level.
-  recovered_from: vertical-agriculture-food-production-edges.json
-- tag: Land Crop
-  spec_file: dtn-land-crop-api-openapi.yml
-  capability_id: BC-3540.20
-  capability_id_l1: BC-3540
-  capability_name: Field and Parcel Management
-  confidence: 0.72
-  evidence: GET /api/v1/land/{landId}/crop getLandCropHistory Get crop history for a land parcel
-  reason: Provides crop history records keyed to a land parcel, which is field/parcel-level history recording
-    rather than crop operations execution.
   recovered_from: vertical-agriculture-food-production-edges.json
 - tag: Orders
   spec_file: dtn-orders-api-openapi.yml
