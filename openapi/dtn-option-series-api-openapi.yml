@@ -3,7 +3,18 @@ info:
   title: PXWeb Market Data Option Series API
   description: 'ProphetX Web services, in short __PXWeb__, provides the facility to access real time quotes and historical market information
 
-    from a JSON and REST based web service.'
+    from a JSON and REST based web service.
+
+
+    PXWeb end points are divided into four categories: Quotes, History, Information, and Option Series. Requests in the quotes category
+
+    are for getting the most recent prices on a symbol. History is for requesting prices from specific time periods in the past and supports
+
+    daily, minute, and tick history. Information contains a request for searching for symbols based on text strings and a request for
+
+    querying the market hours of a symbol. The option series category contains on request for getting quotes on many futures options
+
+    based on an option root and an expiration.'
   version: 1.0.2
 servers:
 - description: Production (PROD)
@@ -54,6 +65,46 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    Greeks:
+      type: object
+      description: An object to hold futures options price sensitivity values known as greeks.  Only returned by /quotes/greeks
+      properties:
+        delta:
+          description: Price sensitivity of an option to the price of the underlying.
+          format: double
+          type: number
+        gamma:
+          description: Price sensitivity of an option to changes in the price of the underlying.
+          format: double
+          type: number
+        theta:
+          description: Price sensitivity of an option to the time to expiration.
+          format: double
+          type: number
+        vega:
+          description: Price sensitivity of an option to changes in volatility.
+          format: double
+          type: number
+        underlyingPrice:
+          description: Price of an option's underlying.
+          $ref: '#/components/schemas/Price'
+        interestRate:
+          description: Interest rate used in option calculations.
+          format: double
+          type: number
+        impliedVolatility:
+          description: Implied volatility used in option calculations.
+          format: double
+          type: number
+    OptionStrike:
+      type: object
+      properties:
+        strikePrice:
+          type: string
+        call:
+          $ref: '#/components/schemas/Quote'
+        put:
+          $ref: '#/components/schemas/Quote'
     Symbol:
       required:
       - status
@@ -86,18 +137,6 @@ components:
           examples:
           - DTN
       description: Symbol identifier and request status.
-    MarketDepth:
-      description: If available for the symbol, market depth is returned as two arrays.  One for bids, and the other for asks.  Bids are sorted from highest price to lowest, and asks are sroted lowest price to highest.
-      properties:
-        askLevels:
-          items:
-            $ref: '#/components/schemas/MarketDepthQuote'
-          type: array
-        bidLevels:
-          items:
-            $ref: '#/components/schemas/MarketDepthQuote'
-          type: array
-      type: object
     Quote:
       properties:
         accruedInterest:
@@ -1450,6 +1489,31 @@ components:
       required:
       - symbol
       type: object
+    MarketDepthQuote:
+      properties:
+        size:
+          format: int64
+          type: integer
+        value:
+          $ref: '#/components/schemas/Price'
+      type: object
+    MarketDepth:
+      description: If available for the symbol, market depth is returned as two arrays.  One for bids, and the other for asks.  Bids are sorted from highest price to lowest, and asks are sroted lowest price to highest.
+      properties:
+        askLevels:
+          items:
+            $ref: '#/components/schemas/MarketDepthQuote'
+          type: array
+        bidLevels:
+          items:
+            $ref: '#/components/schemas/MarketDepthQuote'
+          type: array
+      type: object
+    Price:
+      type: string
+      description: Prices are represented as strings to prevent float rounding problems
+      examples:
+      - '123.25'
     Error:
       type: object
       properties:
@@ -1492,62 +1556,6 @@ components:
                 description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
                 examples:
                 - Unauthorized access to service.
-    OptionSeries:
-      type: object
-      properties:
-        optionPrefix:
-          type: string
-          description: A prefix is a combination of an option root and a maturity.
-        underlying:
-          $ref: '#/components/schemas/Quote'
-        strikeList:
-          type: array
-          items:
-            $ref: '#/components/schemas/OptionStrike'
-    Price:
-      type: string
-      description: Prices are represented as strings to prevent float rounding problems
-      examples:
-      - '123.25'
-    Greeks:
-      type: object
-      description: An object to hold futures options price sensitivity values known as greeks.  Only returned by /quotes/greeks
-      properties:
-        delta:
-          description: Price sensitivity of an option to the price of the underlying.
-          format: double
-          type: number
-        gamma:
-          description: Price sensitivity of an option to changes in the price of the underlying.
-          format: double
-          type: number
-        theta:
-          description: Price sensitivity of an option to the time to expiration.
-          format: double
-          type: number
-        vega:
-          description: Price sensitivity of an option to changes in volatility.
-          format: double
-          type: number
-        underlyingPrice:
-          description: Price of an option's underlying.
-          $ref: '#/components/schemas/Price'
-        interestRate:
-          description: Interest rate used in option calculations.
-          format: double
-          type: number
-        impliedVolatility:
-          description: Implied volatility used in option calculations.
-          format: double
-          type: number
-    MarketDepthQuote:
-      properties:
-        size:
-          format: int64
-          type: integer
-        value:
-          $ref: '#/components/schemas/Price'
-      type: object
     Meta:
       type: object
       properties:
@@ -1572,39 +1580,19 @@ components:
         pageToken:
           type: string
           description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
-    OptionStrike:
+    OptionSeries:
       type: object
       properties:
-        strikePrice:
+        optionPrefix:
           type: string
-        call:
+          description: A prefix is a combination of an option root and a maturity.
+        underlying:
           $ref: '#/components/schemas/Quote'
-        put:
-          $ref: '#/components/schemas/Quote'
+        strikeList:
+          type: array
+          items:
+            $ref: '#/components/schemas/OptionStrike'
   parameters:
-    fieldsParam:
-      name: fields
-      in: query
-      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
-
-        '
-      required: false
-      schema:
-        type: string
-    strikeLimitParam:
-      name: limit
-      in: query
-      description: Limit on the number of strikes to return. If this parameter is specified, then Limit number of strikes above and below the money will be returned.
-      schema:
-        type: integer
-        default: 200
-    optionPrefixParam:
-      name: optionPrefix
-      in: query
-      description: A prefix is a combination of an option root and a maturity.
-      required: true
-      schema:
-        type: string
     fieldGroupParam:
       name: fieldGroup
       in: query
@@ -1618,6 +1606,29 @@ components:
         - racks
         - complete
         default: complete
+    fieldsParam:
+      name: fields
+      in: query
+      description: 'This parameter can be used to override the default fields returned from quote requests.  Pass a comma separated list of  field names to select what values are returned.  If fields and field groups are specified, the returned fields will be the union of the two.  If only fields are specified, then only those fields will be returned.  The field names are  the same as the properties of a quote object.
+
+        '
+      required: false
+      schema:
+        type: string
+    optionPrefixParam:
+      name: optionPrefix
+      in: query
+      description: A prefix is a combination of an option root and a maturity.
+      required: true
+      schema:
+        type: string
+    strikeLimitParam:
+      name: limit
+      in: query
+      description: Limit on the number of strikes to return. If this parameter is specified, then Limit number of strikes above and below the money will be returned.
+      schema:
+        type: integer
+        default: 200
   securitySchemes:
     clientCredentials:
       type: oauth2

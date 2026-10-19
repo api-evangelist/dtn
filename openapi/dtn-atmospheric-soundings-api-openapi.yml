@@ -79,10 +79,10 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    sounding_product_id:
-      name: sounding_product_id
+    sounding_event_time:
+      name: sounding_event_time
       in: path
-      description: 'sounding product; one of: ABV, MAN, SGL'
+      description: 4 digit year, e.g. 2026
       required: true
       schema:
         type: string
@@ -93,13 +93,6 @@ components:
       required: true
       schema:
         type: string
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
-      required: true
-      schema:
-        type: string
     day:
       name: day
       in: path
@@ -107,17 +100,17 @@ components:
       required: true
       schema:
         type: string
-    sounding_event_time:
-      name: sounding_event_time
+    month:
+      name: month
       in: path
-      description: event time, as returned from current or historical station listing
+      description: 2 digit month, 01-12
       required: true
       schema:
         type: string
-    sounding_station_id:
-      name: sounding_station_id
+    sounding_product_id:
+      name: sounding_product_id
       in: path
-      description: id of station reporting the sounding
+      description: 'sounding product; one of: ABV, MAN, SGL'
       required: true
       schema:
         type: string

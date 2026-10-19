@@ -80,27 +80,6 @@ components:
       pattern: ^#([a-fA-F0-9]{8})$
       example: null
       description: Hexadecimal color defined by 8 (hex triplet + alpha) characters.
-    general-error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          format: uri
-          description: A URL to a document describing the error condition.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
-          type: number
-          description: HTTP status code
-        instance:
-          type: string
-          format: uri
-          description: URL with the id for the specific error; this will often point to an error log for that specific response.
-      additionalProperties: true
     legendColorTableValueItem:
       allOf:
       - $ref: '#/components/schemas/legendColorTableBaseItem'
@@ -111,6 +90,17 @@ components:
             - number
             - 'null'
             description: Numeric value to map against a color. When used in a range, this indicates the lower boundary of a range. When it is not present, it covers all possible values before/after the adjacent item of the list.
+    legend-list:
+      type: array
+      items:
+        $ref: '#/components/schemas/legend'
+    legendColorTableBaseItem:
+      type: object
+      required:
+      - color
+      properties:
+        color:
+          $ref: '#/components/schemas/hexColor'
     legend:
       type: object
       required:
@@ -166,17 +156,54 @@ components:
           value: 61
         - color: '#7C3090'
           value: 155
-  parameters:
-    filter:
-      in: query
-      name: filter
-      description: Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters.
-      schema:
-        type: array
-        description: filter id for which the data driven style will include additional filter query
-        items:
+    general-error:
+      type: object
+      properties:
+        detail:
           type: string
-          example: nws-inland-flood-alerts,nws-winter-alerts
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          format: uri
+          description: A URL to a document describing the error condition.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: HTTP status code
+        instance:
+          type: string
+          format: uri
+          description: URL with the id for the specific error; this will often point to an error log for that specific response.
+      additionalProperties: true
+    legendColorTableCategoryItem:
+      allOf:
+      - $ref: '#/components/schemas/legendColorTableBaseItem'
+      - type: object
+        required:
+        - category
+        properties:
+          category:
+            type:
+            - string
+            - 'null'
+            description: Text value to map against a color.
+  headers:
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
+  parameters:
     unit:
       in: query
       name: unit
@@ -191,6 +218,86 @@ components:
         - imperial-aviation
         - imperial-marine
         default: imperial
+    accept-language:
+      in: header
+      name: Accept-Language
+      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
+
+        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
+
+        Defaults to English (en-US) if unsupported locale is specified.<br/>
+
+        '
+      schema:
+        type: string
+        pattern: ^(en|es)-[A-Z]{2}$
+        default: en-US
+      examples:
+        en-*:
+          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
+        es-*:
+          description: Spanish<br/>Sample values include `es-ES`, `es-US`
+    palette-override:
+      in: query
+      name: paletteOverride
+      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
+
+        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
+
+        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
+
+        '
+      required: false
+      schema:
+        type: string
+        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
+    max-width:
+      in: query
+      name: maxWidth
+      description: max width of the legend image in pixels
+      schema:
+        type: number
+        example: 1024
+    layer-id:
+      in: path
+      name: layerId
+      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
+
+        '
+      required: true
+      schema:
+        type: string
+        description: id for the layer from which to receive data.
+        example: radar-base-ref-precip-type-na-contours
+    accept-legend:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - image/png
+        - image/webp
+        - text/html
+        - application/json
+    filter:
+      in: query
+      name: filter
+      description: Comma separated list of filter ids of a layer filter that the resulting data driven style would filter according to predefined filters.
+      schema:
+        type: array
+        description: filter id for which the data driven style will include additional filter query
+        items:
+          type: string
+          example: nws-inland-flood-alerts,nws-winter-alerts
+    legend-title:
+      in: query
+      name: legendTitle
+      description: Indicates whether or not to include the layer name as a title in the legend.
+      schema:
+        type: boolean
+        default: false
     layer-parameters:
       in: query
       name: parameters
@@ -222,123 +329,7 @@ components:
           description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
         es-*:
           description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    accept-language:
-      in: header
-      name: Accept-Language
-      description: 'Specifies the desired language and country code for language translation and formatting conventions.<br/>
-
-        Supported languages are English (en) and Spanish (es). However, any 2-letter ISO country code is supported as locale. See [here](https://www.iso.org/obp/ui/#search/code) for a list of country codes.<br/>
-
-        Defaults to English (en-US) if unsupported locale is specified.<br/>
-
-        '
-      schema:
-        type: string
-        pattern: ^(en|es)-[A-Z]{2}$
-        default: en-US
-      examples:
-        en-*:
-          description: English<br/>Sample values include `en-US`, `en-AU`, `en-GB`
-        es-*:
-          description: Spanish<br/>Sample values include `es-ES`, `es-US`
-    accept-legend:
-      in: header
-      name: Accept
-      required: true
-      description: Indicates response media types that are acceptable.
-      schema:
-        type: string
-        enum:
-        - image/png
-        - image/webp
-        - text/html
-        - application/json
-    max-width:
-      in: query
-      name: maxWidth
-      description: max width of the legend image in pixels
-      schema:
-        type: number
-        example: 1024
-    layer-id:
-      in: path
-      name: layerId
-      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
-
-        '
-      required: true
-      schema:
-        type: string
-        description: id for the layer from which to receive data.
-        example: radar-base-ref-precip-type-na-contours
-    palette-override:
-      in: query
-      name: paletteOverride
-      description: 'Value-color pair list separated by semicolons, denoting the custom color palette for the given layer.<br/>
-
-        Values may be a string or a number. When the value is a number, the decimal separator (if any) must be a "." (dot).<br/>
-
-        Colors may be hexadecimal color codes, or in RGB/RGBA notation. When using RGBA notation, the alpha value must be a float between 0 and 1.
-
-        '
-      required: false
-      schema:
-        type: string
-        example: 0:#FF0000;10:rgb(0,255,0);20:rgba(0,0,255,0.5);30:#00FF0080;40.0:#FFF;50.1:#000F
-    legend-title:
-      in: query
-      name: legendTitle
-      description: Indicates whether or not to include the layer name as a title in the legend.
-      schema:
-        type: boolean
-        default: false
   responses:
-    legend:
-      description: successful operation
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/legend-list'
-        text/html:
-          schema:
-            type: string
-            example: <html>Empty legend</html>
-        image/png:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-        image/webp:
-          schema:
-            type: string
-            format: binary
-            example: base64 encoded string
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
     unprocessable-entity:
       description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
       headers:
@@ -377,20 +368,52 @@ components:
             detail: Either the accept header is missing or none of the values are acceptable.
             status: 406
             instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-  headers:
-    x-request-id:
-      description: UUID compliant with RFC 4122 that uniquely identifies the request.
-      schema:
-        type: string
-    content-encoding:
-      description: Lists any encodings that have been applied to the returned payload.
-      schema:
-        type: string
-    content-language:
-      description: Describe the language(s) intended for the audience.
-      schema:
-        type: string
-        default: en-US
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    legend:
+      description: successful operation
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/legend-list'
+        text/html:
+          schema:
+            type: string
+            example: <html>Empty legend</html>
+        image/png:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
+        image/webp:
+          schema:
+            type: string
+            format: binary
+            example: base64 encoded string
   securitySchemes:
     clientCredentials:
       type: oauth2

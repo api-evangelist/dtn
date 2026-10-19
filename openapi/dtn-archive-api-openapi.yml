@@ -165,6 +165,14 @@ components:
             type: string
           location:
             type: string
+    StrikesArchive:
+      title: Strikes Archive
+      description: Success
+      type: object
+      properties:
+        id:
+          type: string
+          description: Request ID that will be used to check the status of the result and to retrieve the historical data.
     StrikesArchiveBulkResult:
       title: Strikes Archive Bulk Result
       description: Success
@@ -191,21 +199,7 @@ components:
         expirationTime:
           type: string
           description: The time when the `downloadUrl` will expire.
-    StrikesArchive:
-      title: Strikes Archive
-      description: Success
-      type: object
-      properties:
-        id:
-          type: string
-          description: Request ID that will be used to check the status of the result and to retrieve the historical data.
   responses:
-    ValidationError:
-      description: Validation Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
     GetStrikesArchive:
       description: Lightning Strikes Archive
       content:
@@ -218,6 +212,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StrikesArchiveBulkResult'
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
   securitySchemes:
     clientCredentials:
       type: oauth2

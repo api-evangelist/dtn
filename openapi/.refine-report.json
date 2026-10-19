@@ -18,6 +18,7 @@
     "_original/dtn-marine-weather-api-openapi.json",
     "_original/dtn-metars-api-openapi.json",
     "_original/dtn-observation-api-openapi.json",
+    "_original/dtn-openapi.json",
     "_original/dtn-pavement-conditions-api-openapi.json",
     "_original/dtn-precipitation-api-openapi.json",
     "_original/dtn-probabilistic-api-openapi.json",
@@ -135,11 +136,13 @@
     "dtn-winds-aloft-api-openapi.yml"
   ],
   "archived": [],
-  "errors": [],
+  "errors": [
+    "dtn-openapi.json: dangling $ref: #/definitions/Catalog"
+  ],
   "warnings": [],
   "notes": [
     "5 archived document(s) dropped as subsets of other archived documents",
-    "sourced from openapi/_original/ (32 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "sourced from openapi/_original/ (33 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "dtn-agency-bulletin-api-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "dtn-agency-bulletin-websocket-api-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "dtn-alerting-api-openapi.json: upgraded openapi 3.0.2 -> OpenAPI 3.2.0",
@@ -193,6 +196,9 @@
     "dtn-marine-weather-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
     "dtn-metars-api-openapi.json: upgraded openapi 3.0.2 -> OpenAPI 3.2.0",
     "dtn-observation-api-openapi.json: upgraded openapi 3.0.2 -> OpenAPI 3.2.0; renamed 5 component key(s) illegal in 3.x (e.g. Observations Endpoint Core Scope)",
+    "dtn-openapi.json: upgraded openapi 3.0.1 -> OpenAPI 3.2.0",
+    "dtn-openapi.json: tagged paths GET /api/catalog -> Catalog",
+    "dtn-openapi.json: declared missing tag: Catalog",
     "dtn-pavement-conditions-api-openapi.json: upgraded openapi 3.0.2 -> OpenAPI 3.2.0",
     "dtn-precipitation-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
     "dtn-probabilistic-api-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
@@ -239,6 +245,7 @@
     "tag 'Orders' spans 2 source specs (dtn-digital-commerce-orders-openapi.json, dtn-energy-digital-commerce-integrations-api-openapi.json): per-path servers applied",
     "tag 'Health Check' spans 2 source specs (dtn-energy-event-index-api-openapi.json, dtn-storm-impact-analytics-openapi.json): per-path servers applied",
     "tag 'Information' spans 2 source specs (dtn-financial-market-data-openapi.json, dtn-storm-risk-analytics-api-openapi.json): per-path servers applied",
+    "tag 'Catalog' spans 2 source specs (dtn-map-tile-api-openapi.json, dtn-openapi.json): per-path servers applied",
     "apis.yml register: already-registered"
   ],
   "skipped": [

@@ -52,6 +52,17 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    SetupBuyerRequestFailedItem:
+      required:
+      - customUserId
+      - reason
+      properties:
+        customUserId:
+          type: string
+        reason:
+          type: string
+          description: Short description of why the buyer user setup failed
+          example: 'No buyer account has been set up for sold to number(s): 12345, 101010'
     ErrorDetails:
       type: object
       required:
@@ -66,6 +77,22 @@ components:
           type: integer
         detail:
           type: string
+    SetupBuyerRequestSuccessfulItem:
+      required:
+      - customUserId
+      - soldTos
+      - shipTos
+      properties:
+        customUserId:
+          type: string
+        soldTos:
+          type: array
+          items:
+            type: string
+        shipTos:
+          type: array
+          items:
+            type: string
     SetupBuyerRequest:
       type: object
       description: Request body for setting up buyer accounts and users
@@ -179,28 +206,6 @@ components:
           description: Short description of why the buyer user setup failed
           example: 'No buyer account has been set up for sold to number(s): 12345, 101010'
   responses:
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDetails'
-          example:
-            type: unauthorized
-            title: Error while authenticating the user
-            status: 401
-            detail: Provided token does not grant access to this route
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDetails'
-          example:
-            type: bad-request
-            title: Invalid Request
-            status: 400
-            detail: 'request/body/0/locale must be equal to one of the allowed values: en-US, fr-FR, es-ES, nb-NO, nl-NL, de-DE, browserDefault'
     InternalServerError:
       description: Internal Server Error
       content:
@@ -212,6 +217,28 @@ components:
             title: Internal Server Error
             status: 500
             detail: internal error
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetails'
+          example:
+            type: bad-request
+            title: Invalid Request
+            status: 400
+            detail: 'request/body/0/locale must be equal to one of the allowed values: en-US, fr-FR, es-ES, nb-NO, nl-NL, de-DE, browserDefault'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDetails'
+          example:
+            type: unauthorized
+            title: Error while authenticating the user
+            status: 401
+            detail: Provided token does not grant access to this route
   securitySchemes:
     clientCredentials:
       type: oauth2

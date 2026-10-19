@@ -9,7 +9,135 @@ info:
 
     forecast wind radii and swaths, and aircraft reconnaissance from DTN and
 
-    government agency sources.'
+    government agency sources. # Responses
+
+    ## TropicalResponse
+
+    All endpoints return data as a "TropicalResponse" model. ```json
+
+    {
+
+    "url": "/cyclones", # URL requested
+
+    "cycloneCount": 1, # Number of cyclones returned in the response
+
+    "data": [TropicalFeatureCollection] # Array of TropicalFeatureCollection objects
+
+    }
+
+    ```
+
+    ## TropicalFeatureCollection
+
+    A TropicalFeatureCollection is a rfc7946 compliant GeoJson Feature Collection. Data for each active storm will be held in its own Feature Collection. The data is held inside the list of Features. ```json
+
+    {
+
+    "type": "FeatureCollection",
+
+    "metadata": {
+
+    "stormName": "Ryan", # Name of the storm that this feature collection contains data for
+
+    "source": "DTN", # Name of the organization that issued the advisory
+
+    "stormNum": "20S",
+
+    "stormId": "101", # Unique id of storm
+
+    "advisoryDateTime": "2020-08-01T00:00:00Z", # Date and time of the advisory
+
+    },
+
+    "features": [TropicalFeature] # Array of GeoJson Feature objects
+
+    }
+
+    ```
+
+    ## TropicalFeature
+
+    A TropicalFeature is a rfc7946 compliant GeoJson Feature. Each Feature contains a property "stormElement" which describes the type of data this feature represents. ```json
+
+    {
+
+    "type": "Feature",
+
+    "properties": {
+
+    "stormElement": "OBSERVED_POSITION",
+
+    ... },
+
+    "geometry": {
+
+    "type": "Point",
+
+    "coordinates": [1, 1]
+
+    }
+
+    }
+
+    ```
+
+    "stormElement" is meant to be used as an enum, where the allowed values are:
+
+    - "ERROR_CONE"
+
+    - This is the probable path of a tropical cyclone’s center over a certain time period. The cone is based on the spread of the forecast models combined with meteorological expertise. It accounts for the uncertainty in the hurricane''s future track. - geometry type Polygon
+
+    - "CURRENT_POSITION"
+
+    - Current position of the center (or eye) of the tropical cyclone. - geometry type Point
+
+    - "FORECAST_POSITION"
+
+    - Indicates the predicted locations of the tropical cyclone’s center at specific future times. - geometry type Point
+
+    - "OBSERVED_POSITION"
+
+    - Observed positions of the tropical cyclone including since inception. - geometry type Point
+
+    - "FORECAST_RADII"
+
+    - Radius of the wind field around the center of the tropical cyclone. - geometry type Polygon
+
+    - "CURRENT_RADII"
+
+    - Radius of the wind field around the center of the tropical cyclone. Current Radii represents the observed wind field at the tropical cyclones current position. - geometry type Polygon
+
+    - "FORECAST_TRACK"
+
+    - Predicted path that the tropical cyclone’s center is expected to follow over a certain period. - geometry type LineString
+
+    - "OBSERVED_TRACK"
+
+    - The observed track of the tropical cyclone centers since inception. - geometry type LineString
+
+    - "SWATH"
+
+    - Refers to areas affected by the cyclone''s winds, showing areas that experienced different wind speeds throughout the tropical cyclone’s future path. - geometry type Polygon
+
+    - "RECON_POINT"
+
+    - The current position of the reconnaissance aircraft that is conducting a mission to sample meteorological data from the tropical cyclone. - geometry type Point
+
+    - "RECON_TRACK"
+
+    - The observed track of the reconnaissance aircraft that is conducting a mission to sample meteorological data from the tropical cyclone. - geometry type LineString
+
+    - "MODEL_POINT"
+
+    - Specific locations along the predicted path of a tropical cyclone, as determined by various forecast models. These points represent the projected positions of the tropical cyclone’s center at different future times. - geometry type Point
+
+    - "MODEL_TRACK"
+
+    - The predicted path that a storm''s center is expected to follow over a certain time period, as determined by various forecast models. - geometry type LineString
+
+    - "ERROR_CONE_BBOX"
+
+    - A rectangular bounding box calculated by the API that includes the extent of the error cone.'
   version: 1.0.6
 servers:
 - url: https://tropical.api.dtn.com
@@ -207,48 +335,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    TropicalGeometry:
-      properties:
-        type:
-          type: string
-          enum:
-          - Point
-          - LineString
-          - Polygon
-          - MultiPoint
-          - MultiLineString
-          - MultiPolygon
-          title: Type
-        coordinates:
-          items: {}
-          type: array
-          title: Coordinates
-      type: object
-      required:
-      - type
-      - coordinates
-      title: TropicalGeometry
     StormMetadata:
       properties:
         stormName:
@@ -274,6 +360,27 @@ components:
       - stormNum
       - stormId
       title: StormMetadata
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     TropicalResponse:
       properties:
         url:
@@ -293,15 +400,45 @@ components:
       - url
       - cycloneCount
       title: TropicalResponse
-    HTTPValidationError:
+    TropicalFeatureCollection:
       properties:
-        detail:
+        type:
+          type: string
+          title: Type
+          default: FeatureCollection
+        features:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/TropicalFeature'
           type: array
-          title: Detail
+          title: Features
+          default: []
+        metadata:
+          $ref: '#/components/schemas/StormMetadata'
       type: object
-      title: HTTPValidationError
+      required:
+      - metadata
+      title: TropicalFeatureCollection
+    TropicalGeometry:
+      properties:
+        type:
+          type: string
+          enum:
+          - Point
+          - LineString
+          - Polygon
+          - MultiPoint
+          - MultiLineString
+          - MultiPolygon
+          title: Type
+        coordinates:
+          items: {}
+          type: array
+          title: Coordinates
+      type: object
+      required:
+      - type
+      - coordinates
+      title: TropicalGeometry
     TropicalFeature:
       properties:
         type:

@@ -4,7 +4,37 @@ info:
   description: '# Introduction
 
 
-    Welcome to the DTN Observations API - your gateway to access live and historical measured weather station data for over 70,000 devices globally from public and private station networks.'
+    Welcome to the DTN Observations API - your gateway to access live and historical measured weather station data for over 70,000 devices globally from public and private station networks. DTN’s fast, robust, and scalable Observations API has been designed to cater to a wide range of users, including:
+
+
+    - Scientists engaged in climate research
+
+    - Energy company analysts
+
+    - Insurance analysts and loss-adjusters
+
+    - Software developers building weather apps
+
+
+    **Key features**: DTN Observations API, gives access to both real-time and historical data in one endpoint for an ever growing list of atmospheric, road, agricultural and marine parameters. Data is quality controlled and available in metric or imperial units and gap-filling with model data is also possible. Our stations endpoint helps you to identify relevant weather stations and their meta-data. Up to 30 days of data can be requested per query, with archived data available from 1901 to 1 minute ago. Like other DTN API’s, your response comes in a neatly packaged format which is easily parsable using any GeoJSON parser. The interactive documentation that follows is a guide to setting up requests, understanding responses, and leveraging all the features of DTN’s Observations API. ## Prerequisites
+
+
+    To start using the DTN Observations API, you don''t need to be a programming wiz. If you''re comfortable with the basics of RESTful APIs - things like GET and POST requests - you''re good to go. Don''t sweat the details; our easy-to-follow and interactive docs, Postman collection, and user-friendly API design will have you pulling weather observations in no time. ## API Credentials
+
+
+    To start making requests, you will first need your API credentials that includes your client ID and client secret. If you do not have your API credentials, please contact your account manager or the DTN sales team at apisupport@dtn.com. Remember not to share your API credentials publicly or use others'' API keys, as this may compromise the security of your data. After you have obtained your API credentials, head over to the authentication section of this documentation to learn how to get your access token. ## Account Scopes
+
+
+    Account scopes define the features your account can access and the extent to which you can access them. **a) Core Scope**
+
+
+    The Core Scope is designed for basic usage, offering access to fundamental features:
+
+
+    * **Limited Access:** Only `Core` parameters are available in the Observations endpoint. You can find the full list of these parameters in the Parameters endpoint. * **Time Restrictions:** You can only access observation data from the past 32 days. * **Observation Limitations:** Access is restricted to public observations. **b) Plus Scope**
+
+
+    The Plus Scope is the most advanced scope, offering more features and fewer limitations compared to the Core Scope. * **Full Access:** Accounts with this scope can access all `Core` parameters as well as additional parameters not included in the Core Scope. * **Latest and Archive Access:** Observation data is available from both the latest updates and archived records dating back to 1901. * **Observation Access:** Public observations and those from DTN EU are fully accessible. For details about the features and limitations of these scopes, refer to the descriptions provided for each endpoint. > **Note:** `Core Scope` applies to new customers by default, existing customers are entitled to the `Plus Scope`. For new customers, please contact apisupport@dtn.com to enable access to the `Plus Scope`.'
   version: 2.0.0
 servers:
 - url: https://obs.api.dtn.com
@@ -16,7 +46,145 @@ paths:
       tags:
       - API Endpoints
       summary: Observations
-      description: Use this endpoint to get near-real time or historic observations for one or more stations (up to 100 stations per request).
+      description: 'Use this endpoint to get near-real time or historic observations for one or more stations (up to 100 stations per request). ### Finding Stations and Parameters
+
+
+        * Use the `/stations` endpoint to search for and identify stations of interest. * Use the `/parameters` endpoint to explore available parameters. * Observation type (`obsType`) descriptions are also listed in the `/stations` documentation. ### Intervals
+
+
+        Control the temporal resolution of the returned data with the `interval` parameter:
+
+
+        | Interval | Description |
+
+        |----------|-------------|
+
+        | `15m` | Returns observations at fixed 15-minute intervals. Each value is interpolated from hourly observations. Can only be used with parameters ending in `15Min`. |
+
+        | `1h` | Returns observations at fixed hourly intervals. Each value represents the closest measurement to the top of the hour. |
+
+        | `24h` | Returns daily aggregations for parameters with a `24Hour` suffix. The aggregation period covers each full 24-hour window between `startTime` and `endTime`. |
+
+
+        ### Quota Usage
+
+
+        Quota is calculated **per station**, not per request or observations. **Example**
+
+
+        If you request data for 10 stations, your total quota usage is:
+
+
+        ```
+
+        10 stations = 10 quota units
+
+        ```
+
+
+        The number of observations returned, parameters requested, or time range does not affect quota usage—only the number of stations in your request. Deep Dive to Quota Calculations
+
+
+        The quota is based solely on the number of stations requested, regardless of how many observations are returned. **Formula:**
+
+        ```
+
+        Total Quota Usage = Number of Stations Requested
+
+        ```
+
+
+        **Example**
+
+
+        Let''s say you make a request for 3 stations with the following parameters:
+
+        - **Stations:** `CPTR3, TQTCE, VMWB5`
+
+        - **Parameters:** `airTemp, windSpeed, relativeHumidity` (3 parameters)
+
+        - **Time Range:** 24 hours with hourly data (24 time points)
+
+
+        Total quota usage:
+
+        ```
+
+        3 stations = 3 quota units
+
+        ```
+
+
+        **Key Points:**
+
+        - Quota is counted per station requested, not per observation
+
+        - The number of parameters does not affect quota
+
+        - The time range does not affect quota
+
+        - The number of observations returned does not affect quota
+
+        - The number of API requests doesn''t affect quota—only the number of stations requested
+
+
+        ### Access Scopes and Data Availability
+
+
+        | Feature | Core Scope | Plus Scope |
+
+        |---------|------------|------------|
+
+        | **Parameters** | Access limited to Core parameters only. Including non-Core parameters (e.g., `soilTemp`, `surfaceTemp`) will not change the response. | Access to all parameters, both Core and Non-Core. |
+
+        | **Stations** | Data limited to public stations, excluding DTN EU stations. | Includes data from all stations, including DTN EU. |
+
+        | **Data Access** | Only latest data (past 32 days) is available. | Supports both latest and archived observations (dating back to 1901). |
+
+
+        ### Gap Filling with Model Data
+
+
+        **What is Gap Filling?**
+
+
+        Fills missing observations with data from DTN''s gridded weather model. **Important:** When `gapFill=true`, the `obsProperties` parameter is automatically set to `true` by default to help you identify which observations are gap-filled. Deep Dive to Gap Filling
+
+
+        **When to Use:**
+
+        - Creating continuous time series for analysis
+
+        - Machine learning training datasets
+
+        - Filling short data gaps in station records
+
+
+        **Requirements:**
+
+        - Gap-filling scope enabled on your account
+
+        - Use with `interval=1h`
+
+        - Available from January 1, 2013 onwards
+
+
+        **Supported Parameters:**
+
+
+        Not all parameters support gap filling. Check the `/parameters` endpoint for details. **Example:**
+
+        ```
+
+        GET /v2/observations?stationCode=CPTR3¶meters=airTemp,windSpeed&startTime=2025-01-20T00:00:00Z&endTime=2025-01-22T00:00:00Z&interval=1h&gapFill=true
+
+        ```
+
+
+        **Identifying Gap-Filled Data:**
+
+
+        When `gapFill=true`, observation properties are automatically included in the response. Gap-filled observations will have specific indicators in the properties to distinguish them from actual station measurements.'
       operationId: get_observations_v2_observations_get
       parameters:
       - description: Comma-separated list of parameters, e.g. `airTemp,precipAcc60Min,windSpeed`. A full list of supported parameters and definitions is available through the parameters endpoint.
@@ -267,7 +435,95 @@ paths:
       tags:
       - API Endpoints
       summary: Stations
-      description: Use this endpoint to retrieve station metadata and details about available observation types.
+      description: 'Use this endpoint to retrieve station metadata and details about available observation types. You can search for one or more stations by providing their `stationCodes` in a single request. ### Station Metadata
+
+
+        Each station record includes key metadata fields such as:
+
+
+        - **Elevation** — height above mean sea level, expressed in meters (SI units)
+
+        - **Location** — latitude and longitude
+
+        - **Observation Types (obsTypes)** — list of supported observation categories (see table below)
+
+        - **Available Parameters (parameters)** — list of observation parameters that can be requested from this station via the `/observations` endpoint
+
+        - **Archive Availability (isArchived)** — indicates whether historical data is available
+
+        - **Observation Timestamps** — includes both the first and latest observation times for that station
+
+        - **Tags** — identifiers and metadata such as ICAO, WMO, IATA, GHCND, and station name
+
+
+        ### Quota Usage
+
+
+        Quota usage is calculated **per returned station**, not per API request. **Example:** If you request metadata for 50 stations and all 50 are returned, your quota usage is 50 stations. The quota is applied based on the number of stations returned in the response, regardless of how many you requested. ### Access Scopes
+
+
+        Your account scope determines which stations you can access:
+
+
+        | Feature | Core Scope | Plus Scope |
+
+        |---------|------------|------------|
+
+        | **Station Access** | Public stations only | Public stations + DTN EU stations |
+
+        | **Coverage** | Global public networks (METAR, SYNOP, etc.) | All public networks + DTN''s European private network |
+
+        | **Typical Use Cases** | General weather monitoring, basic applications | Professional applications requiring comprehensive European coverage |
+
+
+        > **Note:** To check your current scope or upgrade, contact apisupport@dtn.com
+
+
+        ### Observation Types (obsTypes)
+
+
+        The `obsTypes` field identifies the type or source network of a weather station''s observations. Each observation type reflects a specific network, instrumentation standard, or operational purpose, which determines the kind of data available, its frequency, and its reliability. | obsType | Description |
+
+        |---------|-------------|
+
+        | **SYNOP** | Surface synoptic observation stations (typically WMO official sites, government-operated). |
+
+        | **METAR** | Meteorological Terminal Air Reports, primarily for aviation use. Global coverage across airfields. |
+
+        | **Citizen** | Individually operated stations (primarily report `precipAcc60Min` data). |
+
+        | **HFM** | High-Frequency METAR stations providing more frequent updates. |
+
+        | **AG** | Agricultural or farm-based stations (including some DAVIS non-agricultural units). |
+
+        | **RWIS** | Road Weather Information Systems — roadside sensors for monitoring road conditions, often operated by local or state agencies. |
+
+        | **SHIP** | Observations collected aboard vessels. |
+
+        | **BUOY** | Observations from floating buoys. |
+
+        | **Hydro** | Hydrological stations (e.g., river or water-level monitoring). |
+
+        | **Others** |Stations that don’t fall into the above obs types. |
+
+
+        ### Search Methods
+
+
+        The stations endpoint supports multiple search methods via the `by` parameter. Each method requires different parameters:
+
+
+        | Search Method | Required Parameters | Optional Parameters | Description |
+
+        |---------------|---------------------|---------------------|-------------|
+
+        | `by=stationCodes` | `stationCodes` | `obsTypes`, `archiveCounts` | Search for specific stations by their station codes (up to 100). |
+
+        | `by=radius` | `lat`, `lon` | `radius`, `obsTypes`, `showBest` | Find stations within a radius (km) of a geographic point. Default radius: 25km, max: 100km. |
+
+        | `by=boundingBox` | `minLat`, `maxLat`, `minLon`, `maxLon` | `obsTypes`, `showBest` | Find stations within a rectangular geographic area. |
+
+        | `by=tags` | `tags` | `obsTypes` | Search stations by metadata tags (e.g., ICAO, WMO, IATA, GHCND, name).'
       operationId: get_stations_v2_observations_stations_get
       parameters:
       - description: Get stations by `radius`|`boundingBox`|`stationCodes`|`tags`
@@ -516,7 +772,55 @@ paths:
       tags:
       - API Endpoints
       summary: Parameters
-      description: Use this endpoint to retrieve a complete list of supported observation parameters, including their descriptions, units, and availability across networks.
+      description: 'Use this endpoint to retrieve a complete list of supported observation parameters, including their descriptions, units, and availability across networks. This is your authoritative source of truth for which parameters can be queried from `/observations` and `/stations`. ### Purpose
+
+
+        Each parameter represents a specific type of meteorological or environmental observation — such as temperature, precipitation, humidity, radiation, or wind. Parameters define what data can be retrieved for a given station or time range. ### Access Scopes
+
+
+        Your account scope determines which parameters you can query:
+
+
+        | Feature | Core Scope | Plus Scope |
+
+        |---------|------------|------------|
+
+        | **Available Parameters** | Limited to parameters marked with "Y" in the Core column | Access to all parameters (Core and Non-Core) |
+
+        | **Total Parameters** | ~40 core parameters | 150+ parameters including specialized measurements |
+
+        | **Use Cases** | General weather monitoring, basic applications | Professional applications, specialized industries (agriculture, road weather, marine) |
+
+
+        > **Note:** Parameters not available in your scope will be ignored in `/observations` requests without returning an error. ### Getting Full Parameter Details
+
+
+        **For complete, up-to-date parameter information, call the API endpoint directly:**
+
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/parameters
+
+        ```
+
+
+        The API response includes detailed descriptions, units, gap-filling support, and scope availability for each parameter. The table below provides a quick reference, but the API endpoint is the authoritative source. **Example API Request:**
+
+        ```
+
+        GET https://obs.api.dtn.com/v2/observations/parameters?names=airTemp,precipAcc60Min,windSpeed
+
+        ```
+
+
+        ### Parameter Catalog
+
+
+        The table below groups related parameters together for easy discovery. Each base parameter may have multiple time-aggregated or variant forms listed in the "Related Parameters" column. **Column Definitions:**
+
+
+        - **Base Parameter:** The primary parameter name (instantaneous or default measurement).'
       operationId: get_parameters_v2_observations_parameters_get
       parameters:
       - description: Comma-separated list of parameter names to include in the response, eg. `airTemp,precipAcc60Min,windSpeed`
@@ -636,7 +940,448 @@ paths:
       - lang: Swift + Nsurlsession
         source: "let url = URL(string: \"https://obs.api.dtn.com/v2/observations/parameters\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer YOUR_ACCESS_TOKEN\", forHTTPHeaderField: \"Authorization\")\n\nlet task = URLSession.shared.dataTask(with: request) { data, response, error in\n    if let data = data {\n        print(String(data: data, encoding: .utf8) ?? \"\")\n    }\n}\ntask.resume()"
 components:
+  schemas:
+    ArchiveParameter:
+      title: ArchiveParameter
+      required:
+      - parameter
+      type: object
+      properties:
+        parameter:
+          $ref: '#/components/schemas/ArchiveCounts'
+    ObsDataRespModel:
+      title: ObsDataRespModel
+      required:
+      - url
+      - type
+      - features
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+        type:
+          type: string
+        features:
+          title: Features
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationsFeature'
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          oneOf:
+          - type: string
+            description: Simple validation error message
+          - type: array
+            description: Detailed validation errors
+            items:
+              $ref: '#/components/schemas/ValidationError'
+      examples:
+        missing_field:
+          summary: Missing required field
+          value:
+            detail: 'Validation error. Message: stationCode field is required.'
+        time_range_exceeded:
+          summary: Time range validation
+          value:
+            detail: 'Validation error. Message: Maximum hours for time range query is 45 days. You''ve provided: startTime = 2025-09-01 00:00:00, endTime = 2025-11-30 00:00:00.'
+        invalid_format:
+          summary: Invalid field format
+          value:
+            detail:
+            - loc:
+              - query
+              - endTime
+              msg: invalid datetime format
+              type: value_error.datetime
+    UnauthorizedError:
+      title: UnauthorizedError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the authorization failure
+      example:
+        detail: JWT is expired
+    ArchiveCounts:
+      title: ArchiveCounts
+      required:
+      - yearMonth
+      type: object
+      properties:
+        yearMonth:
+          title: Yearmonth
+          type: integer
+    ObservationsGeometry:
+      title: Geometry
+      required:
+      - type
+      - coordinates
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        coordinates:
+          title: Coordinates
+          type: array
+          items:
+            type: number
+    StnDataRespModel:
+      title: StnDataRespModel
+      required:
+      - url
+      - type
+      - features
+      type: object
+      properties:
+        url:
+          title: Url
+          type: string
+        type:
+          title: Type
+          type: string
+        features:
+          title: Features
+          type: array
+          items:
+            $ref: '#/components/schemas/StationsFeature'
+      example:
+        url: https://obs.api.dtn.com/v2/observations/stations?by=boundingBox&minLat=51&maxLat=51.5&minLon=0&maxLon=0.5&obsTypes=SYNOP
+        type: FeatureCollection
+        features:
+        - stationCode: DNL35
+          type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - 0.4595
+            - 51.0772
+          properties:
+            tags:
+              wmo: '99126'
+              mgID: '99126'
+              name: Goudhurst
+            parameters:
+            - airTemp
+            - airTempMax12Hour
+            - airTempMin12Hour
+            - dewPoint
+            - precipAcc12Hour
+            - precipAcc24Hour
+            - precipAcc60Min
+            - precipAcc6Hour
+            - relativeHumidity
+            - sunrise
+            - sunset
+            - wmoWeatherCode
+            elevation: 85
+            isArchived: true
+            lastObsTimestamp: '2024-03-22T16:00:00Z'
+            obsTypes:
+            - SYNOP
+        - stationCode: K6C7N
+          type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - 0.45
+            - 51.283
+          properties:
+            tags:
+              wmo: '99008'
+              mgID: '99008'
+              name: East malling
+            parameters:
+            - airTemp
+            - airTempMax12Hour
+            - airTempMin12Hour
+            - dewPoint
+            - globalRadiation24Hour
+            - globalRadiation60Min
+            - mslPressure
+            - precipAcc12Hour
+            - precipAcc24Hour
+            - precipAcc60Min
+            - precipAcc6Hour
+            - relativeHumidity
+            - stationPressure
+            - sunrise
+            - sunset
+            - sunshine60Min
+            - windDirection
+            - windGust
+            - windSpeed
+            - wmoWeatherCode
+            elevation: 50
+            isArchived: true
+            lastObsTimestamp: '2024-03-22T16:00:00Z'
+            obsTypes:
+            - SYNOP
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+    StationsFeature:
+      title: Feature
+      required:
+      - stationCode
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        stationCode:
+          title: Stationcode
+          type: string
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/StationsGeometry'
+        properties:
+          $ref: '#/components/schemas/StationsProperties'
+    GatewayTimeoutError:
+      title: GatewayTimeoutError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: string
+          description: Error message describing the timeout
+      example:
+        detail: stream timeout
+    ObservationsFeature:
+      title: Feature
+      required:
+      - type
+      - geometry
+      - properties
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        geometry:
+          $ref: '#/components/schemas/ObservationsGeometry'
+        properties:
+          $ref: '#/components/schemas/ObservationsProperties'
+    ParametersListResp:
+      title: ParametersListResp
+      required:
+      - name
+      - unit
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+          title: Name
+        unit:
+          type: string
+          title: Unit
+        imperial_unit:
+          type: string
+          title: Imperialunit
+        type:
+          type: string
+          title: Type
+        precision:
+          type: integer
+          title: Precision
+        description:
+          type: string
+          title: Description
+        notes:
+          type: string
+          title: Notes
+        requiredScope:
+          type: string
+          title: Requiredscope
+    StationsGeometry:
+      title: Geometry
+      required:
+      - type
+      - coordinates
+      type: object
+      properties:
+        type:
+          title: Type
+          type: string
+        coordinates:
+          title: Coordinates
+          type: array
+          items:
+            type: number
+    ObservationProperties:
+      title: ObservationProperties
+      required:
+      - obsType
+      - isDerived
+      - qc
+      type: object
+      properties:
+        obsType:
+          title: Obstype
+          type: string
+        isDerived:
+          title: Isderived
+          type: boolean
+        qc:
+          title: Qc
+          type: string
+    StationsProperties:
+      title: Properties
+      required:
+      - parameters
+      - elevation
+      - isArchived
+      - lastObsTimestamp
+      - obsTypes
+      type: object
+      properties:
+        tags:
+          title: Tags
+          type: object
+        parameters:
+          title: Parameters
+          type: array
+          items:
+            type: string
+        elevation:
+          title: Elevation
+          type: number
+        isArchived:
+          title: Isarchived
+          type: boolean
+        lastObsTimestamp:
+          title: Lastobstimestamp
+          type: string
+        obsTypes:
+          title: Obstypes
+          type: array
+          items:
+            type: string
+        archiveCounts:
+          $ref: '#/components/schemas/ArchiveParameter'
+    ObservationsProperties:
+      title: Properties
+      required:
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/Observation'
+    Observation:
+      title: Observation
+      required:
+      - parameter
+      - parameterProperties
+      type: object
+      properties:
+        parameter:
+          title: Parameter
+          type: number
+        parameterProperties:
+          $ref: '#/components/schemas/ObservationProperties'
   examples:
+    Observations_Endpoint_Plus_Scope:
+      summary: Response for the accounts with Plus Scope
+      value:
+        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
+        type: FeatureCollection
+        features:
+        - type: Feature
+          geometry:
+            type: Point
+            coordinates:
+            - -0.45
+            - 51.4833
+          properties:
+            '2025-01-22T00:00:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 2.06
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              wbgt: 2.4
+              wbgtProperties:
+                obsType: SYNOP
+                isDerived: true
+                qc: pass
+            '2025-01-22T00:20:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              wbgt: 2.2
+              wbgtProperties:
+                obsType: METAR
+                isDerived: true
+                qc: pass
+            '2025-01-22T00:50:00Z':
+              airTemp: 3
+              airTempProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: METAR
+                isDerived: false
+                qc: pass
+              wbgt: 2.2
+              wbgtProperties:
+                obsType: METAR
+                isDerived: true
+                qc: pass
+            '2025-01-22T01:00:00Z':
+              airTemp: 2.9
+              airTempProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              windSpeed: 1.54
+              windSpeedProperties:
+                obsType: SYNOP
+                isDerived: false
+                qc: pass
+              wbgt: 2.4
+              wbgtProperties:
+                obsType: SYNOP
+                isDerived: true
+                qc: pass
     Parameter_Endpoint_Example:
       summary: Example of Response for Parameter Endpoint
       value:
@@ -1225,83 +1970,6 @@ components:
               windSpeedProperties:
                 obsType: SYNOP
                 isDerived: false
-                qc: pass
-    Observations_Endpoint_Plus_Scope:
-      summary: Response for the accounts with Plus Scope
-      value:
-        url: https://obs.api.dtn.com/v2/observations?stationCode=CPTR3&parameters=airTemp,windSpeed,wbgt&startTime=2025-01-22T00%3A00%3A00Z&endTime=2025-01-22T01%3A00%3A00Z&obsProperties=True
-        type: FeatureCollection
-        features:
-        - type: Feature
-          geometry:
-            type: Point
-            coordinates:
-            - -0.45
-            - 51.4833
-          properties:
-            '2025-01-22T00:00:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              windSpeed: 2.06
-              windSpeedProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              wbgt: 2.4
-              wbgtProperties:
-                obsType: SYNOP
-                isDerived: true
-                qc: pass
-            '2025-01-22T00:20:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              wbgt: 2.2
-              wbgtProperties:
-                obsType: METAR
-                isDerived: true
-                qc: pass
-            '2025-01-22T00:50:00Z':
-              airTemp: 3
-              airTempProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: METAR
-                isDerived: false
-                qc: pass
-              wbgt: 2.2
-              wbgtProperties:
-                obsType: METAR
-                isDerived: true
-                qc: pass
-            '2025-01-22T01:00:00Z':
-              airTemp: 2.9
-              airTempProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              windSpeed: 1.54
-              windSpeedProperties:
-                obsType: SYNOP
-                isDerived: false
-                qc: pass
-              wbgt: 2.4
-              wbgtProperties:
-                obsType: SYNOP
-                isDerived: true
                 qc: pass
     Observations_with_showTags_true:
       summary: Response with station tags included (showTags=true)

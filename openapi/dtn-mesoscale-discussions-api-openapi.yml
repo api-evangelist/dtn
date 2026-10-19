@@ -87,10 +87,10 @@ components:
       required: true
       schema:
         type: string
-    month:
-      name: month
+    minute:
+      name: minute
       in: path
-      description: 2 digit month, 01-12
+      description: 2 digit minute, 00-59
       required: true
       schema:
         type: string
@@ -101,13 +101,6 @@ components:
       required: true
       schema:
         type: string
-    hour:
-      name: hour
-      in: path
-      description: 2 digit hour, 00-23
-      required: true
-      schema:
-        type: string
     day:
       name: day
       in: path
@@ -115,10 +108,17 @@ components:
       required: true
       schema:
         type: string
-    minute:
-      name: minute
+    month:
+      name: month
       in: path
-      description: 2 digit minute, 00-59
+      description: 2 digit month, 01-12
+      required: true
+      schema:
+        type: string
+    hour:
+      name: hour
+      in: path
+      description: 2 digit hour, 00-23
       required: true
       schema:
         type: string

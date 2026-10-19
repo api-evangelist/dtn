@@ -1,0 +1,76 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "dev-portal-api",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "version": "0.1",
+    "contact": {
+      "email": "dev-portal.support@dtn.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "basePath": "/api",
+  "paths": {
+    "/api/catalog": {
+      "get": {
+        "description": "Get the list of APIs from the dev-portal catalog",
+        "responses": {
+          "200": {
+            "description": "Get the list of APIs from the dev-portal catalog",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Catalog"
+                  }
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "http://localhost:3000"
+          }
+        ]
+      },
+      "servers": [
+        {
+          "url": "http://localhost:3000"
+        }
+      ]
+    }
+  },
+  "components": {},
+  "difinitions": {
+    "Catalog": {
+      "type": "object",
+      "properties": {
+        "category": { "type": "string" },
+        "apis": {
+          "type": "array",
+          "xml": { "wrapped": true },
+          "items": { "xml": { "name": "api" }, "$ref": "#/definitions/Api" }
+        }
+      },
+      "xml": { "name": "Catalog" }
+    },
+    "Api": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "link": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "xml": { "name": "Api" }
+    }
+  }
+}

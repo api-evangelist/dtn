@@ -4,7 +4,64 @@ info:
   description: '# Introduction
 
 
-    The DTN Storm Risk Analytics API delivers AI/ML electricity customers out and weather risk predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
+    The DTN Storm Risk Analytics API delivers AI/ML electricity customers out and weather risk predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using eight (8) years of electricity customers out data, providing hourly predictions out to seven (7) days in the future, updated four (4) times per day. DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis. If you have questions about the Storm Risk Analytics API, please contact your DTN account representative. # Predictions
+
+
+    The DTN Storm Risk Analytics API provides hourly new electricity customers out (number of meters) or weather risk index (0 – low risk to 10 – extreme risk) predictions for every FIPS (county equivalent) in the continental United States and southern Canada for the next seven (7) days, updated four (4) times per day, typically around 01, 07, 13, and 19 UTC. For queries, counties can be specified individually by FIPS code or grouped together by passing a predefined region, state, or state abbreviation, GeoJSON polygon, or a list of FIPS codes. The timeframe for prediction queries can be specified via ISO 8601. The DTN Storm Risk Analytics API is also capable of providing predictions in GeoJSON format for use in GIS and mapping software applications. There is no access to historic predictions currently. # Prediction Parameters
+
+
+    Here we will introduce how to configure prediction queries for your specific use case. If you need additional information about counties (FIPS), you can use the informational API calls for assistance. The prediction calls are broken down into three (3) separate paths: /predictions, /predictions/geo-summary, and /predictions/polygon. | Path | Type | Description |
+
+    | --------- | ------- | ----------------------------------- |
+
+    | /predictions | GET | Get predictions for FIP(s) or region by date range |
+
+    | /predictions/geo-summary | GET | Get summary of predictions and GeoJson for FIP(s) or region by date range |
+
+    | /predictions/polygon | PUT | Get predictions for counties contained within passed in GeoJson polygon |
+
+
+    The parameters these calls accept are broken down into 2 types: position and prediction. Positional Parameters
+
+
+    These parameters are used to specify where, positionally, your predictions should be made for. **You will only need to use one type of position parameter per call.**
+
+
+    | Parameter | Description |
+
+    | ----------------------------------- | ----------------------------------- |
+
+    | fipsList | A single FIPS or comma seperated list of FIPS. |
+
+    | regionName | A named region, state name, or state abbreviation. |
+
+    | lat | The latitude of a point, the county containing this point will be used for the prediction. (**must be used along with lon**) |
+
+    | lon | The longitude of a point, the county containing this point will be used for the prediction. (**must be used along with lat**) |
+
+    | GeoJson (**body**) | A GeoJson polygon or multi-polygon in the body of a PUT request. (**Can only be used with /predictions/polygon**)|
+
+
+    Prediction Parameters
+
+
+    | Parameter | Required | Description |
+
+    | -------------------------- | --------- | ----------------------------------- |
+
+    | startTime | Yes | ISO 8601 time of the first prediction. |
+
+    | endTime | Yes | ISO 8601 time of the last prediction |
+
+    | timezoneId | No | A timezone ID, used if you want the predictions to be auto adjusted to a timezone. Predictions default to UTC if not provided.|
+
+    | predictionType | No | Can be either **customers-out** or **risk-index**. Defaults to **customers-out** |
+
+
+    # Informational Queries
+
+
+    This API contains a few helper functions built into this API to assist you in building your prediction queries.'
   version: 1.0.1
 servers:
 - url: https://sra.dtn.com/v1
@@ -89,6 +146,75 @@ paths:
                 items:
                   $ref: '#/components/schemas/prediction'
 components:
+  parameters:
+    regionName:
+      name: regionName
+      description: Can be a predefined, named region, a state abbreviation or full state name.
+      example: CONUS
+      in: query
+      required: false
+      schema:
+        type: string
+    lat:
+      name: lat
+      description: Latitude of point which is used to get predictions for county that contains it.
+      example: 44.9866
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    endTime:
+      name: endTime
+      description: ISO 8601, end time of predictions.
+      example: '2023-06-01T08:00:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    timezoneId:
+      name: timezoneId
+      description: IANA timezone string to auto adjust prediction timestamps.
+      example: America/Chicago
+      in: query
+      required: false
+      schema:
+        type: string
+    lon:
+      name: lon
+      description: Longitude of point which is used to get predictions for county that contains it.
+      example: -93.258
+      in: query
+      required: false
+      schema:
+        type: number
+        format: float
+    predictionType:
+      name: predictionType
+      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+      example: risk-index
+      in: query
+      required: false
+      schema:
+        type: string
+    startTime:
+      name: startTime
+      description: ISO 8601, start time of predictions.
+      example: '2023-05-30T08:30:00Z'
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+    fipsList:
+      name: fipsList
+      description: A single or comma seperated list of FIPS to get predictions for.
+      example: 27137,27089
+      in: query
+      required: false
+      schema:
+        type: string
   schemas:
     featureProperties:
       type: object
@@ -132,79 +258,6 @@ components:
                 - 44.9496
               - - -94.1728
                 - 45.56023
-    prediction:
-      type: object
-      properties:
-        fips:
-          $ref: '#/components/schemas/fips'
-        gfsDateTime:
-          type: string
-          example: 2023-05-30T18:00
-          description: Date time of the GFS run these predictions were calculated with.
-        predictionType:
-          type: string
-          example: risk-index
-          description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
-        weightingAlgorithm:
-          type: string
-          example: substation
-          description: Prediction weight algorithm used filter prediction values.
-        weight:
-          type: number
-          example: 50
-          description: Calculated weight used for predction filtering. If weightingAlgorithm is substation then this value is the number of substations contained within predictive area. For example - if 50 substations in county and this value is 25, then the predictions are 50% of their full value.
-        predictions:
-          type: array
-          items:
-            $ref: '#/components/schemas/hourlyPrediction'
-    featureCollection:
-      type: object
-      properties:
-        type:
-          type: string
-          example: FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/feature'
-    hourlyPrediction:
-      type: object
-      properties:
-        predictionDateTime:
-          type: string
-          example: 2023-05-30T19:00
-          description: Date time of this single hourly prediction
-        prediction:
-          type: number
-          example: 7
-          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
-        base:
-          type: number
-          example: 4
-          description: Baseline predicted value for this hourly prediction, changes based on predictionType defined.
-    feature:
-      type: object
-      properties:
-        type:
-          type: string
-          example: Feature
-        properties:
-          $ref: '#/components/schemas/featureProperties'
-        geometry:
-          type: object
-          properties:
-            type:
-              type: string
-              example: MultiPolygon
-        id:
-          type: string
-          example: '27053'
-          description: FIPS of county.
-        coordinates:
-          type: array
-          items:
-            type: number
-          example: []
     fips:
       type: object
       properties:
@@ -240,75 +293,102 @@ components:
           type: number
           example: 607
           description: Area of county in square miles.
-  parameters:
-    endTime:
-      name: endTime
-      description: ISO 8601, end time of predictions.
-      example: '2023-06-01T08:00:00Z'
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date-time
-    startTime:
-      name: startTime
-      description: ISO 8601, start time of predictions.
-      example: '2023-05-30T08:30:00Z'
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date-time
-    regionName:
-      name: regionName
-      description: Can be a predefined, named region, a state abbreviation or full state name.
-      example: CONUS
-      in: query
-      required: false
-      schema:
-        type: string
-    fipsList:
-      name: fipsList
-      description: A single or comma seperated list of FIPS to get predictions for.
-      example: 27137,27089
-      in: query
-      required: false
-      schema:
-        type: string
-    predictionType:
-      name: predictionType
-      description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
-      example: risk-index
-      in: query
-      required: false
-      schema:
-        type: string
-    lat:
-      name: lat
-      description: Latitude of point which is used to get predictions for county that contains it.
-      example: 44.9866
-      in: query
-      required: false
-      schema:
-        type: number
-        format: float
-    timezoneId:
-      name: timezoneId
-      description: IANA timezone string to auto adjust prediction timestamps.
-      example: America/Chicago
-      in: query
-      required: false
-      schema:
-        type: string
-    lon:
-      name: lon
-      description: Longitude of point which is used to get predictions for county that contains it.
-      example: -93.258
-      in: query
-      required: false
-      schema:
-        type: number
-        format: float
+    featureProperties:
+      type: object
+      properties:
+        fedParentName:
+          type: string
+          example: Minnesota
+          description: Name of parent state.
+        fedParentAbbreviation:
+          type: string
+          example: MN
+          description: Abbreviated name of parent state.
+        prediction:
+          type: number
+          example: 7
+          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
+        fedId:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        fedName:
+          type: string
+          example: Hennepin
+          description: Name of county.
+    prediction:
+      type: object
+      properties:
+        fips:
+          $ref: '#/components/schemas/fips'
+        gfsDateTime:
+          type: string
+          example: 2023-05-30T18:00
+          description: Date time of the GFS run these predictions were calculated with.
+        predictionType:
+          type: string
+          example: risk-index
+          description: Type of predictions, either customers-out or risk-index. Defaults to customers-out
+        weightingAlgorithm:
+          type: string
+          example: substation
+          description: Prediction weight algorithm used filter prediction values.
+        weight:
+          type: number
+          example: 50
+          description: Calculated weight used for predction filtering. If weightingAlgorithm is substation then this value is the number of substations contained within predictive area. For example - if 50 substations in county and this value is 25, then the predictions are 50% of their full value.
+        predictions:
+          type: array
+          items:
+            $ref: '#/components/schemas/hourlyPrediction'
+    feature:
+      type: object
+      properties:
+        type:
+          type: string
+          example: Feature
+        properties:
+          $ref: '#/components/schemas/featureProperties'
+        geometry:
+          type: object
+          properties:
+            type:
+              type: string
+              example: MultiPolygon
+        id:
+          type: string
+          example: '27053'
+          description: FIPS of county.
+        coordinates:
+          type: array
+          items:
+            type: number
+          example: []
+    featureCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/feature'
+    hourlyPrediction:
+      type: object
+      properties:
+        predictionDateTime:
+          type: string
+          example: 2023-05-30T19:00
+          description: Date time of this single hourly prediction
+        prediction:
+          type: number
+          example: 7
+          description: Best predicted value for this hourly prediction, changes based on predictionType defined.
+        base:
+          type: number
+          example: 4
+          description: Baseline predicted value for this hourly prediction, changes based on predictionType defined.
   securitySchemes:
     clientCredentials:
       type: oauth2

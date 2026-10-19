@@ -4,7 +4,13 @@ info:
   description: '# Introduction
 
 
-    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events.'
+    The DTN Storm Impact Analytics API delivers AI/ML electricity customers out and incident predictions to enable storm event declarations, escalation of emergency preparedness plans, and mobilization of resources and materials to minimize the impact of storm events. The models are trained using customer provided data to ensure the predictions are tailored to a specific service territory with predictions produced every six (6) hours.
+
+
+    DTN utilizes the latest weather forecast technology, data science approaches, and cloud computing infrastructure to ensure the best predictions possible. The AI/ML predictive models are retrained and performance validated quarterly to optimize their performance on a regional basis.
+
+
+    If you have questions about the Storm Impact Analytics API, please contact your DTN account representative.'
   version: 1.0.0
 servers:
 - url: https://sia.dtn.com
@@ -33,33 +39,6 @@ paths:
       - Event Geojson
 components:
   schemas:
-    eventFeatureProperties:
-      type: object
-      properties:
-        description:
-          type: string
-          example: Zone
-          description: Name of a specific feature's geo level.
-        geosubdivision_name:
-          type: string
-          example: CENTRAL
-          description: Name of a specific feature.
-        outage_model_run_date:
-          type: number
-          example: 1757808000000
-          description: The outage model run date represented as the number of milliseconds elapsed since the epoch.
-        predicted_outage_count:
-          type: number
-          example: 140
-          description: Best predicted value for this prediction.
-        max_predicted_outage_count:
-          type: number
-          example: 149
-          description: Upper prediction range value.
-        min_predicted_outage_count:
-          type: number
-          example: 100
-          description: Lower prediction range value.
     eventFeatureCollection:
       type: object
       properties:
@@ -103,21 +82,48 @@ components:
                   - -37.741
                 - - 145.107
                   - -37.738
+    eventFeatureProperties:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Zone
+          description: Name of a specific feature's geo level.
+        geosubdivision_name:
+          type: string
+          example: CENTRAL
+          description: Name of a specific feature.
+        outage_model_run_date:
+          type: number
+          example: 1757808000000
+          description: The outage model run date represented as the number of milliseconds elapsed since the epoch.
+        predicted_outage_count:
+          type: number
+          example: 140
+          description: Best predicted value for this prediction.
+        max_predicted_outage_count:
+          type: number
+          example: 149
+          description: Upper prediction range value.
+        min_predicted_outage_count:
+          type: number
+          example: 100
+          description: Lower prediction range value.
   parameters:
-    geolevel:
-      name: geolevel
-      description: Name of desired geo level.
-      example: Division
-      in: query
-      required: false
-      schema:
-        type: string
     weatherEventId:
       name: weatherEventId
       description: Unique identifier for the weather event the predictions are desired. Can be fetched from /v1/weather-events.
       example: bc2cb2cb-ce88-12bd-b946-2ce642e5bfae
       in: path
       required: true
+      schema:
+        type: string
+    geolevel:
+      name: geolevel
+      description: Name of desired geo level.
+      example: Division
+      in: query
+      required: false
       schema:
         type: string
   securitySchemes:

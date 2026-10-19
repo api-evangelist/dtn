@@ -2,7 +2,41 @@ openapi: 3.2.0
 info:
   title: Pavement Conditions API
   version: 2.0.2
-  description: The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination.
+  description: 'The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination. DTN supplies road data on segments across North America and Europe, allowing users to request data for a geographic area or specific roadway within the database.
+
+
+    **What''s New in v2.0.2:**
+
+    - Route Generation
+
+
+    — A new `GET /v2/directions` endpoint generates route geometry via the Mapbox Directions API.
+
+
+    - Query Pavement Conditions Along a Route or Route-Based Filtering (RB Filter)
+
+
+    - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.
+
+    - When `startPoint` and `endPoint` are supplied to the `v2/logistics` or `v2/pavement/conditions` endpoints, a route is automatically generated internally via the Mapbox API.
+
+    - Pagination is determined by the number of route `segments` when RB Filter is active.
+
+    - Each paginated response includes a `statistics` object summarizing covered, uncovered, and total segment counts.
+
+    - Results may be optionally narrowed by a weather `parameter` filter.
+
+    - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).
+
+
+    - Added pavementValidEndTime in returned data
+
+
+    **Authentication**: This API uses Bearer token authentication. When obtaining your access token, use the following audience values:
+
+    - **Production**: `https://pavement-condition.prd.wx.zones.dtn.com`
+
+    - **Staging**: `https://pavement-condition.stg.wx.zones.dtn.com`'
   contact:
     name: Ben Hershey
     url: https://pavement-condition.prd.wx.zones.dtn.com
@@ -21,7 +55,129 @@ paths:
       tags:
       - Pavement Conditions
       summary: Get Pavement Conditions
-      description: Retrieves pavement conditions for road segments in GeoJSON FeatureCollection format.
+      description: 'Retrieves pavement conditions for road segments in GeoJSON FeatureCollection format. Returns up to 1000 records by default. Data is grouped by segment ID with pagination metadata included in the response. **Query modes:**
+
+        - By bounding box (`bbox`) — returns all segments within the area
+
+        - By route (`startPoint` + `endPoint`) — uses Mapbox Directions API to generate a route, then returns segments along it
+
+
+        **Filtering options:**
+
+        - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a bounding box (`bbox`). - Results may be optionally narrowed by a weather `parameter` filter. - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`). **Return Data:**
+
+
+        | Field Name | Description | Imperial Unit | Metric Unit |
+
+        | ---------- | ----------- | ------------- | ----------- |
+
+        | id | Database table primary key ID | N/A | N/A |
+
+        | segmentId | Road segment identifier (string) | N/A | N/A |
+
+        | lat | Latitude for center point of road segment | Degrees | Degrees |
+
+        | lon | Longitude for center point of road segment | Degrees | Degrees |
+
+        | timestamp | Date/time for when the output variables are valid (UTC) | N/A | N/A |
+
+        | pavementCreationTime | Date/time when the pavement model was run (UTC) | N/A | N/A |
+
+        | pavementValidTime | Date/time for when the output variables are valid (UTC) | N/A | N/A |
+
+        | pavementValidEndTime | Date/time for when the pavement forecast validity period ends (UTC) | N/A | N/A |
+
+        | airTemp | Air temperature | Fahrenheit | Celsius |
+
+        | visibility | Visibility distance | mi | km |
+
+        | windDirection | Wind direction relative to true North (range from 0 to 360) | Degrees | Degrees |
+
+        | windGust | Wind gust speed | mi/hr | km/hr |
+
+        | windSpeed | Wind speed | mi/hr | km/hr |
+
+        | iceRate | Ice precipitation rate | in/hr | mm/hr |
+
+        | liquidRate | Liquid precipitation rate | in/hr | mm/hr |
+
+        | snowRate | Snow precipitation rate | in/hr | mm/hr |
+
+        | mobilityIndex | Mobility of vehicles compared to expected traffic patterns (100% mobility means traffic movement is expected to be unaffected by the conditions) | Percent | Percent |
+
+        | pavementTemperature | Temperature of the road surface | Fahrenheit | Celsius |
+
+        | blowingSnowAlertLevel | Level of blowing snow intensity (2 - Lowest, 5 - Highest) | N/A | N/A |
+
+        | compactedSnowDepth | Depth of compacted snow on the road | in | mm |
+
+        | frostDepth | Depth of frost on the road | in | mm |
+
+        | iceDepth | Depth of ice on the road | in | mm |
+
+        | liquidDepth | Depth of liquid on the road | in | mm |
+
+        | snowDepth | Depth of snow on the road | in | mm |
+
+        | unbondedIceDepth | Depth of ice on the road that is not bonded to the road surface | in | mm |
+
+        | pavementCondition | Classification of the road condition. Possible conditions are dry, slush, chemical_wet, damp, wet, frost, ice, snow, compacted_snow | N/A | N/A |
+
+        | crashRiskIndex | Crash risk factor compared to average conditions (ex: 2.0 means the risk of crash is two times the average) | N/A | N/A |
+
+        | crashRiskUncertainty | One standard deviation on the crash risk factor (statistical error) | N/A | N/A |
+
+        | roadName | Name of the road or highway | N/A | N/A |
+
+        | osmClass | OpenStreetMap road classification (e.g., motorway, trunk, primary) | N/A | N/A |
+
+        | geometry | GeoJSON geometry representing the road segment (LineString or MultiLineString) | N/A | N/A |
+
+        | createdAt | Record creation timestamp | N/A | N/A |
+
+        | updatedAt | Record last update timestamp | N/A | N/A |
+
+
+        **Sample Requests:**
+
+
+        1. **Get default data (1000 records):**
+
+        ```
+
+        GET /v2/pavement/conditions
+
+        ```
+
+
+        2. **Get data for specific geographic area (US):**
+
+        ```
+
+        GET /v2/pavement/conditions?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521
+
+        ```
+
+
+        3. **Get data for European area:**
+
+        ```
+
+        GET /v2/pavement/conditions?bbox=3.555,49.470,6.262,50.849
+
+        ```
+
+
+        4. **Get specific page:**
+
+        ```
+
+        GET /v2/pavement/conditions?bbox=-156.1317111,19.6270521,-155.9317111,19.8270521&limit=1000&page=2
+
+        ```
+
+
+        5.'
       operationId: getPavementConditionsV2
       parameters:
       - name: bbox
@@ -618,62 +774,6 @@ paths:
       - clientCredentials: []
 components:
   schemas:
-    FeatureCollectionRoute:
-      type: object
-      required:
-      - type
-      - features
-      properties:
-        type:
-          type: string
-          enum:
-          - FeatureCollection
-        features:
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - type
-            - geometry
-            properties:
-              type:
-                type: string
-                enum:
-                - Feature
-              geometry:
-                $ref: '#/components/schemas/LineStringRoute'
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
-    LineStringRoute:
-      type: object
-      required:
-      - type
-      - coordinates
-      properties:
-        type:
-          type: string
-          enum:
-          - LineString
-        coordinates:
-          type: array
-          minItems: 2
-          items:
-            type: array
-            minItems: 2
-            items:
-              type: number
     RouteConditionsResponse:
       type: object
       properties:
@@ -819,6 +919,49 @@ components:
               type: string
               format: date-time
               description: Estimated departure time from the origin (arriveAt - route duration). Present when arriveAt is used.
+    LineStringRoute:
+      type: object
+      required:
+      - type
+      - coordinates
+      properties:
+        type:
+          type: string
+          enum:
+          - LineString
+        coordinates:
+          type: array
+          minItems: 2
+          items:
+            type: array
+            minItems: 2
+            items:
+              type: number
+    FeatureCollectionRoute:
+      type: object
+      required:
+      - type
+      - features
+      properties:
+        type:
+          type: string
+          enum:
+          - FeatureCollection
+        features:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - type
+            - geometry
+            properties:
+              type:
+                type: string
+                enum:
+                - Feature
+              geometry:
+                $ref: '#/components/schemas/LineStringRoute'
     PavementConditionsResponse:
       type: object
       properties:
@@ -947,6 +1090,19 @@ components:
                             updatedAt:
                               type: string
                               format: date-time
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
   responses:
     UnauthorizedResponse:
       description: Unauthorized - Missing or invalid Bearer token

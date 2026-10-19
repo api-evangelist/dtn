@@ -4772,7 +4772,35 @@ paths:
       tags:
       - Endpoints
       summary: Precipitation
-      description: This endpoint provides detailed precipitation data for any specified global location.
+      description: 'This endpoint provides detailed precipitation data for any specified global location. Users can request various weather parameters for a time range of up to 15 days. Common uses include weather monitoring, atmospheric research, and localized operations, such as event planning. ## Query Parameters:
+
+        Use query parameters to control the results in the response body:
+
+        ### location
+
+        * Specify a location as latitude (`lat`) and longitude (`lon`). ### parameters
+
+        * Specify `parameters` to filter by specific atmospheric weather parameters. Include multiple as comma-separated values. The API returns only defaults when no specific parameters are requested. ### startTime and endTime
+
+        * Two key parameters are `startTime` and `endTime`. These parameters determine the time range for which the API returns data. Both `startTime` and `endTime` are inclusive, meaning that data at the top of the UTC hour for both timestamps is included in the response. * The time between `startTime` and `endTime` must be less than or equal to 15 days. * `startTime` must be greater than `2023-05-12T00:00:00Z` and `endTime` must be less than or equal to the current hour. * API Behavior Based on startTime and endTime:
+
+
+        * **Omitted startTime and endTime:** Returns only data for the current hour. * **Only startTime Specified:** Returns data only for `startTime`. * **Only endTime Specified:** Returns data only for `endTime`. * Inclusivity of Timestamps
+
+
+        * **Inclusive `startTime` and `endTime`:** Both parameters are inclusive, affecting the total duration and the number of data points returned, especially when using the interval parameter. * **Effect on Data Retrieval and Aggregation:** The inclusivity can result in additional aggregation periods or data points. * **Example:** If `startTime` is 2024-01-01T01:00:00Z and `endTime` is 2024-01-01T02:00:00Z and the requested parameter is `precipAmount`,
+
+        the API will return data for both timestamps. The data timestamped 2024-01-01T01:00:00Z would represent the amount of precipitation within the hour window of
+
+        2024-01-01T00:00:01Z to 2024-01-01T01:00:00Z. Likewise, the data timestamped 2024-01-01T02:00:00Z would represent the
+
+        amount of precipitation within the hour window of 2024-01-01T01:00:01Z to 2024-01-01T02:00:00Z. ### units
+
+        * Use `units` to request values either as SI (metric) or United States customary (imperial) units. + The API returns metric units by default and when `si-std` is specified. + The API returns imperial units only when `us-std` is specified. ### interval
+
+        * Specify the `interval` parameter to request aggregated data for parameters such as precipAmountSum. + **Format:** The interval for hourly aggregations must be in the format {n}h, where {n} is an integer greater than 1 (e.g., 2h, 6h, or 24h). For local timezone-aware daily aggregations, use ''1d''. + **Constraints:** The interval must not exceed the total duration between `startTime` and `endTime`. For ''1d'' intervals, only local timezones (no UTC offsets) are supported to ensure accurate daily aggregation. * Aggregation Behavior:
+
+        + **Aggregation Periods:** Data aggregation starts from the specified `startTime`. Each timestamp in the response represents the beginning of an aggregation period. For each interval, the API aggregates data from the timestamp up to (but not including) the next interval''s start time. + **Final Interval Handling:** If the duration between `startTime` and `endTime` doesn''t divide evenly by the interval, the final interval may be shorter. The last data point aggregates up to the inclusive endTime.'
       operationId: precip
       security:
       - clientCredentials: []
@@ -5572,7 +5600,75 @@ paths:
       tags:
       - Endpoints
       summary: Hub Height Winds Forecast
-      description: This endpoint provides forecast wind parameters from 10-300 meters above ground level for any point on Earth.
+      description: 'This endpoint provides forecast wind parameters from 10-300 meters above ground level for any point on Earth. Specify the location, parameters of interest, and a time range from now until 15 days ahead. The API responds with the requested time series in GeoJSON format. Use the query string to customize the results in the response body:
+
+
+        * Specify a location as latitude (`lat`) and longitude (`lon`). These are required. * Specify `parameters` to filter the response to a specific, comma-separated list of environmental parameters. The API returns defaults when this is omitted. * Specify `startTime` and `endTime` (using RFC 3339 format) for a forecast time range, or `startTime` alone for just one timestamp. * Specify `units=us-std` to receive values as United States customary (imperial) units. The API returns metric units by default and when `units=si-std` is expressly requested. * Specify `interval` to obtain sub-hourly (interpolated) or multi-hour (aggregated) results. The API returns hourly results by default. All together, a complete request looks like:
+
+
+        ```
+
+        https://renewables.api.dtn.com/v1/hub-height-winds/forecast?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&interval={interval}¶meters={param1,param2}&units={units}
+
+        ```
+
+
+        ### How to change timesteps
+
+
+        To interpolate to sub-hourly timesteps, specify `interval=15m`, `interval=30m`, or `interval=45m` in the query string. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=15m¶meters=windDirection10m,windSpeed10m`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=30m¶meters=windDirection10m,windSpeed10m`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=45m¶meters=windDirection10m,windSpeed10m`
+
+
+        To aggregate over multiple hours, specify `interval={n}h` in the query string using a whole number of hours for `{n}`, from 2 to the timespan between `startTime` and `endTime`. Also, substitute the desired aggregation parameter names from the `Parameters` section. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=2h¶meters=windDirection10mAvg,windSpeed10mMax`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=6h¶meters=windDirection10mAvg,windSpeed10mMax`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=24h¶meters=windDirection10mAvg,windSpeed10mMax`
+
+
+        In special cases, daily aggregations might require local timezone-aware aggregations to account of days with an one extra or less hour. In these cases, specify `interval=1d` along with timezone-aware `startTime` and `endTime` values. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-11-03T00:00:00&endTime=2024-11-04T23:59:59&interval=1d¶meters=windDirection10mAvg,windSpeed10mMax`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-03-09T00:00:00&endTime=2024-03-10T23:59:59&interval=1d¶meters=windDirection10mAvg,windSpeed10mMax`
+
+
+        ### How to change timezones
+
+
+        Typically, `startTime` and `endTime` end with `Z` to indicate UTC time. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z`
+
+
+        To change timezones, specify a UTC offset (such as `+08:00` or `-05:00`) instead of `Z`. Note that the `+` symbol is a special URL character that must be encoded as `%2B`. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00-05:00`
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00%2B08:00&endTime=2024-10-10T00:00:00%2B08:00`
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00%2B08:00`
+
+
+        To obtain the local timezone at the requested location, omit the suffix entirely.'
       operationId: hubHeightWindsForecast
       security:
       - clientCredentials: []
@@ -7085,7 +7181,75 @@ paths:
       tags:
       - Endpoints
       summary: Solar Irradiance Forecast
-      description: This endpoint provides forecast solar radiation and related parameters for any point on Earth.
+      description: 'This endpoint provides forecast solar radiation and related parameters for any point on Earth. Specify the location, parameters of interest, and a time range from now until 15 days ahead. The API responds with the requested time series in GeoJSON format. Use the query string to customize the results in the response body:
+
+
+        * Specify a location as latitude (`lat`) and longitude (`lon`). These are required. * Specify `parameters` to filter the response to a specific, comma-separated list of environmental parameters. The API returns defaults when this is omitted. * Specify `startTime` and `endTime` (using RFC 3339 format) for a forecast time range, or `startTime` alone for just one timestamp. * Specify `units=us-std` to receive values as United States customary (imperial) units. The API returns metric units by default and when `units=si-std` is expressly requested. * Specify `interval` to obtain sub-hourly (interpolated) or multi-hour (aggregated) results. The API returns hourly results by default. All together, a complete request looks like:
+
+
+        ```
+
+        https://renewables.api.dtn.com/v1/solar-irradiance/forecast?lat={lat}&lon={lon}&startTime={start_time}&endTime={end_time}&interval={interval}¶meters={param1,param2}&units={units}
+
+        ```
+
+
+        ### How to change timesteps
+
+
+        To interpolate to sub-hourly timesteps, specify `interval=15m`, `interval=30m`, or `interval=45m` in the query string. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=15m¶meters=directNormalIrradiance,diffuseHorizontalIrradiance`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=30m¶meters=directNormalIrradiance,diffuseHorizontalIrradiance`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=45m¶meters=directNormalIrradiance,diffuseHorizontalIrradiance`
+
+
+        To aggregate over multiple hours, specify `interval={n}h` in the query string using a whole number of hours for `{n}`, from 2 to the timespan between `startTime` and `endTime`. Also, substitute the desired aggregation parameter names from the `Parameters` section. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=2h¶meters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=6h¶meters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z&interval=24h¶meters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`
+
+
+        In some cases, daily aggregations might require local timezone-aware aggregations to account of days with an one extra or less hour. In these cases, specify `interval=1d` along with timezone-aware `startTime` and `endTime` values. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-11-03T00:00:00&endTime=2024-11-04T23:59:59&interval=1d¶meters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-03-09T00:00:00&endTime=2024-03-10T23:59:59&interval=1d¶meters=directNormalIrradianceAvg,diffuseHorizontalIrradianceMax`
+
+
+        ### How to change timezones
+
+
+        Typically, `startTime` and `endTime` end with `Z` to indicate UTC time. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00Z&endTime=2024-10-10T00:00:00Z`
+
+
+        To change timezones, specify a UTC offset (such as `+08:00` or `-05:00`) instead of `Z`. Note that the `+` symbol is a special URL character that must be encoded as `%2B`. For example:
+
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00-05:00`
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00%2B08:00&endTime=2024-10-10T00:00:00%2B08:00`
+
+        * `?lat=35.47&lon=-97.51&startTime=2024-10-01T00:00:00-05:00&endTime=2024-10-10T00:00:00%2B08:00`
+
+
+        To obtain the local timezone at the requested location, omit the suffix entirely.'
       operationId: solarIrradianceForecast
       security:
       - clientCredentials: []
@@ -7439,7 +7603,66 @@ paths:
       tags:
       - Endpoints
       summary: Weather Conditions
-      description: This endpoint provides current, forecast, and historical conditions for any specific point on the globe.
+      description: 'This endpoint provides current, forecast, and historical conditions for any specific point on the globe. Specify the location, the weather parameters of interest, and a time range up to 15 days long, from 1995-01-01T00:00:00Z to 15 days in the future. The API responds with the requested time series in GeoJSON format. Common uses include weather monitoring, atmospheric research, and localized operations, such as event planning. ## Using timezone offsets
+
+
+        To change timezones, specify a UTC offset (such as `+08:00` or `-05:00` instead of `Z`) for query parameters `startTime` and `endTime`. Timestamps in the response will automatically match the `startTime` offset. Remove the offset entirely to obtain the local timezone for the requested location. **Important note**: Because the `+` symbol is a special URL character, it must be encoded as `%2B` for use within the query parameter string. #### Valid examples
+
+
+        * `?startTime=2024-01-01T00:00:00Z&endTime=2024-01-01T23:00:00Z`
+
+
+        * `?startTime=2024-01-01T00:00:00%2B08:00&endTime=2024-01-01T23:00:00%2B02:00`
+
+
+        * `?startTime=2024-01-01T00:00:00-08:00&endTime=2024-01-01T23:00:00-08:00`
+
+
+        * `?startTime=2024-01-01T00:00:00&endTime=2024-01-01T23:00:00`
+
+
+        #### Invalid example
+
+
+        * `?startTime=2024-01-01T00:00:00+08:00&endTime=2024-01-01T23:00:00+08:00` (need to encode `+` as `%2B`)
+
+
+        ### Latitude and Longitude
+
+
+        **Important note**: Requested latitudes and longitudes in response are rounded to five (5) decimal places when presented in `$.features.*.geometry.coordinates`. Floating point precision might affect the last digit. ### Rounding examples
+
+
+        * 1.5555 => 1.556
+
+
+        * 1.5545 => 1.554
+
+
+        * -1.5555 => -1.556
+
+
+        ## Query Parameters:
+
+        Use query parameters to control the results in the response body:
+
+        ### location
+
+        * Specify a location as latitude (`lat`) and longitude (`lon`). ### parameters
+
+        * Specify `parameters` to filter by specific atmospheric weather parameters. Include multiple as comma-separated values. The API returns only defaults when no specific parameters are requested. ### startTime and endTime
+
+        * Two key parameters are `startTime` and `endTime`. These parameters determine the time range for which the API returns data. Both `startTime` and `endTime` are inclusive, meaning that data at the top of the UTC hour for both timestamps is included in the response. * API Behavior Based on startTime and endTime:
+
+
+        * **Omitted startTime and endTime:** Returns only current conditions. * **Both in the Future:** Returns only forecast conditions when both `startTime` and `endTime` are in the future. * **Both in the Past:** Returns only historical conditions when both `startTime` and `endTime` are in the past. * **Spanning Past and Future:** Returns historical, current, and forecast conditions when `startTime` is in the past and `endTime` is in the future. * **Only startTime Specified:** Returns only one timestamp, representing the data at the specified `startTime`. * Inclusivity of Timestamps
+
+
+        * **Inclusive `startTime` and `endTime`:** Both parameters are inclusive, affecting the total duration and the number of data points returned, especially when using the interval parameter. * **Effect on Data Retrieval and Aggregation:** The inclusivity can result in additional aggregation periods or data points. ### units
+
+        * Use `units` to request values either as SI (metric) or United States customary (imperial) units. + The API returns metric units by default and when `si-std` is specified. + The API returns imperial units only when `us-std` is specified. ### interval
+
+        * Specify the `interval` parameter to request aggregated or interpolated data. Aggregated parameters names must also specify aggregation methods such as airTempMax, precipAmountSum, and others listed in the Parameters section. + **Format:** The interval for hourly aggregations must be in the format {n}h, where {n} is an integer greater than 1 (e.g., 2h, 6h, or 24h). For local timezone-aware daily aggregations, use ''1d''.'
       operationId: weatherConditions
       security:
       - clientCredentials: []
@@ -9172,6 +9395,394 @@ components:
           '24': Test
           '25': Earthquake
           '26': Agriculture
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    GeoJsonAlert:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The identifier of the alert message
+        agency:
+          type: string
+          title: Agency
+          description: Agency issuing the alert
+        country:
+          type: string
+          title: Country
+          description: Country code of the alert
+        type:
+          type: string
+          title: Type
+          description: Type of the GeoJSON object
+        geometry:
+          anyOf:
+          - type: object
+          - type: object
+          - type: object
+          title: Geometry
+          description: Geometry of the alert area
+        properties:
+          allOf:
+          - $ref: '#/components/schemas/GeoJsonAlertProperties'
+          title: Properties
+          description: Properties of the alert
+        dtnInfo:
+          type: object
+          title: Dtninfo
+          description: Additional DTN information about the alert
+      type: object
+      required:
+      - id
+      - agency
+      - country
+      - type
+      - properties
+      - dtnInfo
+      title: GeoJsonAlert
+    GeoJsonAlertProperties:
+      properties:
+        identifier:
+          type: string
+          title: Identifier
+          description: The identifier of the alert message
+        sender:
+          type: string
+          title: Sender
+          description: The identifier of the sender of the alert message
+        sent:
+          type: string
+          format: date-time
+          title: Sent
+          description: The time and date of the origination of the alert message
+        status:
+          type: string
+          title: Status
+          description: The code denoting the appropriate handling of the alert message
+        msgType:
+          type: string
+          title: Msgtype
+          description: The code denoting the nature of the alert message
+        scope:
+          type: string
+          title: Scope
+          description: The code denoting the intended distribution of the alert message
+        code:
+          type: string
+          title: Code
+          description: The code denoting the special handling of the alert message
+        source:
+          type: string
+          title: Source
+          description: The text identifying the source of the alert message
+        updated:
+          type: string
+          format: date-time
+          title: Updated
+          description: Date when the alert was last updated
+        restriction:
+          type: string
+          title: Restriction
+          description: The text describing the rule for limiting distribution of the restricted alert message
+        addresses:
+          type: string
+          title: Addresses
+          description: The group listing of intended recipients of the alert message
+        note:
+          type: string
+          title: Note
+          description: The text describing the purpose or significance of the alert message
+        references:
+          type: string
+          title: References
+          description: The group listing identifying earlier message(s) referenced by alert message
+        info:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlertInfo'
+          type: array
+          title: Info
+          description: Additional information about the alert
+      type: object
+      required:
+      - identifier
+      - sender
+      - sent
+      - status
+      - msgType
+      - scope
+      - updated
+      - info
+      title: GeoJsonAlertProperties
+    GeoJsonAlertInfo:
+      properties:
+        event:
+          type: string
+          title: Event
+          description: The text denoting the type of the subject event of the alert message
+        eventCode:
+          items: {}
+          type: array
+          title: Eventcode
+          description: A system- specific code identifying the event type of the alert message
+        category:
+          type: string
+          title: Category
+          description: The code denoting the category of the subject event of the alert message
+        language:
+          type: string
+          title: Language
+          description: The code denoting the language of the info sub- element of the alert message
+        urgency:
+          type: string
+          title: Urgency
+          description: The code denoting the urgency of the subject event of the alert message
+        severity:
+          type: string
+          title: Severity
+          description: The code denoting the severity of the subject event of the alert message
+        certainty:
+          type: string
+          title: Certainty
+          description: The code denoting the certainty of the subject event of the alert message
+        responseType:
+          type: string
+          title: Responsetype
+          description: The code denoting the type of action recommended for the target audience
+        effective:
+          type: string
+          format: date-time
+          title: Effective
+          description: The effective time of the information of the alert message
+        onset:
+          type: string
+          format: date-time
+          title: Onset
+          description: The expected time of the beginning of the subject event of the alert message
+        expires:
+          type: string
+          format: date-time
+          title: Expires
+          description: The expiry time of the information of the alert message
+        audience:
+          type: string
+          title: Audience
+          description: The text describing the intended audience of the alert message
+        senderName:
+          type: string
+          title: Sendername
+          description: The text naming the originator of the alert message
+        headline:
+          type: string
+          title: Headline
+          description: The text headline of the alert message
+        description:
+          type: string
+          title: Description
+          description: The text describing the subject event of the alert message
+        instruction:
+          type: string
+          title: Instruction
+          description: The text describing the recommended action to be taken by recipients of the alert message
+        web:
+          type: string
+          title: Web
+          description: The identifier of the hyperlink associating additional information with the alert message
+        contact:
+          type: string
+          title: Contact
+          description: The text describing the contact for follow-up and confirmation of the alert message
+        parameters:
+          items:
+            type: object
+          type: array
+          title: Parameters
+          description: A system- specific additional parameter associated with the alert message
+        area:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlertInfoArea'
+          type: array
+          title: Area
+          description: The container for all component parts of the area sub-element of the info sub- element of the alert message
+      type: object
+      required:
+      - event
+      - category
+      - language
+      - urgency
+      - severity
+      - certainty
+      - expires
+      - area
+      title: GeoJsonAlertInfo
+    GeoJsonAlertResponse:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: The complete URL to access the alert data, including any query parameters
+        totalAlerts:
+          type: integer
+          title: Totalalerts
+          description: Total number of alerts
+        type:
+          type: string
+          title: Type
+          description: Type of the GeoJSON object
+        features:
+          items:
+            $ref: '#/components/schemas/GeoJsonAlert'
+          type: array
+          title: Features
+          description: List of alert features
+      type: object
+      required:
+      - url
+      - type
+      - features
+      title: GeoJsonAlertResponse
+      example:
+        url: https://wxbulletin.api.dtn.com/v2/bulletins?excludeGeometry=true&showTotal=true&country=US&startTime=2024-06-24T20%3A49%3A00&event=heat+advisory
+        totalAlerts: 1
+        type: FeatureCollection
+        features:
+        - id: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
+          agency: NWS
+          country: US
+          type: Feature
+          geometry:
+            type: Polygon
+            coordinates:
+            - - - -98
+                - 40
+              - - -98
+                - 41
+              - - -97
+                - 41
+              - - -97
+                - 40
+              - - -98
+                - 40
+          properties:
+            identifier: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
+            sender: w-nws.webmaster@noaa.gov
+            sent: '2024-06-24T20:49:00'
+            status: Actual
+            msgType: Update
+            scope: Public
+            code: IPAWSv1.0
+            updated: '2024-06-24T20:49:00'
+            references: w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.29e524a2edad47b728e81f62a538ac730e40e49a.001.1,2024-06-24T02:54:00-05:00
+            info:
+            - event: Heat Advisory
+              eventCode:
+              - valueName: SAME
+                value: NWS
+              - valueName: NationalWeatherService
+                value: HTY
+              category: Met
+              language: en-US
+              urgency: Expected
+              severity: Moderate
+              certainty: Likely
+              responseType: Execute
+              effective: '2024-06-24T20:49:00'
+              onset: '2024-06-25T18:00:00'
+              expires: '2024-06-26T00:00:00'
+              senderName: NWS Hastings NE
+              headline: Heat Advisory issued June 24 at 3:49PM CDT until June 25 at 7:00PM CDT by NWS Hastings NE
+              description: '* WHAT...For the first Heat Advisory, heat index values up to 110
+
+                possible. For the second Heat Advisory, heat index values around
+
+                105 expected.
+
+
+                * WHERE...In Kansas, Jewell, Mitchell, Osborne, Phillips, Rooks, and
+
+                Smith Counties. In Nebraska, Nuckolls and Thayer Counties.
+
+
+                * WHEN...For the first Heat Advisory, until 8 PM CDT this evening.
+
+                For the second Heat Advisory, from 1 PM to 7 PM CDT Tuesday.
+
+
+                * IMPACTS...Hot temperatures and high humidity may cause heat
+
+                illnesses.'
+              instruction: 'Take extra precautions when outside. Wear lightweight and loose
+
+                fitting clothing. Try to limit strenuous activities to early morning
+
+                or evening. Take action when you see symptoms of heat exhaustion and
+
+                heat stroke. Drink plenty of fluids, stay in an air-conditioned
+
+                room, stay out of
+
+                the sun, and check up on relatives and neighbors.'
+              web: http://www.weather.gov
+              parameters:
+              - valueName: AWIPSidentifier
+                value: NPWGID
+              - valueName: WMOidentifier
+                value: WWUS73 KGID 242049
+              - valueName: NWSheadline
+                value: HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM CDT THIS EVENING... ...HEAT ADVISORY REMAINS IN EFFECT FROM 1 PM TO 7 PM CDT TUESDAY
+              - valueName: BLOCKCHANNEL
+                value: EAS,NWEM,CMAS
+              - valueName: VTEC
+                value: /O.CON.KGID.HT.Y.0002.240625T1800Z-240626T0000Z/
+              - valueName: eventEndingTime
+                value: 2024-06-26T00:00:00+0000
+              - valueName: CAPversion
+                value: '1.2'
+              - valueName: originalID
+                value: 2.49.0.1.840.0.f950770a5e0de71a60b45e3820f5c39fcdfe4222.001.2
+              area:
+              - areaDesc: Phillips; Smith; Jewell; Rooks; Osborne; Mitchell; Nuckolls; Thayer
+                geocodes:
+                - valueName: UGC
+                  value: KSZ005
+                - valueName: UGC
+                  value: KSZ006
+                - valueName: UGC
+                  value: KSZ007
+                - valueName: UGC
+                  value: KSZ017
+                - valueName: UGC
+                  value: KSZ018
+                - valueName: UGC
+                  value: KSZ019
+                - valueName: UGC
+                  value: NEZ086
+                - valueName: UGC
+                  value: NEZ087
+          dtnInfo:
+            dtnMsgType: Update
+            dtnExpires: '2024-06-26T00:00:00'
+            dtnEvent: Heat
+            dtnEventCode: '4'
+            dtnDisclaimer: Any DTN expiration dates, times, and message types shown here are automatically generated by the DTN's system, not by the alerting agencies themselves. Additionally, the dtnEvent and dtnEventCode are DTN's normalized event parameters for uniformity and do not necessarily reflect the exact terminology of the issuing agency. To access the original event name as published by the agency, please refer to the event parameter in the response.
     Values:
       properties:
         valueName:
@@ -10120,249 +10731,38 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    GeoJsonAlertProperties:
+    GeoJsonAlertInfoArea:
       properties:
-        identifier:
+        areaDesc:
           type: string
-          title: Identifier
-          description: The identifier of the alert message
-        sender:
+          title: Areadesc
+          description: The text describing the affected area of the alert message
+        polygon:
+          type: object
+          title: Polygon
+          description: The paired values of points defining a polygon that delineates the affected area of the alert message
+        circle:
           type: string
-          title: Sender
-          description: The identifier of the sender of the alert message
-        sent:
-          type: string
-          format: date-time
-          title: Sent
-          description: The time and date of the origination of the alert message
-        status:
-          type: string
-          title: Status
-          description: The code denoting the appropriate handling of the alert message
-        msgType:
-          type: string
-          title: Msgtype
-          description: The code denoting the nature of the alert message
-        scope:
-          type: string
-          title: Scope
-          description: The code denoting the intended distribution of the alert message
-        code:
-          type: string
-          title: Code
-          description: The code denoting the special handling of the alert message
-        source:
-          type: string
-          title: Source
-          description: The text identifying the source of the alert message
-        updated:
-          type: string
-          format: date-time
-          title: Updated
-          description: Date when the alert was last updated
-        restriction:
-          type: string
-          title: Restriction
-          description: The text describing the rule for limiting distribution of the restricted alert message
-        addresses:
-          type: string
-          title: Addresses
-          description: The group listing of intended recipients of the alert message
-        note:
-          type: string
-          title: Note
-          description: The text describing the purpose or significance of the alert message
-        references:
-          type: string
-          title: References
-          description: The group listing identifying earlier message(s) referenced by alert message
-        info:
-          items:
-            $ref: '#/components/schemas/GeoJsonAlertInfo'
-          type: array
-          title: Info
-          description: Additional information about the alert
-      type: object
-      required:
-      - identifier
-      - sender
-      - sent
-      - status
-      - msgType
-      - scope
-      - updated
-      - info
-      title: GeoJsonAlertProperties
-    GeoJsonAlertResponse:
-      properties:
-        url:
-          type: string
-          title: Url
-          description: The complete URL to access the alert data, including any query parameters
-        totalAlerts:
-          type: integer
-          title: Totalalerts
-          description: Total number of alerts
-        type:
-          type: string
-          title: Type
-          description: Type of the GeoJSON object
-        features:
-          items:
-            $ref: '#/components/schemas/GeoJsonAlert'
-          type: array
-          title: Features
-          description: List of alert features
-      type: object
-      required:
-      - url
-      - type
-      - features
-      title: GeoJsonAlertResponse
-      example:
-        url: https://wxbulletin.api.dtn.com/v2/bulletins?excludeGeometry=true&showTotal=true&country=US&startTime=2024-06-24T20%3A49%3A00&event=heat+advisory
-        totalAlerts: 1
-        type: FeatureCollection
-        features:
-        - id: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
-          agency: NWS
-          country: US
-          type: Feature
-          geometry:
-            type: Polygon
-            coordinates:
-            - - - -98
-                - 40
-              - - -98
-                - 41
-              - - -97
-                - 41
-              - - -97
-                - 40
-              - - -98
-                - 40
-          properties:
-            identifier: nws1364c1bdd210c7f036b66585590bcff39d46ea0f7c77a0a2e8f1db8651256caa
-            sender: w-nws.webmaster@noaa.gov
-            sent: '2024-06-24T20:49:00'
-            status: Actual
-            msgType: Update
-            scope: Public
-            code: IPAWSv1.0
-            updated: '2024-06-24T20:49:00'
-            references: w-nws.webmaster@noaa.gov,urn:oid:2.49.0.1.840.0.29e524a2edad47b728e81f62a538ac730e40e49a.001.1,2024-06-24T02:54:00-05:00
-            info:
-            - event: Heat Advisory
-              eventCode:
-              - valueName: SAME
-                value: NWS
-              - valueName: NationalWeatherService
-                value: HTY
-              category: Met
-              language: en-US
-              urgency: Expected
-              severity: Moderate
-              certainty: Likely
-              responseType: Execute
-              effective: '2024-06-24T20:49:00'
-              onset: '2024-06-25T18:00:00'
-              expires: '2024-06-26T00:00:00'
-              senderName: NWS Hastings NE
-              headline: Heat Advisory issued June 24 at 3:49PM CDT until June 25 at 7:00PM CDT by NWS Hastings NE
-              description: '* WHAT...For the first Heat Advisory, heat index values up to 110
-
-                possible. For the second Heat Advisory, heat index values around
-
-                105 expected.
-
-
-                * WHERE...In Kansas, Jewell, Mitchell, Osborne, Phillips, Rooks, and
-
-                Smith Counties. In Nebraska, Nuckolls and Thayer Counties.
-
-
-                * WHEN...For the first Heat Advisory, until 8 PM CDT this evening.
-
-                For the second Heat Advisory, from 1 PM to 7 PM CDT Tuesday.
-
-
-                * IMPACTS...Hot temperatures and high humidity may cause heat
-
-                illnesses.'
-              instruction: 'Take extra precautions when outside. Wear lightweight and loose
-
-                fitting clothing. Try to limit strenuous activities to early morning
-
-                or evening. Take action when you see symptoms of heat exhaustion and
-
-                heat stroke. Drink plenty of fluids, stay in an air-conditioned
-
-                room, stay out of
-
-                the sun, and check up on relatives and neighbors.'
-              web: http://www.weather.gov
-              parameters:
-              - valueName: AWIPSidentifier
-                value: NPWGID
-              - valueName: WMOidentifier
-                value: WWUS73 KGID 242049
-              - valueName: NWSheadline
-                value: HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM CDT THIS EVENING... ...HEAT ADVISORY REMAINS IN EFFECT FROM 1 PM TO 7 PM CDT TUESDAY
-              - valueName: BLOCKCHANNEL
-                value: EAS,NWEM,CMAS
-              - valueName: VTEC
-                value: /O.CON.KGID.HT.Y.0002.240625T1800Z-240626T0000Z/
-              - valueName: eventEndingTime
-                value: 2024-06-26T00:00:00+0000
-              - valueName: CAPversion
-                value: '1.2'
-              - valueName: originalID
-                value: 2.49.0.1.840.0.f950770a5e0de71a60b45e3820f5c39fcdfe4222.001.2
-              area:
-              - areaDesc: Phillips; Smith; Jewell; Rooks; Osborne; Mitchell; Nuckolls; Thayer
-                geocodes:
-                - valueName: UGC
-                  value: KSZ005
-                - valueName: UGC
-                  value: KSZ006
-                - valueName: UGC
-                  value: KSZ007
-                - valueName: UGC
-                  value: KSZ017
-                - valueName: UGC
-                  value: KSZ018
-                - valueName: UGC
-                  value: KSZ019
-                - valueName: UGC
-                  value: NEZ086
-                - valueName: UGC
-                  value: NEZ087
-          dtnInfo:
-            dtnMsgType: Update
-            dtnExpires: '2024-06-26T00:00:00'
-            dtnEvent: Heat
-            dtnEventCode: '4'
-            dtnDisclaimer: Any DTN expiration dates, times, and message types shown here are automatically generated by the DTN's system, not by the alerting agencies themselves. Additionally, the dtnEvent and dtnEventCode are DTN's normalized event parameters for uniformity and do not necessarily reflect the exact terminology of the issuing agency. To access the original event name as published by the agency, please refer to the event parameter in the response.
-    general-error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: A human-readable description of the specific error.
-        type:
-          type: string
-          description: The error type.
-        title:
-          type: string
-          description: A short, human-readable title for the general error type.
-        status:
+          title: Circle
+          description: The paired values of a point and radius delineating the affected area of the alert message
+        ceiling:
           type: number
-          description: The HTTP status code.
-        instance:
-          type: string
-          format: uri
-          description: A URL with the specific error ID (often pointing to an error log for that specific response).
-      additionalProperties: false
+          title: Ceiling
+          description: The maximum altitude of the affected area of the alert message
+        altitude:
+          type: number
+          title: Altitude
+          description: The specific or minimum altitude of the affected area of the alert message
+        geocodes:
+          items:
+            $ref: '#/components/schemas/Values'
+          type: array
+          title: Geocodes
+          description: The geographic code delineating the affected area of the alert message
+      type: object
+      required:
+      - areaDesc
+      title: GeoJsonAlertInfoArea
     SunMoon:
       type: object
       properties:
@@ -10543,38 +10943,39 @@ components:
                 phaseName: Waning Crescent
                 moonrise: Never Rise
                 moonset: '2023-08-12T17:57:59Z'
-  parameters:
-    endDate:
-      name: endDate
-      in: query
-      schema:
-        type: string
-        format: date
-      example: '2023-08-12'
-    lat:
-      name: lat
-      in: query
-      schema:
-        type: number
-        format: float
-      example: 52.369
-      required: true
-    lon:
-      name: lon
-      in: query
-      schema:
-        type: number
-        format: float
-      example: 4.875
-      required: true
-    startDate:
-      name: startDate
-      in: query
-      schema:
-        type: string
-        format: date
-      example: '2023-08-10'
+    general-error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          description: The error type.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: The HTTP status code.
+        instance:
+          type: string
+          format: uri
+          description: A URL with the specific error ID (often pointing to an error log for that specific response).
+      additionalProperties: false
   responses:
+    not-acceptable:
+      description: Unable to produce a response matching the Accept request header.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: not-acceptable
+            title: Not Acceptable
+            detail: The Accept header value is invalid or unsupported.
+            status: 406
+            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
     bad-request:
       description: An invalid request.
       content:
@@ -10599,18 +11000,37 @@ components:
             detail: invalid token
             status: 401
             instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
-    not-acceptable:
-      description: Unable to produce a response matching the Accept request header.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: not-acceptable
-            title: Not Acceptable
-            detail: The Accept header value is invalid or unsupported.
-            status: 406
-            instance: urn:dtn:one-astronomical-service:/v2/sun-moon:requestId:123e4567-e89b-12d3-a458-426614176000
+  parameters:
+    lat:
+      name: lat
+      in: query
+      schema:
+        type: number
+        format: float
+      example: 52.369
+      required: true
+    lon:
+      name: lon
+      in: query
+      schema:
+        type: number
+        format: float
+      example: 4.875
+      required: true
+    endDate:
+      name: endDate
+      in: query
+      schema:
+        type: string
+        format: date
+      example: '2023-08-12'
+    startDate:
+      name: startDate
+      in: query
+      schema:
+        type: string
+        format: date
+      example: '2023-08-10'
   securitySchemes:
     clientCredentials:
       type: oauth2

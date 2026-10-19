@@ -4,7 +4,29 @@ info:
   description: '# Introduction
 
 
-    DTN Vessel Insights Subscription API can be used by customers to self-manage vessel subscription for DTN Vessel Insights API.'
+    DTN Vessel Insights Subscription API can be used by customers to self-manage vessel subscription for DTN Vessel Insights API. For questions, contact DTN customer service: customerservice@dtn.com.
+
+
+    # Getting started
+
+
+    Make sure that a valid token (as seen in the Auth section) is used to call the API. See below for a valid query body. You can use the Auth0 endpoint to authenticate and get a JWT token.
+
+
+    Subscribing a vessel to Vessel Insights API is done by sending a corresponding IMO and MMSI number to the Vessel Insight Subscription API. It is also possible to bulk subscribe vessels to Vessel Insights API using the Vessel Insight Subscription API.
+
+
+    The Vessel Insights API will start collecting data from the moment a vessel has been subscribed. The first set of calculations for Vessel Insights API will trigger at 0 UTC after the subscription. From here onwards, new data is added to Vessel Insights API once every day at every 0 UTC. This data covers the ships timeline from ‘0 UTC – 48 hours’ to ‘0 UTC – 24 hours’.
+
+
+    Depending on when a customer calls the Vessel Insights API, data for last 24 to 48 hours will not be available in Vessel Insights API. Therefore, please be aware that subscribing a vessel will not immediately result in data being available in Vessel Insights API for this vessel.
+
+
+    # Troubleshooting
+
+    ## Resource conflict
+
+    This error message indicates that the vessel you are trying to subscribe to Vessel Insights API is already subscribed by you or another customer with a different MMSI number than the one you provided in the subscription request. So when you tried to subscribe the same vessel (IMO) with a different MMSI number, our system noticed a conflict and gave this “Resource conflict” error. At this moment, you cannot resolve this error yourself. Please notify this to our customer service at customerservice@dtn.com and we will fix this for you.'
   termsOfService: https://www.dtn.com/subscription-agreement-standard-terms-conditions
   contact:
     name: DTN
@@ -38,36 +60,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Meta:
-      type: object
-      properties:
-        date_time:
-          type: string
-          description: DateTime Utc when the token generated/recieved.
-          format: date-time
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name
-        uuid:
-          type:
-          - string
-          - 'null'
-          description: Identifier.
-        start_timestamp:
-          type: integer
-          description: The time the token generation started.
-          format: int64
-        end_timestamp:
-          type: integer
-          description: The time the token generation ended.
-          format: int64
-        execution_time:
-          type: integer
-          description: Token generation execution time.
-          format: int32
-      additionalProperties: false
     Data:
       type: object
       properties:
@@ -100,6 +92,36 @@ components:
           $ref: '#/components/schemas/Meta'
       additionalProperties: false
       description: Token for authentication.
+    Meta:
+      type: object
+      properties:
+        date_time:
+          type: string
+          description: DateTime Utc when the token generated/recieved.
+          format: date-time
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name
+        uuid:
+          type:
+          - string
+          - 'null'
+          description: Identifier.
+        start_timestamp:
+          type: integer
+          description: The time the token generation started.
+          format: int64
+        end_timestamp:
+          type: integer
+          description: The time the token generation ended.
+          format: int64
+        execution_time:
+          type: integer
+          description: Token generation execution time.
+          format: int32
+      additionalProperties: false
     RequestToken:
       type: object
       properties:

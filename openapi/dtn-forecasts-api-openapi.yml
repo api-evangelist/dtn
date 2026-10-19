@@ -116,32 +116,6 @@ paths:
                 $ref: '#/components/schemas/DailyForecastResponse'
 components:
   schemas:
-    HourlyForecastResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        units:
-          type: string
-        location:
-          $ref: '#/components/schemas/Location'
-        forecasts:
-          type: array
-          items:
-            $ref: '#/components/schemas/HourlyForecastPoint'
-    DailyForecastResponse:
-      type: object
-      properties:
-        generatedAt:
-          type: string
-          format: date-time
-        location:
-          $ref: '#/components/schemas/Location'
-        forecasts:
-          type: array
-          items:
-            $ref: '#/components/schemas/DailyForecastPoint'
     HourlyForecastPoint:
       type: object
       properties:
@@ -164,6 +138,32 @@ components:
           type: number
         weatherSymbol:
           type: integer
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
+    HourlyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        units:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/HourlyForecastPoint'
     Error:
       type: object
       properties:
@@ -171,6 +171,18 @@ components:
           type: string
         message:
           type: string
+    DailyForecastResponse:
+      type: object
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/Location'
+        forecasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyForecastPoint'
     DailyForecastPoint:
       type: object
       properties:
@@ -191,18 +203,6 @@ components:
           type: number
         windDirectionInDegree:
           type: number
-    Location:
-      type: object
-      properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
   responses:
     Unauthorized:
       description: Missing or invalid Bearer token

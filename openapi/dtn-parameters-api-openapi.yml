@@ -18,7 +18,41 @@ servers:
 - url: https://renewables.api.dtn.com
 tags:
 - name: Parameters
-  description: This API offers climatological data for any numerical month and day, including leap day (February 29).
+  description: 'This API offers climatological data for any numerical month and day, including leap day (February 29). It’s possible to aggregate certain parameters over multiple days. To request an aggregation, just substitute the desired parameter name and specify an `interval` greater than 1 day (see `Endpoints` section for details). For example, if air temperature maximum average (`airTempMaxAvg`) has corresponding parameters `airTempMaxAvgMax`, `airTempMaxAvgAvg`, request parameter `airTempMaxAvgAvg` with `interval=2` in the query string to obtain the 2 day average daily maximum air temperature average. Expand the table below to view available environmental parameters and each one''s description and unit of measurement. The API returns all parameters by default unless specific parameters are requested. The table that follow identify which parameters have corresponding aggregation parameter names. Click to expand... | Parameter | Default | Description | Metric units | Imperial units | Aggregation Parameters |
+
+    |--------------------------|---------|-------------|--------------|----------------|------------------------|
+
+    | airTempAvg | Yes | Average daily air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempAvgAvg|
+
+    | airTempStdDev | Yes | Standard deviation of daily average air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempStdDevAvg|
+
+    | airTempMaxAvg | Yes | Average daily maximum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMaxAvgMax, airTempMaxAvgAvg|
+
+    | airTempMaxStdDev | Yes | Standard deviation of daily maximum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMaxStdDevAvg|
+
+    | airTempMinAvg | Yes | Average daily minimum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMinAvgMin, airTempMinAvgAvg|
+
+    | airTempMinStdDev | Yes | Standard deviation of daily minimum air temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |airTempMinStdDevAvg|
+
+    | dewPointAvg | Yes | Average daily dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |dewPointAvgAvg|
+
+    | dewPointStdDev | Yes | Standard deviation of daily average dew point temperature at 2 meters above ground level. | degree Celsius | degree Fahrenheit |dewPointStdDevAvg|
+
+    | potentialEvapotranspirationAmountAvg | Yes | Average daily reference evapotranspiration (amount of water that would transpire and evaporate from a hypothetical reference crop when ample water is available). | millimeter | inch |potentialEvapotranspirationAmountAvgSum|
+
+    | longWaveRadiationAvg | Yes | Average daily downwelling longWave radiation flux (energy emitted from non-solar radiation sources). | watt per square meter | watt per square meter |longWaveRadiationAvgMax, longWaveRadiationAvgMin, longWaveRadiationAvgAvg|
+
+    | longWaveRadiationStdDev | Yes | Standard deviation of daily downwelling longWave radiation flux. | watt per square meter | watt per square meter |longWaveRadiationStdDevAvg|
+
+    | precipAmountAvg | Yes | Average daily accumulated liquid-equivalent precipitation. | millimeter | inch |precipAmountAvgAvg, precipAmountAvgSum|
+
+    | shortWaveRadiationAvg | Yes | Average daily downwelling shortWave radiation flux (high-energy solar radiation that reaches Earth’s surface). | watt per square meter | watt per square meter |shortWaveRadiationAvgMax, shortWaveRadiationAvgMin, shortWaveRadiationAvgAvg|
+
+    | shortWaveRadiationStdDev | Yes | Standard deviation of daily downwelling shortWave radiation flux. | watt per square meter | watt per square meter |shortWaveRadiationStdDevAvg|
+
+    | sunshineDurationAvg | Yes | Average daily duration of sunshine based on cloud cover and downwelling shortWave radiation. | minute | minute |sunshineDurationAvgAvg, sunshineDurationAvgSum|
+
+    | surfacePressureAvg | Yes | Average daily surface barometric pressure.'
 paths:
   /:
     get:
@@ -202,12 +236,31 @@ paths:
       description: Staging server
 components:
   responses:
+    ValidationError:
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
     GetParameter:
       description: Parameter List
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Parameters'
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
     ValidationError:
       description: Validation Error
       content:
@@ -247,24 +300,19 @@ components:
           type:
             type: string
             description: Data Type used by Parameter.
-    ValidationError:
-      title: Validation Error
-      type: array
-      items:
-        type: object
-        required:
-        - msg
-        - param
-        - location
-        properties:
-          value:
-            type: string
-          msg:
-            type: string
-          param:
-            type: string
-          location:
-            type: string
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     Parameter:
       type: object
       properties:
@@ -283,19 +331,6 @@ components:
         description:
           type: string
         notes:
-          type: string
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
           type: string
   securitySchemes:
     clientCredentials:

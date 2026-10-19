@@ -155,14 +155,10 @@ components:
           type: number
         pageLimit:
           type: number
-    PricingRulePut:
-      required:
-      - value
-      - terminalSplc
-      - terminalOwner
-      - productGroup
-      - product
+    PricingRule:
       properties:
+        id:
+          type: string
         value:
           type: number
         terminalSplc:
@@ -175,10 +171,14 @@ components:
           type: string
         label:
           $ref: '#/components/schemas/PricingRuleLabels'
-    PricingRule:
+    PricingRulePut:
+      required:
+      - value
+      - terminalSplc
+      - terminalOwner
+      - productGroup
+      - product
       properties:
-        id:
-          type: string
         value:
           type: number
         terminalSplc:

@@ -222,6 +222,10 @@ components:
           format: int32
         message:
           type: string
+    DailyRacks:
+      type: array
+      items:
+        $ref: '#/components/schemas/DailyRack'
   securitySchemes:
     clientCredentials:
       type: oauth2

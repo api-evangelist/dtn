@@ -77,20 +77,6 @@ paths:
       x-operation-id-source: derived
 components:
   parameters:
-    year:
-      name: year
-      in: path
-      description: 4 digit year, e.g. 2026
-      required: true
-      schema:
-        type: string
-    month:
-      name: month
-      in: path
-      description: 2 digit month, 01-12
-      required: true
-      schema:
-        type: string
     path:
       name: path
       in: path
@@ -98,10 +84,17 @@ components:
       required: true
       schema:
         type: string
-    hour:
-      name: hour
+    minute:
+      name: minute
       in: path
-      description: 2 digit hour, 00-23
+      description: 2 digit minute, 00-59
+      required: true
+      schema:
+        type: string
+    minute:
+      name: minute
+      in: path
+      description: 2 digit minute, 00-59
       required: true
       schema:
         type: string
@@ -112,10 +105,17 @@ components:
       required: true
       schema:
         type: string
-    minute:
-      name: minute
+    month:
+      name: month
       in: path
-      description: 2 digit minute, 00-59
+      description: 2 digit month, 01-12
+      required: true
+      schema:
+        type: string
+    hour:
+      name: hour
+      in: path
+      description: 2 digit hour, 00-23
       required: true
       schema:
         type: string

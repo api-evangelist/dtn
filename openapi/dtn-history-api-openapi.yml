@@ -3,7 +3,18 @@ info:
   title: PXWeb Market Data History API
   description: 'ProphetX Web services, in short __PXWeb__, provides the facility to access real time quotes and historical market information
 
-    from a JSON and REST based web service.'
+    from a JSON and REST based web service.
+
+
+    PXWeb end points are divided into four categories: Quotes, History, Information, and Option Series. Requests in the quotes category
+
+    are for getting the most recent prices on a symbol. History is for requesting prices from specific time periods in the past and supports
+
+    daily, minute, and tick history. Information contains a request for searching for symbols based on text strings and a request for
+
+    querying the market hours of a symbol. The option series category contains on request for getting quotes on many futures options
+
+    based on an option root and an expiration.'
   version: 1.0.2
 servers:
 - description: Production (PROD)
@@ -175,6 +186,98 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   parameters:
+    intervalParam:
+      name: inteval
+      in: query
+      description: The number of bars to combine together into one bar.
+      required: false
+      schema:
+        type: integer
+        default: 1
+    dailyLimitParam:
+      name: limit
+      in: query
+      description: The maximum number of rows of history to return per symbol.   The maximum number of points for a single symbol in one request is 3,660. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
+      schema:
+        type: integer
+        default: 260
+        maximum: 3660
+    startDateParam:
+      name: startDate
+      in: query
+      description: Earliest date to include in the result.  Date in ISO 8601 format YYYY-MM-DD
+      schema:
+        type: string
+        format: date
+    marketParam:
+      name: market
+      in: query
+      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
+
+        '
+      schema:
+        type: string
+    rootParam:
+      name: root
+      in: query
+      description: A single futures root.  A futures root is the part of a symbol that does not change with expiration.
+      required: true
+      examples:
+        corn:
+          summary: CBOT Corn root
+          value: '@C'
+        oil:
+          summary: NYMEX Crude Oil root
+          value: QCL
+      schema:
+        type: string
+    endTimeParam:
+      name: endTime
+      in: query
+      description: The latest datetime to include in the result. Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
+      schema:
+        type: string
+        format: datetime
+    startTimeParam:
+      name: startTime
+      in: query
+      description: Earliest datetime to include in the result.  Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
+      schema:
+        type: string
+        format: datetime
+    filterParam:
+      name: filter
+      in: query
+      description: Specify 0 to return Trades, Bids, and Asks, or speicfy 1 to just return Trades.
+      schema:
+        type: number
+        enum:
+        - 0
+        - 1
+        default: 1
+    curveDateParam:
+      name: curveDate
+      in: query
+      description: The date to return prices for when requesting a forward curve.  Leave blank for most recent history.
+      schema:
+        type: string
+        format: date
+    tickLimitParam:
+      name: limit
+      in: query
+      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 50,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
+      schema:
+        type: integer
+        default: 1000
+        maximum: 50000
+    minuteLimitParam:
+      name: limit
+      in: query
+      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 100,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
+      schema:
+        type: integer
+        default: 1440
+        maximum: 100000
     symbolParam:
       name: symbol
       in: query
@@ -197,41 +300,17 @@ components:
           value: CORN$.MN.F27117
       schema:
         type: string
-    marketParam:
-      name: market
+    endDateParam:
+      name: endDate
       in: query
-      description: 'A market identifier to apply to all symbols and patterns in the request.  A list of markets can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx](https://pxweb.dtn.com/PXWebDoc/pages/Markets.aspx)
-
-        '
-      schema:
-        type: string
-    startDateParam:
-      name: startDate
-      in: query
-      description: Earliest date to include in the result.  Date in ISO 8601 format YYYY-MM-DD
+      description: The latest date to include in the result. Date in ISO 8601 format YYYY-MM-DD
       schema:
         type: string
         format: date
-    symbolLimitParam:
-      name: symbolLimit
+    pageTokenParam:
+      name: pageToken
       in: query
-      description: The number of symbols to return in one request up to a maximum of 4000.
-      schema:
-        type: integer
-        default: 600
-        maximum: 4000
-    rootParam:
-      name: root
-      in: query
-      description: A single futures root.  A futures root is the part of a symbol that does not change with expiration.
-      required: true
-      examples:
-        corn:
-          summary: CBOT Corn root
-          value: '@C'
-        oil:
-          summary: NYMEX Crude Oil root
-          value: QCL
+      description: "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
       schema:
         type: string
     limitParam:
@@ -242,117 +321,66 @@ components:
         type: integer
         default: 200
         maximum: 4998
-    dailyLimitParam:
-      name: limit
-      in: query
-      description: The maximum number of rows of history to return per symbol.   The maximum number of points for a single symbol in one request is 3,660. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
-      schema:
-        type: integer
-        default: 260
-        maximum: 3660
-    startTimeParam:
-      name: startTime
-      in: query
-      description: Earliest datetime to include in the result.  Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
-      schema:
-        type: string
-        format: datetime
-    curveDateParam:
-      name: curveDate
-      in: query
-      description: The date to return prices for when requesting a forward curve.  Leave blank for most recent history.
-      schema:
-        type: string
-        format: date
-    tickLimitParam:
-      name: limit
-      in: query
-      description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 50,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
-      schema:
-        type: integer
-        default: 1000
-        maximum: 50000
-    endDateParam:
-      name: endDate
-      in: query
-      description: The latest date to include in the result. Date in ISO 8601 format YYYY-MM-DD
-      schema:
-        type: string
-        format: date
-    endTimeParam:
-      name: endTime
-      in: query
-      description: The latest datetime to include in the result. Datetime in ISO 8601 format YYYY-MM-DDTHH:MM:SS
-      schema:
-        type: string
-        format: datetime
-    intervalParam:
-      name: inteval
-      in: query
-      description: The number of bars to combine together into one bar.
-      required: false
-      schema:
-        type: integer
-        default: 1
-    filterParam:
-      name: filter
-      in: query
-      description: Specify 0 to return Trades, Bids, and Asks, or speicfy 1 to just return Trades.
-      schema:
-        type: number
-        enum:
-        - 0
-        - 1
-        default: 1
-    minuteLimitParam:
-      name: limit
+    symbolLimitParam:
+      name: symbolLimit
       in: query
       description: The maximum number of rows of history to return per symbol.  The maximum number of points for a single symbol in one request is 100,000. For requests that match multiple symbols, a per symbol limit will be set so that one entire request doesn't return more than 1,020,000 data points.
       schema:
         type: integer
-        default: 1440
-        maximum: 100000
-    pageTokenParam:
-      name: pageToken
-      in: query
-      description: "A page token returned from a previous request.  It is used to resume a request that \n  matched more symbols than the SymbolLimit allowed in one request.  More information on how to \n  make requests for many symbols can be found here: [https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx](https://pxweb.dtn.com/PXWebDoc/pages/ManySymbols.aspx)\n"
-      schema:
-        type: string
+        default: 600
+        maximum: 4000
   schemas:
-    DailyHistory:
+    ForwardCurve:
       type: object
+      required:
+      - description
+      - marketName
+      - vendor
+      - year
+      - month
+      - expiration
+      - tickerSymbol
+      - dailyPriceBar
       properties:
         description:
           type: string
-          description: Detailed description for symbol.
+          description: Description of root.
           examples:
-          - CORN September 2018
-        historicPrices:
-          type: array
-          description: List of the historic prices based on the query param limitations
-          items:
-            $ref: '#/components/schemas/BarHistoricPrice'
+          - CORN
         marketName:
           type: string
           description: Market symbol belongs too.
           examples:
           - CBOT
-        symbol:
-          type: string
-          description: The symbol requested.
-          examples:
-          - '@C@1'
-        tickerSymbol:
-          type: string
-          description: The official current ticker symbol.
-          examples:
-          - '@CU18'
         vendor:
           type: string
           description: Vendor for symbol.
           examples:
           - DTN
+        year:
+          type: number
+          description: The year this contract expires.
+        month:
+          type: string
+          description: The month this contract expires.
+        expiration:
+          type: string
+          format: date
+          description: The date this contract expires.
+        tickerSymbol:
+          type: string
+          description: The symbol for this contract.
+        dailyPriceBar:
+          $ref: '#/components/schemas/BarHistoricPrice'
+          description: The daily price bar for this contract
       description: A simple object to contain the list of historic prices.
+    NullablePrice:
+      type:
+      - 'null'
+      - string
+      description: Prices are represented as strings to prevent float rounding problems
+      examples:
+      - '123.25'
     TickHistoricPrice:
       required:
       - price
@@ -384,6 +412,160 @@ components:
           examples:
           - 1010
       description: Information from a single trade.
+    Error:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            type:
+              type: string
+              description: A more detailed or finer grained type declaration. In some cases could be a 'class' to assist with automated Exception throwing.
+            eventId:
+              type: string
+              description: A UUID that represents this unique request.  This can be used to help troubleshoot errors.
+            dateTime:
+              type: string
+              format: date-time
+              description: Repeat of optional dateTime from the messages section.
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.  These can vary and have a general definition of the potential problem.  Some potential values are ERROR, NotFound, InvalidParameters, NotAuthorized.
+                examples:
+                - NotAuthorized
+              id:
+                type: string
+                description: An identifier for the error.  This can represent a unique identifier for the error that occurred, but in many cases a unique number does not exist and it might simply be a 500.  Some API's will make better use of this value and it will be used to help track down particular problems.
+                examples:
+                - '401'
+              status:
+                type: integer
+                format: int32
+                description: Deprecated - this represents the HTTP Status code, but should not be used or relied upon.  Future version will remove this.
+                examples:
+                - 401
+              message:
+                type: string
+                description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
+                examples:
+                - Unauthorized access to service.
+    Meta:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        count:
+          type: number
+          description: Number of symbols returned by request
+        dataSrc:
+          type: string
+          description: A value used by DTN support for troublshooting any issues
+        duration:
+          type: string
+          description: The duration of time DTN servers spent processing the request.  Does not include internet transit time.
+        userId:
+          type: string
+          description: The user that made the request.
+        operation:
+          type: string
+          description: The name of the operation called
+        pageToken:
+          type: string
+          description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
+    BarHistoricPrice:
+      required:
+      - close
+      - high
+      - low
+      - open
+      - startDateTime
+      - volume
+      type: object
+      properties:
+        oi:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        open:
+          $ref: '#/components/schemas/NullablePrice'
+        close:
+          $ref: '#/components/schemas/NullablePrice'
+        low:
+          $ref: '#/components/schemas/NullablePrice'
+        startDateTime:
+          type: string
+          description: The date for the related values.
+          format: date-time
+        high:
+          $ref: '#/components/schemas/NullablePrice'
+        volume:
+          type:
+          - number
+          - 'null'
+          description: Volume.
+          examples:
+          - 1010
+      description: Price information for a particular time interval.
+    DailyHistory:
+      type: object
+      properties:
+        oi:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        open:
+          $ref: '#/components/schemas/NullablePrice'
+        close:
+          $ref: '#/components/schemas/NullablePrice'
+        low:
+          $ref: '#/components/schemas/NullablePrice'
+        startDateTime:
+          type: string
+          description: The date for the related values.
+          format: date-time
+        high:
+          $ref: '#/components/schemas/NullablePrice'
+        volume:
+          type:
+          - number
+          - 'null'
+          description: Volume.
+          examples:
+          - CORN September 2018
+        historicPrices:
+          type: array
+          description: List of the historic prices based on the query param limitations
+          items:
+            $ref: '#/components/schemas/BarHistoricPrice'
+        marketName:
+          type: string
+          description: Market symbol belongs too.
+          examples:
+          - CBOT
+        symbol:
+          type: string
+          description: The symbol requested.
+          examples:
+          - '@C@1'
+        tickerSymbol:
+          type: string
+          description: The official current ticker symbol.
+          examples:
+          - '@CU18'
+        vendor:
+          type: string
+          description: Vendor for symbol.
+          examples:
+          - DTN
+      description: A simple object to contain the list of historic prices.
     TickHistory:
       type: object
       properties:
@@ -451,158 +633,6 @@ components:
           description: Vendor for symbol.
           examples:
           - DTN
-      description: A simple object to contain the list of historic prices.
-    Error:
-      type: object
-      properties:
-        meta:
-          type: object
-          properties:
-            type:
-              type: string
-              description: A more detailed or finer grained type declaration. In some cases could be a 'class' to assist with automated Exception throwing.
-            eventId:
-              type: string
-              description: A UUID that represents this unique request.  This can be used to help troubleshoot errors.
-            dateTime:
-              type: string
-              format: date-time
-              description: Repeat of optional dateTime from the messages section.
-        messages:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The error type.  These can vary and have a general definition of the potential problem.  Some potential values are ERROR, NotFound, InvalidParameters, NotAuthorized.
-                examples:
-                - NotAuthorized
-              id:
-                type: string
-                description: An identifier for the error.  This can represent a unique identifier for the error that occurred, but in many cases a unique number does not exist and it might simply be a 500.  Some API's will make better use of this value and it will be used to help track down particular problems.
-                examples:
-                - '401'
-              status:
-                type: integer
-                format: int32
-                description: Deprecated - this represents the HTTP Status code, but should not be used or relied upon.  Future version will remove this.
-                examples:
-                - 401
-              message:
-                type: string
-                description: A concise description for the error.  In some cases the description may provide means to resolve the problem.
-                examples:
-                - Unauthorized access to service.
-    NullablePrice:
-      type:
-      - 'null'
-      - string
-      description: Prices are represented as strings to prevent float rounding problems
-      examples:
-      - '123.25'
-    BarHistoricPrice:
-      required:
-      - close
-      - high
-      - low
-      - open
-      - startDateTime
-      - volume
-      type: object
-      properties:
-        oi:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        open:
-          $ref: '#/components/schemas/NullablePrice'
-        close:
-          $ref: '#/components/schemas/NullablePrice'
-        low:
-          $ref: '#/components/schemas/NullablePrice'
-        startDateTime:
-          type: string
-          description: The date for the related values.
-          format: date-time
-        high:
-          $ref: '#/components/schemas/NullablePrice'
-        volume:
-          type:
-          - number
-          - 'null'
-          description: Volume.
-          examples:
-          - 1010
-      description: Price information for a particular time interval.
-    Meta:
-      type: object
-      properties:
-        timestamp:
-          type: string
-          format: date-time
-        count:
-          type: number
-          description: Number of symbols returned by request
-        dataSrc:
-          type: string
-          description: A value used by DTN support for troublshooting any issues
-        duration:
-          type: string
-          description: The duration of time DTN servers spent processing the request.  Does not include internet transit time.
-        userId:
-          type: string
-          description: The user that made the request.
-        operation:
-          type: string
-          description: The name of the operation called
-        pageToken:
-          type: string
-          description: A page token returned from a previous request. It is used to resume a request that matched more symbols than the Limit allowed in one request.
-    ForwardCurve:
-      type: object
-      required:
-      - description
-      - marketName
-      - vendor
-      - year
-      - month
-      - expiration
-      - tickerSymbol
-      - dailyPriceBar
-      properties:
-        description:
-          type: string
-          description: Description of root.
-          examples:
-          - CORN
-        marketName:
-          type: string
-          description: Market symbol belongs too.
-          examples:
-          - CBOT
-        vendor:
-          type: string
-          description: Vendor for symbol.
-          examples:
-          - DTN
-        year:
-          type: number
-          description: The year this contract expires.
-        month:
-          type: string
-          description: The month this contract expires.
-        expiration:
-          type: string
-          format: date
-          description: The date this contract expires.
-        tickerSymbol:
-          type: string
-          description: The symbol for this contract.
-        dailyPriceBar:
-          $ref: '#/components/schemas/BarHistoricPrice'
-          description: The daily price bar for this contract
       description: A simple object to contain the list of historic prices.
   securitySchemes:
     clientCredentials:

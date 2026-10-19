@@ -76,22 +76,21 @@ paths:
                 $ref: '#/components/schemas/ObservationsResponse'
 components:
   schemas:
-    ObservationsResponse:
+    TimedObservation:
+      allOf:
+      - $ref: '#/components/schemas/WeatherObservation'
+    Location:
       type: object
       properties:
-        stations:
-          type: array
-          items:
-            type: object
-            properties:
-              stationId:
-                type: string
-              location:
-                $ref: '#/components/schemas/Location'
-              observations:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TimedObservation'
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        elevation:
+          type: number
+          description: Elevation in meters
     WeatherObservation:
       type: object
       properties:
@@ -130,21 +129,22 @@ components:
           type: number
           minimum: 0
           maximum: 100
-    Location:
+    ObservationsResponse:
       type: object
       properties:
-        latitude:
-          type: number
-          format: double
-        longitude:
-          type: number
-          format: double
-        elevation:
-          type: number
-          description: Elevation in meters
-    TimedObservation:
-      allOf:
-      - $ref: '#/components/schemas/WeatherObservation'
+        stations:
+          type: array
+          items:
+            type: object
+            properties:
+              stationId:
+                type: string
+              location:
+                $ref: '#/components/schemas/Location'
+              observations:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimedObservation'
   securitySchemes:
     oauth2:
       type: oauth2

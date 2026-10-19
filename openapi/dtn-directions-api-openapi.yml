@@ -2,7 +2,41 @@ openapi: 3.2.0
 info:
   title: Pavement Conditions Directions API
   version: 2.0.2
-  description: The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination.
+  description: 'The Pavement Conditions API v2 offers users pavement temperature and condition details for road segments in a specified area with enhanced GeoJSON support and pagination. DTN supplies road data on segments across North America and Europe, allowing users to request data for a geographic area or specific roadway within the database.
+
+
+    **What''s New in v2.0.2:**
+
+    - Route Generation
+
+
+    — A new `GET /v2/directions` endpoint generates route geometry via the Mapbox Directions API.
+
+
+    - Query Pavement Conditions Along a Route or Route-Based Filtering (RB Filter)
+
+
+    - Pavement data can be filtered using either `startPoint` and `endPoint` coordinates or a GeoJSON geometry provided in the request body.
+
+    - When `startPoint` and `endPoint` are supplied to the `v2/logistics` or `v2/pavement/conditions` endpoints, a route is automatically generated internally via the Mapbox API.
+
+    - Pagination is determined by the number of route `segments` when RB Filter is active.
+
+    - Each paginated response includes a `statistics` object summarizing covered, uncovered, and total segment counts.
+
+    - Results may be optionally narrowed by a weather `parameter` filter.
+
+    - Results may also be optionally narrowed by Estimated Time of Arrival (`etaFilter`).
+
+
+    - Added pavementValidEndTime in returned data
+
+
+    **Authentication**: This API uses Bearer token authentication. When obtaining your access token, use the following audience values:
+
+    - **Production**: `https://pavement-condition.prd.wx.zones.dtn.com`
+
+    - **Staging**: `https://pavement-condition.stg.wx.zones.dtn.com`'
   contact:
     name: Ben Hershey
     url: https://pavement-condition.prd.wx.zones.dtn.com
@@ -321,6 +355,19 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
     DirectionsResponse:
       type: object
       properties:
@@ -392,19 +439,19 @@ components:
               type: string
               format: date-time
               description: Departure time from the first route. Present when arriveAt is used.
-    Error:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: integer
-        detail:
-          type: string
-        instance:
-          type: string
+  responses:
+    UnauthorizedResponse:
+      description: Unauthorized - Missing or invalid Bearer token
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ForbiddenResponse:
+      description: Forbidden - No valid Bearer token provided
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     clientCredentials:
       type: oauth2

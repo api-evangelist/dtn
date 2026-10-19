@@ -171,6 +171,44 @@ components:
         - tileSetId: a52ffc09-3db5-4988-a67f-e37a7719e833
           valid: '2024-01-01T03:00:00Z'
   responses:
+    error:
+      description: error response
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-found
+            title: resource not found
+            detail: The layer you requested could not be found.
+            status: 404
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+    not-acceptable:
+      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
+      headers:
+        X-Request-ID:
+          $ref: '#/components/headers/x-request-id'
+        Content-Encoding:
+          $ref: '#/components/headers/content-encoding'
+        Content-Language:
+          $ref: '#/components/headers/content-language'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/general-error'
+          example:
+            type: https://map.api.dtn.com/v1/error-details/not-allowed
+            title: not allowed
+            detail: Either the accept header is missing or none of the values are acceptable.
+            status: 406
+            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
     unprocessable-entity:
       description: The server understands the content type of the request entity, and the syntax of the request entity is correct, but it was unable to process the contained instructions.
       headers:
@@ -205,44 +243,130 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/timestamp-wrapper'
-    not-acceptable:
-      description: The server cannot produce a response matching the list of acceptable values defined in the request's proactive content negotiation headers, and that the server is unwilling to supply a default representation.
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-allowed
-            title: not allowed
-            detail: Either the accept header is missing or none of the values are acceptable.
-            status: 406
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a458-426614176000
-    error:
-      description: error response
-      headers:
-        X-Request-ID:
-          $ref: '#/components/headers/x-request-id'
-        Content-Encoding:
-          $ref: '#/components/headers/content-encoding'
-        Content-Language:
-          $ref: '#/components/headers/content-language'
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/general-error'
-          example:
-            type: https://map.api.dtn.com/v1/error-details/not-found
-            title: resource not found
-            detail: The layer you requested could not be found.
-            status: 404
-            instance: urn:dtn:maps:api:catalog:requestId:123e4567-e89b-12d3-a456-526614176000
+  schemas:
+    valid-time:
+      type: object
+      properties:
+        tileSetId:
+          type: string
+          description: id to be used in tiles and image endpoints.
+          example: 46c63648-397c-469d-97a7-622825c58437
+        valid:
+          type: string
+          format: date-time
+          description: Datetime in ISO 8601 for which the tile set is valid for, in UTC.
+          example: '2021-01-01T00:00:00Z'
+    timestamp-wrapper:
+      type: object
+      properties:
+        issued:
+          type: string
+          format: date-time
+          description: Issued datetime in ISO 8601, in UTC. Null when not available.
+          example: '2021-01-01T00:00:00Z'
+        timestamps:
+          type: array
+          description: List of timestamps in ISO 8601, in UTC.
+          items:
+            $ref: '#/components/schemas/valid-time'
+      example:
+        issued: '2024-01-01T00:00:00Z'
+        timestamps:
+        - tileSetId: 0c1e8264-9434-4ea9-b576-cc6402b46e68
+          valid: '2024-01-01T00:00:00Z'
+        - tileSetId: 47bb476a-d184-439c-93cd-149d68049521
+          valid: '2024-01-01T01:00:00Z'
+        - tileSetId: 2c76c887-6ae3-49d3-a649-8c788259594e
+          valid: '2024-01-01T02:00:00Z'
+        - tileSetId: a52ffc09-3db5-4988-a67f-e37a7719e833
+          valid: '2024-01-01T03:00:00Z'
+    general-error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A human-readable description of the specific error.
+        type:
+          type: string
+          format: uri
+          description: A URL to a document describing the error condition.
+        title:
+          type: string
+          description: A short, human-readable title for the general error type.
+        status:
+          type: number
+          description: HTTP status code
+        instance:
+          type: string
+          format: uri
+          description: URL with the id for the specific error; this will often point to an error log for that specific response.
+      additionalProperties: true
+  parameters:
+    time-range:
+      in: query
+      name: time
+      description: Times range, in UTC and ISO 8601 compliant, delimited by a forward slash. The time range of data has a maximum of 24 hours allowed. This parameter is **optional**, and is mainly used for accessing older, archived data. If not given, returns the latest data available.
+      required: false
+      schema:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: string
+          format: date-time
+          example: 2022-04-01T00:00:00Z/2022-04-02T00:00:00Z
+    layer-parameters:
+      in: query
+      name: parameters
+      description: 'Key-value pair list, separated by semicolons, representing each of the desired parameter ids and values to  use against this endpoint. When available, parameters are defined in the metadata endpoint for each given layer.
+
+        '
+      required: false
+      schema:
+        type: string
+        example: id-1:value-1;id-2:value-2
+    layer-id:
+      in: path
+      name: layerId
+      description: 'Unique identifier for the layer. See the full list of layers on the [DTN Map Tile Layer Catalog](https://map.api.dtn.com/static/html/v2/layer-catalog.html).
+
+        '
+      required: true
+      schema:
+        type: string
+        description: id for the layer from which to receive data.
+        example: radar-base-ref-precip-type-na-contours
+    force-off-interval:
+      in: query
+      name: forceOffInterval
+      description: When set to true, this parameter forces the API to return the most recent time frame, even if it falls outside the regular intervals. If set to false or omitted, only data from the regular intervals is returned.
+      required: false
+      schema:
+        type: boolean
+        default: false
+    accept-json:
+      in: header
+      name: Accept
+      required: true
+      description: Indicates response media types that are acceptable.
+      schema:
+        type: string
+        enum:
+        - application/json
+  headers:
+    x-request-id:
+      description: UUID compliant with RFC 4122 that uniquely identifies the request.
+      schema:
+        type: string
+    content-encoding:
+      description: Lists any encodings that have been applied to the returned payload.
+      schema:
+        type: string
+    content-language:
+      description: Describe the language(s) intended for the audience.
+      schema:
+        type: string
+        default: en-US
   securitySchemes:
     clientCredentials:
       type: oauth2
