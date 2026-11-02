@@ -1,0 +1,101 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: DTN
+providerId: dtn
+created: '2026-05-04'
+# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
+# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
+method: generated
+modified: '2026-05-05'
+reconciled: false
+tags:
+  - Weather
+  - Agriculture
+  - Aviation
+  - Marine
+  - Refined Fuels
+  - Data Feeds
+description: DTN does not publish public pricing for its API and data-feed catalog (Weather, Marine,
+  Agribusiness, Aviation, Refined Fuels). Subscriptions are negotiated per customer; the subscription
+  level controls which endpoints are accessible (e.g. 5 / 10 / 15-day forecast windows), retention of
+  observations, and feed entitlements. A subset of the DTN Weather Observation API is available via AWS
+  Marketplace.
+sources:
+  - https://www.dtn.com/resources/api-data-integrations/
+  - https://www.dtn.com/resources/api-data-integrations/weather-api/
+  - https://devportal.dtn.com/
+  - https://aws.amazon.com/marketplace/pp/prodview-yohehde7bckaq
+notes: No public pricing; reconciled=false. Plans below describe the access classes (subscription tiers
+  by endpoint scope) rather than published per-call prices.
+plans:
+  - id: dtn-subscription
+    name: DTN Subscription
+    type: subscription
+    description: Customer subscription gated by API key. Tier determines available endpoints, forecast
+      horizon, and observation retention.
+    entries:
+      - label: Negotiated subscription
+        name: subscription
+        type: subscription
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: contact sales
+        userMultiplied: false
+    elements:
+      - name: Weather APIs (Conditions, Observations, Point Forecast, Radar Precipitation)
+      - name: Marine & Offshore APIs
+      - name: Agribusiness APIs
+      - name: Aviation APIs
+      - name: Refined Fuels APIs
+      - name: Subscription-bound forecast windows (5 / 10 / 15 days)
+  - id: dtn-aws-marketplace
+    name: DTN Weather Observation (AWS Marketplace)
+    type: usage-based
+    description: A subset of the DTN Weather Observation API listed on AWS Marketplace; pricing surfaced
+      through the AWS Marketplace listing.
+    entries:
+      - label: AWS Marketplace pricing
+        name: aws_marketplace
+        type: metered
+        metric: varies
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: see AWS Marketplace listing
+        userMultiplied: false
+    elements:
+      - name: AWS Marketplace billing
+      - name: DTN Weather Observation API subset
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - metered
+  - subscription
+  units:
+  - negotiated
+  plans:
+  - name: DTN Subscription
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - negotiated
+    periods:
+    - year
+  - name: DTN Weather Observation (AWS Marketplace)
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - negotiated
+    periods:
+    - per-use
